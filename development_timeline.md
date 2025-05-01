@@ -1,4 +1,3 @@
-# CO2 EOR Optimizer Development Timeline
 
 ## Core Implementation Progress
 - [x] ✅ Project Architecture (Completed Week 1)
@@ -41,6 +40,18 @@
 
 - [ ] Data Parser Tests
 - [ ] Optimization Tests
+
+## Development Metrics
+
+```mermaid
+xychart-beta
+    title "Weekly Progress"
+    x-axis [Week 1, Week 2, Week 3, Week 4]
+    y-axis "Commits" 0-->50
+    y-axis "Tests" 0-->30
+    bar [35, 28, 42, 39] color="#4e79a7" label="Commits"
+    line [8, 12, 19, 22] color="#e15759" label="Tests"
+```
 
 ## Strategic Roadmap
 

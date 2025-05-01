@@ -38,10 +38,25 @@ flowchart TD
   - CUDA kernels for performance-critical sections
   - Parallel scenario evaluation
 
-### 5. Visualization & Reporting
+### 5. Visualization System
+- **Real-time Development Tracking**:
+  - Commit activity heatmaps
+  - Code churn analysis
+  - Team contribution breakdowns
+- **Quality Metrics**:
+  - Test coverage timelines
+  - Defect density charts
+  - Build success rates
+- **Deployment Visualization**:
+  - Pipeline Gantt charts
+  - Environment health indicators
+  - Rollback frequency tracking
+
+### 6. Reporting
 - Interactive Plotly dashboards
 - PDF/CSV report generation
 - 3D reservoir visualization
+- Automated metric exports
 
 ## Class Diagram
 ```mermaid
@@ -57,7 +72,20 @@ classDiagram
     DataParser --> PVTModel
 ```
 
+## System Integration
+```mermaid
+flowchart LR
+    A[Data Layer] --> B[PVT Modeling]
+    B --> C[EOR Engine]
+    C --> D[Optimization]
+    D --> E[Visualization]
+    E --> F[Reporting]
+    G[Git/CI] --> E
+    H[Testing] --> E
+```
+
 ## Development Roadmap
 1. **Phase 1**: Core data structures (2 weeks)
 2. **Phase 2**: PVT & MMP models (3 weeks)
 3. **Phase 3**: Optimization engine (3 weeks)
+4. **Phase 4**: Visualization system (2 weeks)
