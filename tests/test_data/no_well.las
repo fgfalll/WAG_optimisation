@@ -1,4 +1,4 @@
-~VERSION
-VERS. 2.0
-~OTHER
-NOTE. Test file
+~A
+1.0
+2.0
+3.0

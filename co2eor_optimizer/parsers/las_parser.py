@@ -1,8 +1,17 @@
 import lasio
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 import numpy as np
 import logging
 from ..core import WellData
+from dataclasses import dataclass
+
+@dataclass
+class MissingWellNameError(Exception):
+    """Exception raised when LAS file is missing WELL section"""
+    file_path: str
+    available_sections: Dict[str, Any]
+    message: str = "LAS file missing WELL section - please provide a well name"
+
 
 # Standard unit conversion factors (metric to field and vice versa)
 UNIT_CONVERSIONS = {
@@ -17,7 +26,9 @@ UNIT_CONVERSIONS = {
 
 def parse_las(file_path: str,
               depth_unit: Optional[str] = None,
-              fill_value: float = np.nan) -> WellData:
+              fill_value: float = np.nan,
+              well_name_override: Optional[str] = None,
+              engine: str = 'normal') -> WellData:
     """
     Parse LAS file into WellData object with enhanced validation and handling.
     
@@ -34,40 +45,49 @@ def parse_las(file_path: str,
         IOError: For file reading issues
     """
     try:
-        las = lasio.read(file_path, engine='normal')  # Force normal engine for wrapped files
+        las = lasio.read(file_path, engine=engine)
+        logging.debug(f"Detected sections: {list(las.sections.keys())}")
     except Exception as e:
         logging.error(f"Failed to read LAS file: {file_path}")
         raise IOError(f"LAS file read error: {str(e)}")
 
-    # Validate required sections
-    if not hasattr(las, 'well') or not las.well:
-        logging.warning("LAS file missing WELL section - using default values")
-        if not hasattr(las, 'well'):
-            las.well = {}
-        las.well['WELL'] = lasio.HeaderItem('WELL', value='DEFAULT')
-        
-        # Ensure we return properly constructed WellData
-        return WellData(
-            name='DEFAULT',
-            depths=np.array([0.0]),
-            properties={},
-            units={}
-        )
+    # Handle WELL section
+    well_name = 'UNKNOWN'
+    logging.debug(f"las.well exists: {hasattr(las, 'well')}, las.well value: {getattr(las, 'well', None)}")
+    if not hasattr(las, 'well') or not las.well or not hasattr(las.well, 'WELL') or not las.well.WELL.value:
+        if well_name_override:
+            well_name = well_name_override
+            if not hasattr(las, 'well'):
+                las.well = {}
+            las.well['WELL'] = lasio.HeaderItem('WELL', value=well_name)
+        else:
+            available_sections = {
+                'version': getattr(las, 'version', None),
+                'well': getattr(las, 'well', None),
+                'curves': getattr(las, 'curves', None),
+                'other': getattr(las, 'other', None)
+            }
+            raise MissingWellNameError(
+                file_path=file_path,
+                available_sections=available_sections
+            )
     if not hasattr(las, 'curves') or not las.curves:
         logging.warning("LAS file missing curve data - initializing empty dataset")
         las.curves = [lasio.CurveItem(mnemonic='DEPT', data=np.array([0.0]))]
 
-    # Get well name - handle different LAS versions
-    well_name = 'UNKNOWN'
-    try:
-        if hasattr(las.well, 'WELL'):
-            well_name = str(las.well.WELL.value)
-        elif isinstance(las.well, dict) and 'WELL' in las.well:
-            well_name = str(las.well['WELL'].value)
-        else:
-            raise ValueError("LAS file missing WELL identifier")
-    except Exception as e:
-        logging.warning(f"Error getting well name: {str(e)}")
+    # Get well name if not already set to DEFAULT
+    if well_name == 'UNKNOWN':
+        try:
+            if hasattr(las.well, 'WELL'):
+                well_name = str(las.well.WELL.value)
+            elif isinstance(las.well, dict) and 'WELL' in las.well:
+                well_name = str(las.well['WELL'].value)
+            else:
+                logging.warning("LAS file missing WELL identifier - using DEFAULT")
+                well_name = 'DEFAULT'
+        except Exception as e:
+            logging.warning(f"Error getting well name: {str(e)} - using DEFAULT")
+            well_name = 'DEFAULT'
     
     properties = {}
     units = {}

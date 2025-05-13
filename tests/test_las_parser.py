@@ -2,7 +2,7 @@ import unittest
 import os
 import numpy as np
 from pathlib import Path
-from co2eor_optimizer.parsers.las_parser import parse_las
+from co2eor_optimizer.parsers.las_parser import parse_las, MissingWellNameError
 from co2eor_optimizer.core import WellData
 
 class TestLasParser(unittest.TestCase):
@@ -85,12 +85,29 @@ RHOB.G/CC              : Bulk Density
 
     def test_missing_well_section(self):
         """Test validation of required sections"""
-        with open(self.test_data_dir / 'no_well.las', 'w') as f:
-            f.write("~VERSION\nVERS. 2.0\n~OTHER\nNOTE. Test file\n")
+        test_file = self.test_data_dir / 'empty_well.las'
+        with open(test_file, 'w') as f:
+            # Create LAS file with empty WELL section
+            f.write("~VERSION\nVERS. 2.0\n~WELL\n~OTHER\nNOTE. Test file\n")
+
+        # Should fail with MissingWellNameError since WELL section exists but has no name
+        with self.assertRaises(MissingWellNameError) as cm:
+            parse_las(str(test_file))
+        with self.assertRaises(MissingWellNameError) as cm:
+            parse_las(str(self.test_data_dir / 'no_well.las'))
         
-        # Parser should use default well name when WELL section missing
-        result = parse_las(str(self.test_data_dir / 'no_well.las'))
-        self.assertEqual(result.name, "DEFAULT")
+        # Verify exception contains expected info
+        exc = cm.exception
+        self.assertEqual(exc.file_path, str(self.test_data_dir / 'no_well.las'))
+        self.assertIn('version', exc.available_sections)
+        self.assertIn('other', exc.available_sections)
+
+        # Simulate user providing well name and retry
+        result = parse_las(
+            str(self.test_data_dir / 'no_well.las'),
+            well_name_override="TEST_WELL"
+        )
+        self.assertEqual(result.name, "TEST_WELL")
 
 if __name__ == '__main__':
     unittest.main()
