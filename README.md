@@ -97,15 +97,15 @@ print(f"Optimal WAG ratio: {results.optimal_wag_ratio}")
 
 ## Documentation
 
-- [Architecture Overview](doc/architecture.md)
-- [Development Timeline](doc/development_timeline.md)
-- [Code Audit Review](doc/audit_review.md)
+- [Architecture Overview](Doc/architecture.md)
+- [Development Timeline](Doc/development_timeline.md)
+- [Code Audit Review](Doc/audit_review.md)
 
 ## Contributing
 
 We welcome contributions! Please see our:
-- [Contribution Guidelines](doc/CONTRIBUTING.md)
-- [Code of Conduct](doc/CODE_OF_CONDUCT.md)
+- [Contribution Guidelines](Doc/CONTRIBUTING.md)
+- [Code of Conduct](Doc/CODE_OF_CONDUCT.md)
 
 Key areas for contribution:
 - Additional MMP correlations
@@ -114,7 +114,7 @@ Key areas for contribution:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](doc/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](Doc/LICENSE) file for details.
 
 ## Contact
 
