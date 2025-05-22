@@ -10,6 +10,9 @@ __pycache__/
 .Python
 build/
 develop-eggs/
+apyce-project-master/
+tests/
+Import files/
 dist/
 downloads/
 eggs/
@@ -58,4 +61,5 @@ venv.bak/
 
 # Misc
 .DS_Store
+.gitignore
 *.swp
