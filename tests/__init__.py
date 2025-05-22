@@ -1,1 +1,1 @@
-"""Test package for CO2 EOR Optimizer"""
+"""Test package initialization"""

@@ -108,7 +108,12 @@ def parse_las(file_path: str,
                 clean_data.append(fill_value)
         data = np.array(clean_data, dtype=np.float64)
         properties[curve.mnemonic] = data
+        # Get unit from curve or use empty string if not available
         unit = getattr(curve, 'unit', '') or ''
+        # Special handling for DEPT curve to ensure unit is set
+        if curve.mnemonic == 'DEPT':
+            if not unit and depth_unit:
+                unit = depth_unit
         units[curve.mnemonic] = unit
         
         # Track original depth units for conversion
@@ -121,10 +126,24 @@ def parse_las(file_path: str,
     if depth_unit and depth_units.get('original') and depth_units['original'] != depth_units['target']:
         try:
             conv_factor = UNIT_CONVERSIONS[depth_units['original']][depth_units['target']]
+            # Convert both DEPT curve and depths array
             if 'DEPT' in properties:
-                properties['DEPT'] *= conv_factor
-                units['DEPT'] = depth_units['target']
-            depths *= conv_factor
+                properties['DEPT'] = np.array(properties['DEPT'] * conv_factor, dtype=np.float64)
+            # Always update the depth unit to target unit after conversion
+            units['DEPT'] = depth_units['target']
+            # Convert string depths to float before multiplication
+            if isinstance(depths, np.ndarray) and depths.dtype.kind in ['U', 'S']:
+                try:
+                    depths = np.array([float(x.strip().rstrip(',')) for x in depths], dtype=np.float64)
+                except ValueError as e:
+                    raise ValueError(f"Invalid depth value format: {str(e)}")
+            # Apply conversion to depths array
+            depths = np.array(depths * conv_factor, dtype=np.float64)
+            # Ensure the WellData object gets the converted depths
+            properties['DEPT'] = depths.copy()
+            # Update DEPT curve data directly
+            dept_curve = next(c for c in las.curves if c.mnemonic == 'DEPT')
+            dept_curve.data = depths
             logging.debug(f"Converted depths from {depth_units['original']} to {depth_units['target']}")
         except KeyError:
             logging.warning(f"Unsupported unit conversion: {depth_units['original']} to {depth_units['target']}")
