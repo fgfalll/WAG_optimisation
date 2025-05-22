@@ -4,9 +4,9 @@
 [![DOI](https://img.shields.io/badge/DOI-10.XXXXX/XXXXX-blue)](https://doi.org/10.XXXXX/XXXXX)
 [![Tests](https://img.shields.io/badge/tests-95%25%20coverage-brightgreen)](tests/)
 
-*PhD Dissertation Research - National University «Yuri Kondratyuk Poltava Polytechnic»*
-*Advisor: Petrenko Taras Sergiyovych*
-*Committee: Branimir Cvetcovich*
+*PhD Dissertation Research - National University «Yuri Kondratyuk Poltava Polytechnic»*   
+*PhD candidate: Petrenko Taras Sergiyovych*   
+*Advisor: Branimir Cvetcovich*   
 
 This research develops novel computational methods for CO₂-EOR optimization, contributing:
 1. Hybrid MMP correlation framework with improved accuracy (RMSE < 150 psi)
