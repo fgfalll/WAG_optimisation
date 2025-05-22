@@ -23,11 +23,15 @@ This framework supports PhD research on "Advanced Computational Methods for COâ‚
 ### 1. Data Layer
 - **Formats Supported**:
   - LAS (well logs)
-  - ECLIPSE 100 (GRID, PROPS, REGIONS, SOLUTION, SCHEDULE)
+  - ECLIPSE 100 (GRID, PROPS, REGIONS, SOLUTION, SCHEDULE, FAULTS)
 - **Key Features**:
   - Automatic unit conversion
   - Data validation
   - Missing value handling
+  - Fault system parsing (FAULTS, MULTFLT, NNC)
+  - Grid modifications (COPY, ADD, MULTIPLY, BOX)
+  - Aquifer modeling (AQUANCON, AQUFETP)
+  - Local Grid Refinements (LGRs)
 
 ### 2. PVT Modeling
 - **Data Validation**:
@@ -126,6 +130,9 @@ classDiagram
     class DataParser{
         +parse_las()
         +parse_eclipse()
+        +parse_faults()
+        +parse_aquifers()
+        +parse_lgr()
     }
     class PVTModel{
         +black_oil()

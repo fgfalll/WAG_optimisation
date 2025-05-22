@@ -33,6 +33,12 @@ class ReservoirData:
     grid: Dict[str, np.ndarray]
     pvt_tables: Dict[str, np.ndarray]
     regions: Optional[Dict[str, np.ndarray]] = None
+    runspec: Optional[Dict[str, Any]] = None
+    faults: Optional[Dict[str, Any]] = None
+
+    def set_faults_data(self, faults_data: Dict[str, Any]) -> None:
+        """Store parsed faults data"""
+        self.faults = faults_data
 
 @dataclass
 class PVTProperties:

@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .parsers.las_parser import parse_las
 from .parsers.eclipse_parser import parse_eclipse
 from .core import WellData, ReservoirData
+from .utils.grdecl_writer import write_grdecl
 
 # Configure logging
 logging.basicConfig(
@@ -46,6 +47,15 @@ class DataProcessor:
                 except Exception as e:
                     logger.error(f"Failed to process file: {str(e)}")
                     
+        # Write GRDECL files for all processed reservoir data
+        for i, reservoir in enumerate(self.reservoir_data):
+            if reservoir.grid:
+                output_path = self.input_dir / f"reservoir_grid_{i}.grdecl"
+                try:
+                    write_grdecl(reservoir, output_path)
+                except Exception as e:
+                    logger.error(f"Failed to write GRDECL file {output_path}: {e}")
+        
         return {
             'well_data': self.well_data,
             'reservoir_data': self.reservoir_data
