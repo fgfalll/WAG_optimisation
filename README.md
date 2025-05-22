@@ -15,7 +15,7 @@ This research develops novel computational methods for CO₂-EOR optimization, c
 4. Field-validated uncertainty quantification
 
 *Key Publications:*
-- Journal article, DOI: 10.15587/2706-5448.2025.325343, Contributors: Тарас Сергійович Петренко *Technology audit and production reserves*
+* **Technology audit and production reserves** by Тарас Сергійович Петренко. DOI: [10.15587/2706-5448.2025.325343](https://doi.org/10.15587/2706-5448.2025.325343)
 
 
 ## Research Methodology
