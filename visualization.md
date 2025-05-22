@@ -82,7 +82,28 @@ graph TD
 
 ## Reservoir Engineering Visualizations
 
-### 1. MMP Analysis
+### Sweep Efficiency Analysis:
+  - **Koval Factor Visualization**:
+    - Interactive 3D surface plot of Es vs (M, V_DP)
+    - Contour plots showing efficiency thresholds
+    - Real-time parameter sensitivity analysis
+  - **Mobility Ratio Effects**:
+    - Dynamic viscosity ratio plots
+    - Displacement front visualization
+    - Breakthrough time estimation
+  - **Heterogeneity Impact**:
+    - Dykstra-Parsons coefficient sensitivity
+    - Layer-cake vs channelized models
+    - Geological uncertainty bands
+
+### Transition Physics Visualization:
+  - Interactive curve editor (P/MMP vs Efficiency)
+  - Parameter sensitivity waterfall charts
+  - Coreflood validation overlays
+  - Monte Carlo uncertainty distributions
+  - Legacy vs new model comparison
+
+### MMP Analysis
 - **MMP vs Temperature**:
   - Plot multiple correlations
   - Highlight miscibility region
@@ -100,6 +121,12 @@ graph TD
   - Solution GOR curves
 
 ### Implementation Notes
-- Uses Plotly for interactive 3D plots
-- Matplotlib for static reports
-- Export to PNG/PDF for documentation
+- **Sweep Efficiency Visuals**:
+  - GPU-accelerated WebGL rendering for large datasets
+  - Interactive parameter sliders with validity feedback
+  - Auto-generated sensitivity spider charts
+- **Core Visualization Tech**:
+  - Plotly for interactive 3D plots
+  - Matplotlib for static reports
+  - Export to PNG/PDF for documentation
+  - Jupyter notebook integration for analysis
