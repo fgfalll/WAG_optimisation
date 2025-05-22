@@ -15,7 +15,7 @@ This research develops novel computational methods for CO₂-EOR optimization, c
 4. Field-validated uncertainty quantification
 
 *Key Publications:*
-* **Technology audit and production reserves** by Тарас Сергійович Петренко. DOI: [10.15587/2706-5448.2025.325343](https://doi.org/10.15587/2706-5448.2025.325343)
+* Petrenko, T. (2025). Study of physicochemical and geochemical aspects of enhanced oil recovery and CO₂ storage in oil reservoirs. *Technology Audit and Production Reserves*, *2*(1(82)), 24–29. [https://doi.org/10.15587/2706-5448.2025.325343](https://doi.org/10.15587/2706-5448.2025.325343)
 
 
 ## Research Methodology
