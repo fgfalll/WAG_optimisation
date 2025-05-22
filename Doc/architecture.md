@@ -193,31 +193,31 @@ flowchart LR
 ```
 
 ## Research Milestones
-1. **Literature Review & Framework Design** (Completed 2024)
+1. **Literature Review & Framework Design** (Completed Q1 2025)
    - Surveyed 50+ papers on MMP correlations
    - Identified gaps in current methods
    - Designed hybrid correlation approach
 
-2. **Core Algorithm Development** (Completed 2025)
+2. **Core Algorithm Development** (Completed Q1 2025)
    - Implemented novel MMP calculations
    - Developed GPU acceleration
    - Validated against lab data
 
-3. **Field Application & Thesis Writing** (Current)
+3. **Field Application & Thesis Writing** (WIP)
    - Applying to 3 field cases
    - Finalizing journal papers
    - Dissertation preparation
-1. **Phase 1**: Core data structures (Completed)
+1. **Phase 1**: Core data structures (WIP)
    - WellData and ReservoirData classes
    - PVT property handling
    - Comprehensive validation
 
-2. **Phase 2**: PVT & MMP models (Completed)
+2. **Phase 2**: PVT & MMP models (Completed Q2 2025)
    - Implemented core MMP correlations (Cronquist, Glaso, Yuan)
    - Added PVT integration with validation
    - 98% test coverage (unit/integration)
 
-3. **Phase 3**: Optimization engine (Completed)
+3. **Phase 3**: Optimization engine (WIP)
    - Physics-informed sweep efficiency models:
      * Koval (heterogeneity-mobility)
      * Miscible (compositional effects)
@@ -230,7 +230,7 @@ flowchart LR
    - GPU acceleration support
    - 95% test coverage
 
-4. **Phase 4**: Visualization system (Partially Implemented)
+4. **Phase 4**: Visualization system (Partially Implemented Q2 2025)
    - Implemented:
      * MMP profile plotting (2D/3D)
      * Optimization convergence tracking
