@@ -14,9 +14,8 @@ This framework supports PhD research on "Advanced Computational Methods for COâ‚
    - Numerical simulation (ECLIPSE 100)
 
 3. **Academic Context**:
-   - Advisor: [Advisor's Name]
-   - Committee: [Committee Members]
-   - Supported by [Grant/Funding Source]
+   - Advisor: Branimir Cvetcovich
+   - Supported by Me
 
 ## Core Components
 
