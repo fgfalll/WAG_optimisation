@@ -38,7 +38,7 @@ This Code of Conduct applies within all research spaces (online and in-person), 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers at [your-email@university.edu]. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers at [taras.petrenko@nupp.edu.ua]. All complaints will be reviewed and investigated promptly and fairly.
 
 Project maintainers are obligated to maintain confidentiality with regard to the reporter of an incident.
 

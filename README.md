@@ -4,9 +4,9 @@
 [![DOI](https://img.shields.io/badge/DOI-10.XXXXX/XXXXX-blue)](https://doi.org/10.XXXXX/XXXXX)
 [![Tests](https://img.shields.io/badge/tests-95%25%20coverage-brightgreen)](tests/)
 
-*PhD Dissertation Research - National University «Yuri Kondratyuk Poltava Polytechnic»*
-*Advisor: Petrenko Taras Sergiyovych*
-*Committee: Branimir Cvetcovich*
+*PhD Dissertation Research - National University «Yuri Kondratyuk Poltava Polytechnic»*   
+*PhD candidate: Petrenko Taras Sergiyovych*   
+*Advisor: Branimir Cvetcovich*   
 
 This research develops novel computational methods for CO₂-EOR optimization, contributing:
 1. Hybrid MMP correlation framework with improved accuracy (RMSE < 150 psi)
@@ -15,14 +15,13 @@ This research develops novel computational methods for CO₂-EOR optimization, c
 4. Field-validated uncertainty quantification
 
 *Key Publications:*
-- Journal article, DOI: 10.15587/2706-5448.2025.325343, Contributors: Тарас Сергійович Петренко *Technology audit and production reserves*
+* Petrenko, T. (2025). Study of physicochemical and geochemical aspects of enhanced oil recovery and CO₂ storage in oil reservoirs. *Technology Audit and Production Reserves*, *2*(1(82)), 24–29. [https://doi.org/10.15587/2706-5448.2025.325343](https://doi.org/10.15587/2706-5448.2025.325343)
 
 
 ## Research Methodology
 1. **Data Collection**
    - 15 field datasets (conventional/unconventional)
-   - Lab PVT measurements (+20 samples)
-   - Core flood experiments
+   - Lab PVT measurements
 
 2. **Model Development**
    - Hybrid MMP correlation development
@@ -98,15 +97,15 @@ print(f"Optimal WAG ratio: {results.optimal_wag_ratio}")
 
 ## Documentation
 
-- [Architecture Overview](doc/architecture.md)
-- [Development Timeline](doc/development_timeline.md)
-- [Code Audit Review](doc/audit_review.md)
+- [Architecture Overview](Doc/architecture.md)
+- [Development Timeline](Doc/development_timeline.md)
+- [Code Audit Review](Doc/audit_review.md)
 
 ## Contributing
 
 We welcome contributions! Please see our:
-- [Contribution Guidelines](doc/CONTRIBUTING.md)
-- [Code of Conduct](doc/CODE_OF_CONDUCT.md)
+- [Contribution Guidelines](Doc/CONTRIBUTING.md)
+- [Code of Conduct](Doc/CODE_OF_CONDUCT.md)
 
 Key areas for contribution:
 - Additional MMP correlations
@@ -115,7 +114,7 @@ Key areas for contribution:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](doc/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](Doc/LICENSE) file for details.
 
 ## Contact
 
@@ -123,5 +122,5 @@ For technical inquiries:
 [engineering@saynos2011@gmail.com](mailto:saynos2011@gmail.com)
 
 Researcher:
-[![ORCID](https://img.shields.io/badge/ORCID-0009--0005--1764--5256-a6ce39)](https://orcid.org/0009-0005-1764-5256)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0005--1764--5256-a6ce39)](https://orcid.org/0009-0005-1764-5256)   
 [@fgfalll](https://github.com/fgfalll)
