@@ -21,8 +21,7 @@ This research develops novel computational methods for CO₂-EOR optimization, c
 ## Research Methodology
 1. **Data Collection**
    - 15 field datasets (conventional/unconventional)
-   - Lab PVT measurements (+20 samples)
-   - Core flood experiments
+   - Lab PVT measurements
 
 2. **Model Development**
    - Hybrid MMP correlation development
