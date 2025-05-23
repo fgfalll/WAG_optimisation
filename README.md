@@ -59,8 +59,8 @@ This research develops novel computational methods for CO₂-EOR optimization, c
 
 ```bash
 # Clone repository
-git clone https://github.com/your-repo/co2eor-optimizer.git
-cd co2eor-optimizer
+git clone gh repo clone fgfalll/WAG_optimisation
+cd WAG_optimisation
 
 # Create virtual environment
 python -m venv venv
@@ -70,8 +70,6 @@ venv\Scripts\activate     # Windows
 # Install dependencies
 pip install -r requirements.txt
 
-# Install with GPU support (optional)
-pip install -r requirements-gpu.txt
 ```
 
 ## Usage Example
