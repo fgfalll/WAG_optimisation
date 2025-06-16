@@ -38,7 +38,24 @@ This framework supports PhD research on "Advanced Computational Methods for CO�
   - Valid `pvt_type` enforcement ('black_oil' or 'compositional')
   - Unit conversion safeguards
 
-### 3. Well Analysis
+### 3. Data Classes & Validation
+- **WellData**: Container for well log data with validation
+  - Validates all property arrays match depth array length
+  - Stores units for each property
+- **ReservoirData**: Container for simulation data
+  - Handles grid, PVT tables, regions, runspec, and faults
+  - Special parsing for faults data
+- **PVTProperties**: Validated PVT data
+  - Enforces array length consistency
+  - Valid pvt_type ('black_oil' or 'compositional')
+  - Valid gas specific gravity (0.5-1.2)
+  - Valid temperature range (50-400°F)
+- **EORParameters**: CO₂ injection parameters
+  - Validates V_DP (0.3-0.8)
+  - Validates mobility ratio (1.2-20)
+  - Enforces WAG cycle constraints
+
+### 4. Well Analysis
 - **Purpose**: Bridge between well log data and EOR optimization
 - **Key Features**:
   - Depth-dependent MMP calculations
@@ -57,15 +74,24 @@ This framework supports PhD research on "Advanced Computational Methods for CO�
     * Cronquist (pure CO2) - Requires temperature and API gravity
     * Glaso (C7+ adjustment) - Requires molecular weight of C7+ fraction
     * Yuan (impure CO2) - Requires gas composition data
+    * Hybrid GH - Combines Cronquist base with Glaso and Yellig-Metcalfe adjustments
   - Comprehensive input validation:
-    * Temperature range (70-300°F)
-    * API gravity (15-50°)
+    * Temperature range (70-300°F) with warnings for 100-250°F
+    * API gravity (15-50°API) with warnings for 20-45°API
+    * C7+ MW (150-300 g/mol) when provided
+    * Gas composition sums to 1.0 (±0.001 tolerance)
     * PVT array consistency checks
-    * Gas composition validation
-  - Automatic PVT data integration
+  - Automatic method selection:
+    * Prefers Yuan for impure CO2 (<90% CO2)
+    * Uses Hybrid GH when C7+ MW available
+    * Falls back to Cronquist as baseline
+  - PVT integration features:
+    * API gravity estimation from Standing's correlation
+    * Automatic parameter extraction from PVTProperties
+    * Warning system for estimated values
   - Miscibility condition checking
 
-### 3. EOR Evaluation Engine
+### 5. EOR Evaluation Engine
 ```mermaid
 flowchart TD
     A[Screening Criteria] --> B[MMP Estimation]
@@ -82,7 +108,7 @@ flowchart TD
 - Coreflood validation diagnostics (RMSE, R²)
 - Backward compatibility adapter
 
-### 4. Optimization System
+### 6. Optimization System
 - **Hybrid Approach**:
   1. Genetic Algorithm (global search)
   2. Bayesian Optimization (local refinement)
@@ -99,10 +125,16 @@ flowchart TD
   - Adaptive mutation rates
   - Elite preservation strategy
 - **GPU Acceleration**:
-  - CUDA kernels for performance-critical sections
-  - Parallel scenario evaluation
+  - Optional cupy integration for GPU acceleration
+  - Automatic CPU fallback when GPU unavailable
+  - Kernel precomputation for transition calculations
+  - Memory-efficient array transfers (CPU↔GPU)
+  - Key accelerated operations:
+    * Transition efficiency calculations
+    * Monte Carlo sampling
+    * Parallel scenario evaluation
 
-### 5. Visualization System
+### 7. Visualization System
 - **Engineering Visualizations**:
   - MMP vs depth profiles
   - Optimization convergence tracking
@@ -117,11 +149,26 @@ flowchart TD
   - Historical production matching
   - Forecast uncertainty bands
 
-### 6. Reporting
+### 8. Reporting
 - Interactive Plotly dashboards
 - PDF/CSV report generation
 - 3D reservoir visualization
 - Automated metric exports
+
+## Recovery Models
+- **ImmiscibleRecoveryModel**: Advanced three-phase model
+  - Handles capillary pressure effects
+  - Accounts for residual oil saturation
+  - Includes water-oil mobility ratio
+  - Validates input viscosities and saturations
+- **MiscibleRecoveryModel**: Compositional effects model
+  - Gravity override correction
+  - Viscous fingering adjustment
+  - Dip angle sensitivity
+- **HybridRecoveryModel**: Smooth transition model
+  - GPU-accelerated transition calculations
+  - Multiple transition functions (sigmoid, cubic)
+  - Monte Carlo uncertainty integration
 
 ## Class Diagram
 ```mermaid
@@ -138,11 +185,24 @@ classDiagram
         +compositional()
         +gpu_accelerated: bool
     }
+    class MMPParameters {
+        +temperature: float
+        +oil_gravity: float
+        +c7_plus_mw: Optional[float]
+        +injection_gas_composition: Optional[dict]
+        +pvt_data: Optional[PVTProperties]
+        +__post_init__(): validation
+    }
     class MMPCalculator {
         +calculate_mmp()
+        +calculate_mmp_cronquist()
+        +calculate_mmp_hybrid_gh()
+        +calculate_mmp_yuan()
         +estimate_api_from_pvt()
         +gpu_implementation()
     }
+    MMPCalculator --> MMPParameters
+    MMPParameters --> PVTProperties
     class RecoveryModel {
         <<abstract>>
         +calculate()
@@ -169,11 +229,10 @@ classDiagram
         +plot_parameter_sensitivity()
         +gpu_parallel_eval()
     }
-    class GPUManager {
-        +initialize()
-        +memory_alloc()
-        +kernel_launch()
-    }
+    note right of HybridRecoveryModel
+        Uses cupy for GPU acceleration
+        when available
+    end note
     DataParser --> PVTModel
     PVTModel --> MMPCalculator
     MMPCalculator --> RecoveryModel
@@ -181,10 +240,13 @@ classDiagram
     RecoveryModel <|-- MiscibleRecoveryModel
     RecoveryModel <|-- ImmiscibleRecoveryModel
     RecoveryModel <|-- HybridRecoveryModel
+    RecoveryModel <|-- SimpleRecoveryModel
     HybridRecoveryModel --> TransitionEngine
     RecoveryModel --> OptimizationEngine
     OptimizationEngine --> GPUManager
     HybridRecoveryModel --> GPUManager
+    ImmiscibleRecoveryModel --> PVTProperties
+    MiscibleRecoveryModel --> PVTProperties
 ```
 
 ## System Integration
@@ -199,7 +261,9 @@ flowchart LR
     H[Testing] --> E
 ```
 
-## Research Milestones
+## Development Timeline
+
+### Research Milestones
 1. **Literature Review & Framework Design** (Completed Q1 2025)
    - Surveyed 50+ papers on MMP correlations
    - Identified gaps in current methods
@@ -214,7 +278,9 @@ flowchart LR
    - Applying to 3 field cases
    - Finalizing journal papers
    - Dissertation preparation
-1. **Phase 1**: Core data structures (WIP)
+
+### Implementation Phases
+1. **Phase 1**: Core data structures (Completed Q2 2025)
    - WellData and ReservoirData classes
    - PVT property handling
    - Comprehensive validation
@@ -224,7 +290,7 @@ flowchart LR
    - Added PVT integration with validation
    - 98% test coverage (unit/integration)
 
-3. **Phase 3**: Optimization engine (WIP)
+3. **Phase 3**: Optimization engine (WIP - 85% complete)
    - Physics-informed sweep efficiency models:
      * Koval (heterogeneity-mobility)
      * Miscible (compositional effects)
@@ -234,16 +300,16 @@ flowchart LR
      * Gradient descent
      * Bayesian optimization
      * Genetic algorithm
-   - GPU acceleration support
+   - GPU acceleration support (CUDA kernels)
    - 95% test coverage
 
-4. **Phase 4**: Visualization system (Partially Implemented Q2 2025)
+4. **Phase 4**: Visualization system (WIP - 60% complete)
    - Implemented:
      * MMP profile plotting (2D/3D)
      * Optimization convergence tracking
      * Parameter sensitivity analysis
      * Basic dashboard framework
    - Pending:
-     * Advanced interactive controls
-     * Multi-well visualization
-     * Field data integration
+     * Advanced interactive controls (Plotly Dash)
+     * Multi-well visualization (VTK integration)
+     * Field data integration (ECLIPSE results)
