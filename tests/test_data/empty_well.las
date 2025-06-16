@@ -1,5 +1,0 @@
-~VERSION
-VERS. 2.0
-~WELL
-~OTHER
-NOTE. Test file
