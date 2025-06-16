@@ -29,21 +29,6 @@ def parse_las(file_path: str,
               fill_value: float = np.nan,
               well_name_override: Optional[str] = None,
               engine: str = 'normal') -> WellData:
-    """
-    Parse LAS file into WellData object with enhanced validation and handling.
-    
-    Args:
-        file_path: Path to LAS file
-        depth_unit: Target unit for depth (None keeps original)
-        fill_value: Value to use for missing/invalid data points
-        
-    Returns:
-        WellData object with validated and cleaned data
-        
-    Raises:
-        ValueError: For invalid LAS files or unit conversions
-        IOError: For file reading issues
-    """
     try:
         las = lasio.read(file_path, engine=engine)
         logging.debug(f"Detected sections: {list(las.sections.keys())}")

@@ -15,6 +15,14 @@ from skopt.space import Real
 from skopt.utils import use_named_args
 from bayes_opt import BayesianOptimization
 
+# Check for GPU availability
+try:
+    import cupy as cp
+    CUPY_AVAILABLE = True
+except ImportError:
+    cp = None
+    CUPY_AVAILABLE = False
+    logging.warning("cupy not installed. GPU acceleration will be disabled.")
 @dataclass
 class WellData:
     """Container for well log data"""
@@ -49,6 +57,8 @@ class PVTProperties:
     gas_viscosity: np.ndarray
     rs: np.ndarray  # Solution GOR
     pvt_type: str  # 'black_oil' or 'compositional'
+    gas_specific_gravity: float  # Gas specific gravity (required for API gravity estimation)
+    temperature: float  # Reservoir temperature in °F (required for API gravity estimation)
 
     def __post_init__(self):
         """Validate PVT property arrays"""
@@ -67,6 +77,12 @@ class PVTProperties:
         # Validate pvt_type
         if self.pvt_type not in {'black_oil', 'compositional'}:
             raise ValueError("pvt_type must be either 'black_oil' or 'compositional'")
+            
+        # Validate scalar properties
+        if not 0.5 <= self.gas_specific_gravity <= 1.2:
+            raise ValueError(f"Gas specific gravity must be between 0.5-1.2, got {self.gas_specific_gravity}")
+        if not 50 <= self.temperature <= 400:
+            raise ValueError(f"Temperature must be between 50-400°F, got {self.temperature}")
 
 @dataclass
 class EORParameters:
@@ -106,15 +122,19 @@ class RecoveryModel:
     """Base class for recovery factor models"""
     def calculate(self, pressure: float, rate: float, porosity: float, mmp: float, **kwargs) -> float:
         raise NotImplementedError
+        
+    def _validate_inputs(self, pressure: float, rate: float, porosity: float, mmp: float) -> None:
+        """Validate common inputs for recovery models"""
+        if not all(isinstance(x, (int, float)) for x in [pressure, rate, porosity, mmp]):
+            raise ValueError("All parameters must be numeric")
+        if any(x <= 0 for x in [pressure, rate, porosity, mmp]):
+            raise ValueError("Parameters must be positive")
 
 class KovalRecoveryModel(RecoveryModel):
     """Physics-informed sweep efficiency model using Koval method with integrated heterogeneity-mobility factor"""
     def calculate(self, pressure: float, rate: float, porosity: float, mmp: float, **kwargs) -> float:
         # Validate all input parameters
-        if not all(isinstance(x, (int, float)) for x in [pressure, rate, porosity, mmp]):
-            raise ValueError("All parameters must be numeric")
-        if any(x <= 0 for x in [pressure, rate, porosity, mmp]):
-            raise ValueError("Parameters must be positive")
+        self._validate_inputs(pressure, rate, porosity, mmp)
         if porosity > 0.3:
             raise ValueError("Porosity exceeds practical limits (>0.3)")
         if mmp < 1000 or mmp > 10000:
@@ -171,10 +191,7 @@ class MiscibleRecoveryModel(RecoveryModel):
 
     def calculate(self, pressure: float, rate: float, porosity: float, mmp: float, **kwargs) -> float:
         # Validate inputs
-        if not all(isinstance(x, (int, float)) for x in [pressure, rate, porosity, mmp]):
-            raise ValueError("All parameters must be numeric")
-        if any(x <= 0 for x in [pressure, rate, porosity, mmp]):
-            raise ValueError("Parameters must be positive")
+        self._validate_inputs(pressure, rate, porosity, mmp)
 
         # Get optional parameters with defaults
         mu_co2 = kwargs.get('mu_co2', 0.06)  # CO2 viscosity (cP)
@@ -222,11 +239,7 @@ class ImmiscibleRecoveryModel(RecoveryModel):
         self.krw_max = krw_max  # Maximum water relative perm
 
     def calculate(self, pressure: float, rate: float, porosity: float, mmp: float, **kwargs) -> float:
-        # Validate inputs
-        if not all(isinstance(x, (int, float)) for x in [pressure, rate, porosity, mmp]):
-            raise ValueError("All parameters must be numeric")
-        if any(x <= 0 for x in [pressure, rate, porosity, mmp]):
-            raise ValueError("Parameters must be positive")
+        self._validate_inputs(pressure, rate, porosity, mmp)
 
         # Get optional parameters with defaults
         mu_water = kwargs.get('mu_water', 0.5)  # Water viscosity (cP)
@@ -262,25 +275,32 @@ class HybridRecoveryModel(RecoveryModel):
     def __init__(self, transition_mode: str = 'sigmoid', **params):
         self.transition_engine = TransitionEngine(mode=transition_mode, **params)
         self._gpu_enabled = False
+        self.simple_model = SimpleRecoveryModel()
+        self.miscible_model = MiscibleRecoveryModel()
         
     def enable_gpu(self, enable: bool = True):
         """Toggle GPU acceleration for transition calculations"""
-        self._gpu_enabled = enable
-        if enable:
-            self.transition_engine.enable_gpu_acceleration()
+        if enable and not CUPY_AVAILABLE:
+            logging.warning("cupy is not installed. GPU acceleration is not available.")
+            self._gpu_enabled = False
+        else:
+            self._gpu_enabled = enable
         
+        if self._gpu_enabled:
+            self.transition_engine.enable_gpu_acceleration()
     def calculate(self, pressure: float, rate: float, porosity: float, mmp: float, **kwargs) -> float:
         p_mmp_ratio = np.array(pressure / mmp)
         
-        if self._gpu_enabled:
-            import cupy as cp
+        if self._gpu_enabled and CUPY_AVAILABLE:
             p_mmp_ratio = cp.asarray(p_mmp_ratio)
+        elif self._gpu_enabled:
+            logging.warning("cupy is not installed. Falling back to CPU for transition calculations.")
             
         efficiency = self.transition_engine.calculate_efficiency(p_mmp_ratio)
         
         # Calculate both simple and miscible models for blending
-        simple_result = SimpleRecoveryModel().calculate(pressure, rate, porosity, mmp)
-        miscible_result = MiscibleRecoveryModel().calculate(pressure, rate, porosity, mmp)
+        simple_result = self.simple_model.calculate(pressure, rate, porosity, mmp)
+        miscible_result = self.miscible_model.calculate(pressure, rate, porosity, mmp)
         
         # Blend results based on transition efficiency
         blended = simple_result * (1 - efficiency) + miscible_result * efficiency
@@ -288,11 +308,10 @@ class HybridRecoveryModel(RecoveryModel):
         # Apply physical constraints
         result = np.clip(blended, 0, 0.8)
         
-        if self._gpu_enabled:
+        if self._gpu_enabled and CUPY_AVAILABLE:
             result = cp.asnumpy(result)
             
         return result.item()
-
 class TransitionFunction(ABC):
     """Abstract base class for miscibility transition functions"""
     @abstractmethod
@@ -327,10 +346,14 @@ class TransitionEngine:
 
     def enable_gpu_acceleration(self):
         """Enable GPU acceleration for transition calculations"""
+        if not CUPY_AVAILABLE:
+            logging.warning("cupy is not installed. Cannot enable GPU acceleration.")
+            self._gpu_enabled = False
+            return
+            
         self._gpu_enabled = True
         # Recompute kernels with GPU support
         self._precompute_kernels()
-        
     def _precompute_kernels(self):
         """Precompute transition lookup tables"""
         self.p_mmp_grid = np.logspace(-4, 4, 1000)
@@ -352,10 +375,10 @@ class TransitionEngine:
         
     def calculate_efficiency(self, p_mmp_ratio):
         """Main API method to calculate sweep efficiency"""
-        if self._gpu_enabled:
-            import cupy as cp
+        if self._gpu_enabled and CUPY_AVAILABLE:
             p_mmp_ratio = cp.asarray(p_mmp_ratio)
-
+        elif self._gpu_enabled:
+            logging.warning("cupy is not installed. Falling back to CPU for efficiency calculation.")
         if self.mode == 'sigmoid':
             fn = SigmoidTransition(**self.params)
         elif self.mode == 'cubic':
@@ -365,7 +388,7 @@ class TransitionEngine:
             
         result = fn.evaluate(p_mmp_ratio)
         
-        if self._gpu_enabled:
+        if self._gpu_enabled and CUPY_AVAILABLE:
             result = cp.asnumpy(result)
             
         return result
@@ -413,7 +436,7 @@ class OptimizationEngine:
         """Calculate Minimum Miscibility Pressure (MMP)
         
         Args:
-            method: MMP calculation method ('auto', 'cronquist', 'glaso', 'yuan')
+            method: MMP calculation method ('auto', 'cronquist', 'hybrid_gh', 'yuan')
             well_analysis: Optional WellAnalysis instance for log-based parameters
             
         Returns:
@@ -449,10 +472,20 @@ class OptimizationEngine:
             self._mmp_params = result
             self._mmp_value = float(calculate_mmp(result, method))
         else:
+            # Fallback to PVT-based calculation with prominent warnings
+            default_temp = 180  # Deg F - typical reservoir temperature
+            default_gravity = 35  # API - typical medium gravity oil
+            logging.critical(
+                "WARNING: Using DEFAULT temperature (%d°F) and oil gravity (%d API) for MMP calculation. "
+                "These values may not represent your reservoir conditions. Results may be unreliable! "
+                "Provide WellAnalysis data or explicit reservoir parameters for accurate MMP estimation.",
+                default_temp, default_gravity
+            )
+            
             self._mmp_value = float(result)
             self._mmp_params = MMPParameters(
-                temperature=180,  # Default
-                oil_gravity=35,   # Default
+                temperature=default_temp,
+                oil_gravity=default_gravity,
                 pvt_data=self.pvt
             )
         
@@ -609,6 +642,11 @@ class OptimizationEngine:
             best_params = optimizer.max['params']
         
         # Store results
+        if method == 'gp':
+            final_recovery = -result.fun
+        else:  # BayesianOptimization method
+            final_recovery = optimizer.max['target']
+            
         self._results = {
             'optimized_params': {
                 'injection_rate': best_params['rate'],
@@ -620,7 +658,7 @@ class OptimizationEngine:
             'method': f'bayesian_{method}',
             'iterations': n_iter,
             'initial_points': init_points,
-            'final_recovery': -result.fun if method == 'gp' else optimizer.max['target'],
+            'final_recovery': final_recovery,
             'avg_porosity': avg_poro,
             'converged': True
         }
@@ -768,27 +806,26 @@ class OptimizationEngine:
         """Calculate minimum miscibility pressure"""
         return self.calculate_mmp(self.reservoir, self.pvt)
 
-    def _initialize_population(self, size: int) -> List[Tuple[float, float, float, float]]:
-        """Initialize population within operational constraints"""
-        if not hasattr(self, '_mmp_value'):
-            self._mmp_value = self._calculate_mmp()
-            
-        population = []
-        min_pressure = max(self._mmp_value, self.eor_params.target_pressure)
+    def _initialize_population(self, size: int) -> List[Dict[str, float]]:
+        """Generate initial population as dictionaries"""
+        min_p = self.eor_params.target_pressure
+        max_p = self.eor_params.max_pressure
+        min_rate = self.eor_params.min_injection_rate
+        max_rate = self.eor_params.injection_rate * 2.0
+        min_vdp = 0.3
+        max_vdp = 0.8
+        min_mob = 1.2
+        max_mob = 20.0
         
+        population = []
         for _ in range(size):
-            pressure = random.uniform(min_pressure, self.eor_params.max_pressure)
-            rate = random.uniform(self.eor_params.min_injection_rate,
-                                self.eor_params.injection_rate * 1.5)
-            if self.eor_params.injection_scheme == 'wag':
-                cycle_len = random.uniform(self.eor_params.min_cycle_length,
-                                         self.eor_params.max_cycle_length)
-                water_frac = random.uniform(self.eor_params.min_water_fraction,
-                                          self.eor_params.max_water_fraction)
-                population.append((pressure, rate, cycle_len, water_frac))
-            else:
-                population.append((pressure, rate, 0.0, 0.0))
-                
+            individual = {
+                'pressure': random.uniform(min_p, max_p),
+                'rate': random.uniform(min_rate, max_rate),
+                'v_dp': random.uniform(min_vdp, max_vdp),
+                'mobility_ratio': random.uniform(min_mob, max_mob)
+            }
+            population.append(individual)
         return population
         
     def _evaluate_individual(self, individual: Tuple[float, float, float, float, float, float],
