@@ -110,6 +110,7 @@ Comprehensive documentation is available in the [Doc](Doc/) directory:
 - [Architecture Overview](Doc/architecture.md) - System design and components
 - [Development Timeline](Doc/development_timeline.md) - Project milestones
 - [Code Audit Review](Doc/audit_review.md) - Quality assurance report
+- [Code Audit Review from 16.06](Doc/audit_report_2025-06-16.md) - Quality assurance report
 - [API Reference](Doc/api_reference.md) - Detailed module documentation
 
 ## Contributing
