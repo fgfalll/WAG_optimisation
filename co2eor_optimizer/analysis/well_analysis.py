@@ -3,15 +3,23 @@ Well analysis module for CO2 EOR optimization
 
 IMPROVED: This module has been refactored to eliminate hardcoded values
 by introducing a configuration class. It is now more robust and flexible.
+
+FIXED: Imports have been corrected to be absolute from the project root,
+making the script runnable directly.
 """
+import sys
+import os
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 import numpy as np
 from typing import Dict, Optional
 from dataclasses import dataclass, field
 import logging
 
-# Assuming the file structure from the provided context, which allows these relative imports
-from ..core import WellData, PVTProperties
-from ..evaluation.mmp import calculate_mmp, MMPParameters
+from core import WellData, PVTProperties
+from evaluation.mmp import calculate_mmp, MMPParameters
 
 # Configure logging to see informational messages
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')

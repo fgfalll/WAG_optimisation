@@ -1,167 +1,132 @@
+# Development Timeline & Research Progress
+
+This document outlines the development progress of the CO₂-EOR Optimization Framework and the associated PhD research milestones.
 
 ## Core Implementation Progress
-- [x] ✅ Project Architecture (Completed Q1 2025)
-  - Modular Python package structure
-  - Type-hinted core interfaces
-  - Configuration management system
 
-- [x] ✅ MMP Calculation Module (Completed Q1 2025)
-  - **Technical Insights**:
-    - Hybrid correlation approach proved most accurate
-    - Temperature dependence required special handling
-    - Gas composition adjustments needed empirical tuning
-  - **Challenges Overcome**:
-    - Initial Glaso implementation underestimated MMP by ~20%
-    - Developed validation suite with 15 test cases
-    - Added safety margins for field applications
+- [x] ✅ **Project Architecture** (Completed Q1 2025)
+  - Modular Python package structure (`core`, `parsers`, `evaluation`, `analysis`, `utils`).
+  - Type-hinted core interfaces and dataclasses.
+  - **Centralized Configuration Management (`ConfigManager` loading `config.json`) implemented for robust parameter control.**
 
-- [x] ✅ Data Parsing Module (Completed Q2 2025)
-  - LAS file support implemented
-    - Robust well section validation
-    - Automatic unit conversion
-    - Missing data handling (-999, NaN)
-    - Test coverage: 95%
-  - ECLIPSE parser enhancements:
-    - Fault system parsing (FAULTS, MULTFLT, NNC)
-    - Grid modification operations (COPY, ADD, MULTIPLY)
-    - Aquifer modeling (AQUANCON, AQUFETP)
-    - Local Grid Refinements (LGRs)
-  - **Technical Insights**:
-    - LASIO library required custom extensions
-    - Depth unit conversion needed special handling
-    - Memory mapping used for large files
-    - Fault parsing required custom validation logic
-  - **Challenges Overcome**:
-    - Initial well section validation too strict
-    - Depth array vs curve data synchronization
-    - Wrapped LAS file format support
+- [x] ✅ **MMP Calculation Module (`evaluation.mmp`)** (Completed Q1 2025)
+  - Multiple empirical correlations (Cronquist, Glaso, Yuan, Hybrid GH - *as implemented*).
+  - API gravity estimation from PVT data (Standing's correlation) with clear warnings.
+  - Comprehensive input validation and automatic method selection.
+  - **Technical Insights**: Hybrid correlation approach showed promise. Temperature and gas composition significantly impact MMP.
+  - **Challenges Overcome**: Initial correlation inaccuracies, ensuring robust input handling.
 
-- [x] ✅ Well Analysis Module (Completed Q1 2025)
-  - Depth-dependent MMP calculations implemented
-    - Temperature gradient analysis
-    - API gravity estimation from logs
-    - Miscible zone identification
-  - **Technical Insights**:
-    - Required custom numpy array handling
-    - Developed efficient vectorized calculations
-    - Integrated with existing MMP module
-  - **Challenges Overcome**:
-    - Initial performance bottlenecks
-    - Data validation edge cases
-    - Temperature gradient defaults
-  - Test coverage: 98%
+- [x] ✅ **Data Parsing Modules (`parsers/`)** (Completed Q2 2025)
+  - **LAS File Support**:
+    - Robust well section validation, automatic unit conversion, missing data handling.
+  - **ECLIPSE Parser Enhancements**:
+    - Single-pass state-machine design for improved efficiency and robustness.
+    - Handles: Faults (FAULTS, MULTFLT), Grid Modifications (COPY, ADD, MULTIPLY), Aquifers, LGRs.
+    - Robust `INCLUDE` processing with circular dependency detection.
+    - NaN padding for incomplete property arrays (preserving raw data).
+  - **Technical Insights**: State-machine parser significantly outperformed multi-regex. Memory mapping considered for very large files.
+  - **Challenges Overcome**: Handling diverse ECLIPSE keyword formats, `INCLUDE` recursion issues.
 
-- [x] ✅ Optimization Engine (WIP Q2 2025)
-  - **Genetic Algorithm Implementation**:
-    - Parallel evaluation using ProcessPoolExecutor
-    - Tournament selection with elitism
-    - Blend crossover and Gaussian mutation
-    - Test coverage: 100%
-  - **Physics-Informed Sweep Efficiency Model**:
-    - Koval factor integration (V_DP and mobility ratio)
-    - Empirical bounds validation (0.3 < V_DP < 0.8, 1.2 < M < 20)
-    - Monte Carlo uncertainty quantification
-    - GPU-accelerated calculations
-  - **Technical Insights**:
-    - Parallel evaluation reduced runtime by ~40%
-    - Elite preservation improved convergence
-    - Mutation rate tuning critical for exploration
-    - Sweep model improved accuracy by 15-20%
-  - **Challenges Overcome**:
-    - Initial population diversity issues
-    - Parameter sensitivity analysis
-    - Constraint handling implementation
-    - Heterogeneity-mobility coupling validation
+- [x] ✅ **Well Analysis Module (`analysis/well_analysis.py`)** (Completed Q1 2025)
+  - Depth-dependent MMP calculations, temperature gradient analysis, API gravity estimation from logs.
+  - Miscible zone identification.
+  - **Technical Insights**: Vectorized calculations in NumPy improved performance.
+  - **Challenges Overcome**: Handling missing log data, sensible default parameterization.
 
-- [ ] 🔄 Transition Physics & Visualization (Partially Implemented Q2 2025)
-  - **Implemented Features**:
-    - Sigmoid/cubic function support
-    - Pressure uncertainty quantification
-    - Basic plotting (MMP profiles, convergence)
-    - Parameter sensitivity analysis
-  - **Pending Features**:
-    - Interactive visualization controls
-    - 3D surface plots
-    - Dashboard integration
-  - **Performance**:
-    - 3x speedup with GPU kernels
-    - 85% accuracy vs experimental data
-    - Handles 5,000 Monte Carlo samples in <5s
+- [x] ✅ **Optimization Engine - Foundation (`core.py`)** (Core `OptimizationEngine` structure implemented)
+  - Base class for optimization methods.
+  - Integration with recovery models as objective functions.
+  - MMP calculation linkage.
 
-## Testing & Validation
-- [x] ✅ MMP Module (100% coverage)
-  - **Recent Enhancements**:
-    - Added Yuan correlation for impure CO2
-    - Implemented PVT data integration
-    - Added comprehensive input validation
-  - **Key Learnings**:
-    - Correlation accuracy varies by oil type
-    - Need field data calibration interface
-    - Temperature sensitivity critical for accuracy
+- [x] ✅ **Hybrid GA-BO Optimizer - Core Implementation & Control (Iteratively Refined Q2-Q3 2025)**
+  - **Genetic Algorithm (GA) Component**:
+    - Dictionary-based individuals for parameter clarity and flexibility.
+    - Parallel fitness evaluation (`ProcessPoolExecutor`).
+    - Operators: Tournament selection with elitism, Blend crossover, Gaussian mutation.
+  - **Bayesian Optimization (BO) Component**:
+    - Support for `skopt` ('gp' method) and `bayes_opt` ('bayes' method) backends.
+  - **Hybridization Logic (`hybrid_optimize` method)**:
+    - Mechanism for transferring multiple elite solutions from GA's final population to BO.
+  - **Configuration-Driven Control (Key Enhancement)**:
+    - **The `hybrid_optimize` method is now primarily controlled by the `OptimizationEngineSettings.hybrid_optimizer` section in `config.json`.**
+    - Allows distinct GA parameters for the hybrid's GA phase (`ga_params_hybrid` or default).
+    - Configurable BO phase settings (iterations, random starts, method) for the hybrid context.
+    - Configurable number of GA elites to transfer to BO (`num_ga_elites_to_bo`).
+  - **Physics-Informed Objective Function**:
+    - Utilizes various `RecoveryModel` implementations (Koval, Miscible, Immiscible, Hybrid).
+    - `_get_ga_parameter_bounds` for dynamic definition of the GA search space based on `EORParameters` and MMP.
+  - **Technical Insights**: Dictionary-based GA significantly more maintainable. Configurable hybrid strategy is crucial for systematic research and benchmarking.
+  - **Challenges Overcome**: Ensuring robust parameter consistency between GA individuals, BO search spaces, and recovery model inputs. Designing a flexible and clear configuration hierarchy for the hybrid strategy.
 
-- [x] ✅ Data Parser Tests (95% coverage)
-  - Unit conversion validation
-  - Missing data handling
-  - Well section validation
-  - Error case testing
-  - **2025-05-22 Updates**:
-    - Enhanced ECLIPSE parser tests:
-      - Fault system validation
-      - Grid modification operations
-      - Aquifer connection checks
-    - Added 18 new test cases
-    - Verified all 42 tests pass with changes
-- [x] ✅ Optimization Tests (Completed 2025-05-08)
-  - **Test Coverage**: 100%
-  - **Key Validations**:
-    - MMP constraint handling
-    - Results structure consistency
-    - Algorithm convergence
-    - Parallel execution safety
-  - **Challenges Overcome**:
-    - Genetic algorithm parameter tuning
-    - Gradient-based optimization stability
-    - Results dictionary standardization
+- [x] ✅ **Recovery Models & Transition Physics (`core.py`)** (Largely Implemented, Ongoing Refinement)
+  - **Implemented Models**: `Simple`, `Koval`, `Miscible`, `Immiscible`, and `HybridRecoveryModel`.
+  - **`HybridRecoveryModel`**:
+    - Integrates miscible/immiscible physics via a `TransitionEngine`.
+    - `TransitionEngine` supports configurable functions (Sigmoid, Cubic) and parameters (alpha, beta, fit points).
+  - **Parameterization**: Model `__init__` behavior primarily driven by `RecoveryModelKwargsDefaults` in `config.json`. Runtime parameters (e.g., `v_dp_coefficient`) passed during `calculate`.
+  - **GPU Awareness**: `cupy` checks and conceptual GPU paths in `TransitionEngine`. Code primarily runs on CPU for core logic.
 
-## Research Timeline
+- [ ] 🔄 **Visualization System (`core.py` plotting methods)** (Partially Implemented, Needs Expansion for Research Analysis)
+  - **Implemented**: Basic MMP vs. depth profiles, conceptual optimization outcome/convergence plots, parameter sensitivity analysis plots.
+  - **Pending for Enhanced Research Analysis**:
+    - Detailed GA/BO convergence history plotting (best/average fitness per generation/iteration).
+    - Comparative plots for benchmarking different optimizer configurations and strategies.
+    - Visualization of parameter landscapes explored by the optimizers (if feasible, e.g., 2D slices).
+  - **Performance**: Plotting is for analysis, not a performance bottleneck itself.
 
-### Phase 1: Foundation (2023-2024)
-- Literature review (50+ papers surveyed)
-- Framework design
-- Initial MMP correlation development
-- First journal paper submitted
+## Testing & Validation Strategy (Ongoing)
 
-### Phase 2: Core Development (2024-2025)
-- Hybrid MMP correlation implementation
-- GPU acceleration development
-- Conference presentations (2)
-- Second journal paper published
+- [x] ✅ **MMP Module (`evaluation.mmp`)**: High test coverage. Validated against known correlations.
+  - **Recent Enhancements**: Yuan correlation, PVT integration, robust input validation.
 
-### Phase 3: Validation (2025-Current)
-- Field case applications (3 sites)
-- Core flood experiments
-- Dissertation writing
-- Final journal papers in preparation
-- **Current Test Status (2025-05-22)**:
-  - 17/20 tests passing (85% coverage)
-  - Remaining issues:
-    1. Miscible recovery model edge cases
-    2. Immiscible recovery model sensitivity
-    3. Hybrid model transition thresholds
+- [x] ✅ **Data Parser Modules (`parsers/`)**: High test coverage.
+  - **Recent Enhancements**: ECLIPSE state-machine parser, fault/grid-mod/aquifer parsing tests, INCLUDE loop fix validation.
 
-### Key Research Deliverables
-1. Novel MMP correlation framework
-2. GPU-accelerated optimization
-3. Field validation methodology
-4. Open-source toolkit
+- [x] ✅ **Optimization Engine - Core & Standalone Methods**: Good test coverage for individual optimizers (GA, BO, WAG).
+  - **Key Validations**: MMP constraint handling, results structure, basic convergence checks.
+
+- [ ] 🟡 **Hybrid GA-BO Optimizer - Configuration & Strategy Tests (WIP)**
+  - Verify `hybrid_optimize` correctly uses parameters from the `hybrid_optimizer` section of `config.json`.
+  - Test different `ga_config_source` behaviors.
+  - Validate transfer and usage of the specified number of GA elites by the BO phase.
+  - Test behavior with different `bo_method_in_hybrid` settings.
+
+- [ ] 🟡 **Recovery Models & Physics**: Unit tests for individual models.
+  - **Current Test Status (as per your `latest_update.md` if still valid)**: Address any remaining edge cases or sensitivity issues in miscible/immiscible/hybrid models.
+
+## Research Timeline & Focus
+
+### Phase 1: Foundation & Literature Review (2023-2024) - Completed
+- Extensive literature review (MMP, EOR optimization, hybrid algorithms).
+- Definition of research gaps and objectives.
+- Initial framework design and core data structures.
+
+### Phase 2: Core Algorithm Development (2024 - Early 2025) - Completed
+- Implementation of individual GA and BO components.
+- Development of MMP calculation module and recovery models.
+- Initial (simpler) version of the hybrid optimizer.
+
+### Phase 3: Hybrid Optimizer Refinement, Configuration, and Validation (Mid 2025 - Current Focus)
+- **Enhancement of `hybrid_optimize` method with detailed, external configuration control via `config_manager` and `config.json` (Primary recent work).**
+- Development of robust mechanisms for GA-to-BO information transfer (elite solutions).
+- **Systematic benchmarking of the developed Hybrid GA-BO strategy against standalone GA and BO methods using defined EOR case studies (Next critical research step).**
+- Sensitivity analysis of the hybrid strategy's own configuration parameters (e.g., impact of GA phase length, number of transferred elites on overall performance).
+- Application to synthetic or field-inspired EOR scenarios to demonstrate effectiveness and identify areas of applicability.
+- Dissertation writing and preparation of journal publications based on benchmark results and analyses.
+
+### Key Research Deliverables (Targeted)
+1.  **A novel, highly configurable Hybrid Genetic Algorithm - Bayesian Optimization (GA-BO) strategy tailored for EOR parameter prediction.**
+2.  **Quantitative demonstration of the hybrid strategy's performance advantages (e.g., solution quality, convergence speed) compared to standalone optimization techniques for EOR problems.**
+3.  **Analysis and guidelines on configuring the hybrid GA-BO strategy for different types of EOR challenges.**
+4.  An open-source Python framework implementing the developed methods.
 
 ## Risk Mitigation
 - **Technical Risks**:
-  - Data parsing performance bottlenecks
-  - Optimization convergence issues
-  - Simulator integration complexity
-
+  - Optimizer convergence on highly complex/multi-modal EOR landscapes.
+  - Ensuring fair and computationally equivalent comparisons during benchmarking.
+  - Scalability of the framework for very large parameter spaces or computationally expensive recovery models.
 - **Mitigation Strategies**:
-  - Progressive enhancement approach
-  - Continuous integration testing
-  - Field data validation pipeline
+  - Focus on robust parameterization of GA/BO components.
+  - Careful design of benchmark EOR scenarios.
+  - Continuous integration and regression testing for core components.
+  - Leverage parallel processing where feasible.

@@ -19,6 +19,7 @@ arviz>=0.11
 lasio>=0.30
 ecl2df>=0.13
 resfo>=1.0
+pydantic>=2.0
 
 # Visualization
 plotly>=5.5
@@ -28,11 +29,3 @@ qtpy>=2.3
 # GPU acceleration
 cupy
 pycuda>=2021.1
-
-# Testing & development
-pytest>=7.0
-pytest-cov>=4.1
-black>=23.0
-flake8>=6.0
-mypy>=1.0
-pre-commit>=3.0

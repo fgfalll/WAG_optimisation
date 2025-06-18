@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 @dataclass
 class MissingWellNameError(Exception):
-    """Exception raised when LAS file is missing WELL section"""
+    """Exception raised when LAS file is missing WELL section."""
     file_path: str
     available_sections: Dict[str, Any]
     message: str = "LAS file missing WELL section - please provide a well name"
@@ -29,58 +29,87 @@ def parse_las(file_path: str,
               fill_value: float = np.nan,
               well_name_override: Optional[str] = None,
               engine: str = 'normal') -> WellData:
+    """
+    Parses a LAS file into a WellData object, with options for unit conversion
+    and handling of missing data.
+
+    Args:
+        file_path (str): The path to the LAS file.
+        depth_unit (Optional[str]): The target unit for the depth curve (e.g., 'M' or 'FT').
+                                     If provided, the depth curve will be converted.
+        fill_value (float): The value to use for missing or invalid data points.
+                            Defaults to np.nan.
+        well_name_override (Optional[str]): A name to assign to the well, overriding
+                                             any name found in the LAS file.
+        engine (str): The engine for lasio to use ('normal' or 'python').
+
+    Returns:
+        WellData: An object containing the parsed well data.
+
+    Raises:
+        IOError: If the LAS file cannot be read.
+        MissingWellNameError: If a well name is not found in the file and not provided
+                              via well_name_override.
+        ValueError: If depth values are non-numeric and cannot be converted.
+    """
     try:
+        # Attempt to read the LAS file using lasio
         las = lasio.read(file_path, engine=engine)
+        logging.debug(f"Successfully read LAS file: {file_path}")
         logging.debug(f"Detected sections: {list(las.sections.keys())}")
+    except lasio.LASHeaderError as e:
+        # Catch specific lasio header errors for more detailed logging
+        logging.error(f"Header parsing error in LAS file: {file_path}. Details: {e}")
+        raise IOError(f"LAS file header error: {str(e)}")
     except Exception as e:
+        # Catch any other exception during file reading
         logging.error(f"Failed to read LAS file: {file_path}")
         raise IOError(f"LAS file read error: {str(e)}")
 
-    # Handle WELL section
-    well_name = 'UNKNOWN'
-    logging.debug(f"las.well exists: {hasattr(las, 'well')}, las.well value: {getattr(las, 'well', None)}")
-    if not hasattr(las, 'well') or not las.well or not hasattr(las.well, 'WELL') or not las.well.WELL.value:
-        if well_name_override:
-            well_name = well_name_override
-            if not hasattr(las, 'well'):
-                las.well = {}
-            las.well['WELL'] = lasio.HeaderItem('WELL', value=well_name)
-        else:
-            available_sections = {
-                'version': getattr(las, 'version', None),
-                'well': getattr(las, 'well', None),
-                'curves': getattr(las, 'curves', None),
-                'other': getattr(las, 'other', None)
-            }
-            raise MissingWellNameError(
-                file_path=file_path,
-                available_sections=available_sections
-            )
-    if not hasattr(las, 'curves') or not las.curves:
-        logging.warning("LAS file missing curve data - initializing empty dataset")
-        las.curves = [lasio.CurveItem(mnemonic='DEPT', data=np.array([0.0]))]
-
-    # Get well name if not already set to DEFAULT
-    if well_name == 'UNKNOWN':
+    # --- Well Name Handling (Simplified Logic) ---
+    well_name = None
+    if well_name_override:
+        well_name = well_name_override
+        # Ensure the las object has a well section for consistency if we override
+        if not hasattr(las, 'well'):
+            las.well = {}
+        las.well['WELL'] = lasio.HeaderItem('WELL', value=well_name)
+        logging.debug(f"Using well name from override: '{well_name}'")
+    else:
+        # Try to extract the well name from the file's header
         try:
-            if hasattr(las.well, 'WELL'):
+            if hasattr(las, 'well') and las.well and hasattr(las.well, 'WELL') and las.well.WELL.value:
                 well_name = str(las.well.WELL.value)
-            elif isinstance(las.well, dict) and 'WELL' in las.well:
-                well_name = str(las.well['WELL'].value)
-            else:
-                logging.warning("LAS file missing WELL identifier - using DEFAULT")
-                well_name = 'DEFAULT'
+                logging.debug(f"Found well name in LAS header: '{well_name}'")
         except Exception as e:
-            logging.warning(f"Error getting well name: {str(e)} - using DEFAULT")
-            well_name = 'DEFAULT'
-    
+            logging.warning(f"Could not extract well name from LAS header: {e}")
+
+    # If no well name could be determined, raise a specific error
+    if not well_name:
+        available_sections = {
+            'version': getattr(las, 'version', None),
+            'well': getattr(las, 'well', None),
+            'curves': getattr(las, 'curves', None),
+            'other': getattr(las, 'other', None)
+        }
+        raise MissingWellNameError(
+            file_path=file_path,
+            available_sections=available_sections
+        )
+
+    # Handle cases where there is no curve data
+    if not hasattr(las, 'curves') or not las.curves:
+        logging.warning("LAS file missing curve data - initializing empty dataset.")
+        # Create a minimal DEPT curve to avoid errors downstream
+        las.curves = [lasio.CurveItem(mnemonic='DEPT', unit=depth_unit or '', data=np.array([], dtype=np.float64))]
+
+    # --- Curve Data Processing ---
     properties = {}
     units = {}
     depth_units = {}
     
     for curve in las.curves:
-        # Handle missing data (-999 and NaN)
-        # Handle various missing data indicators and invalid types
+        # Robustly clean curve data: handle NaNs, null values, and non-numeric types
         clean_data = []
         for val in curve.data:
             try:
@@ -90,49 +119,50 @@ def parse_las(file_path: str,
                 else:
                     clean_data.append(num)
             except (ValueError, TypeError):
+                # This handles strings or other non-convertible types
                 clean_data.append(fill_value)
+        
         data = np.array(clean_data, dtype=np.float64)
         properties[curve.mnemonic] = data
-        # Get unit from curve or use empty string if not available
+        
+        # Get unit from curve, default to empty string if not available
         unit = getattr(curve, 'unit', '') or ''
-        # Special handling for DEPT curve to ensure unit is set
-        if curve.mnemonic == 'DEPT':
-            if not unit and depth_unit:
-                unit = depth_unit
         units[curve.mnemonic] = unit
         
-        # Track original depth units for conversion
+        # Special handling for DEPT to track units for conversion
         if curve.mnemonic == 'DEPT':
             depth_units['original'] = unit
             depth_units['target'] = depth_unit if depth_unit else unit
 
-    # Apply unit conversion if needed
+    # --- Unit Conversion for Depth ---
     depths = las.index.copy()
     if depth_unit and depth_units.get('original') and depth_units['original'] != depth_units['target']:
         try:
             conv_factor = UNIT_CONVERSIONS[depth_units['original']][depth_units['target']]
-            # Convert both DEPT curve and depths array
-            if 'DEPT' in properties:
-                properties['DEPT'] = np.array(properties['DEPT'] * conv_factor, dtype=np.float64)
-            # Always update the depth unit to target unit after conversion
-            units['DEPT'] = depth_units['target']
-            # Convert string depths to float before multiplication
+            
+            # Convert string-based depth arrays to float before multiplication
             if isinstance(depths, np.ndarray) and depths.dtype.kind in ['U', 'S']:
                 try:
-                    depths = np.array([float(x.strip().rstrip(',')) for x in depths], dtype=np.float64)
+                    # Strip whitespace and trailing commas that can appear in some files
+                    depths = np.array([float(str(x).strip().rstrip(',')) for x in depths], dtype=np.float64)
                 except ValueError as e:
-                    raise ValueError(f"Invalid depth value format: {str(e)}")
-            # Apply conversion to depths array
+                    raise ValueError(f"Invalid depth value format while converting to float: {str(e)}")
+            
+            # Apply conversion to the depths array
             depths = np.array(depths * conv_factor, dtype=np.float64)
-            # Ensure the WellData object gets the converted depths
-            properties['DEPT'] = depths.copy()
-            # Update DEPT curve data directly
-            dept_curve = next(c for c in las.curves if c.mnemonic == 'DEPT')
-            dept_curve.data = depths
+
+            # Ensure the converted depths are updated in the properties dictionary
+            if 'DEPT' in properties:
+                properties['DEPT'] = depths.copy()
+            
+            # Update the unit string to reflect the conversion
+            units['DEPT'] = depth_units['target']
+            
             logging.debug(f"Converted depths from {depth_units['original']} to {depth_units['target']}")
         except KeyError:
-            logging.warning(f"Unsupported unit conversion: {depth_units['original']} to {depth_units['target']}")
+            logging.warning(f"Unsupported unit conversion: {depth_units['original']} to {depth_units['target']}. Skipping conversion.")
 
+    # --- Final Validation and Object Creation ---
     well_data = WellData(
         name=well_name,
         depths=depths,
@@ -140,7 +170,8 @@ def parse_las(file_path: str,
         units=units
     )
     
+    # Check for consistent array lengths in the final object
     if not well_data.validate():
-        logging.warning("Data validation failed - inconsistent array lengths")
+        logging.warning("Data validation failed - inconsistent array lengths found in the final WellData object.")
         
     return well_data

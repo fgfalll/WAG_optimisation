@@ -1,315 +1,228 @@
 # CO2 EOR Optimization System Architecture
 
 ## Research Overview
-This framework supports PhD research on "Advanced Computational Methods for CO₂-EOR Optimization" with:
+This framework supports PhD research on "Advanced Computational Methods for CO₂-EOR Parameter Prediction," with a primary focus on a **novel hybrid Genetic Algorithm - Bayesian Optimization (GA-BO) strategy.**
 
-1. **Novel Contributions**:
-   - Hybrid MMP correlation framework (Cronquist-Glaso-Yuan)
-   - Physics-informed genetic algorithm
-   - GPU-accelerated uncertainty quantification
+**Key Research Contributions & Focus Areas:**
+1.  **Hybrid GA-BO Optimizer Design:**
+    *   Development of a robust hybrid optimizer that leverages GA for global search and BO for efficient local refinement.
+    *   Investigation of effective information transfer mechanisms from GA to BO (e.g., seeding BO with multiple GA elite solutions).
+2.  **Configuration-Driven Optimization Control:**
+    *   A system managed by `ConfigManager` and `config.json` allowing detailed, external configuration of:
+        *   GA phase parameters (population, generations, operators) specific to the hybrid context.
+        *   BO phase parameters (iterations, initial random points, method like 'gp' or 'bayes').
+        *   Control over the number of elite solutions transferred from GA to BO.
+3.  **Performance Analysis and Benchmarking:**
+    *   Systematic comparison of the hybrid GA-BO against standalone GA and BO across various EOR scenarios.
+    *   Analysis of the hybrid strategy's parameter sensitivity.
+4.  *(Other contributions like refined MMP correlations or GPU-accelerated modeling if they are still central outputs of the research using this optimizer framework)*
 
-2. **Validation Methodology**:
-   - 15 field case studies
-   - Core flood experiments (5 samples)
-   - Numerical simulation (ECLIPSE 100)
-
-3. **Academic Context**:
-   - Advisor: Branimir Cvetcovich
-   - Supported by Me
+**Validation Methodology:**
+*   Performance evaluation on synthetic and/or field-inspired EOR case studies using the developed framework.
+*   *(Potential: Numerical simulation (ECLIPSE 100) to generate objective function responses or validate optimized parameters derived from the framework in a full-physics environment).*
+*   Sensitivity analysis of the hybrid optimizer's own configuration parameters to understand its behavior and robustness.
 
 ## Core Components
 
 ### 1. Data Layer
-- **Formats Supported**:
-  - LAS (well logs)
-  - ECLIPSE 100 (GRID, PROPS, REGIONS, SOLUTION, SCHEDULE, FAULTS)
-- **Key Features**:
-  - Automatic unit conversion
-  - Data validation
-  - Missing value handling
-  - Fault system parsing (FAULTS, MULTFLT, NNC)
-  - Grid modifications (COPY, ADD, MULTIPLY, BOX)
-  - Aquifer modeling (AQUANCON, AQUFETP)
-  - Local Grid Refinements (LGRs)
+-   **Formats Supported**:
+    -   LAS (well logs) - Processed by `las_parser.py`.
+    -   ECLIPSE 100 (GRID, PROPS, REGIONS, SOLUTION, SCHEDULE, FAULTS, etc.) - Processed by `eclipse_parser.py`.
+-   **Key Features**:
+    -   Automatic unit conversion (handled within parsers or `WellAnalysis`).
+    -   Data validation (within dataclasses and parsers).
+    -   Missing value handling.
+    -   Orchestrated by `DataProcessor.py` for file ingestion.
+-   **Output**: Populated `WellData` and `ReservoirData` dataclasses.
 
-### 2. PVT Modeling
-- **Data Validation**:
-  - Array length consistency checks
-  - Valid `pvt_type` enforcement ('black_oil' or 'compositional')
-  - Unit conversion safeguards
+### 2. PVT Modeling & MMP Calculation
+-   **PVTProperties Dataclass (`core.py`):** Stores validated PVT data (FVF, viscosity, Rs, type, specific gravity, temperature).
+-   **MMP Estimation (`evaluation.mmp.py`):**
+    *   Calculates Minimum Miscibility Pressure (MMP) using various correlations (e.g., Cronquist, Yuan, Hybrid GH - *as implemented in `mmp.py`*).
+    *   Takes `MMPParameters` (which can be derived from `PVTProperties` or `WellAnalysis`) as input.
+    *   Features automatic method selection based on available data.
+    *   Includes API gravity estimation from PVT (with appropriate warnings for accuracy).
+    *   MMP value is a critical input/constraint for the optimization process and recovery models.
 
-### 3. Data Classes & Validation
-- **WellData**: Container for well log data with validation
-  - Validates all property arrays match depth array length
-  - Stores units for each property
-- **ReservoirData**: Container for simulation data
-  - Handles grid, PVT tables, regions, runspec, and faults
-  - Special parsing for faults data
-- **PVTProperties**: Validated PVT data
-  - Enforces array length consistency
-  - Valid pvt_type ('black_oil' or 'compositional')
-  - Valid gas specific gravity (0.5-1.2)
-  - Valid temperature range (50-400°F)
-- **EORParameters**: CO₂ injection parameters
-  - Validates V_DP (0.3-0.8)
-  - Validates mobility ratio (1.2-20)
-  - Enforces WAG cycle constraints
+### 3. Core Dataclasses & Configuration Management
+-   **Dataclasses (`core.py`):**
+    *   `WellData`: Container for well log data.
+    *   `ReservoirData`: Container for reservoir simulation input data.
+    *   `PVTProperties`: Validated PVT data.
+    *   `EORParameters`: Defines CO₂ injection strategy parameters and their bounds.
+    *   `GeneticAlgorithmParams`: Defines parameters for the Genetic Algorithm.
+-   **Configuration Management (`config_manager.py`, `config.json`):**
+    *   Centralized JSON-based configuration (`config.json`) for all major system settings.
+    *   `ConfigManager` class loads and provides access to these settings.
+    *   Crucially controls EOR defaults, GA/BO/Hybrid optimizer settings, recovery model initialization parameters, and general fallbacks.
+    *   **Ensures application requires a valid configuration file to start.**
 
-### 4. Well Analysis
-- **Purpose**: Bridge between well log data and EOR optimization
-- **Key Features**:
-  - Depth-dependent MMP calculations
-  - Temperature gradient analysis (0.01°F/ft default)
-  - API gravity estimation from density logs (RHOB)
-  - Miscible zone identification
-- **Integration Points**:
-  - Input: LAS parser output (WellData)
-  - Output: MMPCalculator inputs
-  - Visualization: 3D miscibility maps
-- **Models**:
-  - Black Oil
-  - Compositional (EOS)
-- **MMP Estimation**:
-  - Multiple empirical correlations:
-    * Cronquist (pure CO2) - Requires temperature and API gravity
-    * Glaso (C7+ adjustment) - Requires molecular weight of C7+ fraction
-    * Yuan (impure CO2) - Requires gas composition data
-    * Hybrid GH - Combines Cronquist base with Glaso and Yellig-Metcalfe adjustments
-  - Comprehensive input validation:
-    * Temperature range (70-300°F) with warnings for 100-250°F
-    * API gravity (15-50°API) with warnings for 20-45°API
-    * C7+ MW (150-300 g/mol) when provided
-    * Gas composition sums to 1.0 (±0.001 tolerance)
-    * PVT array consistency checks
-  - Automatic method selection:
-    * Prefers Yuan for impure CO2 (<90% CO2)
-    * Uses Hybrid GH when C7+ MW available
-    * Falls back to Cronquist as baseline
-  - PVT integration features:
-    * API gravity estimation from Standing's correlation
-    * Automatic parameter extraction from PVTProperties
-    * Warning system for estimated values
-  - Miscibility condition checking
+### 4. Recovery Modeling (`core.py`)
+-   **Role:** Serve as the objective function for the `OptimizationEngine` by evaluating the effectiveness (e.g., recovery factor) of a given set of EOR parameters.
+-   **Available Models:**
+    *   `SimpleRecoveryModel`: Basic empirical model.
+    *   `KovalRecoveryModel`: Physics-informed sweep efficiency model.
+    *   `MiscibleRecoveryModel`: Accounts for compositional effects, gravity override, viscous fingering.
+    *   `ImmiscibleRecoveryModel`: Considers three-phase relative permeability, capillary pressure, residual oil.
+    *   `HybridRecoveryModel`:
+        *   Combines miscible and immiscible model responses using a `TransitionEngine`.
+        *   `TransitionEngine` provides smooth miscibility transitions (e.g., Sigmoid, Cubic functions) based on pressure/MMP ratio.
+        *   GPU awareness for `TransitionEngine` calculations (via `cupy` if available).
+-   **Parameterization:**
+    *   Model `__init__` parameters (e.g., `kv_factor` for `MiscibleRecoveryModel`, `sor` for `ImmiscibleRecoveryModel`) are primarily sourced from the `RecoveryModelKwargsDefaults` section in `config.json`.
+    *   Runtime parameters (e.g., `v_dp_coefficient`, `mobility_ratio`, `pressure`, `rate`) are passed by the optimizer to the model's `calculate` method during each evaluation.
 
-### 5. EOR Evaluation Engine
+### 5. Optimization System (`OptimizationEngine` in `core.py`)
+-   **Core of the Research:** Implements and controls the various optimization strategies, with a primary focus on the hybrid approach.
+-   **Hybrid GA-BO Approach (Primary Research Focus):**
+    1.  **Genetic Algorithm (GA) Phase:**
+        *   Performs global exploration of the EOR parameter space defined by `_get_ga_parameter_bounds()`.
+        *   Uses dictionary-based individuals for parameter representation, enhancing clarity and flexibility.
+        *   Operators: Tournament selection (with elitism), Blend crossover (arithmetic), Gaussian mutation.
+        *   Fitness evaluation is parallelized using `ProcessPoolExecutor`.
+        *   **Configuration (`config.json` -> `hybrid_optimizer.ga_params_hybrid`):** Population size, number of generations, operator rates, elite count, etc., can be specifically configured for the GA phase when run as part of the hybrid strategy.
+    2.  **Information Transfer Mechanism:**
+        *   A configurable number (`num_ga_elites_to_bo` in `config.json`) of the top elite solutions (parameter sets and their fitness) from the GA phase are passed to initialize/seed the BO phase.
+    3.  **Bayesian Optimization (BO) Phase:**
+        *   Performs efficient local refinement of EOR parameters, starting from points informed by GA (and/or its own random initial points).
+        *   Supports 'gp' (using `skopt.gp_minimize`) or 'bayes' (using `bayes_opt.BayesianOptimization`) as backend methods.
+        *   **Configuration (`config.json` -> `hybrid_optimizer` section):** Number of BO iterations, number of additional random initial points, and the choice of BO backend method are specifically configurable for the hybrid strategy.
+-   **Standalone Optimization Modes (for benchmarking & specific tasks):**
+    *   `optimize_genetic_algorithm()`: Executes GA as a standalone optimizer.
+    *   `optimize_bayesian()`: Executes BO as a standalone optimizer.
+    *   `optimize_wag()`: An iterative grid search method tailored for WAG parameters (cycle length, water fraction), followed by pressure optimization.
+    *   `optimize_recovery()`: A simple gradient descent optimizer focused on optimizing injection pressure.
+-   **Objective Function:** Primarily uses the selected `recovery_factor` model's output.
+-   **GPU Awareness:** Conceptually allows for GPU use if underlying models (like `TransitionEngine`) or evaluation steps are GPU-enabled. Checks for `cupy` availability.
+
 ```mermaid
-flowchart TD
-    A[Screening Criteria] --> B[MMP Estimation]
-    B --> C[Transition Model]
-    C --> D[Recovery Prediction]
-    D --> E[Injection Scheme Analysis]
-    C -->|Monte Carlo| F[Uncertainty Quantification]
-```
+graph TD
+    subgraph "Configuration Layer"
+        direction LR
+        CM[config_manager.py] -- Reads --> CFG[config.json]
+    end
 
-**Transition Model Features**:
-- Configurable miscibility functions (Sigmoid, Cubic, Custom)
-- Pressure/MMP ratio mapping
-- GPU-accelerated kernels
-- Coreflood validation diagnostics (RMSE, R²)
-- Backward compatibility adapter
+    subgraph "Data Layer"
+        direction LR
+        Parsers[Parsers (LAS, ECLIPSE)] --> DataStructs[Dataclasses e.g., ReservoirData, PVTProperties]
+    end
+    
+    subgraph "Modeling & Evaluation Layer"
+        direction TB
+        MMPCalc[MMP Calculation (evaluation.mmp.py)]
+        WellAn[Well Analysis (well_analysis.py)]
+        RecModels[Recovery Models (core.py - Koval, Hybrid, etc.)]
+        TransEng[TransitionEngine (core.py)]
+    end
 
-### 6. Optimization System
-- **Hybrid Approach**:
-  1. Genetic Algorithm (global search)
-  2. Bayesian Optimization (local refinement)
-- **Physics-Informed Sweep Efficiency Model**:
-  $$E_s = \frac{1}{1 + \left( \frac{M - 1}{K_v} \right)^{0.5}}$$
-  where $K_v = V_{DP} \times \left(1 + \frac{\mu_{CO_2}}{\mu_{oil}}\right)$
-  - Combines Dykstra-Parsons coefficient ($V_{DP}$) and mobility ratio ($M$)
-  - Validates inputs against empirical bounds:
-    - $0.3 < V_{DP} < 0.8$
-    - $1.2 < M < 20$
-  - Monte Carlo sampling for uncertainty quantification
-- **Genetic Algorithm Implementation**:
-  - 6-parameter optimization (injection rate, WAG ratio, etc.)
-  - Adaptive mutation rates
-  - Elite preservation strategy
-- **GPU Acceleration**:
-  - Optional cupy integration for GPU acceleration
-  - Automatic CPU fallback when GPU unavailable
-  - Kernel precomputation for transition calculations
-  - Memory-efficient array transfers (CPU↔GPU)
-  - Key accelerated operations:
-    * Transition efficiency calculations
-    * Monte Carlo sampling
-    * Parallel scenario evaluation
+    subgraph "Optimization Layer"
+        direction TB
+        OptEng[OptimizationEngine (core.py)]
+        GA[Genetic Algorithm]
+        BO[Bayesian Optimization]
+        OtherOpts[Other Optimizers (WAG, Gradient)]
+    end
 
-### 7. Visualization System
-- **Engineering Visualizations**:
-  - MMP vs depth profiles
-  - Optimization convergence tracking
-  - Parameter sensitivity analysis
-  - Sweep efficiency contour plots
-- **Performance Metrics**:
-  - GPU utilization monitoring
-  - Memory usage tracking
-  - Parallel processing efficiency
-- **Field Data Integration**:
-  - Well log overlays
-  - Historical production matching
-  - Forecast uncertainty bands
+    CFG -->|Controls All Settings| OptEng
+    CM -->|Provides Settings to| OptEng
+    
+    DataStructs -->|Input to| OptEng
+    DataStructs -->|Input to| MMPCalc
+    DataStructs -->|Input to| WellAn
+    WellAn -->|Derived Params for| MMPCalc
+    
+    MMPCalc -->|MMP Value| OptEng
+    MMPCalc -->|MMP Value| RecModels
+    
+    OptEng -- Selects & Uses --> RecModels
+    RecModels -- Contains --> TransEng
+    
+    OptEng -- Manages --> GA
+    OptEng -- Manages --> BO
+    OptEng -- Manages --> OtherOpts
+    
+    GA -- Candidate Solutions --> RecModels
+    BO -- Candidate Solutions --> RecModels
+    OtherOpts -- Candidate Solutions --> RecModels
 
-### 8. Reporting
-- Interactive Plotly dashboards
-- PDF/CSV report generation
-- 3D reservoir visualization
-- Automated metric exports
+    RecModels -->|Fitness Value| GA
+    RecModels -->|Fitness Value| BO
+    RecModels -->|Fitness Value| OtherOpts
 
-## Recovery Models
-- **ImmiscibleRecoveryModel**: Advanced three-phase model
-  - Handles capillary pressure effects
-  - Accounts for residual oil saturation
-  - Includes water-oil mobility ratio
-  - Validates input viscosities and saturations
-- **MiscibleRecoveryModel**: Compositional effects model
-  - Gravity override correction
-  - Viscous fingering adjustment
-  - Dip angle sensitivity
-- **HybridRecoveryModel**: Smooth transition model
-  - GPU-accelerated transition calculations
-  - Multiple transition functions (sigmoid, cubic)
-  - Monte Carlo uncertainty integration
+    GA -- Elite Solutions to Seed --> BO
 
-## Class Diagram
-```mermaid
-classDiagram
-    class DataParser{
-        +parse_las()
-        +parse_eclipse()
-        +parse_faults()
-        +parse_aquifers()
-        +parse_lgr()
-    }
-    class PVTModel{
-        +black_oil()
-        +compositional()
-        +gpu_accelerated: bool
-    }
-    class MMPParameters {
-        +temperature: float
-        +oil_gravity: float
-        +c7_plus_mw: Optional[float]
-        +injection_gas_composition: Optional[dict]
-        +pvt_data: Optional[PVTProperties]
-        +__post_init__(): validation
-    }
-    class MMPCalculator {
-        +calculate_mmp()
-        +calculate_mmp_cronquist()
-        +calculate_mmp_hybrid_gh()
-        +calculate_mmp_yuan()
-        +estimate_api_from_pvt()
-        +gpu_implementation()
-    }
-    MMPCalculator --> MMPParameters
-    MMPParameters --> PVTProperties
-    class RecoveryModel {
-        <<abstract>>
-        +calculate()
-        +gpu_enabled: bool
-    }
-    class KovalRecoveryModel
-    class MiscibleRecoveryModel
-    class ImmiscibleRecoveryModel
-    class HybridRecoveryModel {
-        +enable_gpu()
-        +cuda_kernels()
-    }
-    class TransitionEngine {
-        +calculate_efficiency()
-        +monte_carlo_mmp()
-        +legacy_adapter()
-        +gpu_optimized: bool
-    }
-    class OptimizationEngine {
-        +optimize_recovery()
-        +optimize_bayesian()
-        +plot_mmp_profile()
-        +plot_optimization_convergence()
-        +plot_parameter_sensitivity()
-        +gpu_parallel_eval()
-    }
-    note right of HybridRecoveryModel
-        Uses cupy for GPU acceleration
-        when available
-    end note
-    DataParser --> PVTModel
-    PVTModel --> MMPCalculator
-    MMPCalculator --> RecoveryModel
-    RecoveryModel <|-- KovalRecoveryModel
-    RecoveryModel <|-- MiscibleRecoveryModel
-    RecoveryModel <|-- ImmiscibleRecoveryModel
-    RecoveryModel <|-- HybridRecoveryModel
-    RecoveryModel <|-- SimpleRecoveryModel
-    HybridRecoveryModel --> TransitionEngine
-    RecoveryModel --> OptimizationEngine
-    OptimizationEngine --> GPUManager
-    HybridRecoveryModel --> GPUManager
-    ImmiscibleRecoveryModel --> PVTProperties
-    MiscibleRecoveryModel --> PVTProperties
-```
+    OptEng --> Results[Optimization Results / Visualizations]
 
-## System Integration
-```mermaid
-flowchart LR
-    A[Data Layer] --> B[PVT Modeling]
-    B --> C[EOR Engine]
-    C --> D[Optimization]
-    D --> E[Visualization]
-    E --> F[Reporting]
-    G[Git/CI] --> E
-    H[Testing] --> E
-```
+    style CM fill:#lightgrey,stroke:#333,stroke-width:2px
+    style CFG fill:#lightgrey,stroke:#333,stroke-width:2px
+    style OptEng fill:#lightblue,stroke:#333,stroke-width:2px
+    style GA fill:#add8e6,stroke:#333,stroke-width:1px
+    style BO fill:#add8e6,stroke:#333,stroke-width:1px
 
-## Development Timeline
+6. Visualization System (core.py plotting methods)
 
-### Research Milestones
-1. **Literature Review & Framework Design** (Completed Q1 2025)
-   - Surveyed 50+ papers on MMP correlations
-   - Identified gaps in current methods
-   - Designed hybrid correlation approach
+Purpose: To aid in the analysis of input data, optimization process, and results.
 
-2. **Core Algorithm Development** (Completed Q1 2025)
-   - Implemented novel MMP calculations
-   - Developed GPU acceleration
-   - Validated against lab data
+Implemented Engineering Visualizations:
 
-3. **Field Application & Thesis Writing** (WIP)
-   - Applying to 3 field cases
-   - Finalizing journal papers
-   - Dissertation preparation
+plot_mmp_profile(): MMP vs. depth, optionally with temperature.
 
-### Implementation Phases
-1. **Phase 1**: Core data structures (Completed Q2 2025)
-   - WellData and ReservoirData classes
-   - PVT property handling
-   - Comprehensive validation
+plot_optimization_convergence(): Conceptual plot showing outcome of optimization methods (can be enhanced to show history).
 
-2. **Phase 2**: PVT & MMP models (Completed Q2 2025)
-   - Implemented core MMP correlations (Cronquist, Glaso, Yuan)
-   - Added PVT integration with validation
-   - 98% test coverage (unit/integration)
+plot_parameter_sensitivity(): Shows how recovery factor changes when a single optimized parameter is varied around its optimal value.
 
-3. **Phase 3**: Optimization engine (WIP - 85% complete)
-   - Physics-informed sweep efficiency models:
-     * Koval (heterogeneity-mobility)
-     * Miscible (compositional effects)
-     * Immiscible (three-phase)
-     * Hybrid (smooth transitions)
-   - Optimization methods:
-     * Gradient descent
-     * Bayesian optimization
-     * Genetic algorithm
-   - GPU acceleration support (CUDA kernels)
-   - 95% test coverage
+Technology: Uses Plotly for interactive plots.
 
-4. **Phase 4**: Visualization system (WIP - 60% complete)
-   - Implemented:
-     * MMP profile plotting (2D/3D)
-     * Optimization convergence tracking
-     * Parameter sensitivity analysis
-     * Basic dashboard framework
-   - Pending:
-     * Advanced interactive controls (Plotly Dash)
-     * Multi-well visualization (VTK integration)
-     * Field data integration (ECLIPSE results)
+Potential Expansion for Research:
+
+Detailed generation/iteration-wise convergence plots for GA and BO.
+
+Comparative plots for benchmarking results from different optimizer configurations or methods.
+
+System Integration and Workflow
+
+Configuration: Application starts by loading config.json via ConfigManager. Failure to load a valid config is critical.
+
+Data Input: Reservoir and fluid data (.las, .DATA) are parsed into ReservoirData and PVTProperties objects (potentially via DataProcessor). WellData can be used by WellAnalysis.
+
+Engine Initialization: OptimizationEngine is instantiated with the data objects. It configures itself based on settings from ConfigManager (e.g., default recovery model, EOR parameters, GA/BO base configurations). MMP is calculated.
+
+Optimization Execution: A specific optimization method is called on the engine (e.g., hybrid_optimize()).
+
+The chosen method (e.g., hybrid) reads its specific parameters from the hybrid_optimizer section of the config.
+
+The optimizer iteratively proposes EOR parameter sets.
+
+Each set is evaluated using the selected recovery_factor model (which itself might be configured).
+
+The hybrid method manages the GA exploration phase, transfer of elite solutions, and the BO refinement phase.
+
+Results & Analysis: The engine stores and returns the optimization results (best parameters, final recovery). Plotting methods can be used to visualize aspects of the process or sensitivity.
+
+Key Design Principles
+
+Modularity: Separation of concerns (data parsing, PVT/MMP, recovery modeling, optimization, configuration).
+
+Configurability: Extensive use of config.json and ConfigManager allows for flexible control and experimentation without code changes, crucial for research.
+
+Extensibility: Dataclass-based data structures and abstract base classes (e.g., RecoveryModel) facilitate additions.
+
+Robustness: Input validation in dataclasses, error handling in parsers and ConfigManager, and graceful fallbacks (e.g., GPU availability).
+
+Clarity: Use of type hints, descriptive naming, and dictionary-based GA individuals.
+
+Generated code
+---
+
+This updated `architecture.md` should better reflect:
+*   The central role and detailed control of the **hybrid GA-BO optimizer**.
+*   The critical importance of the **`ConfigManager` and `config.json`** in driving the behavior of the entire framework, especially the optimization strategies.
+*   The flow of information and control within the `OptimizationEngine` for the hybrid method.
+*   The most recent state of how recovery models are parameterized (init vs. runtime).
+
+Let me know if you'd like any section further refined!
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+IGNORE_WHEN_COPYING_END
