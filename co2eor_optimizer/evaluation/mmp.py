@@ -24,7 +24,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 try:
-    from core import PVTProperties
+    from core.data_models import PVTProperties
 except ImportError as e:
     raise ImportError(
         "Could not import 'PVTProperties' from 'core.py'. "

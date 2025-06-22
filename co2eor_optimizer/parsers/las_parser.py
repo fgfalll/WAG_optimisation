@@ -2,7 +2,7 @@ import lasio
 from typing import Dict, Optional, Any
 import numpy as np
 import logging
-from ..core import WellData
+from core.data_models import WellData
 from dataclasses import dataclass
 
 @dataclass

@@ -6,7 +6,7 @@ from typing import Dict, Tuple, Optional, Any, List, Set
 
 import numpy as np
 
-from ..core import ReservoirData
+from core.data_models import ReservoirData
 
 # --- Setup Logging ---
 # Setup a module-level logger for clear and consistent output.

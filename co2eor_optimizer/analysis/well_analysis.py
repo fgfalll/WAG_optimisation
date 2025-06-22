@@ -3,9 +3,6 @@ Well analysis module for CO2 EOR optimization
 
 IMPROVED: This module has been refactored to eliminate hardcoded values
 by introducing a configuration class. It is now more robust and flexible.
-
-FIXED: Imports have been corrected to be absolute from the project root,
-making the script runnable directly.
 """
 import sys
 import os
@@ -18,7 +15,7 @@ from typing import Dict, Optional
 from dataclasses import dataclass, field
 import logging
 
-from core import WellData, PVTProperties
+from core.data_models import WellData, PVTProperties
 from evaluation.mmp import calculate_mmp, MMPParameters
 
 # Configure logging to see informational messages

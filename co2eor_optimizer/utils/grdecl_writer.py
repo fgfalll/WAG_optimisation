@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from typing import Union
 
-from ..core import ReservoirData
+from core.data_models import ReservoirData
 
 logger = logging.getLogger(__name__)
 

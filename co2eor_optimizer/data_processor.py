@@ -5,7 +5,7 @@ import logging
 from concurrent.futures import ThreadPoolExecutor
 from .parsers.las_parser import parse_las
 from .parsers.eclipse_parser import parse_eclipse
-from .core import WellData, ReservoirData
+from core.data_models import WellData, ReservoirData
 from .utils.grdecl_writer import write_grdecl
 
 # Configure logging
