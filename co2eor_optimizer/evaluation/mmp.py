@@ -15,20 +15,16 @@ Key Features:
 import logging
 import sys
 import os
-from typing import Optional, Union, Dict, Any
+from typing import Optional, Union, Dict, Any, Callable
 from dataclasses import dataclass
 import numpy as np
 
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-
 try:
-    from core.data_models import PVTProperties
+    from co2eor_optimizer.core.data_models import PVTProperties
 except ImportError as e:
     raise ImportError(
-        "Could not import 'PVTProperties' from 'core.py'. "
-        f"Please ensure 'core.py' is located in the project root directory: '{project_root}'"
+        "Could not import 'PVTProperties' from 'co2eor_optimizer.core.data_models'. "
+        "Please ensure the package structure is correct and 'co2eor_optimizer' is in sys.path."
     ) from e
 
 
@@ -150,9 +146,11 @@ def _calculate_mmp_hybrid_gh(params: MMPParameters) -> float:
     # 3. Adjust for gas composition (Yellig & Metcalfe, 1980)
     if params.injection_gas_composition:
         co2_fraction = params.injection_gas_composition.get('CO2', 0.0)
-        # This is a simplified linear interpolation for the effect of impurities.
-        # It assumes that MMP increases as CO2 purity decreases.
-        return mmp_adj_c7 * (1.0 - 0.25 * (1.0 - co2_fraction))
+        # Simplified linear interpolation for the effect of impurities.
+        # Assumes MMP increases as CO2 purity decreases. A sensitivity factor
+        # of 0.25 is a common simplification for hydrocarbon impurities.
+        IMPURITY_SENSITIVITY_FACTOR = 0.25
+        return mmp_adj_c7 / (1.0 - IMPURITY_SENSITIVITY_FACTOR * (1.0 - co2_fraction))
 
     return mmp_adj_c7
 
@@ -170,13 +168,65 @@ def _calculate_mmp_yuan(params: MMPParameters) -> float:
     ch4_fraction = params.injection_gas_composition.get('CH4', 0.0)
 
     # Yuan correlation coefficients
-    a = 8.784 * (params.temperature ** 0.523)
-    b = 0.147 * (params.oil_gravity ** 1.226)
-    c = 1.0 - 0.8 * (1.0 - co2_fraction)  # CO2 purity factor
-    d = 1.0 + 0.1 * ch4_fraction         # Methane impurity adjustment
+    # A: Temperature dependency term
+    a = 10**(3.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
+    # B: Oil composition term (C5+ Mol weight is approximated from API)
+    m_c5_plus = 630 - 10.3 * params.oil_gravity
+    b = (0.342 * m_c5_plus**0.36) / (0.641 * params.temperature**0.21)
+    # C: Purity term (accounts for non-CO2 components)
+    x_co2 = co2_fraction
+    c = 0.993 - 0.778 * (1 - x_co2)**0.11
+    
+    # Final MMP calculation in MPa, then converted to psi
+    mmp_mpa = a * (b**x_co2) * c
+    return mmp_mpa * 145.038  # Convert MPa to psi
 
-    mmp = a * b * c * d
-    return mmp
+def _calculate_mmp_alston(params: MMPParameters) -> float:
+    """
+    Calculates MMP using the Alston et al. correlation (1985).
+
+    This method is robust for impure gas streams containing N2, CH4, and CO2.
+    It adjusts the pure-CO2 MMP based on the pseudo-critical temperature of
+    the injection gas mixture.
+
+    Requires C7+ MW for an exponent and gas composition for T_pc.
+    """
+    if not params.c7_plus_mw:
+        raise ValueError("C7+ molecular weight is required for the 'alston' method.")
+    if not params.injection_gas_composition:
+        raise ValueError("Gas composition is required for the 'alston' correlation.")
+
+    # Critical temperatures of common components in Kelvin
+    CRITICAL_TEMPS_K = {'CO2': 304.1, 'CH4': 190.6, 'N2': 126.2}
+    
+    y_co2 = params.injection_gas_composition.get('CO2', 0.0)
+    y_ch4 = params.injection_gas_composition.get('CH4', 0.0)
+    y_n2 = params.injection_gas_composition.get('N2', 0.0)
+
+    # 1. Calculate pseudo-critical temperature (Tpc) of the gas mixture
+    tpc_k = y_co2 * CRITICAL_TEMPS_K['CO2'] + \
+            y_ch4 * CRITICAL_TEMPS_K['CH4'] + \
+            y_n2 * CRITICAL_TEMPS_K['N2']
+
+    # 2. Calculate MMP for pure CO2 using Yellig & Metcalfe (1980) as a base
+    T_F = params.temperature
+    mmp_pure_co2 = 1016 + 4.773*T_F - 0.00946*(T_F**2) + 0.000021*(T_F**3)
+
+    # 3. Calculate the Alston exponent 'A'
+    exponent_A = 2.41 - 0.00284 * params.c7_plus_mw
+
+    # 4. Calculate the final MMP for the impure gas
+    mmp_impure = mmp_pure_co2 * (tpc_k / CRITICAL_TEMPS_K['CO2'])**exponent_A
+    return mmp_impure
+
+# --- [UPDATED] Dictionary mapping method names to functions for UI and internal use ---
+MMP_METHODS: Dict[str, Callable[[MMPParameters], float]] = {
+    'cronquist': _calculate_mmp_cronquist,
+    'hybrid_gh': _calculate_mmp_hybrid_gh,
+    'yuan': _calculate_mmp_yuan,
+    'alston': _calculate_mmp_alston,
+}
+
 
 def estimate_api_from_pvt(pvt: PVTProperties) -> float:
     """
@@ -242,7 +292,7 @@ def calculate_mmp(
         params (Union[MMPParameters, PVTProperties]): An object containing the
             required fluid and reservoir properties.
         method (str): The correlation to use. Can be 'cronquist', 'hybrid_gh',
-            'yuan', or 'auto'. 'auto' mode selects the most appropriate
+            'yuan', 'alston', or 'auto'. 'auto' mode selects the most appropriate
             method based on the available data.
 
     Returns:
@@ -281,11 +331,15 @@ def calculate_mmp(
             "Must be MMPParameters or PVTProperties."
         )
 
-    # --- Method Selection and Calculation ---
+    # --- [REFACTORED] Method Selection and Calculation ---
     logging.info(f"Calculating MMP with method: '{method}'.")
     if method == 'auto':
         # Intelligent selection based on data richness
-        if mmp_params.injection_gas_composition and mmp_params.injection_gas_composition.get('CO2', 0.0) < 0.95:
+        if mmp_params.c7_plus_mw and mmp_params.injection_gas_composition and \
+           mmp_params.injection_gas_composition.get('CO2', 0.0) < 0.98:
+            logging.info("Auto-selecting 'alston' correlation for impure gas with known C7+ MW.")
+            return _calculate_mmp_alston(mmp_params)
+        elif mmp_params.injection_gas_composition and mmp_params.injection_gas_composition.get('CO2', 0.0) < 0.95:
             logging.info("Auto-selecting 'yuan' correlation for impure CO2 stream.")
             return _calculate_mmp_yuan(mmp_params)
         elif mmp_params.c7_plus_mw:
@@ -295,14 +349,12 @@ def calculate_mmp(
             logging.info("Auto-selecting 'cronquist' correlation as a baseline for pure CO2.")
             return _calculate_mmp_cronquist(mmp_params)
 
-    elif method == 'cronquist':
-        return _calculate_mmp_cronquist(mmp_params)
-    elif method == 'hybrid_gh':
-        return _calculate_mmp_hybrid_gh(mmp_params)
-    elif method == 'yuan':
-        return _calculate_mmp_yuan(mmp_params)
+    # Dynamic dispatch using the MMP_METHODS dictionary
+    calculation_func = MMP_METHODS.get(method)
+    if calculation_func:
+        return calculation_func(mmp_params)
     else:
         raise ValueError(
             f"Unknown MMP calculation method: '{method}'. Available methods are: "
-            "'auto', 'cronquist', 'hybrid_gh', 'yuan'."
+            f"{', '.join(MMP_METHODS.keys())}."
         )

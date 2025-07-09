@@ -1,0 +1,19 @@
+{
+  "SensitivityAnalysisSettings": {
+    "default_num_points": 11,
+    "default_percentage_variation": 20
+  },
+  "UncertaintyQuantificationSettings": {
+    "enabled": false,
+    "method": "monte_carlo",
+    "num_samples_mc": 500,
+    "num_samples_mc_reopt": 25,
+    "mc_sampling_rule": "latin_hypercube",
+    "pce_polynomial_order": 2,
+    "pce_quadrature_rule": "gaussian",
+    "pce_quadrature_order_offset": 1,
+    "parameters": [],
+    "correlations": {},
+    "target_objective_for_pce": "npv"
+  }
+}

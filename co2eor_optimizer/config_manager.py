@@ -1,170 +1,236 @@
 import json
 import logging
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, List, Union
+from pathlib import Path
+from copy import deepcopy
 
 logger = logging.getLogger(__name__)
+
+if not logger.hasHandlers():
+    logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 
 class ConfigNotLoadedError(Exception):
     """Custom exception raised when an operation requires config but it hasn't been loaded."""
     pass
 
 class ConfigManager:
-    _config_data: Dict[str, Any] = {}
-    _is_loaded_from_file: bool = False # More descriptive name
-    _loaded_config_path: Optional[str] = None # Store the path of the loaded config
-
-    def __init__(self, config_file_path: Optional[str] = None, require_config: bool = True):
+    """
+    Manages loading and accessing configuration data from multiple JSON files
+    within a specified directory.
+    This class is designed as a simple utility for loading and merging configurations,
+    without maintaining a global state.
+    """
+    def __init__(self, config_dir_path: Optional[str] = None, require_config: bool = True, autoload: bool = True):
         """
         Initializes the ConfigManager.
-        If a config_file_path is provided, it attempts to load it immediately.
 
         Args:
-            config_file_path (Optional[str]): Path to the configuration file.
-            require_config (bool): If True, an error will be raised during initialization
-                                   or first access if a config file hasn't been successfully loaded.
+            config_dir_path (str, optional): Path to the directory containing JSON configuration files.
+                                             If None, a path must be provided to `load_configs_from_directory`.
+            require_config (bool): If True, an error will be raised if configurations cannot be loaded.
+            autoload (bool): If True, attempts to load configs from config_dir_path immediately.
         """
-        self._require_config = require_config # Store the requirement
-
-        if ConfigManager._is_loaded_from_file:
-            logger.info(f"ConfigManager: Configuration already loaded from {ConfigManager._loaded_config_path}.")
-            return
-
-        if config_file_path:
-            self.load_config(config_file_path)
-        elif self._require_config:
-            # If config is required and no path is given at init,
-            # it won't be loaded yet. Error will be raised on first access if not loaded by then.
-            logger.warning(
-                "ConfigManager initialized without an initial config file path, but config is required. "
-                "Ensure load_config() is called before accessing configuration values."
-            )
-            # We don't raise ConfigNotLoadedError here yet, to allow load_config to be called later.
-
-    def load_config(self, file_path: str) -> None:
-        """
-        Loads the configuration from the specified JSON file.
-        If successful, subsequent calls to load_config with a different path will log a warning
-        and not reload, unless explicitly reset (future feature).
-
-        Args:
-            file_path (str): The path to the JSON configuration file.
+        self._config_data: Dict[str, Any] = {}
+        self._configs_loaded: bool = False
+        self._loaded_config_dir: Optional[Path] = None
+        self._loaded_files_order: List[Path] = []
         
-        Raises:
-            FileNotFoundError: If the config file is not found.
-            json.JSONDecodeError: If the config file is not valid JSON.
-            Exception: For other unexpected errors during loading.
-        """
-        if ConfigManager._is_loaded_from_file and ConfigManager._loaded_config_path != file_path:
-            logger.warning(
-                f"ConfigManager: Configuration already loaded from {ConfigManager._loaded_config_path}. "
-                f"Ignoring request to load from {file_path}. "
-                "Re-initialization or a reset mechanism would be needed to change config source."
-            )
-            return
-        if ConfigManager._is_loaded_from_file and ConfigManager._loaded_config_path == file_path:
-            logger.info(f"ConfigManager: Configuration from {file_path} is already loaded. Skipping reload.")
-            return
+        self._default_config_dir = Path(config_dir_path) if config_dir_path else None
+        self._require_config = require_config
 
-        try:
-            with open(file_path, 'r') as f:
-                ConfigManager._config_data = json.load(f)
-            ConfigManager._is_loaded_from_file = True
-            ConfigManager._loaded_config_path = file_path
-            logger.info(f"Configuration loaded successfully from {file_path}")
-        except FileNotFoundError:
-            logger.error(f"Configuration file not found: {file_path}.")
-            ConfigManager._config_data = {} # Clear any partial/stale data
-            ConfigManager._is_loaded_from_file = False
-            raise # Re-raise the error to be handled by the caller
-        except json.JSONDecodeError as e:
-            logger.error(f"Error decoding JSON from {file_path}: {e}")
-            ConfigManager._config_data = {}
-            ConfigManager._is_loaded_from_file = False
-            raise # Re-raise
-        except Exception as e:
-            logger.error(f"An unexpected error occurred while loading config from {file_path}: {e}")
-            ConfigManager._config_data = {}
-            ConfigManager._is_loaded_from_file = False
-            raise # Re-raise
+        if autoload and self._default_config_dir:
+            try:
+                self.load_configs_from_directory()
+            except FileNotFoundError as e:
+                if self._require_config:
+                    logger.critical(f"CRITICAL: Autoload failed for required configuration directory '{self._default_config_dir}': {e}")
+                    raise ConfigNotLoadedError(f"Autoload failed for required configuration: {e}") from e
+                else:
+                    logger.warning(f"Autoload failed for configuration directory '{self._default_config_dir}': {e}. Proceeding without loaded config.")
+            except Exception as e_auto:
+                logger.error(f"Unexpected error during autoload from '{self._default_config_dir}': {e_auto}", exc_info=True)
+                if self._require_config:
+                    raise ConfigNotLoadedError(f"Unexpected error during autoload: {e_auto}") from e_auto
+
+
+    def load_configs_from_directory(self, dir_path: Optional[Union[str, Path]] = None) -> bool:
+        """
+        Loads and merges all JSON configuration files from the specified directory.
+        Files are loaded in alphabetical order. Top-level keys from files loaded
+        later will override earlier ones. A simple one-level deep merge is performed
+        for dictionary values under the same top-level key.
+
+        Args:
+            dir_path (Optional[Union[str, Path]]): The directory to load from.
+                                                  If None, uses the default_config_dir
+                                                  set during initialization.
+
+        Returns:
+            bool: True if at least one configuration file was successfully loaded and processed,
+                  False otherwise.
+
+        Raises:
+            FileNotFoundError: If `require_config` is True and the directory is not found
+                               or contains no JSON files.
+            ValueError: If no directory path is provided either at initialization or to this method.
+        """
+        target_dir = Path(dir_path) if dir_path else self._default_config_dir
+        if not target_dir:
+            raise ValueError("No configuration directory path provided to load from.")
+
+        # Reset instance state for a fresh load
+        self._config_data = {}
+        self._configs_loaded = False
+        self._loaded_config_dir = None
+        self._loaded_files_order = []
+
+        if not target_dir.is_dir():
+            logger.error(f"Configuration directory not found: {target_dir}.")
+            if self._require_config:
+                raise FileNotFoundError(f"Required configuration directory not found: {target_dir}")
+            return False
+
+        config_files = sorted(list(target_dir.glob("*.json")))
+
+        if not config_files:
+            logger.warning(f"No JSON configuration files found in directory: {target_dir}")
+            self._loaded_config_dir = target_dir
+            if self._require_config:
+                raise FileNotFoundError(f"Required configuration files not found in {target_dir}.")
+            return False
+
+        loaded_at_least_one_file = False
+        temp_merged_config: Dict[str, Any] = {}
+
+        for file_path in config_files:
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                
+                for key, value in data.items():
+                    if key in temp_merged_config and \
+                       isinstance(temp_merged_config[key], dict) and \
+                       isinstance(value, dict):
+                        temp_merged_config[key].update(value)
+                    else:
+                        temp_merged_config[key] = value
+                
+                logger.info(f"Successfully loaded and merged configuration from {file_path.name}")
+                self._loaded_files_order.append(file_path)
+                loaded_at_least_one_file = True
+            except json.JSONDecodeError as e:
+                logger.error(f"Error decoding JSON from {file_path.name}: {e}")
+            except Exception as e:
+                logger.error(f"Unexpected error loading config from {file_path.name}: {e}", exc_info=True)
+
+        if loaded_at_least_one_file:
+            self._config_data = temp_merged_config
+            self._configs_loaded = True
+            self._loaded_config_dir = target_dir
+            logger.info(f"All valid configurations successfully loaded and merged from directory: {target_dir}")
+            return True
+        else:
+            logger.error(f"No valid configuration files were processed from {target_dir}.")
+            self._loaded_config_dir = target_dir
+            if self._require_config:
+                raise ConfigNotLoadedError(f"No valid configurations processed from {target_dir}, and config is required.")
+            return False
 
     def _ensure_config_loaded(self) -> None:
-        """Checks if config is loaded, raising an error if required and not loaded."""
-        if self._require_config and not ConfigManager._is_loaded_from_file:
+        """Checks if config is loaded, raising ConfigNotLoadedError if required and not loaded."""
+        if self._require_config and not self._configs_loaded:
             raise ConfigNotLoadedError(
                 "Configuration has not been successfully loaded. "
-                "Please ensure a valid config file is provided and load_config() is called."
+                "Ensure a valid config directory is provided and load_configs_from_directory() was successful."
             )
 
     def get(self, key_path: str, default: Any = None) -> Any:
         """
         Retrieves a configuration value using a dot-separated key path.
-        Example: get('optimizer.ga.population_size', 50)
+        Example: get('Logging.level', 'INFO')
 
-        Raises:
-            ConfigNotLoadedError: If config is required and not loaded.
+        Args:
+            key_path (str): Dot-separated path to the desired configuration value.
+            default (Any): Default value to return if the key_path is not found.
+
+        Returns:
+            Any: The configuration value or the default.
         """
-        self._ensure_config_loaded() # Check before trying to access
-
+        self._ensure_config_loaded()
         keys = key_path.split('.')
-        value = ConfigManager._config_data
+        current_level_data = self._config_data
         try:
-            for key in keys:
-                if isinstance(value, list) and key.isdigit():
-                    idx = int(key)
-                    if 0 <= idx < len(value):
-                        value = value[idx]
+            for key_part in keys:
+                if isinstance(current_level_data, list) and key_part.isdigit():
+                    idx = int(key_part)
+                    if 0 <= idx < len(current_level_data):
+                        current_level_data = current_level_data[idx]
                     else:
                         return default
-                elif isinstance(value, dict):
-                    value = value[key]
+                elif isinstance(current_level_data, dict):
+                    current_level_data = current_level_data[key_part]
                 else:
                     return default
-            return value
+            return current_level_data
         except (KeyError, TypeError, IndexError):
             return default
 
-    def get_section(self, section_key: str) -> Optional[Dict[str, Any]]:
+    def get_section(self, section_key: str) -> Dict[str, Any]:
         """
-        Retrieves an entire section dictionary.
+        Retrieves an entire configuration section as a dictionary.
+        Returns a deepcopy to prevent modification of the internal config state.
 
-        Returns None if the section is not found and config is loaded.
-        Returns an empty dict as a default if the key isn't found, but this might be
-        misleading if the intent is to know if the section truly exists.
+        Args:
+            section_key (str): The top-level key for the desired section.
 
-        Raises:
-            ConfigNotLoadedError: If config is required and not loaded.
+        Returns:
+            Dict[str, Any]: A deepcopy of the section dictionary, or an empty dictionary
+                            if the section is not found or not a dictionary.
         """
         self._ensure_config_loaded()
-        # Using get with a specific default (like an empty dict) might hide
-        # whether the section truly exists or if it's just returning the default.
-        # It might be better to return None if not found, and let the caller handle it.
-        # For now, let's keep it consistent with current usage in core.py where empty dict is expected.
-        return self.get(section_key, default={})
-
+        section_data = self.get(section_key, default={})
+        return deepcopy(section_data) if isinstance(section_data, dict) else {}
 
     @property
-    def is_loaded(self) -> bool: # Renamed for clarity
-        """Returns True if a configuration file has been successfully loaded."""
-        return ConfigManager._is_loaded_from_file
+    def is_loaded(self) -> bool:
+        """Returns True if configuration files have been successfully loaded and processed."""
+        return self._configs_loaded
 
     @property
-    def loaded_config_file_path(self) -> Optional[str]:
-        """Returns the path of the successfully loaded configuration file."""
-        return ConfigManager._loaded_config_path
+    def loaded_config_directory(self) -> Optional[Path]:
+        """Returns the Path object of the directory from which configs were loaded."""
+        return self._loaded_config_dir
+
+    @property
+    def loaded_files_in_order(self) -> List[Path]:
+        """Returns a list of Path objects for files loaded, in their processing order."""
+        return self._loaded_files_order
 
     @property
     def raw_config(self) -> Dict[str, Any]:
         """
-        Returns the raw configuration data dictionary.
-
-        Raises:
-            ConfigNotLoadedError: If config is required and not loaded.
+        Returns a deepcopy of the entire raw (merged) configuration data dictionary.
         """
         self._ensure_config_loaded()
-        return ConfigManager._config_data
+        return deepcopy(self._config_data)
 
-# Global instance initialization
-# The application's entry point should handle the initial load_config call.
-# Initialize with require_config=True by default.
-# The initial config_file_path can be None here, relying on explicit load_config calls.
-config_manager = ConfigManager(config_file_path=None, require_config=True)
+    def reload_configs(self, dir_path: Optional[Union[str, Path]] = None) -> bool:
+        """
+        Forces a reload of configurations. If dir_path is provided, it loads from
+        that new directory. Otherwise, it reloads from the last successfully used directory.
+
+        Args:
+            dir_path (Optional[Union[str, Path]]): New directory to load from.
+                                                  If None, reloads from last used directory.
+
+        Returns:
+            bool: True if reload was successful, False otherwise.
+        """
+        target_dir = dir_path or self._loaded_config_dir
+        if target_dir:
+            logger.info(f"Reloading configurations from specified directory: {target_dir}")
+            return self.load_configs_from_directory(target_dir)
+        else:
+            logger.warning("Cannot reload configs: No configuration directory was previously loaded or provided.")
+            return False

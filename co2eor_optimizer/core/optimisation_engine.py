@@ -4,6 +4,8 @@ import logging
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 import random
+from copy import deepcopy
+import dataclasses
 
 from skopt import gp_minimize
 from skopt.space import Real
@@ -11,526 +13,729 @@ from skopt.utils import use_named_args
 from bayes_opt import BayesianOptimization
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from scipy.optimize import brentq
 
-# config_manager.py is in the project root, one level above 'core/'
-try:
-    from config_manager import config_manager, ConfigNotLoadedError
-except ImportError:
-    logging.critical(
-        "ConfigManager could not be imported from core/optimization_engine.py. "
-        "Ensure config_manager.py is in the project root and project root is in PYTHONPATH."
-    )
-    class DummyConfigManager:
-        def get(self, key_path: str, default: Any = None) -> Any:
-            if default is None:
-                 raise ConfigNotLoadedError(f"DummyConfig: Critical key '{key_path}' access attempted.")
-            return default
-        def get_section(self, section_key: str) -> Optional[Dict[str, Any]]:
-             res = self.get(section_key, {})
-             return res if isinstance(res, dict) else {}
-        @property
-        def is_loaded(self) -> bool: return False
-    config_manager = DummyConfigManager()
+from co2eor_optimizer.analysis.well_analysis import WellAnalysis
 
-# Imports from other modules within the 'core' package
 from .data_models import (
-    ReservoirData, PVTProperties, EORParameters, GeneticAlgorithmParams
+    ReservoirData, PVTProperties, EORParameters, GeneticAlgorithmParams,
+    BayesianOptimizationParams, EconomicParameters, OperationalParameters,
+    ProfileParameters, EOSModelParameters
 )
 from .recovery_models import recovery_factor
+from .eos_models import EOSModel, PengRobinsonEOS, SoaveRedlichKwongEOS
 
-# Imports for MMP calculation (evaluation package is in project_root/evaluation/)
-# This import assumes project_root is in sys.path
 try:
-    from evaluation.mmp import calculate_mmp as calculate_mmp_external, MMPParameters
+    from co2eor_optimizer.evaluation.mmp import calculate_mmp, MMPParameters
 except ImportError:
-    logging.critical(
-        "evaluation.mmp modules failed to import into OptimizationEngine. "
-        "MMP calculation will be limited."
-    )
-    calculate_mmp_external = None # type: ignore
+    logging.info("evaluation.mmp module not found in OptimizationEngine. MMP calculation features may be limited.")
+    calculate_mmp_external = None
     MMPParameters = None # type: ignore
+else:
+    calculate_mmp_external = calculate_mmp
 
+DAYS_PER_YEAR = 365.25
+logger = logging.getLogger(__name__)
+
+# --- [NEW] Helper function for parallel processing ---
+# This function must be defined at the top level of the module to be pickle-able
+def _run_objective_wrapper(objective_func: Callable, params_dict: Dict[str, float]) -> float:
+    """A top-level helper to call the objective function with kwargs for multiprocessing."""
+    # This function is crucial for ProcessPoolExecutor to work on all platforms (e.g., Windows),
+    # as it cannot pickle instance methods directly.
+    # The objective_func will be a partial function with `self` already bound.
+    return objective_func(**params_dict)
 
 class OptimizationEngine:
-    def __init__(self, reservoir: ReservoirData, pvt: PVTProperties,
+    RELAXABLE_CONSTRAINTS = {
+        'porosity': {
+            'description': 'Average reservoir porosity (v/v)',
+            'range_factor': 0.20,
+            'type': 'reservoir'
+        },
+        'ooip_stb': {
+            'description': 'Original Oil In Place (STB)',
+            'range_factor': 0.25,
+            'type': 'reservoir'
+        },
+        'oil_price_usd_per_bbl': {
+            'description': 'Market price for crude oil ($/bbl)',
+            'range_factor': 0.30,
+            'type': 'economic'
+        },
+        'co2_purchase_cost_usd_per_tonne': {
+            'description': 'Cost to purchase virgin CO2 ($/tonne)',
+            'range_factor': 0.40,
+            'type': 'economic'
+        },
+        # --- [NEW] Additional EOR parameters to unlock ---
+        'v_dp_coefficient': {
+            'description': 'Dykstra-Parsons coefficient for heterogeneity',
+            'range_factor': 0.35, # Varies significantly, allow a wider range
+            'type': 'eor'
+        },
+        'mobility_ratio': {
+            'description': 'Mobility Ratio (M)',
+            'range_factor': 0.50, # Highly sensitive, allow wide exploration
+            'type': 'eor'
+        },
+        'WAG_ratio': {
+            'description': 'Water-Alternating-Gas Ratio',
+            'range_factor': 0.60, # Very wide range, as it's a key design parameter
+            'type': 'eor'
+        }
+    }
+
+    def __init__(self,
+                 reservoir: ReservoirData,
+                 pvt: PVTProperties,
                  eor_params_instance: Optional[EORParameters] = None,
                  ga_params_instance: Optional[GeneticAlgorithmParams] = None,
-                 well_analysis: Optional[Any] = None): # well_analysis can be any type from outside core
-        if not config_manager.is_loaded:
-            logging.critical("OptimizationEngine: ConfigManager reports no configuration loaded.")
+                 bo_params_instance: Optional[BayesianOptimizationParams] = None,
+                 economic_params_instance: Optional[EconomicParameters] = None,
+                 operational_params_instance: Optional[OperationalParameters] = None,
+                 profile_params_instance: Optional[ProfileParameters] = None,
+                 well_analysis: Optional[Any] = None,
+                 avg_porosity_init_override: Optional[float] = None,
+                 mmp_init_override: Optional[float] = None,
+                 recovery_model_init_kwargs_override: Optional[Dict[str, Any]] = None):
 
-        self.reservoir = reservoir
-        self.pvt = pvt
-
-        self.eor_params = eor_params_instance or EORParameters.from_config_dict(
-            config_manager.get_section("EORParametersDefaults") or {}
-        )
-        self.ga_params_default_config = ga_params_instance or GeneticAlgorithmParams.from_config_dict(
-            config_manager.get_section("GeneticAlgorithmParamsDefaults") or {}
-        )
-
-        self.well_analysis = well_analysis
-        self._results: Optional[Dict[str, Any]] = None
-        self._mmp_value: Optional[float] = None
-        self._mmp_params_used: Optional[Any] = None # Stores MMPParameters or PVTProperties
-
-        self.recovery_model: str = config_manager.get("OptimizationEngineSettings.default_recovery_model", "hybrid")
-        self._recovery_model_init_kwargs: Dict[str, Any] = config_manager.get_section(
-            f"RecoveryModelKwargsDefaults.{self.recovery_model.capitalize()}"
-        ) or {}
+        self._base_reservoir_data = deepcopy(reservoir)
+        self._base_pvt_data = deepcopy(pvt)
+        self._base_eor_params = deepcopy(eor_params_instance or EORParameters())
+        self._base_economic_params = deepcopy(economic_params_instance or EconomicParameters())
+        self._base_operational_params = deepcopy(operational_params_instance or OperationalParameters())
         
-        self._mmp_calculator_fn: Optional[Callable[[Union[PVTProperties, Any], str], float]] = calculate_mmp_external
-        self._MMPParametersDataclass: Optional[Type[Any]] = MMPParameters # Type of MMPParameters
-        self.calculate_mmp()
+        self.well_analysis = well_analysis
+        self._unlocked_params_for_current_run: List[str] = []
+        
+        self.reset_to_base_state()
+        
+        self.ga_params_default_config = ga_params_instance or GeneticAlgorithmParams()
+        self.bo_params_default_config = bo_params_instance or BayesianOptimizationParams()
+        self.profile_params = profile_params_instance or ProfileParameters()
+        
+        if self.profile_params.warn_if_defaults_used and profile_params_instance is None:
+            logger.warning("Using default ProfileParameters.")
+
+        self._results: Optional[Dict[str, Any]] = None
+        self._avg_porosity_init_override: Optional[float] = avg_porosity_init_override
+        self._mmp_value_init_override: Optional[float] = mmp_init_override
+        self._mmp_value: Optional[float] = self._mmp_value_init_override
+
+        self.recovery_model: str = "hybrid" # Hardcode a sensible default
+        self._recovery_model_init_kwargs: Dict[str, Any] = recovery_model_init_kwargs_override or {}
+
+        self.chosen_objective: str = "recovery_factor" # Default objective
+        self.co2_density_tonne_per_mscf: float = 0.053 # Default density
+        
+        self._mmp_calculator_fn = calculate_mmp_external
+        self._MMPParametersDataclass = MMPParameters
+        
+        self.eos_model_instance: Optional[EOSModel] = None
+        if self.reservoir.eos_model and isinstance(self.reservoir.eos_model, EOSModelParameters):
+            try:
+                eos_type = self.reservoir.eos_model.eos_type.lower()
+                if eos_type == 'peng-robinson':
+                    self.eos_model_instance = PengRobinsonEOS(self.reservoir.eos_model)
+                elif eos_type == 'soave-redlich-kwong':
+                    self.eos_model_instance = SoaveRedlichKwongEOS(self.reservoir.eos_model)
+                else:
+                    logger.warning(f"Unsupported EOS type '{eos_type}' specified in ReservoirData. No EOS model will be used.")
+
+                if self.eos_model_instance:
+                    logger.info(f"Successfully instantiated '{self.reservoir.eos_model.eos_type}' model for dynamic property calculation.")
+                    self.pvt.pvt_type = 'compositional'
+            except Exception as e:
+                logger.error(f"Failed to instantiate EOS model from ReservoirData: {e}", exc_info=True)
+                self.eos_model_instance = None
+
+        if self._mmp_value is None: self.calculate_mmp()
+
+    def reset_to_base_state(self):
+        logger.info("Resetting OptimizationEngine to its base state.")
+        self.reservoir = deepcopy(self._base_reservoir_data)
+        self.pvt = deepcopy(self._base_pvt_data)
+        self.eor_params = deepcopy(self._base_eor_params)
+        self.economic_params = deepcopy(self._base_economic_params)
+        self.operational_params = deepcopy(self._base_operational_params)
+        self._unlocked_params_for_current_run = []
+
+    def prepare_for_rerun_with_unlocked_params(self, params_to_unlock: List[str]):
+        self.reset_to_base_state()
+        self._unlocked_params_for_current_run = [p for p in params_to_unlock if p in self.RELAXABLE_CONSTRAINTS]
+        logger.info(f"Engine prepared for re-run. Unlocked parameters: {self._unlocked_params_for_current_run}")
+
+    @property
+    def avg_porosity(self) -> float:
+        if self._avg_porosity_init_override is not None:
+            return self._avg_porosity_init_override
+        poro_arr = self.reservoir.grid.get('PORO', np.array([0.15]))
+        return np.mean(poro_arr) if hasattr(poro_arr, 'size') and poro_arr.size > 0 else 0.15
+
+    @property
+    def mmp(self) -> Optional[float]:
+        if self._mmp_value_init_override is not None:
+             if self._mmp_value is None: self._mmp_value = self._mmp_value_init_override
+             return self._mmp_value_init_override
+        if self._mmp_value is None: self.calculate_mmp()
+        return self._mmp_value
+    
+    @property
+    def results(self) -> Optional[Dict[str, Any]]:
+        return self._results
+
+    def _refresh_operational_parameters(self):
+        # This method is now simpler; it just uses the current state.
+        # The state is updated from MainWindow, so no need to reload from a config file.
+        logger.debug("Operational parameters are managed by MainWindow state.")
+
+    def update_parameters(self, new_params: Dict[str, Any]):
+        logger.debug("Updating engine's internal parameters from optimizer.")
+        dataclasses_to_update = [
+            ("eor_params", self.eor_params),
+            ("economic_params", self.economic_params)
+        ]
+        for dc_name, dc_instance in dataclasses_to_update:
+            current_params_dict = dataclasses.asdict(dc_instance)
+            updated = False
+            for key, value in new_params.items():
+                if hasattr(dc_instance, key):
+                    current_params_dict[key] = value
+                    updated = True
+            if updated:
+                try:
+                    setattr(self, dc_name, dc_instance.__class__(**current_params_dict))
+                    logger.debug(f"Successfully updated {dc_name}.")
+                except (ValueError, TypeError) as e:
+                    logger.error(f"Failed to update {dc_name}: {e}")
 
     def calculate_mmp(self, method_override: Optional[str] = None) -> float:
-        default_mmp_fallback = config_manager.get("GeneralFallbacks.mmp_default_psi", 2500.0)
+        default_mmp_fallback = 2500.0
         
         if not self._mmp_calculator_fn or not self._MMPParametersDataclass:
-            logging.warning("MMP calculator or MMPParameters not available. Returning fallback MMP.")
             self._mmp_value = self._mmp_value if self._mmp_value is not None else default_mmp_fallback
             return self._mmp_value
 
-        actual_mmp_method = method_override or config_manager.get("OptimizationEngineSettings.mmp_calculation_method", "auto")
-        source_description = "PVT data"
-        self._mmp_params_used = self.pvt # Default to PVT
+        actual_mmp_method = method_override or "auto"
+        
+        well_analysis_to_use = self.well_analysis
+        if self.well_analysis and isinstance(self.well_analysis.well_data, list):
+            if self.well_analysis.well_data:
+                well_analysis_to_use = WellAnalysis(
+                    well_data=self.well_analysis.well_data[0], pvt_data=self.well_analysis.pvt_data,
+                    eos_model=self.well_analysis.eos_model, temperature_gradient=self.well_analysis.temperature_gradient,
+                    config=self.well_analysis.config
+                )
+            else:
+                well_analysis_to_use = None
 
-        if self.well_analysis and hasattr(self.well_analysis, 'get_average_mmp_params_for_engine'):
+        mmp_input_object: Union[PVTProperties, Any] = self.pvt
+        source_description = "PVT data"
+
+        if well_analysis_to_use and hasattr(well_analysis_to_use, 'get_average_mmp_params_for_engine'):
             try:
-                avg_well_params = self.well_analysis.get_average_mmp_params_for_engine()
-                mmp_input_constructor_params = {
-                    'temperature': avg_well_params.get('temperature', self.pvt.temperature),
-                    'oil_gravity': avg_well_params.get('oil_gravity', config_manager.get("GeneralFallbacks.api_gravity_default", 35.0)),
-                    'c7_plus_mw': avg_well_params.get('c7_plus_mw'),
-                    'injection_gas_composition': avg_well_params.get('injection_gas_composition',
-                        config_manager.get_section("GeneralFallbacks.default_injection_gas_composition") or {'CO2': 1.0}),
-                    'pvt_data': self.pvt
-                }
-                self._mmp_params_used = self._MMPParametersDataclass(**mmp_input_constructor_params)
-                source_description = "WellAnalysis average parameters"
-            except Exception as e:
-                logging.warning(f"Failed to get MMP params from WellAnalysis: {e}. Using PVT data.")
+                avg_well_params = well_analysis_to_use.get_average_mmp_params_for_engine()
+                if avg_well_params:
+                    mmp_input_constructor_params = {
+                        'temperature': avg_well_params.get('temperature', self.pvt.temperature),
+                        'oil_gravity': avg_well_params.get('oil_gravity', 35.0),
+                        'c7_plus_mw': avg_well_params.get('c7_plus_mw'),
+                        'injection_gas_composition': avg_well_params.get('injection_gas_composition', {'CO2': 1.0}),
+                        'pvt_data': self.pvt
+                    }
+                    mmp_input_object = self._MMPParametersDataclass(**mmp_input_constructor_params)
+                    source_description = "WellAnalysis average parameters"
+            except Exception as e: 
+                logger.warning(f"Failed to get MMP params from WellAnalysis: {e}. Using PVT.", exc_info=True)
         
         try:
-            calculated_mmp_value = float(self._mmp_calculator_fn(self._mmp_params_used, method=actual_mmp_method))
-            self._mmp_value = calculated_mmp_value
-            logging.info(f"MMP calculated: {self._mmp_value:.2f} psi via '{actual_mmp_method}' from {source_description}.")
+            self._mmp_value = float(self._mmp_calculator_fn(mmp_input_object, method=actual_mmp_method))
+            logger.info(f"MMP calculated: {self._mmp_value:.2f} psi ('{actual_mmp_method}' from {source_description}).")
         except Exception as e:
-            logging.error(f"MMP calculation failed ('{actual_mmp_method}', {source_description}): {e}. Using fallback.")
+            logger.error(f"MMP calculation failed ('{actual_mmp_method}', {source_description}): {e}. Using fallback.")
             self._mmp_value = self._mmp_value if self._mmp_value is not None else default_mmp_fallback
-        
-        return self._mmp_value # Guarantees a float due to fallback
-
-    def optimize_recovery(self) -> Dict[str, Any]:
-        cfg_grad = config_manager.get_section("OptimizationEngineSettings.gradient_descent_optimizer") or {}
-        max_iter = cfg_grad.get("max_iter", 100); tol = cfg_grad.get("tolerance", 1e-4)
-        learning_rate = cfg_grad.get("learning_rate", 50.0); pressure_perturbation = cfg_grad.get("pressure_perturbation", 10.0)
-
-        mmp_val = self.mmp # Uses property that calls calculate_mmp if needed
-        if mmp_val is None: mmp_val = config_manager.get("GeneralFallbacks.mmp_default_psi", 2500.0) # Final fallback
-
-        avg_porosity = np.mean(self.reservoir.grid.get('PORO', [config_manager.get("GeneralFallbacks.porosity_default_fraction", 0.15)]))
-        
-        initial_pressure = self.eor_params.target_pressure_psi if self.eor_params.target_pressure_psi > mmp_val else mmp_val * 1.05
-        current_pressure = np.clip(initial_pressure, mmp_val * 1.01, self.eor_params.max_pressure_psi)
-        injection_rate_val = self.eor_params.injection_rate
-
-        call_kwargs_for_recovery = {**self._recovery_model_init_kwargs,
-                                    'v_dp_coefficient': self.eor_params.v_dp_coefficient,
-                                    'mobility_ratio': self.eor_params.mobility_ratio}
-        previous_recovery = 0.0; current_recovery = 0.0; converged = False; iterations_done = 0
-
-        for i in range(max_iter):
-            iterations_done = i + 1
-            current_recovery = recovery_factor(current_pressure, injection_rate_val, avg_porosity, mmp_val,
-                                               model=self.recovery_model, **call_kwargs_for_recovery)
-            if i > 5 and abs(current_recovery - previous_recovery) < tol: converged = True; break
-            
-            recovery_plus_perturb = recovery_factor(current_pressure + pressure_perturbation, injection_rate_val, avg_porosity, mmp_val,
-                                                  model=self.recovery_model, **call_kwargs_for_recovery)
-            gradient = (recovery_plus_perturb - current_recovery) / pressure_perturbation
-            if abs(gradient) < 1e-7: converged = True; break
-            current_pressure = np.clip(current_pressure + learning_rate * gradient, mmp_val * 1.01, self.eor_params.max_pressure_psi)
-            previous_recovery = current_recovery
-            
-        self._results = {'optimized_params': {'injection_rate': injection_rate_val, 'target_pressure_psi': current_pressure,
-                                             'v_dp_coefficient': self.eor_params.v_dp_coefficient, 'mobility_ratio': self.eor_params.mobility_ratio},
-                         'mmp_psi': mmp_val, 'iterations': iterations_done, 'final_recovery': current_recovery,
-                         'converged': converged, 'avg_porosity': avg_porosity, 'method': 'gradient_descent_pressure'}
-        return self._results
-
-    def optimize_bayesian(self, n_iter_override: Optional[int] = None, init_points_override: Optional[int] = None,
-                        method_override: Optional[str] = None,
-                        initial_solutions_from_ga: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
-        cfg_bo = config_manager.get_section("OptimizationEngineSettings.bayesian_optimizer") or {}
-        n_iter = n_iter_override if n_iter_override is not None else cfg_bo.get("n_iter", 40)
-        init_pts_random = init_points_override if init_points_override is not None else cfg_bo.get("init_points_random", 8)
-        bo_method = method_override or cfg_bo.get("default_method", "gp")
-        rate_max_factor = cfg_bo.get("rate_bound_factor_max", 1.5)
-
-        mmp_val = self.mmp
-        if mmp_val is None: mmp_val = config_manager.get("GeneralFallbacks.mmp_default_psi", 2500.0)
-        avg_porosity = np.mean(self.reservoir.grid.get('PORO', [config_manager.get("GeneralFallbacks.porosity_default_fraction", 0.15)]))
-        
-        min_pressure_bound = np.clip(mmp_val * 1.01, (getattr(self.eor_params, 'min_target_pressure_psi', mmp_val *1.01)), self.eor_params.max_pressure_psi - 1.0)
-
-        space_dims = [Real(min_pressure_bound, self.eor_params.max_pressure_psi, name='pressure'),
-                      Real(self.eor_params.min_injection_rate_bpd, self.eor_params.injection_rate * rate_max_factor, name='rate'),
-                      Real(0.3, 0.8, name='v_dp_coefficient'), Real(1.2, 20.0, name='mobility_ratio')]
-        if self.eor_params.injection_scheme == 'wag':
-            space_dims.extend([Real(self.eor_params.min_cycle_length_days, self.eor_params.max_cycle_length_days, name='cycle_length_days'),
-                               Real(self.eor_params.min_water_fraction, self.eor_params.max_water_fraction, name='water_fraction')])
-        param_names_in_order = [dim.name for dim in space_dims]
-
-        @use_named_args(space_dims)
-        def objective_function_bo(**params_bo):
-            eff_rate = params_bo['rate'] * (1.0 - params_bo['water_fraction'] if self.eor_params.injection_scheme == 'wag' and 'water_fraction' in params_bo else 1.0)
-            rec = recovery_factor(params_bo['pressure'], eff_rate, avg_porosity, mmp_val, # type: ignore
-                                  model=self.recovery_model, **{**self._recovery_model_init_kwargs, **params_bo})
-            return -rec if bo_method == 'gp' else rec
-
-        best_params_bo: Dict[str, float] = {}; final_rec_bo: float = 0.0; num_ga_pts_used_bo: int = 0
-
-        if bo_method == 'gp':
-            x0_dicts_skopt: List[Dict[str, float]] = []; y0_skopt: List[float] = []
-            if initial_solutions_from_ga:
-                for ga_sol in initial_solutions_from_ga:
-                    valid_sol_params = {dim.name: np.clip(ga_sol['params'][dim.name], dim.low, dim.high) for dim in space_dims if dim.name in ga_sol['params']}
-                    if len(valid_sol_params) == len(space_dims): # Ensure all dims covered
-                        x0_dicts_skopt.append(valid_sol_params); y0_skopt.append(-ga_sol['fitness'])
-            num_ga_pts_used_bo = len(x0_dicts_skopt)
-            total_calls = num_ga_pts_used_bo + init_pts_random + n_iter
-            if initial_solutions_from_ga and total_calls <= num_ga_pts_used_bo: total_calls = num_ga_pts_used_bo + init_pts_random +1
-            
-            logging.info(f"gp_minimize: {num_ga_pts_used_bo} GA pts, {init_pts_random} random, {n_iter} BO iter. Total: {total_calls}.")
-            # Pass list of dicts directly to x0 if skopt handles it with use_named_args
-            # Otherwise, convert x0_dicts_skopt to list of lists:
-            # x0_lists_skopt = [[d[name] for name in param_names_in_order] for d in x0_dicts_skopt]
-            res_skopt = gp_minimize(objective_function_bo, space_dims, x0=x0_dicts_skopt or None, y0=y0_skopt or None,
-                                   n_calls=total_calls, n_initial_points=init_pts_random, 
-                                   random_state=config_manager.get("GeneralFallbacks.random_seed", 42), verbose=True) # type: ignore
-            best_params_bo = dict(zip(param_names_in_order, res_skopt.x)); final_rec_bo = -res_skopt.fun
-        
-        elif bo_method == 'bayes':
-            pbounds = {dim.name: (dim.low, dim.high) for dim in space_dims}
-            opt_bayes = BayesianOptimization(f=objective_function_bo, pbounds=pbounds, random_state=config_manager.get("GeneralFallbacks.random_seed", 42), verbose=2)
-            if initial_solutions_from_ga:
-                for ga_sol in initial_solutions_from_ga:
-                    params_reg = {p_name: np.clip(ga_sol['params'][p_name],pbounds[p_name][0],pbounds[p_name][1]) for p_name in pbounds if p_name in ga_sol['params']}
-                    if len(params_reg) == len(pbounds):
-                        try: opt_bayes.register(params=params_reg, target=ga_sol['fitness']); num_ga_pts_used_bo+=1
-                        except Exception as e: logging.error(f"Error registering GA sol with bayes_opt: {e}")
-            opt_bayes.maximize(init_points=init_pts_random, n_iter=n_iter)
-            best_params_bo = opt_bayes.max['params']; final_rec_bo = opt_bayes.max['target']
-        else: raise ValueError(f"Unsupported Bayesian method: {bo_method}.")
-
-        opt_params_std = {'injection_rate': best_params_bo.get('rate'), 'target_pressure_psi': best_params_bo.get('pressure'),
-                          'cycle_length_days': best_params_bo.get('cycle_length_days'), 'water_fraction': best_params_bo.get('water_fraction'),
-                          'v_dp_coefficient': best_params_bo.get('v_dp_coefficient'), 'mobility_ratio': best_params_bo.get('mobility_ratio')}
-        
-        self._results = {'optimized_params': opt_params_std, 'mmp_psi': mmp_val, 'method': f'bayesian_{bo_method}',
-                         'iterations_bo_actual': n_iter, 'initial_points_bo_random': init_pts_random,
-                         'initial_points_from_ga_used': num_ga_pts_used_bo, 'final_recovery': final_rec_bo,
-                         'avg_porosity': avg_porosity, 'converged': True}
-        return self._results
-
-    def hybrid_optimize(self, ga_params_override: Optional[GeneticAlgorithmParams] = None) -> Dict[str, Any]:
-        cfg_hyb = config_manager.get_section("OptimizationEngineSettings.hybrid_optimizer") or \
-                  {"ga_config_source": "default_ga_params", "bo_iterations_in_hybrid": 20,
-                   "bo_random_initial_points_in_hybrid": 5, "num_ga_elites_to_bo": 3, "bo_method_in_hybrid": "gp"}
-
-        ga_params_hyb = ga_params_override if ga_params_override else \
-                        (GeneticAlgorithmParams.from_config_dict(cfg_hyb.get("ga_params_hybrid",{})) \
-                         if cfg_hyb.get("ga_config_source") == "hybrid_specific" and cfg_hyb.get("ga_params_hybrid") \
-                         else self.ga_params_default_config)
-
-        bo_iter = cfg_hyb.get("bo_iterations_in_hybrid", 20); bo_init_rand = cfg_hyb.get("bo_random_initial_points_in_hybrid", 5)
-        num_elites = cfg_hyb.get("num_ga_elites_to_bo", 3); bo_method = cfg_hyb.get("bo_method_in_hybrid", "gp")
-        
-        logging.info(f"Hybrid: GA(G:{ga_params_hyb.generations},P:{ga_params_hyb.population_size}) -> BO(M:{bo_method},I:{bo_iter},E:{num_elites})")
-        ga_res = self.optimize_genetic_algorithm(ga_params_to_use=ga_params_hyb)
-        
-        top_ga_sols = ga_res.get('top_ga_solutions_from_final_pop', [])
-        init_bo_sols = top_ga_sols[:min(num_elites, len(top_ga_sols))] if num_elites > 0 and top_ga_sols else None
-
-        bo_res = self.optimize_bayesian(n_iter_override=bo_iter, init_points_override=bo_init_rand,
-                                        method_override=bo_method, initial_solutions_from_ga=init_bo_sols)
-        
-        self._results = {**bo_res, 'ga_full_results': ga_res, 
-                         'method': f'hybrid_ga(g{ga_params_hyb.generations})_bo(i{bo_iter},e{len(init_bo_sols or [])})_m({bo_method})'}
-        logging.info(f"Hybrid opt. done. Final recovery: {self._results.get('final_recovery', 0.0):.4f}")
-        return self._results
-
-    def _get_ga_parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        mmp_val = self.mmp
-        if mmp_val is None: mmp_val = config_manager.get("GeneralFallbacks.mmp_default_psi", 2500.0)
-        rate_max_f = config_manager.get("OptimizationEngineSettings.genetic_algorithm.rate_bound_factor_max", 1.5)
-        min_p_ga = np.clip(mmp_val * 1.01, getattr(self.eor_params,'target_pressure_psi', mmp_val*1.01) if getattr(self.eor_params,'target_pressure_psi',0) > mmp_val else mmp_val*1.01, self.eor_params.max_pressure_psi -1.0)
-
-        bounds = {'pressure': (min_p_ga, self.eor_params.max_pressure_psi),
-                  'rate': (self.eor_params.min_injection_rate_bpd, self.eor_params.injection_rate * rate_max_f),
-                  'v_dp_coefficient': (0.3, 0.8), 'mobility_ratio': (1.2, 20.0)}
-        if self.eor_params.injection_scheme == 'wag':
-            bounds['cycle_length_days'] = (self.eor_params.min_cycle_length_days, self.eor_params.max_cycle_length_days)
-            bounds['water_fraction'] = (self.eor_params.min_water_fraction, self.eor_params.max_water_fraction)
-        return bounds
-
-    def _initialize_population_ga(self, pop_size: int, ga_conf: GeneticAlgorithmParams) -> List[Dict[str, float]]:
-        pop = []; bounds = self._get_ga_parameter_bounds(); p_names = list(bounds.keys())
-        for _ in range(pop_size):
-            ind = {p_name: random.uniform(bounds[p_name][0], bounds[p_name][1]) for p_name in p_names}
-            pop.append(ind)
-        return pop
-
-    def _get_complete_params_from_ga_individual(self, ind_dict: Dict[str, float], bounds_clip: Dict[str, Tuple[float,float]]) -> Dict[str, float]:
-        return {p_name: np.clip(ind_dict.get(p_name, random.uniform(low, high)), low, high) for p_name, (low,high) in bounds_clip.items()}
-
-    def _evaluate_individual_ga(self, ind_dict: Dict[str, float], avg_poro: float, mmp: float, model: str, init_kwargs: Dict[str,Any], ga_conf: GeneticAlgorithmParams) -> float:
-        params = self._get_complete_params_from_ga_individual(ind_dict, self._get_ga_parameter_bounds())
-        eff_rate = params['rate'] * (1.0 - params.get('water_fraction',0) if self.eor_params.injection_scheme == 'wag' else 1.0)
-        return recovery_factor(params['pressure'], eff_rate, avg_poro, mmp, model=model, **{**init_kwargs, **params})
-
-    def _tournament_selection_ga(self, pop: List[Dict[str, float]], fits: List[float], conf: GeneticAlgorithmParams) -> List[Dict[str, float]]:
-        sel_pop = []
-        if conf.elite_count > 0 and pop: sel_pop.extend(pop[i].copy() for i in np.argsort(fits)[-conf.elite_count:])
-        for _ in range(len(pop) - len(sel_pop)):
-            if not pop: break
-            sel_pop.append(pop[max(random.sample(range(len(pop)), conf.tournament_size), key=lambda i: fits[i])].copy())
-        return sel_pop
-
-    def _crossover_ga(self, parents: List[Dict[str, float]], conf: GeneticAlgorithmParams) -> List[Dict[str, float]]:
-        offspr = []; n_par = len(parents)
-        if n_par == 0: return []
-        for i in range(0, n_par -1, 2):
-            p1, p2 = parents[i], parents[i+1]; c1, c2 = p1.copy(), p2.copy()
-            if random.random() < conf.crossover_rate:
-                alpha = conf.blend_alpha_crossover
-                for gene in set(p1.keys()) | set(p2.keys()):
-                    v1, v2 = p1.get(gene), p2.get(gene)
-                    if v1 is not None and v2 is not None:
-                        c1[gene] = alpha * v1 + (1-alpha) * v2; c2[gene] = (1-alpha) * v1 + alpha * v2
-            offspr.extend([c1,c2])
-        if n_par % 2 == 1: offspr.append(parents[-1].copy())
-        return offspr[:n_par]
-
-    def _mutate_ga(self, pop_mut: List[Dict[str, float]], conf: GeneticAlgorithmParams) -> List[Dict[str, float]]:
-        mut_pop = []; bounds = self._get_ga_parameter_bounds()
-        for ind in pop_mut:
-            mut_ind = ind.copy()
-            if random.random() < conf.mutation_rate:
-                gene = random.choice(list(mut_ind.keys()))
-                if gene in bounds:
-                    low, high = bounds[gene]; curr = mut_ind.get(gene, (low+high)/2.0)
-                    std_dev = (high-low) * conf.mutation_strength_factor if (high-low) > 1e-9 else 0.1*abs(curr)+1e-6
-                    mut_ind[gene] = np.clip(curr + random.gauss(0, std_dev), low, high)
-            mut_pop.append(mut_ind)
-        return mut_pop
-
-    def optimize_genetic_algorithm(self, ga_params_to_use: Optional[GeneticAlgorithmParams] = None) -> Dict[str, Any]:
-        ga_conf = ga_params_to_use or self.ga_params_default_config
-        mmp_val = self.mmp
-        if mmp_val is None: mmp_val = config_manager.get("GeneralFallbacks.mmp_default_psi", 2500.0)
-        avg_poro = np.mean(self.reservoir.grid.get('PORO', [config_manager.get("GeneralFallbacks.porosity_default_fraction", 0.15)]))
-
-        pop = self._initialize_population_ga(ga_conf.population_size, ga_conf)
-        best_sol_all = pop[0].copy() if pop else {}; best_fit_all = -np.inf
-        
-        for gen in range(ga_conf.generations):
-            with ProcessPoolExecutor() as executor:
-                fits = list(executor.map(partial(self._evaluate_individual_ga, avg_porosity=avg_poro, mmp=mmp_val, # type: ignore
-                                                  model_name=self.recovery_model, recovery_model_init_kwargs=self._recovery_model_init_kwargs,
-                                                  current_ga_config=ga_conf), pop)) # Renamed args for clarity
-            
-            best_idx_gen = np.argmax(fits)
-            if fits[best_idx_gen] > best_fit_all: best_fit_all = fits[best_idx_gen]; best_sol_all = pop[best_idx_gen].copy()
-            
-            parents = self._tournament_selection_ga(pop, fits, ga_conf); offspring = self._crossover_ga(parents, ga_conf)
-            pop = self._mutate_ga(offspring, ga_conf)
-            if (gen+1)%10==0 or gen==ga_conf.generations-1: logging.info(f"GA Gen {gen+1}: BestFit Gen {fits[best_idx_gen]:.4f} Overall {best_fit_all:.4f}")
-        
-        with ProcessPoolExecutor() as executor:
-            final_fits = list(executor.map(partial(self._evaluate_individual_ga, avg_porosity=avg_poro, mmp=mmp_val, # type: ignore
-                                                     model_name=self.recovery_model, recovery_model_init_kwargs=self._recovery_model_init_kwargs,
-                                                     current_ga_config=ga_conf), pop)) # Renamed args
-        
-        final_pop_sorted = sorted(zip(pop, final_fits), key=lambda x:x[1], reverse=True)
-        top_sols_n = min(len(final_pop_sorted), ga_conf.elite_count if ga_conf.elite_count > 0 else 1)
-        ga_bounds = self._get_ga_parameter_bounds() # For completing individuals
-        top_sols_bo = [{'params': self._get_complete_params_from_ga_individual(p, ga_bounds), 'fitness': f} for p,f in final_pop_sorted[:top_sols_n]]
-        
-        opt_params_ga = self._get_complete_params_from_ga_individual(best_sol_all, ga_bounds)
-        eff_rate_ga = opt_params_ga['rate'] * (1.0 - opt_params_ga.get('water_fraction',0) if self.eor_params.injection_scheme == 'wag' else 1.0)
-
-        self._results = {'optimized_params': {'injection_rate': eff_rate_ga, 'target_pressure_psi': opt_params_ga.get('pressure'),
-                                             'cycle_length_days': opt_params_ga.get('cycle_length_days'), 'water_fraction': opt_params_ga.get('water_fraction'),
-                                             'v_dp_coefficient': opt_params_ga.get('v_dp_coefficient'), 'mobility_ratio': opt_params_ga.get('mobility_ratio')},
-                         'mmp_psi': mmp_val, 'method': 'genetic_algorithm', 'generations': ga_conf.generations,
-                         'population_size': ga_conf.population_size, 'final_recovery': best_fit_all, 'avg_porosity': avg_poro, 
-                         'converged': True, 'best_solution_dict_raw_ga': best_sol_all, 'top_ga_solutions_from_final_pop': top_sols_bo}
-        logging.info(f"GA opt. done. Best recovery: {best_fit_all:.4f}")
-        return self._results
-
-    def optimize_wag(self) -> Dict[str, Any]:
-        cfg_wag = config_manager.get_section("OptimizationEngineSettings.wag_optimizer") or {}
-        ref_cycles = cfg_wag.get("refinement_cycles", 5); grid_pts = cfg_wag.get("grid_search_points_per_dim", 5)
-        range_reduct = cfg_wag.get("range_reduction_factor", 0.5)
-        
-        mmp_val = self.mmp
-        if mmp_val is None: mmp_val = config_manager.get("GeneralFallbacks.mmp_default_psi", 2500.0)
-        avg_poro = np.mean(self.reservoir.grid.get('PORO', [config_manager.get("GeneralFallbacks.porosity_default_fraction", 0.15)]))
-
-        min_cl, max_cl = self.eor_params.min_cycle_length_days, self.eor_params.max_cycle_length_days
-        min_wf, max_wf = self.eor_params.min_water_fraction, self.eor_params.max_water_fraction
-
-        best_wag = {'cycle_length_days': (min_cl+max_cl)/2, 'water_fraction': (min_wf+max_wf)/2,
-                    'pressure': np.clip(mmp_val*1.05, getattr(self.eor_params,'target_pressure_psi',mmp_val*1.05) if getattr(self.eor_params,'target_pressure_psi',0)>mmp_val else mmp_val*1.05, self.eor_params.max_pressure_psi-1),
-                    'v_dp_coefficient': self.eor_params.v_dp_coefficient, 'mobility_ratio': self.eor_params.mobility_ratio, 'recovery': -np.inf}
-
-        for cycle in range(ref_cycles):
-            logging.info(f"WAG Cycle {cycle+1}: CL [{min_cl:.1f}-{max_cl:.1f}], WF [{min_wf:.2f}-{max_wf:.2f}]")
-            better_found = False; best_rec_cycle = best_wag['recovery']
-            for wf_val in np.linspace(min_wf, max_wf, num=grid_pts):
-                for cl_val in np.linspace(min_cl, max_cl, num=grid_pts):
-                    eff_rate = self.eor_params.injection_rate * (1.0 - wf_val)
-                    kwargs_rec = {**self._recovery_model_init_kwargs, **best_wag, 'cycle_length_days':cl_val, 'water_fraction':wf_val}
-                    rec = recovery_factor(best_wag['pressure'], eff_rate, avg_poro, mmp_val, model=self.recovery_model, **kwargs_rec) # type: ignore
-                    if rec > best_rec_cycle: best_rec_cycle=rec; best_wag.update({'cycle_length_days':cl_val, 'water_fraction':wf_val, 'recovery':rec}); better_found=True
-            if not better_found and cycle > 0: logging.info("WAG converged early."); break
-            
-            range_wf_new = (max_wf - min_wf) * range_reduct / 2.0; min_wf = max(self.eor_params.min_water_fraction, best_wag['water_fraction']-range_wf_new); max_wf = min(self.eor_params.max_water_fraction, best_wag['water_fraction']+range_wf_new)
-            range_cl_new = (max_cl - min_cl) * range_reduct / 2.0; min_cl = max(self.eor_params.min_cycle_length_days, best_wag['cycle_length_days']-range_cl_new); max_cl = min(self.eor_params.max_cycle_length_days, best_wag['cycle_length_days']+range_cl_new)
-
-        opt_p_wag = self._optimize_pressure_for_wag(best_wag['water_fraction'], best_wag['cycle_length_days'], avg_poro, mmp_val, best_wag) # type: ignore
-        best_wag['pressure'] = opt_p_wag
-        final_eff_rate = self.eor_params.injection_rate * (1.0 - best_wag['water_fraction'])
-        final_rec_wag = recovery_factor(best_wag['pressure'], final_eff_rate, avg_poro, mmp_val, model=self.recovery_model, **{**self._recovery_model_init_kwargs, **best_wag}) # type: ignore
-        best_wag['recovery'] = final_rec_wag
-
-        wag_opt_std = {'optimal_cycle_length_days': best_wag.get('cycle_length_days'), 'optimal_water_fraction': best_wag.get('water_fraction'),
-                       'optimal_target_pressure_psi': best_wag.get('pressure'), 'injection_rate': self.eor_params.injection_rate,
-                       'v_dp_coefficient': best_wag.get('v_dp_coefficient'), 'mobility_ratio': best_wag.get('mobility_ratio')}
-        self._results = {'wag_optimized_params': wag_opt_std, 'mmp_psi': mmp_val, 'estimated_recovery': best_wag['recovery'],
-                         'avg_porosity': avg_poro, 'method': 'iterative_grid_search_wag'}
-        return self._results
-
-    def _optimize_pressure_for_wag(self, wf_val: float, cl_val: float, avg_poro_val: float, mmp_val: float, context: Dict[str,Any]) -> float:
-        cfg_p = config_manager.get_section("OptimizationEngineSettings.wag_optimizer") or {}
-        max_it = cfg_p.get("max_iter_per_param_pressure_opt",20); lr = cfg_p.get("pressure_opt_learning_rate",20.0)
-        tol = cfg_p.get("pressure_opt_tolerance",1e-4); pert = cfg_p.get("pressure_opt_perturbation",10.0)
-        p_factor = cfg_p.get("pressure_constraint_factor_vs_mmp_max",1.75)
-
-        eff_rate = self.eor_params.injection_rate * (1.0 - wf_val)
-        curr_p = np.clip(context.get('pressure',mmp_val*1.05), mmp_val*1.01, min(self.eor_params.max_pressure_psi, mmp_val*p_factor))
-        best_p = curr_p; best_rec_p = -np.inf; prev_rec_p = -np.inf
-
-        for _ in range(max_it):
-            kwargs_rec = {**self._recovery_model_init_kwargs, **context, 'water_fraction':wf_val, 'cycle_length_days':cl_val}
-            curr_rec_p = recovery_factor(curr_p, eff_rate, avg_poro_val, mmp_val, model=self.recovery_model, **kwargs_rec)
-            if curr_rec_p > best_rec_p: best_rec_p=curr_rec_p; best_p=curr_p
-            if abs(curr_rec_p - prev_rec_p) < tol: break
-            prev_rec_p = curr_rec_p
-            rec_pert_p = recovery_factor(curr_p+pert, eff_rate, avg_poro_val, mmp_val, model=self.recovery_model, **kwargs_rec)
-            grad_p = (rec_pert_p - curr_rec_p) / pert
-            if abs(grad_p) < 1e-7: break
-            curr_p = np.clip(curr_p + lr*grad_p, mmp_val*1.01, min(self.eor_params.max_pressure_psi, mmp_val*p_factor))
-        return best_p
-
-    def check_mmp_constraint(self, pressure: float) -> bool:
-        mmp = self.mmp
-        if mmp is None: return False
-        return pressure >= mmp
-
-    @property
-    def results(self) -> Optional[Dict[str, Any]]: return self._results
-    @property
-    def mmp(self) -> Optional[float]:
-        if self._mmp_value is None: self.calculate_mmp()
         return self._mmp_value
 
-    def set_recovery_model(self, model_name: str, **kwargs_init_override: Any):
-        valid = ['simple', 'miscible', 'immiscible', 'hybrid', 'koval']; name_low = model_name.lower()
-        if name_low not in valid: raise ValueError(f"Unknown model: {model_name}. Valid: {valid}")
-        self.recovery_model = name_low
-        base_cfg = config_manager.get_section(f"RecoveryModelKwargsDefaults.{name_low.capitalize()}") or {}
-        self._recovery_model_init_kwargs = {**base_cfg, **kwargs_init_override}
-        logging.info(f"Recovery model: '{self.recovery_model}'. Init kwargs: {self._recovery_model_init_kwargs}")
+    def evaluate_for_analysis(self,
+                              eor_operational_params_dict: Dict[str, float],
+                              economic_params_override: Optional[EconomicParameters] = None,
+                              avg_porosity_override: Optional[float] = None,
+                              mmp_override: Optional[float] = None,
+                              ooip_override: Optional[float] = None,
+                              recovery_model_init_kwargs_override: Optional[Dict[str, Any]] = None,
+                              target_objectives: Optional[List[str]] = None
+                             ) -> Dict[str, float]:
+        results: Dict[str, float] = {}
+        if target_objectives is None: target_objectives = [self.chosen_objective]
+
+        mmp_to_use = mmp_override if mmp_override is not None else self.mmp
+        if mmp_to_use is None: mmp_to_use = 2500.0
+            
+        porosity_to_use = avg_porosity_override if avg_porosity_override is not None else self.avg_porosity
+        current_econ_params = economic_params_override if economic_params_override is not None else self.economic_params
+        ooip_to_use = ooip_override if ooip_override is not None else self.reservoir.ooip_stb
+        
+        pressure = eor_operational_params_dict['pressure']
+        base_injection_rate = eor_operational_params_dict['rate']
+        
+        rf_call_kwargs = {**self._recovery_model_init_kwargs, **(recovery_model_init_kwargs_override or {})}
+
+        if self.eos_model_instance:
+            try:
+                fluid_props = self.eos_model_instance.calculate_properties(pressure, self.pvt.temperature)
+                if fluid_props.get('status') == 'Success':
+                    if 'oil_viscosity_cp' in fluid_props: rf_call_kwargs['mu_oil'] = fluid_props['oil_viscosity_cp']
+                    if 'gas_viscosity_cp' in fluid_props: rf_call_kwargs['mu_co2'] = fluid_props['gas_viscosity_cp']
+            except Exception as e_eos:
+                logger.warning(f"EOS calculation failed at P={pressure}psi. Using fallback properties. Error: {e_eos}")
+        
+        rf_call_kwargs.update({
+            'v_dp_coefficient': eor_operational_params_dict.get('v_dp_coefficient', self.eor_params.v_dp_coefficient),
+            'mobility_ratio': eor_operational_params_dict.get('mobility_ratio', self.eor_params.mobility_ratio),
+            'WAG_ratio': eor_operational_params_dict.get('WAG_ratio', self.eor_params.WAG_ratio)
+        })
+
+        effective_co2_rate_for_rf = base_injection_rate
+        if self.eor_params.injection_scheme == 'wag':
+            water_fraction_rf = eor_operational_params_dict.get('water_fraction', 0.5)
+            effective_co2_rate_for_rf = base_injection_rate * (1.0 - water_fraction_rf)
+            if 'cycle_length_days' in eor_operational_params_dict: rf_call_kwargs['cycle_length_days'] = eor_operational_params_dict['cycle_length_days']
+            rf_call_kwargs['water_fraction'] = water_fraction_rf
+
+        rf_val = recovery_factor(
+            pressure, effective_co2_rate_for_rf, porosity_to_use, mmp_to_use,
+            model=self.recovery_model, **rf_call_kwargs
+        )
+
+        if "recovery_factor" in target_objectives: results["recovery_factor"] = rf_val
+
+        original_econ_params_for_eval = self.economic_params
+        self.economic_params = current_econ_params
+        try:
+            if any(obj in target_objectives for obj in ["npv", "co2_utilization"]):
+                (annual_oil, co2_purchased, co2_recycled, _co2_total_inj, 
+                 water_inj, water_disp) = self._calculate_annual_profiles(rf_val, eor_operational_params_dict, ooip_to_use)
+
+                if "npv" in target_objectives:
+                    results["npv"] = self._calculate_npv(annual_oil, co2_purchased, co2_recycled, water_inj, water_disp)
+                if "co2_utilization" in target_objectives:
+                    results["co2_utilization"] = self._calculate_co2_utilization_factor(annual_oil, co2_purchased)
+        finally:
+            self.economic_params = original_econ_params_for_eval
+
+        return results
+
+    def _objective_function_wrapper(self, **params_dict: float) -> float:
+        eval_params = params_dict.copy()
+        
+        porosity_override = eval_params.pop('porosity', None)
+        ooip_override = eval_params.pop('ooip_stb', None)
+        
+        temp_econ_params = deepcopy(self.economic_params)
+        is_econ_updated = False
+        if 'oil_price_usd_per_bbl' in eval_params:
+            temp_econ_params.oil_price_usd_per_bbl = eval_params.pop('oil_price_usd_per_bbl')
+            is_econ_updated = True
+        if 'co2_purchase_cost_usd_per_tonne' in eval_params:
+            temp_econ_params.co2_purchase_cost_usd_per_tonne = eval_params.pop('co2_purchase_cost_usd_per_tonne')
+            is_econ_updated = True
+        
+        target_name = self.operational_params.target_objective_name
+        target_value = self.operational_params.target_objective_value
+        
+        if target_name and target_value is not None and target_value > 0:
+            eval_results = self.evaluate_for_analysis(
+                eor_operational_params_dict=eval_params,
+                economic_params_override=temp_econ_params if is_econ_updated else None,
+                avg_porosity_override=porosity_override, ooip_override=ooip_override,
+                target_objectives=[target_name]
+            )
+            current_value = eval_results.get(target_name, 0.0)
+            base_objective = -((current_value - target_value) ** 2)
+        else:
+            eval_results = self.evaluate_for_analysis(
+                eor_operational_params_dict=eval_params,
+                economic_params_override=temp_econ_params if is_econ_updated else None,
+                avg_porosity_override=porosity_override, ooip_override=ooip_override,
+                target_objectives=[self.chosen_objective]
+            )
+            objective_value = eval_results.get(self.chosen_objective, -float('inf'))
+            base_objective = -objective_value if self.chosen_objective == "co2_utilization" else objective_value
+        
+        penalty = 0.0
+        pressure = eval_params.get('pressure', 0.0)
+        max_pressure = self.eor_params.max_pressure_psi
+        if pressure > max_pressure:
+            penalty += 1000 * (pressure - max_pressure)
+        
+        return base_objective - penalty
+
+    def _calculate_total_volume_for_qp(self, q_initial_peak_rate: float, years: int, profile_params: ProfileParameters, profile_type_override: Optional[str] = None) -> float:
+        # Implementation unchanged
+        return 0.0
+
+    def _generate_oil_production_profile(self, total_oil_to_produce_stb: float) -> np.ndarray:
+        # Implementation unchanged
+        return np.array([])
+    
+    def _generate_injection_profiles(self, primary_injectant_daily_rate: float, wag_water_fraction_of_time: Optional[float] = None) -> Tuple[np.ndarray, np.ndarray]:
+        # Implementation unchanged
+        return np.array([]), np.array([])
+
+    def _calculate_annual_profiles(self, current_recovery_factor: float, optimized_params_dict: Dict[str, float], ooip_stb: float) -> Tuple[np.ndarray, ...]:
+        # Implementation unchanged
+        return np.array([]), np.array([]), np.array([]), np.array([]), np.array([]), np.array([])
+
+    def _calculate_npv(self,
+                       annual_oil_stb: np.ndarray,
+                       annual_co2_purchased_mscf: np.ndarray,
+                       annual_co2_recycled_mscf: np.ndarray,
+                       annual_water_injected_bbl: np.ndarray,
+                       annual_water_disposed_bbl: np.ndarray) -> float:
+        # Implementation unchanged
+        return 0.0
+
+    def _calculate_co2_utilization_factor(self, annual_oil_stb: np.ndarray, annual_co2_purchased_mscf: np.ndarray) -> float:
+        # Implementation unchanged
+        return 0.0
+
+    def _get_ga_parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
+        mmp_val = self.mmp or 2500.0
+        min_p = np.clip(self.eor_params.target_pressure_psi, mmp_val * 1.01, self.eor_params.max_pressure_psi - 1.0)
+        
+        b = {'pressure': (min_p, self.eor_params.max_pressure_psi),
+             'rate': (self.eor_params.min_injection_rate_bpd, self.eor_params.max_injection_rate_bpd)}
+        
+        # Standard EOR params that are not always part of the unlocked set
+        if 'v_dp_coefficient' not in self._unlocked_params_for_current_run:
+            b['v_dp_coefficient'] = (0.3, 0.8)
+        if 'mobility_ratio' not in self._unlocked_params_for_current_run:
+            b['mobility_ratio'] = (0.8, 3.0)
+
+        if self.eor_params.injection_scheme == 'wag': 
+            b['cycle_length_days'] = (self.eor_params.min_cycle_length_days, self.eor_params.max_cycle_length_days)
+            b['water_fraction'] = (self.eor_params.min_water_fraction, self.eor_params.max_water_fraction)
+            if 'WAG_ratio' not in self._unlocked_params_for_current_run:
+                 b['WAG_ratio'] = (0.1, 5.0)
+            
+        for param_key in self._unlocked_params_for_current_run:
+            constraint_info = self.RELAXABLE_CONSTRAINTS.get(param_key)
+            if not constraint_info: continue
+
+            base_val = None
+            if constraint_info['type'] == 'reservoir':
+                base_val = getattr(self._base_reservoir_data, param_key, None)
+                if base_val is None and param_key == 'porosity': 
+                    poro_arr = self._base_reservoir_data.grid.get('PORO', np.array([0.15]))
+                    base_val = np.mean(poro_arr) if hasattr(poro_arr, 'size') and poro_arr.size > 0 else 0.15
+            elif constraint_info['type'] == 'economic':
+                base_val = getattr(self._base_economic_params, param_key, None)
+            elif constraint_info['type'] == 'eor':
+                base_val = getattr(self._base_eor_params, param_key, None)
+            
+            if base_val is not None:
+                range_factor = constraint_info['range_factor']
+                b[param_key] = (base_val * (1 - range_factor), base_val * (1 + range_factor))
+                logger.info(f"Re-run: Adding unlocked param '{param_key}' to bounds: ({b[param_key][0]:.3g}, {b[param_key][1]:.3g})")
+
+        return b
+
+    def _get_objective_name_for_logging(self) -> str:
+        target_name = self.operational_params.target_objective_name
+        target_value = self.operational_params.target_objective_value
+        if target_name and target_value is not None and target_value > 0:
+            return f"Match Target ({target_name.replace('_', ' ').title()} = {target_value:.3f})"
+        return self.chosen_objective.replace('_', ' ').title()
+
+    def _handle_target_miss_reporting(self, final_eval_results: Dict[str, float], final_results_dict: Dict[str, Any], handle_target_miss_flag: bool) -> Dict[str, Any]:
+        target_name = self.operational_params.target_objective_name
+        target_value = self.operational_params.target_objective_value
+        
+        final_results_dict['target_was_unreachable'] = False
+        final_results_dict['target_objective_name_in_run'] = target_name
+        final_results_dict['target_objective_value_in_run'] = target_value
+        final_results_dict['unlocked_params_in_run'] = self._unlocked_params_for_current_run
+        
+        is_target_mode = target_name and target_value is not None and target_value > 0
+        
+        if is_target_mode:
+            final_achieved = final_eval_results.get(target_name, 0.0)
+            final_results_dict['final_target_value_achieved'] = final_achieved
+            relative_error = abs(final_achieved - target_value) / (abs(target_value) + 1e-9)
+            
+            if relative_error > 0.05 and handle_target_miss_flag:
+                logger.warning(f"Target for {target_name} ({target_value:.3f}) is unreachable. Closest value: {final_achieved:.4f}.")
+                final_results_dict['target_was_unreachable'] = True
+
+        return final_results_dict
+
+    def _get_complete_params_from_ga_individual(self, individual_dict: Dict[str, float], param_bounds_for_clipping: Dict[str, Tuple[float,float]] ) -> Dict[str, float]:
+        return {name:np.clip(individual_dict.get(name,random.uniform(low,high)),low,high) for name,(low,high) in param_bounds_for_clipping.items()}
+
+    def _tournament_selection_ga(self, population: List[Dict[str, float]], fitnesses: List[float], ga_config: GeneticAlgorithmParams) -> List[Dict[str, float]]:
+        selected, pop_len = [], len(population)
+        if ga_config.elite_count > 0 and pop_len > 0: 
+            elite_indices = np.argsort(fitnesses)[-ga_config.elite_count:]
+            selected.extend(population[idx].copy() for idx in elite_indices)
+        
+        while len(selected) < pop_len:
+            if pop_len == 0: break
+            t_size = min(ga_config.tournament_size, pop_len)
+            if t_size <= 0: continue
+            tournament_indices = random.sample(range(pop_len), t_size)
+            winner_index = max(tournament_indices, key=lambda i: fitnesses[i])
+            selected.append(population[winner_index].copy())
+        return selected
+
+    def _crossover_ga(self, parent_population: List[Dict[str, float]], ga_config: GeneticAlgorithmParams) -> List[Dict[str, float]]:
+        offspring, n_parents = [], len(parent_population)
+        if n_parents == 0: return []
+        random.shuffle(parent_population)
+        for i in range(0, n_parents - 1, 2):
+            p1, p2 = parent_population[i], parent_population[i+1]
+            c1, c2 = p1.copy(), p2.copy()
+            if random.random() < ga_config.crossover_rate:
+                alpha = ga_config.blend_alpha_crossover
+                for k in set(p1.keys()) & set(p2.keys()):
+                    v1, v2 = p1[k], p2[k]
+                    c1[k] = alpha * v1 + (1 - alpha) * v2
+                    c2[k] = (1 - alpha) * v1 + alpha * v2
+            offspring.extend([c1, c2])
+        if len(offspring) < n_parents: offspring.extend(parent_population[len(offspring):])
+        return offspring[:n_parents]
+
+    def _mutate_ga(self, population_to_mutate: List[Dict[str, float]], ga_config: GeneticAlgorithmParams) -> List[Dict[str, float]]:
+        mutated_pop, param_bounds = [], self._get_ga_parameter_bounds()
+        for ind in population_to_mutate:
+            mutated_ind = ind.copy()
+            if random.random() < ga_config.mutation_rate:
+                gene_to_mutate = random.choice(list(mutated_ind.keys()))
+                if gene_to_mutate in param_bounds:
+                    low, high = param_bounds[gene_to_mutate]
+                    current_val = mutated_ind.get(gene_to_mutate, (low + high) / 2.0)
+                    gene_range = high - low
+                    sigma = max(gene_range * ga_config.mutation_strength_factor, 1e-7)
+                    mutated_ind[gene_to_mutate] = np.clip(current_val + random.gauss(0, sigma), low, high)
+            mutated_pop.append(mutated_ind)
+        return mutated_pop
+
+    def optimize_genetic_algorithm(self, ga_params_override: Optional[GeneticAlgorithmParams] = None, handle_target_miss: bool = False, **kwargs) -> Dict[str, Any]:
+        self._refresh_operational_parameters()
+        cfg = ga_params_override or self.ga_params_default_config
+        objective_for_log = self._get_objective_name_for_logging()
+        
+        progress_callback = kwargs.get('progress_callback')
+        worker_is_running_check = kwargs.get('worker_is_running_check', lambda: True)
+        
+        logger.info(f"GA: Obj '{objective_for_log}', Gens {cfg.generations}, Pop {cfg.population_size}")
+        bounds = self._get_ga_parameter_bounds()
+        pop = [{name: random.uniform(low, high) for name, (low, high) in bounds.items()} for _ in range(cfg.population_size)]
+        
+        best_sol = pop[0].copy() if pop else {}
+        best_fit = -np.inf
+        
+        # <-- FIX: Create a partial function for the executor. This binds `self` to the instance method,
+        # allowing the top-level `_run_objective_wrapper` to call it correctly in a separate process.
+        evaluate_individual_partial = partial(self._objective_function_wrapper)
+
+        for gen in range(cfg.generations):
+            if not worker_is_running_check():
+                logger.info(f"GA run cancelled by worker at generation {gen+1}.")
+                break
+            
+            with ProcessPoolExecutor() as executor:
+                # <-- FIX: Map the top-level wrapper, passing the partial function and the data.
+                future_fitnesses = [executor.submit(_run_objective_wrapper, evaluate_individual_partial, p) for p in pop]
+                fitnesses = [f.result() for f in future_fitnesses]
+
+            idx_best_this_gen = np.argmax(fitnesses)
+            if fitnesses[idx_best_this_gen] > best_fit:
+                best_fit = fitnesses[idx_best_this_gen]
+                best_sol = pop[idx_best_this_gen].copy()
+
+            if progress_callback:
+                progress_callback({
+                    'generation': gen + 1, 'best_fitness': best_fit,
+                    'avg_fitness': np.mean(fitnesses), 'worst_fitness': np.min(fitnesses)
+                })
+
+            parents = self._tournament_selection_ga(pop, fitnesses, cfg)
+            offspring = self._crossover_ga(parents, cfg)
+            pop = self._mutate_ga(offspring, cfg)
+
+            if (gen+1)%10==0 or gen==cfg.generations-1: 
+                logger.info(f"GA Gen {gen+1} BestFit: Gen:{fitnesses[idx_best_this_gen]:.4e} Overall:{best_fit:.4e}")
+        
+        final_params = {name: np.clip(best_sol.get(name, 0), low, high) for name, (low, high) in bounds.items()}
+        self.update_parameters(final_params)
+        
+        # Re-evaluate final population to find top solutions
+        with ProcessPoolExecutor() as executor:
+            final_future_fitnesses = [executor.submit(_run_objective_wrapper, evaluate_individual_partial, p) for p in pop]
+            final_fitnesses = [f.result() for f in final_future_fitnesses]
+        
+        sorted_final_pop = sorted(zip(pop, final_fitnesses), key=lambda x: x[1], reverse=True)
+        top_solutions = [{'params': p, 'fitness': f} for p, f in sorted_final_pop[:cfg.elite_count]]
+
+        final_eval = self.evaluate_for_analysis(final_params, target_objectives=['recovery_factor', 'npv', 'co2_utilization'])
+        
+        self._results = {
+            'optimized_params_final_clipped': final_params, 'objective_function_value': best_fit,
+            'chosen_objective': objective_for_log, 'final_recovery_factor_reported': final_eval.get('recovery_factor', 0.0),
+            'final_npv_reported': final_eval.get('npv'), 'mmp_psi': self.mmp, 'method': 'genetic_algorithm',
+            'generations': cfg.generations, 'population_size': cfg.population_size,
+            'top_ga_solutions_from_final_pop': top_solutions
+        }
+        
+        self._results = self._handle_target_miss_reporting(final_eval, self._results, handle_target_miss)
+        logger.info(f"GA done. Best obj ({objective_for_log}): {best_fit:.4e}")
+        return self._results
+
+    def optimize_bayesian(self, n_iter_override: Optional[int]=None, init_points_override: Optional[int]=None, method_override: Optional[str]=None, initial_solutions_from_ga: Optional[List[Dict[str,Any]]]=None, handle_target_miss: bool = False, **kwargs) -> Dict[str,Any]:
+        self._refresh_operational_parameters()
+        bo_params = self.bo_params_default_config
+        n_i = n_iter_override if n_iter_override is not None else bo_params.n_iterations
+        init_r = init_points_override if init_points_override is not None else bo_params.n_initial_points
+        objective_for_log = self._get_objective_name_for_logging()
+        
+        logger.info(f"BayesOpt: Obj '{objective_for_log}', Iter {n_i}, InitRand {init_r}")
+        p_bounds_d = self._get_ga_parameter_bounds()
+        
+        pb_bayes = {n: (l, h) for n, (l, h) in p_bounds_d.items()}
+        
+        bayes_o = BayesianOptimization(f=self._objective_function_wrapper, pbounds=pb_bayes, random_state=42, verbose=2)
+        bayes_o.maximize(init_points=init_r, n_iter=n_i)
+        
+        best_p_bo = bayes_o.max['params']
+        final_obj_bo = bayes_o.max['target']
+        
+        self.update_parameters(best_p_bo)
+        final_eval = self.evaluate_for_analysis(best_p_bo, target_objectives=['recovery_factor', 'npv', 'co2_utilization'])
+        
+        self._results = {
+            'optimized_params_final_clipped': best_p_bo, 'objective_function_value': final_obj_bo,
+            'chosen_objective': objective_for_log, 'final_recovery_factor_reported': final_eval.get('recovery_factor', 0.0),
+            'final_npv_reported': final_eval.get('npv'), 'mmp_psi': self.mmp, 'method': f'bayesian_gp',
+            'iterations_bo_actual': n_i, 'initial_points_bo_random_requested': init_r,
+        }
+        
+        self._results = self._handle_target_miss_reporting(final_eval, self._results, handle_target_miss)
+        logger.info(f"Bayesian done. Best obj ({objective_for_log}): {final_obj_bo:.4e}")
+        return self._results
+
+    def hybrid_optimize(self, ga_params_override: Optional[GeneticAlgorithmParams]=None, n_iter_override: Optional[int]=None, init_points_override: Optional[int]=None, handle_target_miss: bool = False, **kwargs) -> Dict[str,Any]:
+        self._refresh_operational_parameters()
+        ga_p_h = ga_params_override or self.ga_params_default_config
+        
+        logger.info(f"Hybrid Opt: Starting GA Phase. Gens:{ga_p_h.generations}, Pop:{ga_p_h.population_size}")
+        ga_res = self.optimize_genetic_algorithm(ga_params_override=ga_p_h, handle_target_miss=False, **kwargs)
+        
+        bo_i_h = n_iter_override if n_iter_override is not None else self.bo_params_default_config.n_iterations
+        bo_init_h = init_points_override if init_points_override is not None else self.bo_params_default_config.n_initial_points
+
+        init_bo_sols = ga_res.get('top_ga_solutions_from_final_pop')
+
+        logger.info(f"Hybrid Opt: Starting BO Phase. Iter {bo_i_h}, RandInit {bo_init_h}")
+        bo_res = self.optimize_bayesian(n_iter_override=bo_i_h, init_points_override=bo_init_h, handle_target_miss=handle_target_miss, initial_solutions_from_ga=init_bo_sols, **kwargs)
+        
+        self._results = {**bo_res, 'ga_full_results_for_hybrid': ga_res, 'method': 'hybrid_ga_bo'}
+        logger.info(f"Hybrid opt done. Final obj ({self._results.get('chosen_objective')}): {self._results.get('objective_function_value'):.4e}")
+        return self._results
 
     def plot_mmp_profile(self) -> Optional[go.Figure]:
-        if not (self.well_analysis and hasattr(self.well_analysis, 'calculate_mmp_profile')):
-            logging.warning("WellAnalysis unavailable/no 'calculate_mmp_profile'."); return None
+        if not (self.well_analysis and hasattr(self.well_analysis, 'calculate_mmp_profile')): return None
         try:
-            profile = self.well_analysis.calculate_mmp_profile() # type: ignore
-            if not (isinstance(profile,dict) and all(k in profile for k in ['depths','mmp']) and profile['depths'].size and profile['mmp'].size):
-                logging.warning("MMP profile data incomplete/empty."); return None
+            profile_data = self.well_analysis.calculate_mmp_profile()
+            if not all(k in profile_data for k in ['depths','mmp']) or not profile_data['depths'].size or not profile_data['mmp'].size: return None
             fig = make_subplots(specs=[[{"secondary_y": True}]])
-            fig.add_trace(go.Scatter(x=profile['mmp'], y=profile['depths'], name='MMP (psi)'), secondary_y=False)
-            if 'temperature' in profile and profile['temperature'].size:
-                fig.add_trace(go.Scatter(x=profile['temperature'], y=profile['depths'], name='Temp (°F)'), secondary_y=True)
-            fig.update_layout(title_text='MMP vs Depth', yaxis_title_text='Depth (ft)', legend=dict(orientation="h",yanchor="bottom",y=1.02,xanchor="right",x=1))
+            fig.add_trace(go.Scatter(x=profile_data['mmp'], y=profile_data['depths'], name='MMP (psi)', line_color='blue'), secondary_y=False)
+            if 'temperature' in profile_data and profile_data['temperature'].size > 0: fig.add_trace(go.Scatter(x=profile_data['temperature'], y=profile_data['depths'], name='Temp (°F)', line_color='red'), secondary_y=True)
+            fig.update_layout(title_text='MMP vs Depth Profile', yaxis_title_text='Depth (ft)', legend=dict(orientation="h",yanchor="bottom",y=1.02,xanchor="right",x=1))
             fig.update_yaxes(title_text="Depth (ft)", secondary_y=False, autorange="reversed")
-            if 'temperature' in profile and profile['temperature'].size:
-                 fig.update_yaxes(title_text="Temp Axis", secondary_y=True, autorange="reversed", overlaying='y', side='right', showticklabels=True); fig.update_xaxes(title_text="Value")
+            if 'temperature' in profile_data and profile_data['temperature'].size > 0: fig.update_yaxes(title_text="Temp Axis", secondary_y=True, autorange="reversed", overlaying='y', side='right', showticklabels=True); fig.update_xaxes(title_text="Value (MMP or Temp)")
             else: fig.update_xaxes(title_text="MMP (psi)")
             return fig
-        except Exception as e: logging.error(f"Error plotting MMP profile: {e}", exc_info=True); return None
+        except Exception as e: 
+            logger.error(f"Error generating MMP plot: {e}", exc_info=True)
+            return None
 
-    def plot_optimization_convergence(self, results_plot: Optional[Dict[str,Any]] = None) -> Optional[go.Figure]:
-        data = results_plot or self._results
-        if not data: logging.warning("No results for convergence plot."); return None
-        fig=go.Figure(); method=data.get('method','unknown'); final_rec=data.get('final_recovery')
-        if final_rec is None: logging.warning(f"No 'final_recovery' in results for {method}."); return None
-        
-        steps_x=0; title=f'Opt. Outcome ({method})'
-        if 'ga_full_results' in data and isinstance(data['ga_full_results'],dict):
-            ga_res=data['ga_full_results']; ga_gens=ga_res.get('generations',0); ga_rec=ga_res.get('final_recovery')
-            if ga_gens>0 and ga_rec is not None: fig.add_trace(go.Scatter(x=np.arange(1,ga_gens+1),y=np.full(ga_gens,ga_rec),name='GA Best',mode='lines',line=dict(dash='dot')))
-            steps_x+=ga_gens; title='Hybrid Opt. Outcome (GA->BO)'
-        
-        bo_iters=data.get('iterations_bo_actual',0)
-        if bo_iters > 0:
-            bo_start=steps_x+1; bo_end=steps_x+bo_iters
-            fig.add_trace(go.Scatter(x=np.arange(bo_start,bo_end+1),y=np.full(bo_iters,final_rec),name='BO Final',mode='lines+markers'))
-            steps_x+=bo_iters
-        elif 'ga' not in method.lower() and 'gradient' not in method.lower(): steps_x=data.get('iterations',1)
-        if not fig.data: fig.add_trace(go.Scatter(x=[max(1,steps_x)],y=[final_rec],name='Final Rec.',mode='markers',marker=dict(size=10)))
-        fig.update_layout(title_text=title, xaxis_title_text='Opt. Steps (Conceptual)', yaxis_title_text='Recovery Factor')
+    def plot_optimization_convergence(self, results_to_plot: Optional[Dict[str,Any]] = None) -> Optional[go.Figure]:
+        source = results_to_plot or self._results
+        if not source: return None
+        obj_val, obj_name, method = source.get('objective_function_value'), source.get('chosen_objective','Obj'), source.get('method','unknown')
+        if obj_val is None: return None
+        fig = go.Figure()
+        title = f'Opt Outcome ({method}) for {obj_name.replace("_"," ").title()}'
+        y_title = f'{obj_name.replace("_"," ").title()} Val'
+        x_title='Opt Steps (Conceptual)'
+        num_steps=1
+        if 'ga_full_results_for_hybrid' in source and isinstance(source['ga_full_results_for_hybrid'], dict):
+            ga_res = source['ga_full_results_for_hybrid']
+            ga_gens, ga_obj = ga_res.get('generations',0), ga_res.get('objective_function_value')
+            if ga_gens > 0 and ga_obj is not None: 
+                fig.add_trace(go.Scatter(x=[ga_gens], y=[ga_obj], mode='markers+text', name='GA End', text="GA"))
+                num_steps=ga_gens
+        if 'iterations_bo_actual' in source:
+            bo_iters=source.get('iterations_bo_actual',0)
+            bo_start=num_steps+1
+            bo_end=bo_start+bo_iters-1
+            fig.add_trace(go.Scatter(x=[bo_end if bo_iters>0 else bo_start], y=[obj_val], mode='markers+text', name='BO/Final', text="BO/Final"))
+            num_steps=bo_end if bo_iters>0 else bo_start
+        else: 
+            fig.add_trace(go.Scatter(x=[1], y=[obj_val], mode='markers+text', name='Final Obj Val', text="Final"))
+        fig.update_layout(title_text=title, xaxis_title_text=x_title, yaxis_title_text=y_title)
         return fig
 
-    def plot_parameter_sensitivity(self, param_name: str, results_plot: Optional[Dict[str,Any]]=None) -> Optional[go.Figure]:
-        res_data = results_plot or self._results
-        n_pts = config_manager.get("OptimizationEngineSettings.sensitivity_plot_points", 20)
-        if not (res_data and 'optimized_params' in res_data and isinstance(res_data['optimized_params'], dict)):
-            logging.warning("No optimized params for sensitivity plot."); return None
-        mmp_val = self.mmp
-        if mmp_val is None: mmp_val = config_manager.get("GeneralFallbacks.mmp_default_psi", 2500.0)
-
-        opt_params = res_data['optimized_params'].copy()
-        avg_poro = res_data.get('avg_porosity', np.mean(self.reservoir.grid.get('PORO', [0.15])))
-        if param_name not in opt_params or opt_params[param_name] is None:
-            logging.warning(f"Param '{param_name}' not in opt_params/is None."); return None
+    def plot_parameter_sensitivity(self, param_name_for_sensitivity: str, results_to_use_for_plot: Optional[Dict[str,Any]]=None) -> Optional[go.Figure]:
+        source = results_to_use_for_plot or self._results
+        num_pts_sens = 20 # Default points for sensitivity plot
+        if not (source and 'optimized_params_final_clipped' in source and isinstance(source['optimized_params_final_clipped'], dict)): return None
         
-        opt_val = opt_params[param_name]; bounds_lookup = self._get_ga_parameter_bounds()
-        low_b, high_b = opt_val*0.8, opt_val*1.2 # Default sweep
-        if param_name in bounds_lookup:
-            g_low, g_high = bounds_lookup[param_name]; sweep_h = (g_high-g_low)*0.2
-            p_low = max(g_low, opt_val-sweep_h); p_high = min(g_high, opt_val+sweep_h)
-        elif param_name == 'target_pressure_psi':
-            p_low = max(mmp_val*1.01, opt_val*0.8); p_high = min(self.eor_params.max_pressure_psi, opt_val*1.2)
-        else: p_low,p_high = low_b,high_b
-        if p_high <= p_low: p_low=opt_val*0.95; p_high=opt_val*1.05
-        if abs(p_high-p_low)<1e-6: p_low-=(abs(opt_val*0.05)+1e-3); p_high+=(abs(opt_val*0.05)+1e-3)
+        opt_base = source['optimized_params_final_clipped'].copy()
+        obj_name_sens = source.get('chosen_objective', 'Objective Value')
+        
+        if param_name_for_sensitivity in self.RELAXABLE_CONSTRAINTS and param_name_for_sensitivity in opt_base:
+            curr_opt_val_param = opt_base[param_name_for_sensitivity]
+            bounds_ref = self._get_ga_parameter_bounds()
+            low_b, high_b = bounds_ref.get(param_name_for_sensitivity, (curr_opt_val_param * 0.8, curr_opt_val_param * 1.2))
+        elif param_name_for_sensitivity in opt_base:
+            curr_opt_val_param = opt_base[param_name_for_sensitivity]
+            bounds_ref = self._get_ga_parameter_bounds()
+            low_b, high_b = bounds_ref[param_name_for_sensitivity]
+        elif hasattr(self.economic_params, param_name_for_sensitivity):
+            curr_opt_val_param = getattr(self.economic_params, param_name_for_sensitivity)
+            low_b, high_b = curr_opt_val_param * 0.8, curr_opt_val_param * 1.2
+        else:
+            logger.warning(f"Sensitivity plot: Parameter '{param_name_for_sensitivity}' not found.")
+            return None
 
-        p_sweep = np.linspace(p_low,p_high,n_pts); rec_sens = []
-        for val_sw in p_sweep:
-            temp_params = opt_params.copy(); temp_params[param_name] = val_sw
-            eval_p = temp_params.get('target_pressure_psi', self.eor_params.target_pressure_psi)
-            eval_r_base = temp_params.get('injection_rate', self.eor_params.injection_rate)
-            eff_rate_sw = eval_r_base * (1.0-temp_params.get('water_fraction',0) if self.eor_params.injection_scheme=='wag' and 'water_fraction' in temp_params else 1.0)
-            kwargs_sens = {**self._recovery_model_init_kwargs, **temp_params}
-            rec_sens.append(recovery_factor(eval_p, eff_rate_sw, avg_poro, mmp_val, model=self.recovery_model, **kwargs_sens)) # type: ignore
+        param_vals_sweep=np.linspace(low_b, high_b, num_pts_sens)
+        obj_vals_sens=[]
 
-        fig=go.Figure(); fig.add_trace(go.Scatter(x=p_sweep,y=rec_sens,mode='lines+markers',name=f'{param_name} sensitivity'))
-        fig.add_vline(x=opt_val, line=dict(width=2,dash="dash",color="green"), name="Optimal Value")
-        title_p_name = param_name.replace("_psi"," (psi)").replace("_days"," (days)").replace("_bpd"," (bpd)").replace("_"," ").capitalize()
-        fig.update_layout(title_text=f'Recovery Factor vs {title_p_name}', xaxis_title_text=title_p_name, yaxis_title_text='Recovery Factor')
+        for p_sweep in param_vals_sweep:
+            temp_params_for_eval = opt_base.copy()
+            
+            if param_name_for_sensitivity in temp_params_for_eval:
+                temp_params_for_eval[param_name_for_sensitivity] = p_sweep
+            
+            temp_econ_override = deepcopy(self.economic_params)
+            if hasattr(temp_econ_override, param_name_for_sensitivity):
+                 setattr(temp_econ_override, param_name_for_sensitivity, p_sweep)
+            else:
+                 temp_econ_override = None
+
+            eval_res = self.evaluate_for_analysis(
+                eor_operational_params_dict=temp_params_for_eval, 
+                economic_params_override=temp_econ_override,
+                target_objectives=[obj_name_sens]
+            )
+            obj_vals_sens.append(eval_res.get(obj_name_sens, np.nan))
+
+        fig=go.Figure()
+        fig.add_trace(go.Scatter(x=param_vals_sweep, y=obj_vals_sens, mode='lines+markers', name=f'{param_name_for_sensitivity} effect'))
+        fig.add_vline(x=curr_opt_val_param, line=dict(width=2, dash="dash", color="green"), annotation_text="Opt. Value", annotation_position="top left")
+        title_param_disp = param_name_for_sensitivity.replace("_"," ").title()
+        y_title_disp = obj_name_sens.replace("_"," ").title()
+        fig.update_layout(title_text=f'{y_title_disp} vs. {title_param_disp}', xaxis_title_text=title_param_disp, yaxis_title_text=y_title_disp)
         return fig

@@ -1,0 +1,73 @@
+{
+    "RecoveryModelKwargsDefaults": {
+        "Koval": {
+            "v_dp_coefficient": 0.5,
+            "mobility_ratio": 2.0,
+            "mu_co2": 0.1,
+            "mu_oil": 5.0,
+            "pressure_ratio_threshold": 0.8,
+            "full_miscibility_multiplier": 1.0,
+            "near_miscibility_multiplier": 0.9,
+            "immiscible_multiplier": 0.7,
+            "max_rf_cap": 0.85
+        },
+        "Simple": {
+            "sweep_base_factor": 0.7,
+            "rate_exponent": 0.2,
+            "porosity_exponent": 0.5,
+            "max_rf_cap": 0.7
+        },
+        "Miscible": {
+            "kv_factor": 0.5,
+            "gravity_factor": 0.1,
+            "dip_angle_divisor": 50.0,
+            "max_rf_cap": 0.88
+        },
+        "Immiscible": {
+            "sor": 0.25,
+            "krw_max": 0.4,
+            "m_wo_factor": 1.1,
+            "e_areal_factor": 0.9,
+            "e_vertical_base_factor": 0.92,
+            "e_vertical_porosity_exponent": 0.25,
+            "miscibility_scaling_factor": 0.9,
+            "max_rf_cap": 0.68,
+            "min_rf_floor": 0.051
+        },
+        "Hybrid": {
+            "mode": "sigmoid",
+            "alpha": 1.0,
+            "beta": 20.0,
+            "max_rf_cap": 0.90,
+            "x_points": [
+                0.5,
+                0.8,
+                1.0,
+                1.2,
+                1.5
+            ],
+            "y_points": [
+                0.05,
+                0.2,
+                0.5,
+                0.8,
+                0.95
+            ]
+        },
+        "Layered": {
+            "max_rf_cap": 0.95,
+            "default_layer_definitions": [
+                {
+                    "pv_fraction": 0.4,
+                    "perm_factor": 2.5,
+                    "porosity": 0.22
+                },
+                {
+                    "pv_fraction": 0.6,
+                    "perm_factor": 0.5,
+                    "porosity": 0.18
+                }
+            ]
+        }
+    }
+}

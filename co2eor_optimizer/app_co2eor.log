@@ -1,0 +1,1078 @@
+2025-07-08 17:44:06,196 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 17:44:06,197 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 17:44:06,197 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 17:44:06,197 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:44:06,198 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 17:44:06,205 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 17:44:06,205 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 17:44:14,034 - config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 17:44:14,034 - config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 17:44:14,035 - config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 17:44:14,035 - config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 17:44:14,035 - config_manager - INFO - All valid configurations successfully loaded and merged from directory: c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:44:15,148 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 17:44:15,148 - __main__ - INFO - MainWindow imported in 8.94 seconds
+2025-07-08 17:44:15,148 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 17:44:15,148 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 17:44:15,149 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:44:15,227 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:44:15,870 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 17:44:15,995 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 17:44:16,007 - __main__ - INFO - MainWindow instance created.
+2025-07-08 17:44:16,067 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 17:44:52,689 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 17:44:52,690 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:44:52,744 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:44:52,745 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 17:44:52,747 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 17:44:52,754 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 17:49:45,659 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 17:49:45,672 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 17:49:49,811 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 17:49:49,812 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 17:49:49,812 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 17:49:49,812 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:49:49,813 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 17:49:49,818 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 17:49:49,819 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 17:49:51,807 - config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 17:49:51,807 - config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 17:49:51,808 - config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 17:49:51,808 - config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 17:49:51,808 - config_manager - INFO - All valid configurations successfully loaded and merged from directory: c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:49:52,275 - root - CRITICAL - ConfigWidget: Core configuration dataclasses not found.
+2025-07-08 17:49:52,896 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 17:49:52,897 - __main__ - INFO - MainWindow imported in 3.08 seconds
+2025-07-08 17:49:52,897 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 17:49:52,897 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 17:49:52,898 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:49:52,982 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:49:53,536 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 17:49:53,649 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 17:49:53,661 - __main__ - INFO - MainWindow instance created.
+2025-07-08 17:49:53,723 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 17:49:54,951 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 17:49:54,952 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:49:54,954 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:49:54,955 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 17:49:54,956 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 17:49:54,964 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 17:50:37,772 - co2eor_optimizer.ui.config_widget - INFO - ConfigWidget resetting all parameters to application defaults.
+2025-07-08 17:50:47,186 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 17:50:47,247 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 17:51:23,684 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 17:51:23,684 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 17:51:23,685 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 17:51:23,685 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:51:23,686 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 17:51:23,692 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 17:51:23,693 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 17:51:25,999 - config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 17:51:25,999 - config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 17:51:26,000 - config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 17:51:26,000 - config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 17:51:26,000 - config_manager - INFO - All valid configurations successfully loaded and merged from directory: c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:51:26,466 - root - CRITICAL - ConfigWidget: Core configuration dataclasses not found.
+2025-07-08 17:51:27,152 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 17:51:27,152 - __main__ - INFO - MainWindow imported in 3.46 seconds
+2025-07-08 17:51:27,152 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 17:51:27,153 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 17:51:27,153 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:51:27,244 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:51:27,885 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 17:51:28,000 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 17:51:28,015 - __main__ - INFO - MainWindow instance created.
+2025-07-08 17:51:28,100 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 17:51:29,222 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 17:51:29,223 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:51:29,226 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:51:29,227 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 17:51:29,227 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 17:51:29,235 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 17:51:43,805 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 17:51:43,860 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 17:55:33,132 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 17:55:33,132 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 17:55:33,133 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 17:55:33,133 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:55:33,133 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 17:55:33,139 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 17:55:33,140 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 17:55:35,089 - config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 17:55:35,089 - config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 17:55:35,090 - config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 17:55:35,090 - config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 17:55:35,090 - config_manager - INFO - All valid configurations successfully loaded and merged from directory: c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:55:36,111 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 17:55:36,111 - __main__ - INFO - MainWindow imported in 2.97 seconds
+2025-07-08 17:55:36,112 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 17:55:36,112 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 17:55:36,113 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:55:36,196 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:55:36,855 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 17:55:36,971 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 17:55:36,983 - __main__ - INFO - MainWindow instance created.
+2025-07-08 17:55:37,047 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 17:55:37,963 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 17:55:37,964 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:55:38,025 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:55:38,026 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 17:55:38,027 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 17:55:38,036 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 17:55:40,581 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 17:55:40,635 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 17:56:48,521 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 17:56:48,522 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 17:56:48,522 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 17:56:48,522 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:56:48,523 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 17:56:48,528 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 17:56:48,529 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 17:56:50,519 - config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 17:56:50,519 - config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 17:56:50,520 - config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 17:56:50,520 - config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 17:56:50,520 - config_manager - INFO - All valid configurations successfully loaded and merged from directory: c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:56:51,572 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 17:56:51,573 - __main__ - INFO - MainWindow imported in 3.04 seconds
+2025-07-08 17:56:51,573 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 17:56:51,573 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 17:56:51,574 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:56:51,658 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:56:52,255 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 17:56:52,368 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 17:56:52,382 - __main__ - INFO - MainWindow instance created.
+2025-07-08 17:56:52,443 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 17:56:55,597 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 17:56:55,598 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:57:37,947 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 17:57:37,947 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 17:57:37,947 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 17:57:37,948 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:57:37,948 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 17:57:37,954 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 17:57:37,954 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 17:57:39,925 - config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 17:57:39,925 - config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 17:57:39,926 - config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 17:57:39,926 - config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 17:57:39,926 - config_manager - INFO - All valid configurations successfully loaded and merged from directory: c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 17:57:41,038 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 17:57:41,038 - __main__ - INFO - MainWindow imported in 3.08 seconds
+2025-07-08 17:57:41,038 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 17:57:41,038 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 17:57:41,039 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:57:41,128 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:57:41,689 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 17:57:41,805 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 17:57:41,818 - __main__ - INFO - MainWindow instance created.
+2025-07-08 17:57:41,877 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 17:57:43,641 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 17:57:43,643 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 17:57:43,704 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 17:57:43,705 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 17:57:43,706 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 17:57:43,713 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 18:08:34,246 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 18:08:34,259 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 18:08:37,519 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 18:08:37,520 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 18:08:37,520 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 18:08:37,520 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 18:08:37,520 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 18:08:37,526 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 18:08:37,526 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 18:08:39,525 - config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 18:08:39,526 - config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 18:08:39,526 - config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 18:08:39,526 - config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 18:08:39,526 - config_manager - INFO - All valid configurations successfully loaded and merged from directory: c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 18:08:40,572 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 18:08:40,572 - __main__ - INFO - MainWindow imported in 3.04 seconds
+2025-07-08 18:08:40,572 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 18:08:40,573 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 18:08:40,573 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 18:08:40,664 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 18:08:41,209 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 18:08:41,327 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 18:08:41,341 - __main__ - INFO - MainWindow instance created.
+2025-07-08 18:08:41,407 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 18:08:45,140 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 18:08:45,141 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 18:08:45,199 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 18:08:45,200 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 18:08:45,200 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 18:08:45,207 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 18:24:00,382 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 18:24:00,395 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 18:24:03,194 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 18:24:03,194 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 18:24:03,195 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 18:24:03,195 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 18:24:03,195 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 18:24:03,202 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 18:24:03,203 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 18:24:05,304 - config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 18:24:05,304 - config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 18:24:05,305 - config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 18:24:05,305 - config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 18:24:05,305 - config_manager - INFO - All valid configurations successfully loaded and merged from directory: c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 18:24:06,363 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 18:24:06,364 - __main__ - INFO - MainWindow imported in 3.16 seconds
+2025-07-08 18:24:06,364 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 18:24:06,364 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 18:24:06,365 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 18:24:06,445 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 18:24:07,013 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 18:24:07,127 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 18:24:07,150 - __main__ - INFO - MainWindow instance created.
+2025-07-08 18:24:07,211 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 18:24:10,644 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 18:24:10,645 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 18:24:10,700 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 18:24:10,701 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 18:24:10,702 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 18:24:10,710 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 18:24:33,331 - co2eor_optimizer.ui.config_widget - INFO - Attempting to apply configuration changes.
+2025-07-08 18:24:33,332 - co2eor_optimizer.ui.config_widget - INFO - Configuration changes applied successfully.
+2025-07-08 18:24:43,582 - co2eor_optimizer.ui.widgets.manual_well_dialog - INFO - No explicit path set. Creating default straight vertical well path with 10ft sampling.
+2025-07-08 18:26:10,359 - co2eor_optimizer.ui.data_management_widget - INFO - Assembling black-oil model data.
+2025-07-08 18:26:12,738 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Received project_data_updated signal.
+2025-07-08 18:26:12,739 - co2eor_optimizer.ui.main_window - INFO - Re-initializing engines and analysis tabs with current MainWindow data.
+2025-07-08 18:26:12,793 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 18:26:12,794 - co2eor_optimizer.analysis.well_analysis - INFO - Getting average MMP parameters for well 'Well-Manual-1'.
+2025-07-08 18:26:12,794 - co2eor_optimizer.analysis.well_analysis - WARNING - Well 'Well-Manual-1': No valid perforations found. Averaging properties over the entire wellbore.
+2025-07-08 18:26:12,795 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,795 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,796 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,796 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,796 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,797 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,797 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,797 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,798 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,798 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,798 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,799 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,799 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,799 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,800 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,800 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,800 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,800 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,800 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,801 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,801 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,801 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,801 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,802 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,802 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,802 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,802 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,803 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,803 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,803 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,803 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,804 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,804 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,804 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,804 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,805 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,805 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,805 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,805 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,806 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,806 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,806 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,806 - co2eor_optimizer.analysis.well_analysis - INFO - Calculated full-wellbore average parameters: {'temperature': np.float64(212.0), 'oil_gravity': np.float64(32.0), 'c7_plus_mw': None, 'injection_gas_composition': {'CO2': 1.0}}
+2025-07-08 18:26:12,807 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 18:26:12,807 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 18:26:12,807 - co2eor_optimizer.core.optimisation_engine - INFO - MMP calculated: 2264.92 psi ('auto' from WellAnalysis average parameters).
+2025-07-08 18:26:12,808 - co2eor_optimizer.ui.main_window - INFO - OptimizationEngine instance re-created successfully.
+2025-07-08 18:26:12,808 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Deriving base EOR parameters from engine's default settings.
+2025-07-08 18:26:12,809 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4500.00', 'rate': '3000.00', 'v_dp_coefficient': '0.55', 'mobility_ratio': '2.50'}
+2025-07-08 18:26:12,809 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer instance re-created successfully.
+2025-07-08 18:26:12,818 - co2eor_optimizer.ui.optimization_widget - INFO - OptimizationWidget engine instance updated and inputs displayed.
+2025-07-08 18:26:12,819 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 18:26:12,819 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 1 wells.
+2025-07-08 18:26:49,983 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - WellAnalysisWorker started for well 'Well-Manual-1' using method 'yuan'.
+2025-07-08 18:26:49,984 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,984 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,984 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,985 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,985 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,985 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,985 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,986 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,986 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,986 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,986 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,987 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,987 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,987 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,987 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,987 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,987 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,987 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,988 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,988 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,988 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:26:49,989 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - Well analysis for 'Well-Manual-1' completed successfully.
+2025-07-08 18:28:34,916 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - WellAnalysisWorker started for well 'Well-Manual-1' using method 'hybrid_gh'.
+2025-07-08 18:28:34,916 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,917 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,917 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,917 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,918 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,918 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,918 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,918 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,919 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,919 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,919 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,920 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,920 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,920 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,920 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,921 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,921 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,921 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,921 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,921 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,921 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:28:34,922 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - Well analysis for 'Well-Manual-1' completed successfully.
+2025-07-08 18:29:29,255 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - WellAnalysisWorker started for well 'Well-Manual-1' using method 'hybrid_gh'.
+2025-07-08 18:29:29,256 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,257 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,257 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,257 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,257 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,258 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,258 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,259 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,259 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,259 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,259 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,259 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,260 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,260 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,260 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,260 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,260 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,261 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,261 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,261 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,261 - root - INFO - Calculating MMP with method: 'hybrid_gh'.
+2025-07-08 18:29:29,262 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - Well analysis for 'Well-Manual-1' completed successfully.
+2025-07-08 18:29:36,787 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - WellAnalysisWorker started for well 'Well-Manual-1' using method 'yuan'.
+2025-07-08 18:29:36,788 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,788 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,789 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,789 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,790 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,790 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,790 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,790 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,790 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,791 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,791 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,791 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,791 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,792 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,792 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,792 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,793 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,793 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,793 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,793 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,794 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:29:36,794 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - Well analysis for 'Well-Manual-1' completed successfully.
+2025-07-08 18:31:10,365 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - WellAnalysisWorker started for well 'Well-Manual-1' using method 'yuan'.
+2025-07-08 18:31:10,366 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,366 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,367 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,367 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,368 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,368 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,368 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,369 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,369 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,369 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,370 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,370 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,370 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,370 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,371 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,371 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,371 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,371 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,371 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,372 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,372 - root - INFO - Calculating MMP with method: 'yuan'.
+2025-07-08 18:31:10,372 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - Well analysis for 'Well-Manual-1' completed successfully.
+2025-07-08 18:32:58,343 - co2eor_optimizer.ui.config_widget - INFO - Attempting to apply configuration changes.
+2025-07-08 18:33:11,265 - co2eor_optimizer.ui.config_widget - INFO - Attempting to apply configuration changes.
+2025-07-08 18:33:11,267 - co2eor_optimizer.ui.config_widget - INFO - Configuration changes applied successfully.
+2025-07-08 18:33:29,106 - co2eor_optimizer.ui.config_widget - INFO - Attempting to apply configuration changes.
+2025-07-08 18:33:29,107 - co2eor_optimizer.ui.config_widget - INFO - Configuration changes applied successfully.
+2025-07-08 18:33:54,631 - co2eor_optimizer.ui.config_widget - INFO - Attempting to apply configuration changes.
+2025-07-08 18:33:54,632 - co2eor_optimizer.ui.config_widget - INFO - Configuration changes applied successfully.
+2025-07-08 18:34:31,495 - co2eor_optimizer.ui.workers.optimization_worker - INFO - OptimizationWorker started for method: hybrid_optimize
+2025-07-08 18:34:31,496 - co2eor_optimizer.core.optimisation_engine - INFO - Hybrid Opt: Starting GA Phase. Gens:70, Pop:50
+2025-07-08 18:34:31,496 - co2eor_optimizer.core.optimisation_engine - INFO - GA: Obj 'Recovery Factor', Gens 70, Pop 50
+2025-07-08 18:35:08,434 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 10 BestFit: Gen:2.9863e-02 Overall:2.9863e-02
+2025-07-08 18:35:45,052 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 20 BestFit: Gen:2.9863e-02 Overall:2.9863e-02
+2025-07-08 18:36:21,511 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 30 BestFit: Gen:2.9863e-02 Overall:2.9863e-02
+2025-07-08 18:37:04,670 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 40 BestFit: Gen:2.9863e-02 Overall:2.9863e-02
+2025-07-08 18:37:45,678 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 50 BestFit: Gen:2.9863e-02 Overall:2.9863e-02
+2025-07-08 18:38:23,610 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 60 BestFit: Gen:2.9863e-02 Overall:2.9863e-02
+2025-07-08 18:39:01,081 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 70 BestFit: Gen:2.9863e-02 Overall:2.9863e-02
+2025-07-08 18:39:04,673 - co2eor_optimizer.core.optimisation_engine - INFO - GA done. Best obj (Recovery Factor): 2.9863e-02
+2025-07-08 18:39:04,673 - co2eor_optimizer.core.optimisation_engine - INFO - Hybrid Opt: Starting BO Phase. Iter 40, RandInit 8
+2025-07-08 18:39:04,673 - co2eor_optimizer.core.optimisation_engine - INFO - BayesOpt: Obj 'Recovery Factor', Iter 40, InitRand 8
+2025-07-08 18:39:06,570 - co2eor_optimizer.core.optimisation_engine - INFO - Bayesian done. Best obj (Recovery Factor): 2.9863e-02
+2025-07-08 18:39:06,571 - co2eor_optimizer.core.optimisation_engine - INFO - Hybrid opt done. Final obj (Recovery Factor): 2.9863e-02
+2025-07-08 18:39:06,571 - co2eor_optimizer.ui.workers.optimization_worker - INFO - Target successfully met or standard optimization. Emitting result_ready.
+2025-07-08 18:39:06,572 - co2eor_optimizer.ui.workers.optimization_worker - INFO - Optimization method hybrid_optimize completed successfully.
+2025-07-08 18:39:06,574 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Optimization run completed.
+2025-07-08 18:39:06,575 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Deriving base EOR parameters from engine's default settings.
+2025-07-08 18:39:06,576 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4500.00', 'rate': '3000.00', 'v_dp_coefficient': '0.61', 'mobility_ratio': '1.73'}
+2025-07-08 18:39:06,577 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 18:39:06,578 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer updated with new optimization results as base.
+2025-07-08 18:39:06,581 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 18:39:06,582 - co2eor_optimizer.ui.optimization_widget - INFO - Engine state reset to base configuration after worker finished.
+2025-07-08 19:23:49,868 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 19:23:49,869 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 19:23:49,869 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 19:23:49,870 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 19:23:49,871 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 19:23:49,878 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 19:23:49,879 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 19:23:52,421 - config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 19:23:52,422 - config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 19:23:52,422 - config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 19:23:52,423 - config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 19:23:52,423 - config_manager - INFO - All valid configurations successfully loaded and merged from directory: c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 19:23:53,750 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 19:23:53,751 - __main__ - INFO - MainWindow imported in 3.87 seconds
+2025-07-08 19:23:53,751 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 19:23:53,751 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 19:23:53,752 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 19:23:53,852 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 19:23:54,523 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 19:23:54,642 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 19:23:54,656 - __main__ - INFO - MainWindow instance created.
+2025-07-08 19:23:54,725 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 19:23:56,765 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 19:23:56,825 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 19:37:50,092 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 19:37:50,092 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 19:37:50,092 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 19:37:50,092 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 19:37:50,093 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 19:37:50,099 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 19:37:50,099 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 19:37:52,014 - root - CRITICAL - ConfigManager import failed in OptimizationEngine. Using fallback.
+2025-07-08 19:37:52,649 - root - CRITICAL - CRITICAL: Could not import core project modules for SensitivityAnalyzer: cannot import name 'config_manager' from 'co2eor_optimizer.config_manager' (C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config_manager.py). This module will not be functional.
+2025-07-08 19:37:52,829 - root - CRITICAL - ConfigManager import failed in OptimizationEngine. Using fallback.
+2025-07-08 19:37:52,977 - root - CRITICAL - CRITICAL: UQ_Engine: Could not import core project modules: cannot import name 'config_manager' from 'config_manager' (c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config_manager.py). UQ Engine will not be functional.
+2025-07-08 19:37:52,981 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 19:37:52,981 - __main__ - INFO - MainWindow imported in 2.88 seconds
+2025-07-08 19:37:52,981 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 19:37:52,981 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 19:37:52,982 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 19:37:53,066 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 19:37:53,600 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 19:37:53,707 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 19:37:53,720 - __main__ - INFO - MainWindow instance created.
+2025-07-08 19:37:53,779 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 19:37:57,420 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 19:37:57,420 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 19:37:57,470 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 19:37:57,471 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 19:37:57,472 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 19:37:57,479 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 19:38:06,410 - co2eor_optimizer.ui.config_widget - INFO - Attempting to apply configuration changes.
+2025-07-08 19:38:06,413 - co2eor_optimizer.ui.config_widget - INFO - Configuration changes applied successfully.
+2025-07-08 19:38:29,372 - co2eor_optimizer.ui.widgets.manual_well_dialog - INFO - No explicit path set. Creating default straight vertical well path with 10ft sampling.
+2025-07-08 19:38:30,002 - co2eor_optimizer.ui.data_management_widget - INFO - Assembling black-oil model data.
+2025-07-08 19:38:31,143 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Received project_data_updated signal.
+2025-07-08 19:38:31,144 - co2eor_optimizer.ui.main_window - INFO - Re-initializing engines and analysis tabs with current MainWindow data.
+2025-07-08 19:38:31,192 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 19:38:31,194 - co2eor_optimizer.analysis.well_analysis - INFO - Getting average MMP parameters for well 'Well-Manual-1'.
+2025-07-08 19:38:31,194 - co2eor_optimizer.analysis.well_analysis - WARNING - Well 'Well-Manual-1': No valid perforations found. Averaging properties over the entire wellbore.
+2025-07-08 19:38:31,195 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,195 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,195 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,196 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,196 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,196 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,196 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,197 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,197 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,197 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,198 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,198 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,198 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,199 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,199 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,199 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,200 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,200 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,200 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,201 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,201 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,201 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,202 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,202 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,202 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,202 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,203 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,203 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,203 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,204 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,204 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,204 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,204 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,205 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,205 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,205 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,205 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,205 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,206 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,206 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,206 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,207 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,207 - co2eor_optimizer.analysis.well_analysis - INFO - Calculated full-wellbore average parameters: {'temperature': np.float64(212.0), 'oil_gravity': np.float64(32.0), 'c7_plus_mw': None, 'injection_gas_composition': {'CO2': 1.0}}
+2025-07-08 19:38:31,207 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:38:31,208 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:38:31,208 - co2eor_optimizer.core.optimisation_engine - INFO - MMP calculated: 2264.92 psi ('auto' from WellAnalysis average parameters).
+2025-07-08 19:38:31,208 - co2eor_optimizer.ui.main_window - INFO - OptimizationEngine instance re-created successfully.
+2025-07-08 19:38:31,209 - co2eor_optimizer.ui.main_window - ERROR - Failed to create engine/analyzer: typing.Any cannot be used with isinstance()
+Traceback (most recent call last):
+  File "C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\ui\main_window.py", line 469, in _reinitialize_engines_and_analysis_tabs
+    self.sensitivity_analyzer_instance = SensitivityAnalyzer(engine=self.optimisation_engine_instance)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\analysis\sensitivity_analyzer.py", line 56, in __init__
+    if not isinstance(engine, OptimizationEngine):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\typing.py", line 530, in __instancecheck__
+    raise TypeError("typing.Any cannot be used with isinstance()")
+TypeError: typing.Any cannot be used with isinstance()
+2025-07-08 19:38:39,172 - co2eor_optimizer.ui.optimization_widget - INFO - OptimizationWidget engine instance updated and inputs displayed.
+2025-07-08 19:38:39,173 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 19:38:39,174 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 1 wells.
+2025-07-08 19:38:41,894 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 19:38:41,952 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 19:46:34,930 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 19:46:34,930 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 19:46:34,930 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 19:46:34,931 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 19:46:34,931 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 19:46:34,937 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 19:46:34,937 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 19:46:37,974 - root - CRITICAL - CRITICAL: Could not import core project modules for SensitivityAnalyzer: cannot import name 'config_manager' from 'co2eor_optimizer.config_manager' (C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config_manager.py). This module will not be functional.
+2025-07-08 19:46:38,328 - root - CRITICAL - CRITICAL: UQ_Engine: Could not import core project modules: cannot import name 'config_manager' from 'config_manager' (C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config_manager.py). UQ Engine will not be functional.
+2025-07-08 19:46:38,332 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 19:46:38,332 - __main__ - INFO - MainWindow imported in 3.40 seconds
+2025-07-08 19:46:38,332 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 19:46:38,333 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 19:46:38,335 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 19:46:38,335 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 19:46:38,336 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 19:46:38,336 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 19:46:38,336 - co2eor_optimizer.config_manager - INFO - All valid configurations successfully loaded and merged from directory: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 19:46:38,337 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 19:46:38,425 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 19:46:39,058 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 19:46:39,192 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 19:46:39,206 - __main__ - INFO - MainWindow instance created.
+2025-07-08 19:46:39,268 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 19:49:43,652 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 19:49:43,653 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 19:49:43,712 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 19:49:43,713 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 19:49:43,714 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 19:49:43,721 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 19:49:48,605 - co2eor_optimizer.ui.widgets.manual_well_dialog - INFO - No explicit path set. Creating default straight vertical well path with 10ft sampling.
+2025-07-08 19:49:49,292 - co2eor_optimizer.ui.data_management_widget - INFO - Assembling black-oil model data.
+2025-07-08 19:49:50,741 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Received project_data_updated signal.
+2025-07-08 19:49:50,742 - co2eor_optimizer.ui.main_window - INFO - Re-initializing engines and analysis tabs with current MainWindow data.
+2025-07-08 19:49:50,743 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 19:49:50,744 - co2eor_optimizer.analysis.well_analysis - INFO - Getting average MMP parameters for well 'Well-Manual-1'.
+2025-07-08 19:49:50,745 - co2eor_optimizer.analysis.well_analysis - WARNING - Well 'Well-Manual-1': No valid perforations found. Averaging properties over the entire wellbore.
+2025-07-08 19:49:50,745 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,745 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,746 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,746 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,746 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,747 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,747 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,747 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,747 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,748 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,748 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,748 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,748 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,748 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,749 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,749 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,749 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,749 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,750 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,750 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,750 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,750 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,751 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,751 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,751 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,752 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,752 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,752 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,752 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,753 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,753 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,753 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,754 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,754 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,754 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,754 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,755 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,755 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,755 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,756 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,756 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,756 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,757 - co2eor_optimizer.analysis.well_analysis - INFO - Calculated full-wellbore average parameters: {'temperature': np.float64(212.0), 'oil_gravity': np.float64(32.0), 'c7_plus_mw': None, 'injection_gas_composition': {'CO2': 1.0}}
+2025-07-08 19:49:50,757 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:50,758 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:50,758 - co2eor_optimizer.core.optimisation_engine - INFO - MMP calculated: 2264.92 psi ('auto' from WellAnalysis average parameters).
+2025-07-08 19:49:50,758 - co2eor_optimizer.ui.main_window - INFO - OptimizationEngine instance re-created successfully.
+2025-07-08 19:49:50,759 - co2eor_optimizer.ui.main_window - ERROR - Failed to create engine/analyzer: typing.Any cannot be used with isinstance()
+Traceback (most recent call last):
+  File "C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\ui\main_window.py", line 476, in _reinitialize_engines_and_analysis_tabs
+    self.sensitivity_analyzer_instance = SensitivityAnalyzer(engine=self.optimisation_engine_instance)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\analysis\sensitivity_analyzer.py", line 56, in __init__
+    if not isinstance(engine, OptimizationEngine):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\typing.py", line 530, in __instancecheck__
+    raise TypeError("typing.Any cannot be used with isinstance()")
+TypeError: typing.Any cannot be used with isinstance()
+2025-07-08 19:49:52,839 - co2eor_optimizer.ui.optimization_widget - INFO - OptimizationWidget engine instance updated and inputs displayed.
+2025-07-08 19:49:52,840 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 19:49:52,840 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 1 wells.
+2025-07-08 19:49:56,807 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - WellAnalysisWorker started for well 'Well-Manual-1' using method 'auto'.
+2025-07-08 19:49:56,807 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,808 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,808 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,808 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,809 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,809 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,810 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,810 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,810 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,810 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,811 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,811 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,811 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,811 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,812 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,812 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,812 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,812 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,813 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,813 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,813 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,813 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,814 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,814 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,814 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,814 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,815 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,815 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,815 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,816 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,816 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,817 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,817 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,817 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,818 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,818 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,820 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,820 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,821 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,821 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,821 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 19:49:56,821 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 19:49:56,822 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - Well analysis for 'Well-Manual-1' completed successfully.
+2025-07-08 19:50:08,627 - co2eor_optimizer.ui.workers.optimization_worker - INFO - OptimizationWorker started for method: optimize_bayesian
+2025-07-08 19:50:08,628 - co2eor_optimizer.core.optimisation_engine - INFO - BayesOpt: Obj 'Npv', Iter 40, InitRand 8
+2025-07-08 19:50:12,468 - co2eor_optimizer.core.optimisation_engine - INFO - Bayesian done. Best obj (Npv): 0.0000e+00
+2025-07-08 19:50:12,469 - co2eor_optimizer.ui.workers.optimization_worker - INFO - Target successfully met or standard optimization. Emitting result_ready.
+2025-07-08 19:50:12,469 - co2eor_optimizer.ui.workers.optimization_worker - INFO - Optimization method optimize_bayesian completed successfully.
+2025-07-08 19:50:12,472 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Optimization run completed.
+2025-07-08 19:50:12,472 - co2eor_optimizer.ui.main_window - ERROR - Error updating Sensitivity Analyzer post-optimization: typing.Any cannot be used with isinstance()
+Traceback (most recent call last):
+  File "C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\ui\main_window.py", line 496, in _on_optimization_run_completed
+    self.sensitivity_analyzer_instance = SensitivityAnalyzer(engine=self.optimisation_engine_instance)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\analysis\sensitivity_analyzer.py", line 56, in __init__
+    if not isinstance(engine, OptimizationEngine):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\typing.py", line 530, in __instancecheck__
+    raise TypeError("typing.Any cannot be used with isinstance()")
+TypeError: typing.Any cannot be used with isinstance()
+2025-07-08 19:50:12,477 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 19:50:12,478 - co2eor_optimizer.ui.optimization_widget - INFO - Engine state reset to base configuration after worker finished.
+2025-07-08 19:50:17,294 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 19:50:17,347 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 20:14:29,962 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 20:14:29,963 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 20:14:29,963 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 20:14:29,963 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 20:14:29,963 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 20:14:29,969 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 20:14:29,970 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 20:14:32,865 - root - CRITICAL - CRITICAL: UQ_Engine: Could not import core project modules: cannot import name 'config_manager' from 'config_manager' (C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config_manager.py). UQ Engine will not be functional.
+2025-07-08 20:14:32,868 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 20:14:32,869 - __main__ - INFO - MainWindow imported in 2.90 seconds
+2025-07-08 20:14:32,869 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 20:14:32,869 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 20:14:32,870 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 20:14:32,870 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 20:14:32,871 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 20:14:32,871 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 20:14:32,872 - co2eor_optimizer.config_manager - INFO - All valid configurations successfully loaded and merged from directory: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 20:14:32,872 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 20:14:32,962 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 20:14:33,541 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 20:14:33,660 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 20:14:33,674 - __main__ - INFO - MainWindow instance created.
+2025-07-08 20:14:33,740 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 20:14:35,495 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 20:14:35,496 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 20:14:35,550 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 20:14:35,551 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 20:14:35,552 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 20:14:35,560 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 20:26:06,512 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 20:26:06,531 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 20:26:09,997 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 20:26:09,997 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 20:26:09,998 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 20:26:09,998 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 20:26:09,998 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 20:26:10,004 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 20:26:10,005 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 20:26:12,916 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 20:26:12,917 - __main__ - INFO - MainWindow imported in 2.91 seconds
+2025-07-08 20:26:12,917 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 20:26:12,917 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 20:26:12,918 - __main__ - CRITICAL - An unhandled exception occurred in the main execution block: MainWindow.__init__() got an unexpected keyword argument 'config_manager_instance'
+Traceback (most recent call last):
+  File "c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\main.py", line 212, in <module>
+    main()
+  File "c:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\main.py", line 185, in main
+    main_window = MainWindow(app_settings=settings, config_manager_instance=config_manager)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: MainWindow.__init__() got an unexpected keyword argument 'config_manager_instance'
+2025-07-08 20:28:01,885 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 20:28:01,885 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 20:28:01,885 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 20:28:01,885 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 20:28:01,886 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 20:28:01,892 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 20:28:01,893 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 20:28:04,452 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 20:28:04,452 - __main__ - INFO - MainWindow imported in 2.56 seconds
+2025-07-08 20:28:04,452 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 20:28:04,452 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 20:28:04,453 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 20:28:04,454 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 20:28:04,454 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 20:28:04,454 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 20:28:04,455 - co2eor_optimizer.config_manager - INFO - All valid configurations successfully loaded and merged from directory: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 20:28:04,455 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 20:28:04,580 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 20:28:05,161 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 20:28:05,272 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 20:28:05,286 - __main__ - INFO - MainWindow instance created.
+2025-07-08 20:28:05,352 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 20:28:06,895 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 20:28:06,896 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 20:28:06,954 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 20:28:06,955 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 20:28:06,956 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 20:28:06,970 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 1
+2025-07-08 20:28:35,278 - co2eor_optimizer.ui.widgets.manual_well_dialog - INFO - No explicit path set. Creating default straight vertical well path with 10ft sampling.
+2025-07-08 20:28:36,431 - co2eor_optimizer.ui.data_management_widget - INFO - Assembling black-oil model data.
+2025-07-08 20:28:38,036 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Received project_data_updated signal.
+2025-07-08 20:28:38,037 - co2eor_optimizer.ui.main_window - INFO - Re-initializing engines and analysis tabs with current MainWindow data.
+2025-07-08 20:28:38,038 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 20:28:38,039 - co2eor_optimizer.analysis.well_analysis - INFO - Getting average MMP parameters for well 'Well-Manual-1'.
+2025-07-08 20:28:38,040 - co2eor_optimizer.analysis.well_analysis - WARNING - Well 'Well-Manual-1': No valid perforations found. Averaging properties over the entire wellbore.
+2025-07-08 20:28:38,040 - co2eor_optimizer.analysis.well_analysis - INFO - Calculated full-wellbore average parameters: {'temperature': np.float64(212.0), 'oil_gravity': np.float64(32.0), 'c7_plus_mw': None, 'injection_gas_composition': {'CO2': 1.0}}
+2025-07-08 20:28:38,041 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:38,041 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:38,042 - co2eor_optimizer.core.optimisation_engine - INFO - MMP calculated: 2264.92 psi ('auto' from WellAnalysis average parameters).
+2025-07-08 20:28:38,042 - co2eor_optimizer.ui.main_window - INFO - OptimizationEngine instance re-created successfully.
+2025-07-08 20:28:38,043 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Deriving base EOR parameters from engine's default settings.
+2025-07-08 20:28:38,044 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4500.00', 'rate': '3000.00', 'v_dp_coefficient': '0.55', 'mobility_ratio': '2.50'}
+2025-07-08 20:28:38,044 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer instance re-created successfully.
+2025-07-08 20:28:38,055 - co2eor_optimizer.ui.optimization_widget - INFO - OptimizationWidget engine instance updated and inputs displayed.
+2025-07-08 20:28:38,056 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 20:28:38,057 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 1 wells.
+2025-07-08 20:28:50,126 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - WellAnalysisWorker started for well 'Well-Manual-1' using method 'auto'.
+2025-07-08 20:28:50,127 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,127 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,127 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,128 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,128 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,128 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,128 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,129 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,129 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,129 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,129 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,130 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,130 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,130 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,131 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,131 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,131 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,131 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,132 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,132 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,132 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,132 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,133 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,133 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,133 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,134 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,134 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,135 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,135 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,135 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,136 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,136 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,136 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,138 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,138 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,139 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,139 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,140 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,140 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,140 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,141 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:28:50,141 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:28:50,141 - co2eor_optimizer.ui.workers.well_analysis_worker - INFO - Well analysis for 'Well-Manual-1' completed successfully.
+2025-07-08 20:29:02,685 - co2eor_optimizer.ui.workers.optimization_worker - INFO - OptimizationWorker started for method: optimize_bayesian
+2025-07-08 20:29:02,685 - co2eor_optimizer.core.optimisation_engine - INFO - BayesOpt: Obj 'Npv', Iter 40, InitRand 8
+2025-07-08 20:29:06,748 - co2eor_optimizer.core.optimisation_engine - INFO - Bayesian done. Best obj (Npv): 0.0000e+00
+2025-07-08 20:29:06,749 - co2eor_optimizer.ui.workers.optimization_worker - INFO - Target successfully met or standard optimization. Emitting result_ready.
+2025-07-08 20:29:06,749 - co2eor_optimizer.ui.workers.optimization_worker - INFO - Optimization method optimize_bayesian completed successfully.
+2025-07-08 20:29:06,753 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Optimization run completed.
+2025-07-08 20:29:06,754 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Deriving base EOR parameters from engine's default settings.
+2025-07-08 20:29:06,754 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4500.00', 'rate': '3000.00', 'v_dp_coefficient': '0.67', 'mobility_ratio': '2.12'}
+2025-07-08 20:29:06,755 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 20:29:06,756 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer updated with new optimization results as base.
+2025-07-08 20:29:06,759 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 20:29:06,760 - co2eor_optimizer.ui.optimization_widget - INFO - Engine state reset to base configuration after worker finished.
+2025-07-08 20:29:34,552 - co2eor_optimizer.ui.config_widget - INFO - Attempting to apply configuration changes.
+2025-07-08 20:29:34,553 - co2eor_optimizer.ui.config_widget - INFO - Configuration changes applied successfully.
+2025-07-08 20:29:34,554 - co2eor_optimizer.ui.main_window - INFO - MainWindow state updating from ConfigWidget.
+2025-07-08 20:29:34,554 - co2eor_optimizer.ui.main_window - INFO - Re-initializing engines and analysis tabs with current MainWindow data.
+2025-07-08 20:29:34,554 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 20:29:34,555 - co2eor_optimizer.analysis.well_analysis - INFO - Getting average MMP parameters for well 'Well-Manual-1'.
+2025-07-08 20:29:34,555 - co2eor_optimizer.analysis.well_analysis - WARNING - Well 'Well-Manual-1': No valid perforations found. Averaging properties over the entire wellbore.
+2025-07-08 20:29:34,556 - co2eor_optimizer.analysis.well_analysis - INFO - Calculated full-wellbore average parameters: {'temperature': np.float64(212.0), 'oil_gravity': np.float64(32.0), 'c7_plus_mw': None, 'injection_gas_composition': {'CO2': 1.0}}
+2025-07-08 20:29:34,556 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:29:34,556 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:29:34,556 - co2eor_optimizer.core.optimisation_engine - INFO - MMP calculated: 2264.92 psi ('auto' from WellAnalysis average parameters).
+2025-07-08 20:29:34,557 - co2eor_optimizer.ui.main_window - INFO - OptimizationEngine instance re-created successfully.
+2025-07-08 20:29:34,557 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Deriving base EOR parameters from engine's default settings.
+2025-07-08 20:29:34,558 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4500.00', 'rate': '3000.00', 'v_dp_coefficient': '0.55', 'mobility_ratio': '2.50'}
+2025-07-08 20:29:34,558 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer instance re-created successfully.
+2025-07-08 20:29:34,566 - co2eor_optimizer.ui.optimization_widget - INFO - OptimizationWidget engine instance updated and inputs displayed.
+2025-07-08 20:29:34,567 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 20:29:34,567 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 1 wells.
+2025-07-08 20:29:34,568 - co2eor_optimizer.ui.optimization_widget - INFO - OptimizationWidget received configuration update. Refreshing forms.
+2025-07-08 20:29:41,987 - co2eor_optimizer.ui.workers.optimization_worker - INFO - OptimizationWorker started for method: optimize_bayesian
+2025-07-08 20:29:41,988 - co2eor_optimizer.core.optimisation_engine - INFO - BayesOpt: Obj 'Match Target (Recovery Factor = 0.200)', Iter 40, InitRand 8
+2025-07-08 20:29:43,928 - co2eor_optimizer.core.optimisation_engine - WARNING - Target for recovery_factor (0.200) is unreachable. Closest value: 0.0204.
+2025-07-08 20:29:43,929 - co2eor_optimizer.core.optimisation_engine - INFO - Bayesian done. Best obj (Match Target (Recovery Factor = 0.200)): -3.2268e-02
+2025-07-08 20:29:43,929 - co2eor_optimizer.ui.workers.optimization_worker - WARNING - Target miss detected. Emitting target_unreachable.
+2025-07-08 20:29:43,930 - co2eor_optimizer.ui.workers.optimization_worker - INFO - Optimization method optimize_bayesian completed successfully.
+2025-07-08 20:29:43,933 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Optimization run completed.
+2025-07-08 20:29:43,934 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Deriving base EOR parameters from engine's default settings.
+2025-07-08 20:29:43,934 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4500.00', 'rate': '3000.00', 'v_dp_coefficient': '0.72', 'mobility_ratio': '2.36'}
+2025-07-08 20:29:43,935 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 20:29:43,936 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer updated with new optimization results as base.
+2025-07-08 20:29:43,973 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 20:29:43,974 - co2eor_optimizer.ui.optimization_widget - INFO - Engine state reset to base configuration after worker finished.
+2025-07-08 20:29:57,004 - co2eor_optimizer.ui.optimization_widget - INFO - User chose to unlock parameters for re-run: ['porosity', 'ooip_stb', 'oil_price_usd_per_bbl', 'co2_purchase_cost_usd_per_tonne', 'v_dp_coefficient', 'mobility_ratio', 'WAG_ratio']
+2025-07-08 20:29:57,004 - co2eor_optimizer.ui.optimization_widget - INFO - Preparing for re-optimization with unlocked parameters: ['porosity', 'ooip_stb', 'oil_price_usd_per_bbl', 'co2_purchase_cost_usd_per_tonne', 'v_dp_coefficient', 'mobility_ratio', 'WAG_ratio']
+2025-07-08 20:29:57,005 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 20:29:57,005 - co2eor_optimizer.core.optimisation_engine - INFO - Engine prepared for re-run. Unlocked parameters: ['porosity', 'ooip_stb', 'oil_price_usd_per_bbl', 'co2_purchase_cost_usd_per_tonne', 'v_dp_coefficient', 'mobility_ratio', 'WAG_ratio']
+2025-07-08 20:29:57,008 - co2eor_optimizer.ui.workers.optimization_worker - INFO - OptimizationWorker started for method: optimize_bayesian
+2025-07-08 20:29:57,008 - co2eor_optimizer.core.optimisation_engine - INFO - BayesOpt: Obj 'Match Target (Recovery Factor = 0.200)', Iter 40, InitRand 8
+2025-07-08 20:29:57,008 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'porosity' to bounds: (0.16, 0.24)
+2025-07-08 20:29:57,008 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'ooip_stb' to bounds: (7.5e+05, 1.25e+06)
+2025-07-08 20:29:57,009 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'oil_price_usd_per_bbl' to bounds: (52.5, 97.5)
+2025-07-08 20:29:57,009 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'co2_purchase_cost_usd_per_tonne' to bounds: (36, 84)
+2025-07-08 20:29:57,009 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'v_dp_coefficient' to bounds: (0.358, 0.743)
+2025-07-08 20:29:57,009 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'mobility_ratio' to bounds: (1.25, 3.75)
+2025-07-08 20:29:57,010 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'WAG_ratio' to bounds: (0.4, 1.6)
+2025-07-08 20:29:59,142 - co2eor_optimizer.core.optimisation_engine - WARNING - Target for recovery_factor (0.200) is unreachable. Closest value: 0.0204.
+2025-07-08 20:29:59,142 - co2eor_optimizer.core.optimisation_engine - INFO - Bayesian done. Best obj (Match Target (Recovery Factor = 0.200)): -3.1614e-02
+2025-07-08 20:29:59,142 - co2eor_optimizer.ui.workers.optimization_worker - WARNING - Target miss detected. Emitting target_unreachable.
+2025-07-08 20:29:59,143 - co2eor_optimizer.ui.workers.optimization_worker - INFO - Optimization method optimize_bayesian completed successfully.
+2025-07-08 20:29:59,147 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Optimization run completed.
+2025-07-08 20:29:59,148 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Deriving base EOR parameters from engine's default settings.
+2025-07-08 20:29:59,148 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'porosity' to bounds: (0.16, 0.24)
+2025-07-08 20:29:59,149 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'ooip_stb' to bounds: (7.5e+05, 1.25e+06)
+2025-07-08 20:29:59,150 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'oil_price_usd_per_bbl' to bounds: (52.5, 97.5)
+2025-07-08 20:29:59,151 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'co2_purchase_cost_usd_per_tonne' to bounds: (36, 84)
+2025-07-08 20:29:59,151 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'v_dp_coefficient' to bounds: (0.358, 0.743)
+2025-07-08 20:29:59,152 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'mobility_ratio' to bounds: (1.25, 3.75)
+2025-07-08 20:29:59,153 - co2eor_optimizer.core.optimisation_engine - INFO - Re-run: Adding unlocked param 'WAG_ratio' to bounds: (0.4, 1.6)
+2025-07-08 20:29:59,153 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4500.00', 'rate': '3000.00', 'porosity': '0.20', 'ooip_stb': '1000000.00', 'oil_price_usd_per_bbl': '75.00', 'co2_purchase_cost_usd_per_tonne': '60.00', 'v_dp_coefficient': '0.43', 'mobility_ratio': '2.01', 'WAG_ratio': '1.03'}
+2025-07-08 20:29:59,154 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 20:29:59,155 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer updated with new optimization results as base.
+2025-07-08 20:29:59,156 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 20:29:59,156 - co2eor_optimizer.ui.optimization_widget - INFO - Engine state reset to base configuration after worker finished.
+2025-07-08 20:40:45,837 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 20:40:45,898 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 20:40:49,636 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 20:40:49,636 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 20:40:49,636 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 20:40:49,636 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 20:40:49,637 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 20:40:49,643 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 20:40:49,644 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 20:40:52,639 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 20:40:52,640 - __main__ - INFO - MainWindow imported in 3.00 seconds
+2025-07-08 20:40:52,640 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 20:40:52,640 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 20:40:52,641 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 20:40:52,642 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 20:40:52,642 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 20:40:52,643 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 20:40:52,643 - co2eor_optimizer.config_manager - INFO - All valid configurations successfully loaded and merged from directory: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 20:40:52,643 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 20:40:52,798 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 20:40:53,468 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 20:40:53,593 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 20:40:53,619 - __main__ - INFO - MainWindow instance created.
+2025-07-08 20:40:53,682 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 20:40:58,796 - co2eor_optimizer.ui.main_window - INFO - Starting new project.
+2025-07-08 20:40:58,797 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 20:40:58,856 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 20:40:58,857 - co2eor_optimizer.ui.optimization_widget - WARNING - OptimizationWidget engine instance removed.
+2025-07-08 20:40:58,858 - co2eor_optimizer.ui.sensitivity_widget - WARNING - SensitivityWidget analyzer instance removed.
+2025-07-08 20:40:58,873 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 1
+2025-07-08 20:41:02,871 - co2eor_optimizer.ui.widgets.manual_well_dialog - INFO - No explicit path set. Creating default straight vertical well path with 10ft sampling.
+2025-07-08 20:41:03,469 - co2eor_optimizer.ui.data_management_widget - INFO - Assembling black-oil model data.
+2025-07-08 20:41:04,965 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Received project_data_updated signal.
+2025-07-08 20:41:04,967 - co2eor_optimizer.ui.main_window - INFO - Re-initializing engines and analysis tabs with current MainWindow data.
+2025-07-08 20:41:04,968 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 20:41:04,968 - co2eor_optimizer.analysis.well_analysis - INFO - Getting average MMP parameters for well 'Well-Manual-1'.
+2025-07-08 20:41:04,969 - co2eor_optimizer.analysis.well_analysis - WARNING - Well 'Well-Manual-1': No valid perforations found. Averaging properties over the entire wellbore.
+2025-07-08 20:41:04,970 - co2eor_optimizer.analysis.well_analysis - INFO - Calculated full-wellbore average parameters: {'temperature': np.float64(212.0), 'oil_gravity': np.float64(32.0), 'c7_plus_mw': None, 'injection_gas_composition': {'CO2': 1.0}}
+2025-07-08 20:41:04,971 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:41:04,971 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:41:04,971 - co2eor_optimizer.core.optimisation_engine - INFO - MMP calculated: 2264.92 psi ('auto' from WellAnalysis average parameters).
+2025-07-08 20:41:04,972 - co2eor_optimizer.ui.main_window - INFO - OptimizationEngine instance re-created successfully.
+2025-07-08 20:41:04,973 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Deriving base EOR parameters from engine's default settings.
+2025-07-08 20:41:04,973 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4500.00', 'rate': '3000.00', 'v_dp_coefficient': '0.55', 'mobility_ratio': '2.50'}
+2025-07-08 20:41:04,974 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer instance re-created successfully.
+2025-07-08 20:41:04,984 - co2eor_optimizer.ui.optimization_widget - INFO - OptimizationWidget engine instance updated and inputs displayed.
+2025-07-08 20:41:04,985 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 20:41:04,986 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 1 wells.
+2025-07-08 20:41:22,040 - co2eor_optimizer.ui.config_widget - INFO - Attempting to apply configuration changes.
+2025-07-08 20:41:22,041 - co2eor_optimizer.ui.config_widget - INFO - Configuration changes applied successfully.
+2025-07-08 20:41:22,042 - co2eor_optimizer.ui.main_window - INFO - MainWindow state updating from ConfigWidget.
+2025-07-08 20:41:22,042 - co2eor_optimizer.ui.main_window - INFO - Re-initializing engines and analysis tabs with current MainWindow data.
+2025-07-08 20:41:22,043 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 20:41:22,043 - co2eor_optimizer.analysis.well_analysis - INFO - Getting average MMP parameters for well 'Well-Manual-1'.
+2025-07-08 20:41:22,044 - co2eor_optimizer.analysis.well_analysis - WARNING - Well 'Well-Manual-1': No valid perforations found. Averaging properties over the entire wellbore.
+2025-07-08 20:41:22,045 - co2eor_optimizer.analysis.well_analysis - INFO - Calculated full-wellbore average parameters: {'temperature': np.float64(212.0), 'oil_gravity': np.float64(32.0), 'c7_plus_mw': None, 'injection_gas_composition': {'CO2': 1.0}}
+2025-07-08 20:41:22,045 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:41:22,046 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:41:22,046 - co2eor_optimizer.core.optimisation_engine - INFO - MMP calculated: 2264.92 psi ('auto' from WellAnalysis average parameters).
+2025-07-08 20:41:22,047 - co2eor_optimizer.ui.main_window - INFO - OptimizationEngine instance re-created successfully.
+2025-07-08 20:41:22,048 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Deriving base EOR parameters from engine's default settings.
+2025-07-08 20:41:22,049 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4500.00', 'rate': '3000.00', 'v_dp_coefficient': '0.55', 'mobility_ratio': '2.50'}
+2025-07-08 20:41:22,049 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer instance re-created successfully.
+2025-07-08 20:41:22,058 - co2eor_optimizer.ui.optimization_widget - INFO - OptimizationWidget engine instance updated and inputs displayed.
+2025-07-08 20:41:22,059 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 20:41:22,059 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 1 wells.
+2025-07-08 20:41:22,060 - co2eor_optimizer.ui.optimization_widget - INFO - OptimizationWidget received configuration update. Refreshing forms.
+2025-07-08 20:41:34,577 - co2eor_optimizer.ui.workers.optimization_worker - INFO - OptimizationWorker started for method: optimize_genetic_algorithm
+2025-07-08 20:41:34,578 - co2eor_optimizer.core.optimisation_engine - INFO - GA: Obj 'Match Target (Recovery Factor = 0.200)', Gens 70, Pop 50
+2025-07-08 20:42:15,060 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 10 BestFit: Gen:-3.2268e-02 Overall:-3.2268e-02
+2025-07-08 20:42:51,657 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 20 BestFit: Gen:-3.2268e-02 Overall:-3.2268e-02
+2025-07-08 20:43:29,191 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 30 BestFit: Gen:-3.2268e-02 Overall:-3.2268e-02
+2025-07-08 20:44:05,582 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 40 BestFit: Gen:-3.2268e-02 Overall:-3.2268e-02
+2025-07-08 20:44:42,325 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 50 BestFit: Gen:-3.2268e-02 Overall:-3.2268e-02
+2025-07-08 20:45:19,389 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 60 BestFit: Gen:-3.2268e-02 Overall:-3.2268e-02
+2025-07-08 20:45:55,090 - co2eor_optimizer.core.optimisation_engine - INFO - GA Gen 70 BestFit: Gen:-3.2268e-02 Overall:-3.2268e-02
+2025-07-08 20:45:58,700 - co2eor_optimizer.core.optimisation_engine - WARNING - Target for recovery_factor (0.200) is unreachable. Closest value: 0.0204.
+2025-07-08 20:45:58,700 - co2eor_optimizer.core.optimisation_engine - INFO - GA done. Best obj (Match Target (Recovery Factor = 0.200)): -3.2268e-02
+2025-07-08 20:45:58,700 - co2eor_optimizer.ui.workers.optimization_worker - WARNING - Target miss detected. Emitting target_unreachable.
+2025-07-08 20:45:58,701 - co2eor_optimizer.ui.workers.optimization_worker - INFO - Optimization method optimize_genetic_algorithm completed successfully.
+2025-07-08 20:45:58,703 - co2eor_optimizer.ui.main_window - INFO - MainWindow: Optimization run completed.
+2025-07-08 20:45:58,704 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Using EOR parameters from engine's optimization results as base case.
+2025-07-08 20:45:58,705 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4558.18', 'rate': '5000.00', 'v_dp_coefficient': '0.67', 'mobility_ratio': '2.66'}
+2025-07-08 20:45:58,706 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 20:45:58,707 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer updated with new optimization results as base.
+2025-07-08 20:45:58,758 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 20:45:58,759 - co2eor_optimizer.ui.optimization_widget - INFO - Engine state reset to base configuration after worker finished.
+2025-07-08 20:48:56,928 - co2eor_optimizer.utils.project_file_handler - INFO - Project successfully saved to: C:\Users\Nafta\Desktop\321.tphd
+2025-07-08 20:48:56,929 - co2eor_optimizer.ui.main_window - INFO - Project saved to C:\Users\Nafta\Desktop\321.tphd
+2025-07-08 20:48:56,932 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 20:48:56,991 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---
+2025-07-08 20:49:03,300 - __main__ - INFO - --- CO2EORSuite v0.1.0-alpha Started ---
+2025-07-08 20:49:03,301 - __main__ - INFO - Package Root: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer
+2025-07-08 20:49:03,301 - __main__ - INFO - Workspace Root: C:\Users\Nafta\Desktop\WAG_optimisation (added to sys.path)
+2025-07-08 20:49:03,301 - __main__ - INFO - Configurations loaded successfully from: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 20:49:03,302 - __main__ - INFO - Application settings are stored at: \HKEY_CURRENT_USER\Software\PetroTheoHydeoPhD\CO2EORSuite
+2025-07-08 20:49:03,308 - __main__ - INFO - Attempting to load translation for locale 'en' from C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\translations\app_en.qm
+2025-07-08 20:49:03,309 - __main__ - INFO - Attempting to import MainWindow with a 15-second timeout...
+2025-07-08 20:49:05,860 - co2eor_optimizer.ui.main_window - INFO - All MainWindow project modules imported successfully.
+2025-07-08 20:49:05,860 - __main__ - INFO - MainWindow imported in 2.55 seconds
+2025-07-08 20:49:05,860 - __main__ - INFO - MainWindow imported successfully.
+2025-07-08 20:49:05,860 - __main__ - INFO - Initializing MainWindow instance...
+2025-07-08 20:49:05,862 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from base_config.json
+2025-07-08 20:49:05,862 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from economic_scenarios.json
+2025-07-08 20:49:05,862 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from recovery_config.json
+2025-07-08 20:49:05,863 - co2eor_optimizer.config_manager - INFO - Successfully loaded and merged configuration from uq_and_sensitivity.json
+2025-07-08 20:49:05,863 - co2eor_optimizer.config_manager - INFO - All valid configurations successfully loaded and merged from directory: C:\Users\Nafta\Desktop\WAG_optimisation\co2eor_optimizer\config
+2025-07-08 20:49:05,863 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=False).
+2025-07-08 20:49:05,990 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 0 wells.
+2025-07-08 20:49:06,510 - co2eor_optimizer.ui.logging_widget - INFO - LoggingWidget: Attached QtLogHandler to root logger.
+2025-07-08 20:49:06,624 - co2eor_optimizer.ui.main_window - INFO - MainWindow UI structure, actions, and menus initialized.
+2025-07-08 20:49:06,637 - __main__ - INFO - MainWindow instance created.
+2025-07-08 20:49:06,701 - __main__ - INFO - MainWindow initialized and shown.
+2025-07-08 20:49:10,906 - co2eor_optimizer.utils.project_file_handler - INFO - Project successfully loaded from: C:\Users\Nafta\Desktop\321.tphd
+2025-07-08 20:49:10,907 - co2eor_optimizer.ui.main_window - INFO - Initializing project data and configurations (from_project_load=True).
+2025-07-08 20:49:10,960 - co2eor_optimizer.ui.main_window - INFO - Re-initializing engines and analysis tabs with current MainWindow data.
+2025-07-08 20:49:10,963 - co2eor_optimizer.core.optimisation_engine - INFO - Resetting OptimizationEngine to its base state.
+2025-07-08 20:49:10,966 - co2eor_optimizer.analysis.well_analysis - INFO - Getting average MMP parameters for well 'Well-Manual-1'.
+2025-07-08 20:49:10,967 - co2eor_optimizer.analysis.well_analysis - WARNING - Well 'Well-Manual-1': No valid perforations found. Averaging properties over the entire wellbore.
+2025-07-08 20:49:10,969 - co2eor_optimizer.analysis.well_analysis - INFO - Calculated full-wellbore average parameters: {'temperature': np.float64(212.0), 'oil_gravity': np.float64(32.0), 'c7_plus_mw': None, 'injection_gas_composition': {'CO2': 1.0}}
+2025-07-08 20:49:10,970 - root - INFO - Calculating MMP with method: 'auto'.
+2025-07-08 20:49:10,971 - root - INFO - Auto-selecting 'cronquist' correlation as a baseline for pure CO2.
+2025-07-08 20:49:10,971 - co2eor_optimizer.core.optimisation_engine - INFO - MMP calculated: 2264.92 psi ('auto' from WellAnalysis average parameters).
+2025-07-08 20:49:10,972 - co2eor_optimizer.ui.main_window - INFO - OptimizationEngine instance re-created successfully.
+2025-07-08 20:49:10,973 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Deriving base EOR parameters from engine's default settings.
+2025-07-08 20:49:10,975 - co2eor_optimizer.analysis.sensitivity_analyzer - INFO - SA: Resolved base EOR params: {'pressure': '4500.00', 'rate': '3000.00', 'v_dp_coefficient': '0.55', 'mobility_ratio': '2.50'}
+2025-07-08 20:49:10,976 - co2eor_optimizer.ui.main_window - INFO - SensitivityAnalyzer instance re-created successfully.
+2025-07-08 20:49:10,989 - co2eor_optimizer.ui.optimization_widget - INFO - OptimizationWidget engine instance updated and inputs displayed.
+2025-07-08 20:49:10,991 - co2eor_optimizer.ui.sensitivity_widget - INFO - SensitivityWidget analyzer instance updated and parameters populated.
+2025-07-08 20:49:10,991 - co2eor_optimizer.ui.mmp_well_analysis_widget - INFO - MMPWidget updating with 1 wells.
+2025-07-08 20:49:10,999 - co2eor_optimizer.ui.main_window - INFO - Transitioned to main app view, tab index: 0
+2025-07-08 20:49:11,000 - co2eor_optimizer.ui.main_window - INFO - Project loaded: C:\Users\Nafta\Desktop\321.tphd
+2025-07-08 20:49:25,415 - co2eor_optimizer.ui.main_window - INFO - Closing application.
+2025-07-08 20:49:25,476 - __main__ - INFO - --- CO2EORSuite Exited (Code: 0) ---

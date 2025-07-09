@@ -1,0 +1,6 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="/icons">
+    <file alias="spinner.gif">icons/spinner.gif</file> <!-- This path is now correct -->
+  </qresource>
+</RCC>

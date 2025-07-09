@@ -1,0 +1,25 @@
+{
+  "EconomicParametersDefaults": {
+    "oil_price_usd_per_bbl": 75.0,
+    "co2_purchase_cost_usd_per_tonne": 60.0,
+    "co2_injection_cost_usd_per_mscf": 0.65,
+    "water_injection_cost_usd_per_bbl": 1.5,
+    "water_disposal_cost_usd_per_bbl": 2.5,
+    "discount_rate_fraction": 0.10,
+    "operational_cost_usd_per_bbl_oil": 7.0
+  },
+  "EconomicScenarios": {
+    "HighOilPrice": {
+      "oil_price_usd_per_bbl": 90.0,
+      "co2_purchase_cost_usd_per_tonne": 65.0
+    },
+    "LowOilPrice": {
+      "oil_price_usd_per_bbl": 60.0,
+      "operational_cost_usd_per_bbl_oil": 8.0
+    },
+    "HighCO2Cost": {
+       "co2_purchase_cost_usd_per_tonne": 80.0,
+       "co2_injection_cost_usd_per_mscf": 0.85
+    }
+  }
+}

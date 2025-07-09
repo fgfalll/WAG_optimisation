@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "co2-eor-suite"
+version = "0.1.0"
+description = "CO₂ Enhanced Oil Recovery Optimization Toolkit"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT License" }
+authors = [
+  { name = "Petrenko Taras Sergiyovych", email = "saynos2011@gmail.com" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+keywords = ["EOR", "CO2", "reservoir-engineering", "optimization", "petroleum"]
+
+# All your project's runtime dependencies go here.
+dependencies = [
+    "numpy>=1.21",
+    "pandas>=1.3",
+    "scipy>=1.7",
+    "matplotlib>=3.5",
+    "optuna>=2.10",
+    "scikit-learn>=1.0",
+    "scikit-optimize>=0.9",
+    "bayesian-optimization>=1.4",
+    "lasio>=0.30",
+    "plotly>=5.5",
+    "PyQt6>=6.4",
+    "qtpy>=2.3",
+    "chaospy>=4.0", # Added for UQ Engine
+    # Add other dependencies like ecl2df if needed
+]
+
+[project.urls]
+Homepage = "https://github.com/fgfalll/WAG_optimisation"
+Repository = "https://github.com/fgfalll/WAG_optimisation"
+"Bug Tracker" = "https://github.com/fgfalll/WAG_optimisation/issues"
+
+# This defines the entry point for your GUI application.
+# When installed, you could potentially run it from the command line.
+[project.gui-scripts]
+co2-eor-suite = "co2eor_optimizer.main:main"
+
+# Defines optional dependencies, e.g., for developers.
+# Install with: pip install -e .[dev]
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.1",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0",
+    "pre-commit>=3.0",
+]
+
+# This tells setuptools where to find your package source code.
+# It will automatically find all subpackages (ui, core, analysis, etc.).
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["co2eor_optimizer*"]
+exclude = ["tests*"]
