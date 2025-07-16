@@ -113,46 +113,50 @@ class EconomicParameters:
     """Holds economic parameters for project evaluation like NPV."""
     oil_price_usd_per_bbl: float = 70.0
     co2_purchase_cost_usd_per_tonne: float = 50.0
-    co2_recycle_cost_usd_per_tonne: float = 15.0  # Cost to separate, compress, and re-inject produced CO2
-    co2_injection_cost_usd_per_mscf: float = 0.5
+    co2_recycle_cost_usd_per_tonne: float = 15.0
     water_injection_cost_usd_per_bbl: float = 1.0
-    water_disposal_cost_usd_per_bbl: float = 2.0 # Cost to dispose produced water
-    discount_rate_fraction: float = 0.10 # Annual discount rate (e.g., 0.10 for 10%)
-    operational_cost_usd_per_bbl_oil: float = 5.0 # OPEX related to produced oil
-    co2_utilization_target: float = 0.5  # Target CO2 utilization (tonnes of CO2 per barrel of oil)
-    co2_overutilization_penalty_usd_per_tonne: float = 0.0  # Penalty for each tonne of CO2 over the target per barrel of oil
-    co2_utilization_credit_usd_per_tonne: float = 0.0  # Credit for each tonne of CO2 under the target per barrel of oil
+    water_disposal_cost_usd_per_bbl: float = 2.0
+    discount_rate_fraction: float = 0.10
+
+    # [ADDED] Capex and Opex fields for a more complete NPV calculation
+    capex_usd: float = 5_000_000.0
+    fixed_opex_usd_per_year: float = 200_000.0
+    variable_opex_usd_per_bbl: float = 5.0
+    
+    # [REMOVED/IGNORED] Redundant or unused fields for clarity
+    # co2_injection_cost_usd_per_mscf: float = 0.5
+    # operational_cost_usd_per_bbl_oil: float = 5.0
+    # co2_utilization_target: float = 0.5
+    # co2_overutilization_penalty_usd_per_tonne: float = 0.0
+    # co2_utilization_credit_usd_per_tonne: float = 0.0
 
     def __post_init__(self):
         if not (0.0 < self.oil_price_usd_per_bbl <= 1000.0):
             raise ValueError("Oil Price must be between $0 and $1000/bbl.")
         if not (0.0 <= self.co2_purchase_cost_usd_per_tonne <= 1000.0):
             raise ValueError("CO2 Purchase Cost must be between $0 and $1000/tonne.")
-        if not (0.0 <= self.co2_recycle_cost_usd_per_tonne <= 500.0):
-            raise ValueError("CO2 Recycle Cost must be between $0 and $500/tonne.")
         if self.co2_recycle_cost_usd_per_tonne > self.co2_purchase_cost_usd_per_tonne:
             logging.warning("CO2 Recycle Cost is higher than Purchase Cost, which is unusual.")
-        if not (0.0 <= self.co2_injection_cost_usd_per_mscf <= 100.0):
-            raise ValueError("CO2 Injection Cost must be between $0 and $100/MSCF.")
         if not (0.0 <= self.water_injection_cost_usd_per_bbl <= 100.0):
             raise ValueError("Water Injection Cost must be between $0 and $100/bbl.")
         if not (0.0 <= self.water_disposal_cost_usd_per_bbl <= 100.0):
             raise ValueError("Water Disposal Cost must be between $0 and $100/bbl.")
         if not (0.0 <= self.discount_rate_fraction <= 1.0):
             raise ValueError("Discount Rate must be a fraction between 0.0 and 1.0.")
-        if not (0.0 <= self.operational_cost_usd_per_bbl_oil <= 200.0):
-            raise ValueError("Operational Cost must be between $0 and $200/bbl.")
-        # Validate new CO2 utilization economics parameters
-        if not (0.1 <= self.co2_utilization_target <= 10.0):
-            raise ValueError("CO2 Utilization Target must be between 0.1 and 10.0 tonnes per barrel.")
-        if not (0.0 <= self.co2_overutilization_penalty_usd_per_tonne <= 1000.0):
-            raise ValueError("CO2 Overutilization Penalty must be between $0 and $1000 per tonne.")
-        if not (0.0 <= self.co2_utilization_credit_usd_per_tonne <= 1000.0):
-            raise ValueError("CO2 Utilization Credit must be between $0 and $1000 per tonne.")
+        # [ADDED] Validation for new economic fields
+        if not (0.0 <= self.capex_usd):
+            raise ValueError("CAPEX must be non-negative.")
+        if not (0.0 <= self.fixed_opex_usd_per_year):
+            raise ValueError("Fixed OPEX must be non-negative.")
+        if not (0.0 <= self.variable_opex_usd_per_bbl <= 200.0):
+            raise ValueError("Variable OPEX must be between $0 and $200/bbl.")
 
     @classmethod
     def from_config_dict(cls, config_econ_params_dict: Dict[str, Any], **kwargs):
         defaults = {f.name: f.default for f in dataclasses.fields(cls) if f.default is not dataclasses.MISSING}
+        # [MODIFIED] Handle legacy 'operational_cost_usd_per_bbl_oil' key
+        if 'operational_cost_usd_per_bbl_oil' in config_econ_params_dict:
+            config_econ_params_dict['variable_opex_usd_per_bbl'] = config_econ_params_dict.pop('operational_cost_usd_per_bbl_oil')
         defaults.update(config_econ_params_dict)
         defaults.update(kwargs)
         return from_dict_to_dataclass(cls, defaults)
@@ -173,6 +177,10 @@ class EORParameters:
     max_injection_rate_bpd: float = 5000.0
     v_dp_coefficient: float = 0.55
     mobility_ratio: float = 2.5
+    
+    # [ADDED] Missing parameters for simplified physics models
+    gas_oil_ratio_at_breakthrough: float = 1.5 # MSCF/STB
+    water_cut_bwow: float = 3.0 # bbl water / bbl oil
 
     def __post_init__(self):
         if not (0 < self.injection_rate <= 100000):
@@ -205,6 +213,11 @@ class EORParameters:
             raise ValueError("V_DP Coefficient must be between 0.0 and 1.0.")
         if not (0 < self.mobility_ratio <= 50):
             raise ValueError("Mobility Ratio must be between 0 and 50.")
+        # [ADDED] Validation for new parameters
+        if not (0 <= self.gas_oil_ratio_at_breakthrough <= 20):
+             raise ValueError("Gas Oil Ratio at Breakthrough must be between 0 and 20 MSCF/STB.")
+        if not (0 <= self.water_cut_bwow <= 50):
+             raise ValueError("Water Cut must be between 0 and 50 bbl/bbl.")
 
     @classmethod
     def from_config_dict(cls, config_eor_params_dict: Dict[str, Any], **kwargs):
@@ -216,6 +229,7 @@ class EORParameters:
 @dataclasses.dataclass
 class GeneticAlgorithmParams:
     """Parameters for configuring the Genetic Algorithm optimizer."""
+    # --- Base Parameters ---
     population_size: int = 60
     generations: int = 80
     crossover_rate: float = 0.8
@@ -225,7 +239,30 @@ class GeneticAlgorithmParams:
     blend_alpha_crossover: float = 0.5
     mutation_strength_factor: float = 0.1
 
+    # --- Advanced Diversity and Adaptability Parameters ---
+    # Adaptive mutation settings
+    adaptive_mutation_enabled: bool = True
+    stagnation_generations_limit: int = 15  # Generations of no improvement before triggering adaptive response
+    min_mutation_rate: float = 0.05
+    max_mutation_rate: float = 0.50
+    
+    # Random individual injection
+    random_injection_rate: float = 0.05 # Percentage of worst population to replace with random individuals
+    
+    # Chaotic mutation
+    use_chaotic_mutation: bool = True
+    chaos_map_r: float = 3.99 # Logistic map parameter 'r' (must be in [3.57, 4.0] for chaos)
+
+    # Niching via Fitness Sharing to adjust selection pressure
+    use_fitness_sharing: bool = True
+    sharing_sigma_threshold: float = 0.15 # Normalized distance threshold for sharing
+
+    # Dynamic elitism
+    dynamic_elitism_enabled: bool = True
+    min_elite_count: int = 1
+
     def __post_init__(self):
+        # --- Validations for Base Parameters ---
         if not (10 <= self.population_size <= 1000):
             raise ValueError("Population Size must be between 10 and 1000.")
         if not (10 <= self.generations <= 1000):
@@ -242,6 +279,21 @@ class GeneticAlgorithmParams:
             raise ValueError("Blend Alpha Crossover must be between 0.0 and 1.0.")
         if not (0.0 < self.mutation_strength_factor <= 1.0):
             raise ValueError("Mutation Strength Factor must be between 0.0 and 1.0.")
+
+        # --- Validations for Advanced Parameters ---
+        if self.adaptive_mutation_enabled:
+            if not (0 < self.stagnation_generations_limit < self.generations):
+                raise ValueError("Stagnation limit must be less than total generations.")
+            if not (0.0 <= self.min_mutation_rate < self.max_mutation_rate <= 1.0):
+                raise ValueError("Min/Max mutation rates are invalid.")
+        if not (0.0 <= self.random_injection_rate <= 0.5):
+            raise ValueError("Random injection rate should be between 0.0 and 0.5.")
+        if self.use_chaotic_mutation and not (3.57 <= self.chaos_map_r <= 4.0):
+            logging.warning(f"chaos_map_r={self.chaos_map_r} is outside the typical chaotic range of [3.57, 4.0].")
+        if self.use_fitness_sharing and not (0.01 <= self.sharing_sigma_threshold <= 1.0):
+             raise ValueError("Fitness sharing sigma threshold must be between 0.01 and 1.0.")
+        if self.dynamic_elitism_enabled and not (0 <= self.min_elite_count < self.elite_count):
+            raise ValueError("Min elite count must be less than the base elite count.")
 
     @classmethod
     def from_config_dict(cls, config_ga_params_dict: Dict[str, Any], **kwargs):
