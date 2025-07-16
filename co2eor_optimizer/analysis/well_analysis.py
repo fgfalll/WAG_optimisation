@@ -1,14 +1,3 @@
-"""
-Well analysis module for CO2 EOR optimization.
-
-This module is fully integrated with the compositional EOS models. It provides
-a hierarchical approach to determining fluid and thermal properties for MMP
-calculations:
-
-This ensures the most physically accurate data is always used when available.
-"""
-import sys
-import os
 from typing import Dict, Optional, Any, Tuple, TYPE_CHECKING, Callable
 from dataclasses import dataclass, field
 import logging
@@ -129,91 +118,89 @@ class WellAnalysis:
                             is_stop_requested: Optional[Callable[[], bool]] = None,
                             ) -> Dict[str, np.ndarray]:
         """
-        Calculates a depth-based MMP profile using the best available data.
-
-        The method establishes base profiles for temperature and API gravity using the
-        standard data hierarchy (EOS, metadata, logs, etc.). If perforation-specific
-        data is available, it then overwrites the values in the base profiles for
-        the corresponding depth intervals. This ensures that high-priority perforation
-        data is used for those specific zones while still providing a continuous
-        profile for the entire wellbore for visualization.
-
-        Args:
-            method (str): The MMP correlation to use ('auto', 'cronquist', etc.).
-            gas_composition (Optional[Dict]): Injection gas mole fractions.
-            c7_plus_mw_override (Optional[float]): Manual override for C7+ MW.
-            progress_callback (Optional[Callable]): Callback for progress updates.
-            is_stop_requested (Optional[Callable]): Callback to check for cancellation.
-
-        ENHANCED: Now accepts optional callbacks to report progress and check for
-        cancellation requests, making it suitable for use in worker threads.
+        Calculates a depth-based MMP profile. If perforations are defined, the
+        calculation is performed for the perforated intervals to generate a
+        continuous profile connecting them. Otherwise, a profile for the entire
+        wellbore is generated.
         """
-        if not hasattr(self.well_data, 'depths') or self.well_data.depths.size == 0:
-            raise ValueError("WellData must contain depth information to calculate a profile.")
-
         final_gas_comp = gas_composition or self.config.default_gas_composition
-        api_profile = self._estimate_api_profile()
-        temp_profile = self._calculate_temperature_profile()
-
-        total_points = len(self.well_data.depths)
-        mmp_values = np.full(total_points, np.nan)
         c7_plus_mw = c7_plus_mw_override if c7_plus_mw_override is not None else self.well_data.metadata.get('C7_plus_MW')
-
-        # If perforation data is available, use it to overwrite the base profiles.
-        # This gives perforation data the highest priority for its specific intervals.
         is_perforated_well = bool(self.well_data.perforation_properties)
+
         if is_perforated_well:
-            logger.info("Applying perforation-specific properties to MMP profile.")
-            # OPTIMIZATION: Only calculate MMP at the top and bottom of each perforation.
-            indices_to_process = set()
-            for perf in self.well_data.perforation_properties:
-                # Apply properties to the entire perforation interval for the plot
-                mask = (self.well_data.depths >= perf['top']) & (self.well_data.depths <= perf['bottom'])
-                if 'api' in perf: api_profile[mask] = perf['api']
-                if 'temp' in perf: temp_profile[mask] = perf['temp']
+            logger.info("Perforated well detected. Calculating connected MMP profile at perforation boundaries.")
+            depth_points, api_points, temp_points, mmp_points = [], [], [], []
+            perfs = self.well_data.perforation_properties
+            num_perfs = len(perfs)
 
-                # Find the specific indices in the depth array for the perf boundaries
-                top_idx = np.abs(self.well_data.depths - perf['top']).argmin()
-                bottom_idx = np.abs(self.well_data.depths - perf['bottom']).argmin()
-                indices_to_process.add(top_idx)
-                indices_to_process.add(bottom_idx)
+            for i, perf in enumerate(perfs):
+                if is_stop_requested and is_stop_requested():
+                    logger.info("MMP profile calculation cancelled by user request.")
+                    return {'depths': np.array(depth_points), 'mmp': np.array(mmp_points),
+                            'temperature': np.array(temp_points), 'api': np.array(api_points)}
+
+                top, bottom, api, temp = perf.get('top'), perf.get('bottom'), perf.get('api'), perf.get('temp')
+                if any(v is None for v in [top, bottom, api, temp]):
+                    logger.warning(f"Skipping a perforation due to missing properties (top, bottom, api, or temp).")
+                    continue
+                try:
+                    params = MMPParameters(
+                        temperature=temp, oil_gravity=api, injection_gas_composition=final_gas_comp,
+                        c7_plus_mw=c7_plus_mw, pvt_data=self.pvt_data)
+                    mmp_val = calculate_mmp(params, method=method)
+                    
+                    depth_points.extend([top, bottom])
+                    api_points.extend([api, api])
+                    temp_points.extend([temp, temp])
+                    mmp_points.extend([mmp_val, mmp_val])
+                except Exception as e:
+                    logger.error(f"Failed to calculate MMP for perforation {top}-{bottom}: {e}")
+                    continue
+                
+                if progress_callback: progress_callback(i + 1, num_perfs)
             
-            points_to_loop = sorted(list(indices_to_process))
-            logger.info(f"Optimized calculation for {len(points_to_loop)} points at perforation boundaries.")
+            return {'depths': np.array(depth_points), 'mmp': np.array(mmp_points),
+                    'temperature': np.array(temp_points), 'api': np.array(api_points)}
 
-        else: # If not a perforated well, calculate for the entire wellbore
-            points_to_loop = range(total_points)
-
-        for i in points_to_loop:
-
-            # Check for cancellation request inside the loop
-            if is_stop_requested and is_stop_requested():
-                logger.info("MMP profile calculation cancelled by user request.")
-                # Return partial results
-                return {
-                    'depths': self.well_data.depths[:i], 'mmp': mmp_values[:i],
-                    'temperature': temp_profile[:i], 'api': api_profile[:i]
-                }
-
-            params = MMPParameters(
-                temperature=temp_profile[i],
-                oil_gravity=api_profile[i],
-                injection_gas_composition=final_gas_comp,
-                c7_plus_mw=c7_plus_mw,
-                pvt_data=self.pvt_data
-            )
-            mmp_values[i] = calculate_mmp(params, method=method)
+        else:  # Non-perforated well logic
+            if not hasattr(self.well_data, 'depths') or self.well_data.depths.size == 0:
+                raise ValueError("WellData must contain depth information to calculate a continuous profile.")
             
-            # Report progress
-            if progress_callback:
-                progress_callback(i + 1, total_points)
+            total_points = len(self.well_data.depths)
+            logger.info("Non-perforated well. Calculating continuous MMP profile.")
+            api_profile = self._estimate_api_profile()
+            temp_profile = self._calculate_temperature_profile()
+            mmp_values = np.full(total_points, np.nan)
+            
+            props = np.stack((temp_profile, api_profile), axis=-1)
+            nan_mask = np.isnan(props)
+            nan_changes = np.any(np.diff(nan_mask, axis=0), axis=1)
+            both_valid_mask = ~nan_mask[:-1] & ~nan_mask[1:]
+            value_diff = np.diff(props, axis=0)
+            value_changes = np.any((value_diff != 0) & both_valid_mask, axis=1)
+            prop_changes = np.concatenate(([True], nan_changes | value_changes))
+            indices_to_calculate = np.where(prop_changes)[0]
+            
+            logger.info(f"Optimized MMP calculation for {len(indices_to_calculate)} unique property blocks.")
+            for i, current_idx in enumerate(indices_to_calculate):
+                if is_stop_requested and is_stop_requested():
+                    logger.info("MMP profile calculation cancelled by user request.")
+                    mmp_values[current_idx:] = np.nan
+                    return {'depths': self.well_data.depths, 'mmp': mmp_values, 'temperature': temp_profile, 'api': api_profile}
+                
+                end_idx = indices_to_calculate[i+1] if (i + 1) < len(indices_to_calculate) else total_points
+                if np.isnan(temp_profile[current_idx]) or np.isnan(api_profile[current_idx]):
+                    if progress_callback: progress_callback(end_idx, total_points)
+                    continue
 
-        return {
-            'depths': self.well_data.depths,
-            'mmp': mmp_values,
-            'temperature': temp_profile,
-            'api': api_profile
-        }
+                params = MMPParameters(
+                    temperature=temp_profile[current_idx], oil_gravity=api_profile[current_idx],
+                    injection_gas_composition=final_gas_comp, c7_plus_mw=c7_plus_mw, pvt_data=self.pvt_data)
+                mmp_values[current_idx:end_idx] = calculate_mmp(params, method=method)
+                if progress_callback: progress_callback(end_idx, total_points)
+                
+            return {'depths': self.well_data.depths, 'mmp': mmp_values, 'temperature': temp_profile, 'api': api_profile}
+
 
     def find_miscible_zones(self,
                           pressure: float,
@@ -236,6 +223,10 @@ class WellAnalysis:
         """
         Calculates average fluid and thermal properties to provide a representative
         set of parameters for the OptimizationEngine.
+
+        If perforations are defined, it calculates a thickness-weighted average
+        of properties from the perforated intervals. Otherwise, it averages
+        properties over the entire wellbore.
         """
         logger.info(f"Getting average MMP parameters for well '{self.well_data.name}'.")
 
@@ -248,11 +239,11 @@ class WellAnalysis:
             weighted_temp_sum = 0
 
             for p in perfs:
-                thickness = p['bottom'] - p['top']
+                thickness = p.get('bottom', 0) - p.get('top', 0)
                 if thickness <= 0: continue
                 total_thickness += thickness
-                weighted_api_sum += p['api'] * thickness
-                weighted_temp_sum += p['temp'] * thickness
+                weighted_api_sum += p.get('api', self.config.default_api_gravity) * thickness
+                weighted_temp_sum += p.get('temp', self.config.default_reservoir_temp) * thickness
             
             if total_thickness > 0:
                 avg_params = {
@@ -273,13 +264,13 @@ class WellAnalysis:
         api_profile = self._estimate_api_profile()
         temp_profile = self._calculate_temperature_profile()
 
-        if api_profile.size == 0:
+        if api_profile.size == 0 or temp_profile.size == 0:
             logger.error("Cannot get average MMP params; no depth data in well.")
             return {}
 
         avg_params = {
-            'temperature': np.mean(temp_profile),
-            'oil_gravity': np.mean(api_profile),
+            'temperature': np.mean(temp_profile[~np.isnan(temp_profile)]),
+            'oil_gravity': np.mean(api_profile[~np.isnan(api_profile)]),
             'c7_plus_mw': self.well_data.metadata.get('C7_plus_MW'),
             'injection_gas_composition': self.config.default_gas_composition
         }

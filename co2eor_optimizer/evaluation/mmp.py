@@ -1,17 +1,3 @@
-"""
-Minimum Miscibility Pressure (MMP) Calculation Module
-
-This module provides functions to estimate the Minimum Miscibility Pressure (MMP)
-for gas injection projects using several industry-standard correlations.
-
-Key Features:
-- Robust input validation within specified correlation limits.
-- A unified interface that can automatically select the most appropriate
-  correlation based on the available data.
-- The ability to estimate required parameters (like API gravity) from
-  standard PVT data when direct measurements are unavailable, with clear
-  warnings about the associated uncertainty.
-"""
 import logging
 import sys
 import os
@@ -47,7 +33,7 @@ class MMPParameters:
             (Typical valid range: 15-50°API).
         c7_plus_mw (Optional[float]): The molecular weight of the C7+ fraction
             of the reservoir fluid, in g/mol. Required for some correlations
-            like 'hybrid_gh'. (Typical valid range: 150-300 g/mol).
+            like 'hybrid_gh'. (Typical valid range: 50-250 g/mol).
         injection_gas_composition (Optional[Dict[str, float]]): A dictionary
             containing the mole fractions of the injection gas components.
             The sum of fractions must be 1.0. Example: {'CO2': 0.95, 'CH4': 0.05}.
@@ -79,24 +65,23 @@ class MMPParameters:
                 "Accuracy of the results may be reduced."
             )
 
-        # Validate Oil API Gravity
+        # Validate Oil API Gravity, changing hard error to a warning.
         if not 15 <= self.oil_gravity <= 50:
-            raise ValueError(
-                f"Oil gravity {self.oil_gravity}°API is outside the typical "
-                f"valid range (15-50°API). Correlations are not validated for "
-                f"heavy oils (<20°API) or light oils/condensates (>45°API)."
+            logging.warning(
+                f"Oil gravity {self.oil_gravity}°API is outside the typical valid "
+                f"range (15-50°API). Correlations are being extrapolated and results may be inaccurate."
             )
-        if self.oil_gravity < 20 or self.oil_gravity > 45:
+        elif self.oil_gravity < 20 or self.oil_gravity > 45:
             logging.warning(
                 f"Oil gravity {self.oil_gravity}°API is near correlation limits. "
                 "Accuracy of the results may be reduced."
             )
 
-        # Validate C7+ Molecular Weight if provided
-        if self.c7_plus_mw and not 150 <= self.c7_plus_mw <= 300:
-            raise ValueError(
+        # Validate C7+ Molecular Weight if provided, but with a warning instead of an error.
+        if self.c7_plus_mw and not 50 <= self.c7_plus_mw <= 250:
+            logging.warning(
                 f"C7+ MW {self.c7_plus_mw} g/mol is outside the typical valid "
-                f"range (150-300 g/mol). Please provide measured values."
+                f"range (50-250 g/mol). Correlation accuracy may be significantly reduced."
             )
 
         # Validate Injection Gas Composition if provided
@@ -139,9 +124,9 @@ def _calculate_mmp_hybrid_gh(params: MMPParameters) -> float:
     mmp_base = _calculate_mmp_cronquist(params)
 
     # 2. Adjust for C7+ molecular weight (Glaso, 1985)
-    # This term reduces MMP for lighter oils (higher C7+ MW is not typical)
-    # and increases it for heavier oils.
-    mmp_adj_c7 = mmp_base * (1.0 - 0.007 * (params.c7_plus_mw - 190))
+    # This term increases MMP for heavier oils (higher C7+ MW) and
+    # decreases it for lighter oils, which is physically consistent.
+    mmp_adj_c7 = mmp_base * (1.0 + 0.007 * (params.c7_plus_mw - 190))
 
     # 3. Adjust for gas composition (Yellig & Metcalfe, 1980)
     if params.injection_gas_composition:
@@ -168,11 +153,11 @@ def _calculate_mmp_yuan(params: MMPParameters) -> float:
     ch4_fraction = params.injection_gas_composition.get('CH4', 0.0)
 
     # Yuan correlation coefficients
-    # A: Temperature dependency term
-    a = 10**(3.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
-    # B: Oil composition term (C5+ Mol weight is approximated from API)
+    # A: Temperature dependency term (Corrected constant from 3.356 to 1.356)
+    a = 10**(1.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
+    # B: Oil composition term (C5+ Mol weight is approximated from API, corrected formula)
     m_c5_plus = 630 - 10.3 * params.oil_gravity
-    b = (0.342 * m_c5_plus**0.36) / (0.641 * params.temperature**0.21)
+    b = (m_c5_plus**0.36) / (0.641 * params.temperature**0.21)
     # C: Purity term (accounts for non-CO2 components)
     x_co2 = co2_fraction
     c = 0.993 - 0.778 * (1 - x_co2)**0.11
