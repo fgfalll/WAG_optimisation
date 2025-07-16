@@ -406,8 +406,9 @@ class DataManagementWidget(QWidget):
     def _confirm_and_emit_data(self):
         if not self.reservoir_data or not self.pvt_properties: return
         payload = {
-            "well_data_list": deepcopy(self.well_data_list), 
+            "well_data_list": deepcopy(self.well_data_list),
             "reservoir_data": deepcopy(self.reservoir_data),
-            "pvt_properties": deepcopy(self.pvt_properties)
+            "pvt_properties": deepcopy(self.pvt_properties),
+            "is_data_finalization": True
         }
-        self.project_data_updated.emit(payload); self.status_message_updated.emit("Project data confirmed.", 5000)
+        self.project_data_updated.emit(payload); self.status_message_updated.emit("Project data finalized successfully", 5000)

@@ -43,6 +43,8 @@ logger = logging.getLogger(__name__)
 
 class MMPWellAnalysisWidget(QWidget):
     analysis_completed = pyqtSignal(dict)
+    # [NEW] Signal to emit the single, representative MMP value for the engine
+    representative_mmp_calculated = pyqtSignal(float)
 
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
@@ -97,7 +99,7 @@ class MMPWellAnalysisWidget(QWidget):
         self.c7_mw_widget = QWidget()
         c7_layout = QHBoxLayout(self.c7_mw_widget); c7_layout.setContentsMargins(0,0,0,0)
         c7_layout.addWidget(QLabel("C7+ Molecular Weight (g/mol):"))
-        self.c7_mw_input = QDoubleSpinBox(); self.c7_mw_input.setRange(150.0, 300.0); self.c7_mw_input.setValue(190.0)
+        self.c7_mw_input = QDoubleSpinBox(); self.c7_mw_input.setRange(50.0, 250.0); self.c7_mw_input.setValue(190.0)
         self.c7_mw_input.setToolTip("Used for the 'Hybrid GH' and 'Alston' correlations.")
         c7_layout.addWidget(self.c7_mw_input)
         method_inputs_layout.addWidget(self.c7_mw_widget)
@@ -237,23 +239,48 @@ class MMPWellAnalysisWidget(QWidget):
         self.worker.start()
 
     def _populate_results_table(self, results: Dict[str, np.ndarray]):
+        """Populates the table with a concise summary of results, showing only distinct property zones."""
         self.results_table.setRowCount(0)
-        depths, mmp = results.get('depths', np.array([])), results.get('mmp', np.array([]))
-        temp, api = results.get('temperature', np.array([])), results.get('api', np.array([]))
-        if depths.size == 0: return
-
-        valid_indices = ~np.isnan(mmp)
-        valid_depths, valid_mmp = depths[valid_indices], mmp[valid_indices]
-        valid_temp = temp[valid_indices] if temp.size == depths.size else np.full_like(valid_depths, np.nan)
-        valid_api = api[valid_indices] if api.size == depths.size else np.full_like(valid_depths, np.nan)
+        depths = results.get('depths', np.array([]))
+        mmp = results.get('mmp', np.array([]))
+        temp = results.get('temperature', np.array([]))
+        api = results.get('api', np.array([]))
         
-        self.results_table.setRowCount(len(valid_depths))
-        for row, (d, t, a, m) in enumerate(zip(valid_depths, valid_temp, valid_api, valid_mmp)):
-            self.results_table.setItem(row, 0, QTableWidgetItem(f"{d:.1f}"))
-            self.results_table.setItem(row, 1, QTableWidgetItem(f"{t:.2f}"))
-            self.results_table.setItem(row, 2, QTableWidgetItem(f"{a:.2f}"))
-            self.results_table.setItem(row, 3, QTableWidgetItem(f"{m:.2f}"))
+        if depths.size == 0:
+            return
 
+        valid_mask = ~np.isnan(mmp)
+        if not np.any(valid_mask):
+            return
+
+        valid_depths = depths[valid_mask]
+        valid_temp = temp[valid_mask]
+        valid_api = api[valid_mask]
+        valid_mmp = mmp[valid_mask]
+
+        unique_rows_to_display = []
+        if valid_depths.size > 0:
+            first_row = (valid_depths[0], valid_temp[0], valid_api[0], valid_mmp[0])
+            unique_rows_to_display.append(first_row)
+            
+            last_added_props = (first_row[1], first_row[2], first_row[3])
+
+            for i in range(1, len(valid_depths)):
+                current_props = (valid_temp[i], valid_api[i], valid_mmp[i])
+                
+                if not np.allclose(current_props, last_added_props, equal_nan=True):
+                    row_to_add = (valid_depths[i], valid_temp[i], valid_api[i], valid_mmp[i])
+                    unique_rows_to_display.append(row_to_add)
+                    last_added_props = current_props
+
+        self.results_table.setRowCount(len(unique_rows_to_display))
+        for row_idx, row_data in enumerate(unique_rows_to_display):
+            d, t, a, m = row_data
+            self.results_table.setItem(row_idx, 0, QTableWidgetItem(f"{d:.1f}"))
+            self.results_table.setItem(row_idx, 1, QTableWidgetItem(f"{t:.2f}"))
+            self.results_table.setItem(row_idx, 2, QTableWidgetItem(f"{a:.2f}"))
+            self.results_table.setItem(row_idx, 3, QTableWidgetItem(f"{m:.2f}"))
+        
         self.results_table.resizeColumnsToContents()
 
     def _on_mmp_result(self, results: Dict[str, list]):
@@ -266,19 +293,27 @@ class MMPWellAnalysisWidget(QWidget):
             if num_points > 0:
                 self.plot_view.setHtml(self._create_mmp_plot(processed_results, well_name).to_html(include_plotlyjs='cdn'))
                 self._populate_results_table(processed_results)
+                
+                # [MODIFIED] Calculate and emit the representative MMP value
+                mmp_values = processed_results.get('mmp', np.array([]))
+                if mmp_values.size > 0 and np.any(~np.isnan(mmp_values)):
+                    representative_mmp = np.nanmean(mmp_values)
+                    logger.info(f"Emitting representative MMP: {representative_mmp:.2f} psi")
+                    self.representative_mmp_calculated.emit(representative_mmp)
             else:
                 self._on_mmp_error("Analysis returned no data points.")
+            
             self.analysis_completed.emit(results)
         except Exception as e:
             logger.error(f"Error processing MMP results: {e}", exc_info=True)
             self._on_mmp_error(f"Failed to process results: {e}")
 
-    # --- [REFACTORED] Greatly enhanced plot for physical realism and clarity ---
     def _create_mmp_plot(self, results: Dict[str, np.ndarray], well_name: str) -> go.Figure:
-        depths, mmp, temp = results.get('depths'), results.get('mmp'), results.get('temperature')
-        api = results.get('api')
+        """Creates a multi-axis plot showing MMP and Temperature vs. Depth."""
+        depths, mmp, temp, api = (results.get('depths'), results.get('mmp'), 
+                                  results.get('temperature'), results.get('api'))
 
-        if depths.size == 0 or mmp.size == 0:
+        if depths is None or depths.size == 0 or mmp is None or mmp.size == 0:
             raise ValueError("Result dictionary is missing 'depths' or 'mmp' data.")
 
         fig = go.Figure()
@@ -289,7 +324,7 @@ class MMPWellAnalysisWidget(QWidget):
             x=temp_for_plot, y=depths, name='Temperature', mode='lines',
             line=dict(color='crimson', dash='dash', width=2),
             xaxis='x2',
-            connectgaps=False # Ensure gaps are not connected for non-perforated zones
+            connectgaps=False
         ))
 
         customdata = np.stack((temp, api), axis=-1)
@@ -297,17 +332,18 @@ class MMPWellAnalysisWidget(QWidget):
                          'MMP: %{x:.2f} psia<br>' +
                          'Temperature: %{customdata[0]:.2f} °F<br>' +
                          'API Gravity: %{customdata[1]:.2f}°<extra></extra>')
+        
         fig.add_trace(go.Scatter(
-            x=mmp, y=depths, name='MMP', mode='lines+markers',
-            line=dict(color='royalblue', width=3),
-            marker=dict(size=10, symbol='circle', line=dict(width=2)),
+            x=mmp, y=depths, name='MMP', mode='lines',
+            line=dict(color='royalblue', width=4, shape='hv'),
             customdata=customdata,
             hovertemplate=hovertemplate,
-            connectgaps=False  # This is key for showing perforations correctly
+            connectgaps=False
         ))
+
         fig.update_layout(
-            title=f"MMP & Temperature Profile for Well: {well_name}",
-            xaxis_title="Pressure (psia)",
+            title=f"MMP & Temperature Profile for Well: <b>{well_name}</b>",
+            xaxis_title="MMP (psia)",
             yaxis_title="Depth (ft)",
             yaxis=dict(autorange="reversed"),
             xaxis2=dict(
@@ -316,7 +352,9 @@ class MMPWellAnalysisWidget(QWidget):
                 side="top",
                 showgrid=False
             ),
-            legend=dict(yanchor="top", y=0.98, xanchor="left", x=0.02)
+            legend=dict(yanchor="top", y=0.98, xanchor="left", x=0.02,
+                        bgcolor='rgba(255,255,255,0.7)'),
+            margin=dict(t=80)
         )
         return fig
 

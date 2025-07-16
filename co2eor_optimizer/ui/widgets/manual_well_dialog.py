@@ -39,10 +39,10 @@ class ManualWellDialog(QDialog):
     """A dialog to manually input a well with detailed perforations and an optional path editor."""
     
     KEY_PARAM_DEFS = {
-        'API': ("Oil Gravity (°API)", "lineedit", float, {'default_value': 32.0}),
-        'Temperature': ("Reservoir Temperature (°F)", "lineedit", float, {'default_value': 212.0}),
-        'TopDepth': ("Well Top Depth / MD (ft)", "lineedit", float, {'default_value': 9900.0}),
-        'BottomDepth': ("Well Bottom Depth / MD (ft)", "lineedit", float, {'default_value': 10100.0}),
+        'API': ("Oil Gravity (°API)", "lineedit", float, {'default_value': 27.0}),
+        'Temperature': ("Reservoir Temperature (°F)", "lineedit", float, {'default_value': 175.0}),
+        'TopDepth': ("Well Top Depth / MD (ft)", "lineedit", float, {'default_value': 1.0}),
+        'BottomDepth': ("Well Bottom Depth / MD (ft)", "lineedit", float, {'default_value': 3000.0}),
     }
 
     def __init__(self, parent: Optional[QWidget] = None):

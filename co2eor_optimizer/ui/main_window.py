@@ -95,6 +95,7 @@ class MainWindow(QMainWindow):
     current_well_data: List[WellData]
     current_reservoir_data: Optional[ReservoirData]
     current_pvt_properties: Optional[PVTProperties]
+    current_mmp_value: Optional[float] = None  # [NEW] State for authoritative MMP
     
     current_economic_params: EconomicParameters
     current_eor_params: EORParameters
@@ -111,7 +112,6 @@ class MainWindow(QMainWindow):
         super().__init__(None)
         self.app_settings = app_settings
         
-        # This is the ONLY instance of ConfigManager. It's used to load DEFAULTS for new projects.
         config_dir_path = str(Path(sys.executable).parent / 'config' if getattr(sys, 'frozen', False) else Path(__file__).parent.parent / 'config')
         self.default_config_loader = ConfigManager(config_dir_path=config_dir_path, require_config=False, autoload=True)
         if not self.default_config_loader.is_loaded:
@@ -141,9 +141,9 @@ class MainWindow(QMainWindow):
         self.current_well_data = []
         self.current_reservoir_data = None
         self.current_pvt_properties = None
+        self.current_mmp_value = None
 
         if not from_project_load:
-            # For a new project, load parameters from the default config files
             try:
                 self.current_economic_params = EconomicParameters.from_config_dict(self.default_config_loader.get_section("EconomicParametersDefaults") or {})
                 self.current_eor_params = EORParameters.from_config_dict(self.default_config_loader.get_section("EORParametersDefaults") or {})
@@ -197,12 +197,16 @@ class MainWindow(QMainWindow):
         self.data_management_tab.status_message_updated.connect(self.show_status_message)
         self.main_tab_widget.addTab(self.data_management_tab, QIcon.fromTheme("document-properties"), "2. Data Management")
         
-        # Subsequent tabs
+        # Tab 3: MMP Analysis
         self.mmp_well_analysis_tab = MMPWellAnalysisWidget(self)
+        # [MODIFIED] Connect the new signal to update the main window's MMP state
+        self.mmp_well_analysis_tab.representative_mmp_calculated.connect(self._on_representative_mmp_updated)
         self.main_tab_widget.addTab(self.mmp_well_analysis_tab, QIcon.fromTheme("view-plot"), "3. MMP & Well Analysis")
         
+        # Subsequent tabs
         self.optimization_tab = OptimizationWidget(self)
         self.optimization_tab.optimization_completed.connect(self._on_optimization_run_completed)
+        self.optimization_tab.open_configuration_requested.connect(self._open_configuration_tab)
         self.config_tab.configurations_updated.connect(self.optimization_tab.on_configurations_updated)
         self.main_tab_widget.addTab(self.optimization_tab, QIcon.fromTheme("system-run"), "4. Optimization")
         
@@ -313,6 +317,9 @@ class MainWindow(QMainWindow):
             self.current_reservoir_data = project_data_dict.get("reservoir_data")
             self.current_pvt_properties = project_data_dict.get("pvt_properties")
             
+            # [MODIFIED] Load the saved MMP value
+            self.current_mmp_value = project_data_dict.get("mmp_value")
+            
             self.current_economic_params = project_data_dict.get("economic_parameters", EconomicParameters())
             self.current_eor_params = project_data_dict.get("eor_parameters", EORParameters())
             self.current_operational_params = project_data_dict.get("operational_parameters", OperationalParameters())
@@ -320,7 +327,6 @@ class MainWindow(QMainWindow):
             self.current_ga_params = project_data_dict.get("ga_parameters", GeneticAlgorithmParams())
             self.current_bo_params = project_data_dict.get("bo_parameters", BayesianOptimizationParams())
             
-            # Update config tab with loaded project's specific configurations
             loaded_configs = {
                 EconomicParameters.__name__: deepcopy(self.current_economic_params),
                 EORParameters.__name__: deepcopy(self.current_eor_params),
@@ -331,7 +337,6 @@ class MainWindow(QMainWindow):
             }
             self.config_tab.update_configurations(loaded_configs)
 
-            # Update data management tab and then re-initialize all engines
             self.data_management_tab._populate_review_ui()
             self._reinitialize_engines_and_analysis_tabs()
 
@@ -376,6 +381,7 @@ class MainWindow(QMainWindow):
                 "well_data_list": self.current_well_data,
                 "reservoir_data": self.current_reservoir_data,
                 "pvt_properties": self.current_pvt_properties,
+                "mmp_value": self.current_mmp_value, # [MODIFIED] Save the MMP value
                 "economic_parameters": self.current_economic_params,
                 "eor_parameters": self.current_eor_params,
                 "operational_parameters": self.current_operational_params,
@@ -431,19 +437,15 @@ class MainWindow(QMainWindow):
         self.current_reservoir_data = project_data_dict.get("reservoir_data")
         self.current_pvt_properties = project_data_dict.get("pvt_properties")
         
-        self._reinitialize_engines_and_analysis_tabs()
+        is_data_finalization = project_data_dict.get("is_data_finalization", False)
+        self._reinitialize_engines_and_analysis_tabs(skip_calculations=is_data_finalization)
         self.show_status_message("Core project data models updated.", 3000)
 
     @pyqtSlot(dict)
     def _on_app_configurations_updated(self, new_configs: Dict[str, Any]):
-        """
-        This is the central slot that updates the main window's state when
-        the user applies changes in the ConfigWidget.
-        """
         logger.info("MainWindow state updating from ConfigWidget.")
         self.set_project_modified(True)
 
-        # Update the main window's authoritative state
         self.current_economic_params = new_configs.get(EconomicParameters.__name__, self.current_economic_params)
         self.current_eor_params = new_configs.get(EORParameters.__name__, self.current_eor_params)
         self.current_operational_params = new_configs.get(OperationalParameters.__name__, self.current_operational_params)
@@ -451,34 +453,50 @@ class MainWindow(QMainWindow):
         self.current_ga_params = new_configs.get(GeneticAlgorithmParams.__name__, self.current_ga_params)
         self.current_bo_params = new_configs.get(BayesianOptimizationParams.__name__, self.current_bo_params)
 
-        # Now that the state is updated, re-create the engines that depend on it
         self._reinitialize_engines_and_analysis_tabs()
+
+    @pyqtSlot(float)
+    def _on_representative_mmp_updated(self, mmp_value: float):
+        """Slot to receive the authoritative MMP from the analysis tab."""
+        logger.info(f"MainWindow received representative MMP value: {mmp_value:.2f} psi")
+        if self.current_mmp_value != mmp_value:
+            self.current_mmp_value = mmp_value
+            self.set_project_modified(True)
+            # Re-initialize the engines to ensure they use the new value
+            self._reinitialize_engines_and_analysis_tabs()
+            self.show_status_message(f"Optimization Engine updated with MMP = {mmp_value:.1f} psi", 5000)
 
     @pyqtSlot(dict)
     def _on_save_standalone_config_requested(self, config_data: Dict[str, Any]):
         logger.info(f"ConfigWidget saved standalone configuration.")
 
-    def _reinitialize_engines_and_analysis_tabs(self):
-        logger.info("Re-initializing engines and analysis tabs with current MainWindow data.")
+    def _reinitialize_engines_and_analysis_tabs(self, skip_calculations: bool = False):
+        """Recreates core engines and updates UI tabs with the current project state."""
+        logger.info(f"Re-initializing engines and analysis tabs (skip_calculations={skip_calculations}).")
         self.optimisation_engine_instance = None
         self.sensitivity_analyzer_instance = None
         
         if self.current_reservoir_data and self.current_pvt_properties:
             try:
-                well_analysis_instance = WellAnalysis(self.current_well_data, self.current_pvt_properties) if self.current_well_data else None
-
                 self.optimisation_engine_instance = OptimizationEngine(
-                    reservoir=self.current_reservoir_data, 
-                    pvt=self.current_pvt_properties, 
-                    eor_params_instance=self.current_eor_params, 
-                    ga_params_instance=self.current_ga_params, 
-                    bo_params_instance=self.current_bo_params,
-                    economic_params_instance=self.current_economic_params, 
-                    operational_params_instance=self.current_operational_params, 
-                    profile_params_instance=self.current_profile_params,
-                    well_analysis=well_analysis_instance
+                    reservoir=deepcopy(self.current_reservoir_data),
+                    pvt=deepcopy(self.current_pvt_properties),
+                    eor_params_instance=deepcopy(self.current_eor_params),
+                    ga_params_instance=deepcopy(self.current_ga_params),
+                    bo_params_instance=deepcopy(self.current_bo_params),
+                    economic_params_instance=deepcopy(self.current_economic_params),
+                    operational_params_instance=deepcopy(self.current_operational_params),
+                    profile_params_instance=deepcopy(self.current_profile_params),
+                    well_data_list=self.current_well_data,
+                    mmp_init_override=self.current_mmp_value,  # [MODIFIED] Pass authoritative MMP
+                    skip_auto_calculations=skip_calculations
                 )
-                logger.info("OptimizationEngine instance re-created successfully.")
+                logger.info("OptimizationEngine instance created.")
+
+                if not skip_calculations and self.current_mmp_value is None:
+                    logger.info("No MMP override present. Triggering self-calculation for the Optimization Engine.")
+                    self.optimisation_engine_instance.calculate_mmp()
+                
                 self.sensitivity_analyzer_instance = SensitivityAnalyzer(engine=self.optimisation_engine_instance)
                 logger.info("SensitivityAnalyzer instance re-created successfully.")
 
@@ -492,6 +510,11 @@ class MainWindow(QMainWindow):
         self.sensitivity_tab.update_analyzer(self.sensitivity_analyzer_instance)
         self.mmp_well_analysis_tab.update_data(self.current_well_data, self.current_pvt_properties)
 
+    @pyqtSlot()
+    def _open_configuration_tab(self):
+        self.main_tab_widget.setCurrentIndex(0)
+        self.show_status_message("Configuration panel opened.", 3000)
+        
     @pyqtSlot(dict)
     def _on_optimization_run_completed(self, results: Dict[str, Any]):
         logger.info("MainWindow: Optimization run completed.")
