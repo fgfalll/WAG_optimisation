@@ -1,30 +1,37 @@
 import logging
-from typing import Any, Optional, List, Tuple
+from typing import Any, Optional, List
 
 from PyQt6.QtWidgets import (
     QWidget, QHBoxLayout, QLabel, QLineEdit, QComboBox, QPushButton, 
-    QSizePolicy, QMessageBox, QVBoxLayout, QFrame, QCheckBox
+    QSizePolicy, QVBoxLayout, QFrame, QCheckBox
 )
-from PyQt6.QtCore import pyqtSignal, QTimer
+from PyQt6.QtCore import pyqtSignal, QTimer, Qt
+from PyQt6.QtGui import QCursor
+
+# --- MODIFICATION: This is the critical fix ---
+# Use an absolute import from the package root, which is the most reliable method.
+from co2eor_optimizer.validation_manager import ValidationManager 
 
 logger = logging.getLogger(__name__)
 
 class ParameterInputGroup(QWidget):
     """
-    A reusable widget for a single parameter, now with multi-level feedback
-    (error, warning, info) and debouncing for a smooth user experience.
+    A reusable widget for a single parameter, with integrated help requests,
+    validation feedback, and debounced value emission.
     """
+    help_requested = pyqtSignal(str)
     finalValueChanged = pyqtSignal(object)
 
     def __init__(self, param_name: str, label_text: str, input_type: str, **kwargs):
         super().__init__(kwargs.get("parent"))
         self.param_name = param_name
-        self.help_text = kwargs.get("help_text", "No help available for this parameter.")
         self.input_type = input_type.lower()
+        
+        # Instantiate the manager
+        self.validator = ValidationManager()
 
         self._debounce_timer = QTimer(self)
         self._debounce_timer.setSingleShot(True)
-        # -- ENHANCEMENT: Increased debounce timer for a better user experience.
         self._debounce_timer.setInterval(500) 
         self._debounce_timer.timeout.connect(self._emit_debounced_value)
         
@@ -47,8 +54,9 @@ class ParameterInputGroup(QWidget):
 
         self.help_button = QPushButton("?")
         self.help_button.setFixedSize(22, 22)
-        self.help_button.setToolTip("Show help for this parameter")
-        self.help_button.clicked.connect(self._show_help)
+        self.help_button.setToolTip("Show detailed help for this parameter")
+        self.help_button.setCursor(QCursor(Qt.CursorShape.WhatsThisCursor))
+        self.help_button.clicked.connect(self._request_help)
         self._input_row_layout.addWidget(self.help_button)
         
         self.feedback_label = QLabel()
@@ -89,7 +97,33 @@ class ParameterInputGroup(QWidget):
         return widget
 
     def _start_debounce(self): self._debounce_timer.start()
-    def _emit_debounced_value(self): self.finalValueChanged.emit(self.get_value())
+    
+    def _emit_debounced_value(self):
+        self.validate()
+        self.finalValueChanged.emit(self.get_value())
+
+    def _request_help(self):
+        self.help_requested.emit(self.param_name)
+
+    def validate(self):
+        """Checks the input value using the central ValidationManager."""
+        if not self.is_checked():
+            self.clear_error()
+            return
+            
+        value = self.get_value()
+        if isinstance(value, str) and not value.strip():
+            self.clear_error()
+            return
+
+        validation_result = self.validator.validate(self.param_name, value)
+
+        if validation_result:
+            level, message = validation_result
+            if level == 'error': self.show_error(message)
+            elif level == 'warn': self.show_warning(message)
+        else:
+            self.clear_error()
 
     def _set_feedback(self, message: str, level: Optional[str]):
         if not level:
@@ -109,19 +143,15 @@ class ParameterInputGroup(QWidget):
     def show_info(self, message: str): self._set_feedback(message, "info")
 
     def set_checkable(self, checkable: bool):
-        """Enable/disable the checkbox functionality for optional parameters"""
         if not hasattr(self, 'checkbox'):
-            # Create checkbox if it doesn't exist
             self.checkbox = QCheckBox()
             self.checkbox.setChecked(True)
             self._input_row_layout.insertWidget(0, self.checkbox)
             self.checkbox.toggled.connect(self._on_checkbox_toggled)
-        
         self.checkbox.setVisible(checkable)
         self._update_input_enabled()
         
     def is_checkable(self) -> bool:
-        """Check if the widget has checkbox functionality enabled"""
         return hasattr(self, 'checkbox') and self.checkbox.isVisible()
 
     def _on_checkbox_toggled(self, checked):
@@ -135,16 +165,10 @@ class ParameterInputGroup(QWidget):
         self.help_button.setEnabled(enabled)
 
     def is_checked(self) -> bool:
-        """Check if the input widget is checked (for optional parameters)"""
         return not hasattr(self, 'checkbox') or self.checkbox.isChecked()
 
     def set_checked(self, checked: bool):
-        """Set the checked state of the input widget"""
-        if hasattr(self, 'checkbox'):
-            self.checkbox.setChecked(checked)
-
-    def _show_help(self):
-        QMessageBox.information(self, f"Help: {self.label.text()[:-1]}", self.help_text)
+        if hasattr(self, 'checkbox'): self.checkbox.setChecked(checked)
 
     def get_value(self) -> Any:
         if self.input_type in ["lineedit", "doublespinbox", "spinbox"]:
