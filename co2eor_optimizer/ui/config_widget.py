@@ -18,15 +18,13 @@ from PyQt6.QtCore import pyqtSignal, Qt
 from .widgets.parameter_input_group import ParameterInputGroup
 try:
     from co2eor_optimizer.core.data_models import (
-        EconomicParameters, EORParameters, OperationalParameters, ProfileParameters, 
-        GeneticAlgorithmParams, BayesianOptimizationParams
+        EconomicParameters, EORParameters, OperationalParameters, ProfileParameters,
+        GeneticAlgorithmParams
     )
-    # Added BayesianOptimizationParams
     CONFIGURABLE_DATACLASSES: Dict[str, Type] = {
         "Economic": EconomicParameters, "EOR": EORParameters,
         "Operational": OperationalParameters, "Profile": ProfileParameters,
-        "Genetic Algorithm": GeneticAlgorithmParams,
-        "Bayesian Optimization": BayesianOptimizationParams
+        "Algorithm Settings": GeneticAlgorithmParams
     }
 except ImportError:
     logging.critical("ConfigWidget: Core configuration dataclasses not found.")
@@ -65,8 +63,12 @@ class ConfigWidget(QWidget):
         self.SPECIAL_DROPDOWNS = {
             "injection_scheme": ['continuous', 'wag'],
             "oil_profile_type": list(self.OIL_PROFILE_DISPLAY_MAP.values()),
-            "injection_profile_type": list(self.INJECTION_PROFILE_DISPLAY_MAP.values())
+            "injection_profile_type": list(self.INJECTION_PROFILE_DISPLAY_MAP.values()),
+            "recovery_model_selection": ["simple", "miscible", "immiscible", "hybrid", "koval", "layered"]
         }
+        
+        self.WAG_PARAMS = ['WAG_ratio', 'min_cycle_length_days', 'max_cycle_length_days',
+                          'min_water_fraction', 'max_water_fraction']
         
         # Store recovery model parameters separately
         self.recovery_model_params: Dict[str, Dict[str, Any]] = {}
@@ -167,46 +169,20 @@ class ConfigWidget(QWidget):
     def _apply_changes(self):
         logger.info("Attempting to apply configuration changes.")
         
+        # Create a snapshot of data to be potentially applied
         pending_data = {dc_name: asdict(instance) for dc_name, instance in self.config_instances.items()}
+        pending_recovery_params = deepcopy(self.recovery_model_params)
         all_valid = True
         
-        # First, handle the special case of the Operational tab
-        op_instance_name = OperationalParameters.__name__
-        if self.operational_widgets:
-            try:
-                lifetime_widget = self.input_groups[f"{op_instance_name}.project_lifetime_years"]
-                pending_data[op_instance_name]['project_lifetime_years'] = int(lifetime_widget.get_value())
-                
-                sharpness_widget = self.input_groups[f"{op_instance_name}.target_seeking_sharpness"]
-                pending_data[op_instance_name]['target_seeking_sharpness'] = float(sharpness_widget.get_value())
-
-                enable_checkbox = self.operational_widgets['enable_target_seeking_checkbox']
-                if enable_checkbox.isChecked():
-                    objective_combo = self.operational_widgets['target_objective_combo']
-                    value_input = self.operational_widgets['target_value_input']
-                    
-                    display_name = objective_combo.currentText()
-                    internal_name = self.REVERSE_OBJECTIVES_MAP.get(display_name, 'npv')
-                    
-                    pending_data[op_instance_name]['target_objective_name'] = internal_name
-                    pending_data[op_instance_name]['target_objective_value'] = float(value_input.value())
-                else:
-                    pending_data[op_instance_name]['target_objective_name'] = None
-                    pending_data[op_instance_name]['target_objective_value'] = None
-            except (ValueError, TypeError) as e:
-                QMessageBox.critical(self, "Validation Error", f"Invalid input for Operational Parameters: {e}")
-                all_valid = False
-
-        # Handle all other standard ParameterInputGroup widgets
+        # Consolidate all UI values into the pending data dictionaries
         for key, widget in self.input_groups.items():
             if not widget.isVisible() or '.' not in key: continue
             
             scope, param_name = key.split('.', 1)
             raw_value = widget.get_value()
 
+            # Handle dataclass parameters
             if scope in pending_data:
-                if scope == op_instance_name: continue # Already handled
-
                 if widget.is_checkable() and not widget.is_checked():
                     pending_data[scope][param_name] = None
                     continue
@@ -221,39 +197,66 @@ class ConfigWidget(QWidget):
                     pending_data[scope][param_name] = coerced_value
                     widget.clear_error()
                 except (ValueError, TypeError) as e:
-                    widget.show_error(str(e))
-                    all_valid = False
+                    widget.show_error(str(e)); all_valid = False
             
-            elif scope in self.recovery_model_params:
+            # Handle dynamic recovery model parameters
+            elif scope in pending_recovery_params:
                 try:
                     coerced_value = float(raw_value) if '.' in str(raw_value) else int(raw_value)
-                    self.recovery_model_params[scope][param_name] = coerced_value
+                    pending_recovery_params[scope][param_name] = coerced_value
                     widget.clear_error()
                 except (ValueError, TypeError) as e:
-                    widget.show_error(str(e))
-                    all_valid = False
+                    widget.show_error(str(e)); all_valid = False
+        
+        # Handle custom widgets in the Operational tab (Target Seeking)
+        if self.operational_widgets:
+            op_instance_name = OperationalParameters.__name__
+            try:
+                enable_checkbox = self.operational_widgets['enable_target_seeking_checkbox']
+                if enable_checkbox.isChecked():
+                    display_name = self.operational_widgets['target_objective_combo'].currentText()
+                    pending_data[op_instance_name]['target_objective_name'] = self.REVERSE_OBJECTIVES_MAP.get(display_name, 'npv')
+                    pending_data[op_instance_name]['target_objective_value'] = float(self.operational_widgets['target_value_input'].value())
+                else:
+                    pending_data[op_instance_name]['target_objective_name'] = None
+                    pending_data[op_instance_name]['target_objective_value'] = None
+            except (ValueError, TypeError) as e:
+                QMessageBox.critical(self, "Validation Error", f"Invalid input for Target Seeking: {e}"); all_valid = False
 
         if not all_valid:
             QMessageBox.critical(self, "Validation Error", "One or more fields have invalid values. Please correct the highlighted fields.")
             return
 
+        # Try to instantiate new dataclasses with the pending data
         try:
             new_instances = {}
             for name, data in pending_data.items():
-                dc_type = self.default_instances[name].__class__
-                new_instances[name] = dc_type(**data)
+                if name in self.default_instances:
+                    dc_type = self.default_instances[name].__class__
+                    new_instances[name] = dc_type(**data)
             self.config_instances = new_instances
+            self.recovery_model_params = pending_recovery_params
         except (ValueError, TypeError) as e:
             QMessageBox.critical(self, "Validation Error", f"Could not apply changes due to inconsistent data:\n\n{e}")
             return
             
         logger.info("Configuration changes applied successfully.")
-        self.config_source_label.setText("Custom Applied")
-
-        full_config_data = self.get_current_config_data_instances()
-        self.configurations_updated.emit(full_config_data)
         
-        self.update_configurations(self.config_instances)
+        # --- Update UI State Without Full Rebuild ---
+        self.config_source_label.setText("Custom Applied")
+        self.configurations_updated.emit(self.get_current_config_data_instances())
+        self._set_dirty(False)
+
+        # Reset the 'modified' property on all input widgets
+        for group in self.input_groups.values():
+            group.setProperty("isModified", False)
+            group.style().unpolish(group)
+            group.style().polish(group)
+
+        # Ensure any visibility changes are triggered
+        self._update_wag_visibility()
+        self._update_profile_param_visibility()
+        self._update_recovery_model_widgets()
 
     def update_configurations(self, config_data: Dict[str, Any]):
         """Updates the internal state and repopulates all UI forms from the given data."""
@@ -263,6 +266,7 @@ class ConfigWidget(QWidget):
 
     def _populate_all_forms(self):
         """Clears and rebuilds all configuration tabs based on current instances."""
+        current_index = self.tabs.currentIndex()
         while self.tabs.count() > 0: self.tabs.removeTab(0)
         self.input_groups.clear()
         self.operational_widgets.clear()
@@ -274,123 +278,164 @@ class ConfigWidget(QWidget):
             instance = self.config_instances.get(dc_type.__name__)
             if instance:
                 if name == "Operational":
-                    self._create_operational_tab(instance)
+                    eor_instance = self.config_instances.get(EORParameters.__name__)
+                    self._create_operational_tab(instance, eor_instance)
+                elif name == "EOR":
+                    # Exclude fields managed on the Operational tab to avoid duplication
+                    exclude = self.WAG_PARAMS + ['injection_scheme']
+                    self._create_standard_tab(name, instance, exclude_fields=exclude)
                 else:
                     self._create_standard_tab(name, instance)
         
-        self._create_recovery_models_tab()
         self._update_profile_param_visibility()
+        self._update_wag_visibility()
+        if current_index != -1 and current_index < self.tabs.count():
+            self.tabs.setCurrentIndex(current_index)
 
-    def _create_standard_tab(self, tab_name: str, instance: Any):
+
+    def _create_standard_tab(self, tab_name: str, instance: Any, exclude_fields: List[str] = None):
         """Creates a tab with a standard form layout for a dataclass."""
         page_widget = QWidget()
         form_layout = QFormLayout(page_widget)
         form_layout.setSpacing(10); form_layout.setContentsMargins(10, 15, 10, 15)
-        for field in fields(instance): 
+        for field in fields(instance):
+            if exclude_fields and field.name in exclude_fields:
+                continue
             self._create_input_group_for_field(instance, field, form_layout)
         scroll_area = QScrollArea(); scroll_area.setWidgetResizable(True)
         scroll_area.setWidget(page_widget)
         self.tabs.addTab(scroll_area, tab_name)
 
-    def _create_operational_tab(self, instance: OperationalParameters):
+    def _create_operational_tab(self, op_instance: OperationalParameters, eor_instance: Optional[EORParameters]):
         """Creates the custom, more intuitive tab for OperationalParameters."""
         page_widget = QWidget()
-        layout = QVBoxLayout(page_widget)
-        layout.setSpacing(15); layout.setContentsMargins(10, 15, 10, 15)
+        layout = QVBoxLayout(page_widget); layout.setSpacing(15); layout.setContentsMargins(10, 15, 10, 15)
         
         # --- General Settings ---
         general_group = QGroupBox("General")
         general_layout = QFormLayout(general_group)
-        for field in fields(instance):
-            if field.name not in ["target_objective_name", "target_objective_value", "target_recovery_factor"]:
-                self._create_input_group_for_field(instance, field, general_layout)
+        exclude_from_general = {"target_objective_name", "target_objective_value", "target_recovery_factor", 
+                                "recovery_model_selection", "injection_scheme"}
+        for field in fields(op_instance):
+            if field.name not in exclude_from_general:
+                self._create_input_group_for_field(op_instance, field, general_layout)
         layout.addWidget(general_group)
+        
+        # --- Injection Settings ---
+        if eor_instance:
+            injection_group = QGroupBox("Injection Settings")
+            injection_layout = QFormLayout(injection_group)
+            injection_scheme_field = next((f for f in fields(eor_instance) if f.name == "injection_scheme"), None)
+            if injection_scheme_field:
+                self._create_input_group_for_field(eor_instance, injection_scheme_field, injection_layout)
+            layout.addWidget(injection_group)
 
+            # --- WAG Settings ---
+            self.wag_group = QGroupBox("WAG Parameters")
+            self.wag_layout = QFormLayout(self.wag_group)
+            for param in self.WAG_PARAMS:
+                wag_field = next((f for f in fields(eor_instance) if f.name == param), None)
+                if wag_field:
+                    self._create_input_group_for_field(eor_instance, wag_field, self.wag_layout)
+            layout.addWidget(self.wag_group)
+        
+        # --- Recovery Model Settings ---
+        recovery_group = QGroupBox("Recovery Model")
+        recovery_layout = QVBoxLayout(recovery_group)
+        recovery_form_layout = QFormLayout()
+        self._create_input_group_for_field(
+            op_instance, next(f for f in fields(op_instance) if f.name == "recovery_model_selection"), recovery_form_layout
+        )
+        recovery_layout.addLayout(recovery_form_layout)
+        
+        self.recovery_model_container = QWidget(recovery_group)
+        self.recovery_model_layout = QVBoxLayout(self.recovery_model_container)
+        self.recovery_model_layout.setContentsMargins(20, 10, 0, 0)
+        recovery_layout.addWidget(self.recovery_model_container)
+        
+        layout.addWidget(recovery_group)
+        
         # --- Target Seeking Settings ---
-        target_group = QGroupBox("Optimizer Target Seeking")
-        target_group_layout = QVBoxLayout(target_group)
-        
-        enable_checkbox = QCheckBox("Enable Target Seeking")
-        enable_checkbox.setToolTip("Check this to make the optimizer try to achieve a specific target value for an objective.")
+        target_group = QGroupBox("Optimizer Target Seeking"); target_group_layout = QVBoxLayout(target_group)
+        enable_checkbox = QCheckBox("Enable Target Seeking"); enable_checkbox.setToolTip("Check this to make the optimizer try to achieve a specific target value for an objective.")
         target_group_layout.addWidget(enable_checkbox)
-
         self.operational_widgets['enable_target_seeking_checkbox'] = enable_checkbox
-
-        target_controls_group = QGroupBox()
-        target_controls_group.setFlat(True)
-        target_controls_layout = QFormLayout(target_controls_group)
-        target_controls_layout.setContentsMargins(0, 5, 0, 0)
-        
-        objective_combo = QComboBox()
-        objective_combo.addItems(self.REVERSE_OBJECTIVES_MAP.keys())
+        target_controls_group = QGroupBox(); target_controls_group.setFlat(True)
+        target_controls_layout = QFormLayout(target_controls_group); target_controls_layout.setContentsMargins(0, 5, 0, 0)
+        objective_combo = QComboBox(); objective_combo.addItems(self.REVERSE_OBJECTIVES_MAP.keys())
         self.operational_widgets['target_objective_combo'] = objective_combo
-
-        value_input = QDoubleSpinBox()
-        value_input.setRange(-1e9, 1e9)
-        value_input.setDecimals(4)
-        value_input.setSingleStep(0.01)
+        value_input = QDoubleSpinBox(); value_input.setRange(-1e9, 1e9); value_input.setDecimals(4); value_input.setSingleStep(0.01)
         self.operational_widgets['target_value_input'] = value_input
-        
-        target_controls_layout.addRow("Target Objective:", objective_combo)
-        target_controls_layout.addRow("Target Value:", value_input)
-        
-        target_group_layout.addWidget(target_controls_group)
-        layout.addWidget(target_group)
+        target_controls_layout.addRow("Target Objective:", objective_combo); target_controls_layout.addRow("Target Value:", value_input)
+        target_group_layout.addWidget(target_controls_group); layout.addWidget(target_group)
         
         # --- Connect Signals ---
-        enable_checkbox.toggled.connect(target_controls_group.setVisible)
-        enable_checkbox.toggled.connect(self._mark_as_dirty)
-        objective_combo.currentTextChanged.connect(self._mark_as_dirty)
-        value_input.valueChanged.connect(self._mark_as_dirty)
+        enable_checkbox.toggled.connect(target_controls_group.setVisible); enable_checkbox.toggled.connect(self._mark_as_dirty)
+        objective_combo.currentTextChanged.connect(self._mark_as_dirty); value_input.valueChanged.connect(self._mark_as_dirty)
 
         # --- Set Initial State ---
-        is_target_enabled = instance.target_objective_name is not None and instance.target_objective_value is not None
-        enable_checkbox.setChecked(is_target_enabled)
-        target_controls_group.setVisible(is_target_enabled)
-        
+        is_target_enabled = op_instance.target_objective_name is not None and op_instance.target_objective_value is not None
+        enable_checkbox.setChecked(is_target_enabled); target_controls_group.setVisible(is_target_enabled)
         if is_target_enabled:
-            display_name = {v:k for k, v in self.REVERSE_OBJECTIVES_MAP.items()}.get(instance.target_objective_name)
-            if display_name:
-                objective_combo.setCurrentText(display_name)
-            value_input.setValue(instance.target_objective_value or 0.0)
+            display_name = {v:k for k,v in self.REVERSE_OBJECTIVES_MAP.items()}.get(op_instance.target_objective_name)
+            if display_name: objective_combo.setCurrentText(display_name)
+            value_input.setValue(op_instance.target_objective_value or 0.0)
 
+        # Final setup for the tab
         layout.addStretch()
-        
-        scroll_area = QScrollArea(); scroll_area.setWidgetResizable(True)
-        scroll_area.setWidget(page_widget)
+        scroll_area = QScrollArea(); scroll_area.setWidgetResizable(True); scroll_area.setWidget(page_widget)
         self.tabs.addTab(scroll_area, "Operational")
-
-    def _create_recovery_models_tab(self):
-        """Creates the tab for editing recovery model parameters."""
-        page_widget = QWidget(); layout = QVBoxLayout(page_widget)
-        layout.setContentsMargins(10, 10, 10, 10); layout.setSpacing(15)
-
-        model_defs = {
-            "Koval": {"v_dp_coefficient": 0.5, "mobility_ratio": 2.0},
-            "Miscible": {"kv_factor": 0.5, "gravity_factor": 0.1},
-            "Immiscible": {"sor": 0.25, "krw_max": 0.4}
-        }
         
-        if not self.recovery_model_params:
-            self.recovery_model_params = deepcopy(model_defs)
+        # --- Connect dynamic UI update signals ---
+        recovery_model_widget = self.input_groups.get(f"{op_instance.__class__.__name__}.recovery_model_selection")
+        if recovery_model_widget:
+            recovery_model_widget.finalValueChanged.connect(self._update_recovery_model_widgets)
+        self._update_recovery_model_widgets()
 
-        for model_name, params in self.recovery_model_params.items():
-            group_box = QGroupBox(f"{model_name} Model Parameters")
-            form_layout = QFormLayout(group_box)
-            form_layout.setSpacing(8); form_layout.setContentsMargins(10, 10, 10, 10)
-
-            for param_name, default_val in params.items():
-                key = f"{model_name}.{param_name}"
-                input_group = ParameterInputGroup(param_name=key, label_text=param_name.replace("_", " ").title(), default_value=default_val, input_type='doublespinbox')
-                input_group.finalValueChanged.connect(self._mark_as_dirty)
-                form_layout.addRow(input_group)
-                self.input_groups[key] = input_group
+    def _update_wag_visibility(self):
+        """Show/hide WAG parameters group based on injection scheme selection."""
+        if not hasattr(self, 'wag_group'): return
+        
+        injection_scheme_widget = self.input_groups.get(f"{EORParameters.__name__}.injection_scheme")
+        if injection_scheme_widget:
+            is_wag = injection_scheme_widget.get_value() == 'wag'
+            self.wag_group.setVisible(is_wag)
             
-            layout.addWidget(group_box)
+    def _update_recovery_model_widgets(self):
+        """Dynamically create and show widgets for the selected recovery model."""
+        if not hasattr(self, 'recovery_model_container'): return
 
-        layout.addStretch(1); scroll_area = QScrollArea(); scroll_area.setWidgetResizable(True)
-        scroll_area.setWidget(page_widget)
-        self.tabs.addTab(scroll_area, "Recovery Models")
+        # Clear existing widgets
+        while self.recovery_model_layout.count():
+            item = self.recovery_model_layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                # Remove from our main input_groups dict and delete
+                keys_to_remove = [k for k, v in self.input_groups.items() if v is widget]
+                for k in keys_to_remove: del self.input_groups[k]
+                widget.deleteLater()
+        
+        op_instance_name = OperationalParameters.__name__
+        model_selector_widget = self.input_groups.get(f"{op_instance_name}.recovery_model_selection")
+        if not model_selector_widget: return
+
+        selected_model = model_selector_widget.get_value()
+        model_params = self.recovery_model_params.get(selected_model, {})
+
+        for param_name, param_value in model_params.items():
+            key = f"{selected_model}.{param_name}"
+            # Assume float or int, create a simple input group
+            kwargs = {'input_type': 'doublespinbox', 'decimals': 4} if isinstance(param_value, float) else {'input_type': 'spinbox'}
+            kwargs.update({
+                "param_name": key,
+                "label_text": param_name.replace("_", " ").title(),
+                "default_value": param_value,
+                "help_text": f"Parameter for {selected_model} model."
+            })
+            input_group = ParameterInputGroup(**kwargs)
+            input_group.finalValueChanged.connect(self._mark_as_dirty)
+            self.recovery_model_layout.addWidget(input_group)
+            self.input_groups[key] = input_group
 
     def _get_input_type_and_options(self, field: Field) -> dict:
         """Determines the widget type and options from a dataclass field."""
@@ -433,6 +478,10 @@ class ConfigWidget(QWidget):
 
         layout.addRow(input_group)
         self.input_groups[key] = input_group
+        
+        # Connect signal for WAG visibility
+        if field.name == "injection_scheme":
+            input_group.finalValueChanged.connect(self._update_wag_visibility)
 
     def _confirm_reset_all(self):
         """Confirms and resets all configurations to their default state."""
