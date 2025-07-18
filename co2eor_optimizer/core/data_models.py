@@ -342,20 +342,24 @@ class OperationalParameters:
     """Parameters related to overall project operations and timeline."""
     project_lifetime_years: int = 15
     target_recovery_factor: Optional[float] = dataclasses.field(
-        default=None, 
+        default=None,
         metadata={"help": "Enter a value as a fraction (e.g., 0.25 for 25%) to make the optimizer target this specific Recovery Factor."}
     )
     target_objective_name: Optional[str] = dataclasses.field(
-        default=None, 
+        default=None,
         metadata={"help": "Name of the objective to target (e.g., 'recovery_factor', 'npv')."}
     )
     target_objective_value: Optional[float] = dataclasses.field(
-        default=None, 
+        default=None,
         metadata={"help": "The specific value to target for the chosen objective. For RF, use a fraction (0.0 to 1.0)."}
     )
     target_seeking_sharpness: float = dataclasses.field(
         default=500.0,
         metadata={"help": "Controls how sharply the optimizer penalizes deviation from the target. Higher is sharper."}
+    )
+    recovery_model_selection: str = dataclasses.field(
+        default='hybrid',
+        metadata={"help": "Recovery model to use: 'empirical', 'physics_based', or 'hybrid'."}
     )
 
     def __post_init__(self):
@@ -373,6 +377,10 @@ class OperationalParameters:
             raise ValueError("target_objective_name must be one of 'recovery_factor', 'npv', or 'co2_utilization'.")
         if not (10 <= self.target_seeking_sharpness <= 10000):
             raise ValueError("Target Seeking Sharpness must be between 10 and 10,000.")
+        
+        valid_models = ['simple', 'miscible', 'immiscible', 'hybrid', 'koval', 'layered']
+        if self.recovery_model_selection not in valid_models:
+            raise ValueError(f"recovery_model_selection must be one of: {', '.join(valid_models)}")
 
     @classmethod
     def from_config_dict(cls, config_op_params_dict: Dict[str, Any], **kwargs):

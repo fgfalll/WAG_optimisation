@@ -386,18 +386,15 @@ class TransitionEngine:
 def recovery_factor(pressure: float, rate: float, porosity: float, mmp: float,
                   model: str = 'simple', **kwargs_for_model_calculate_and_init) -> float:
     model_name_lower = model.lower()
-    
-    config_init_params = {}
-    specific_model_init_overrides = kwargs_for_model_calculate_and_init.get(f"{model_name_lower}_params", {}) or {}
-    general_model_init_overrides = kwargs_for_model_calculate_and_init.get("model_init_kwargs", {}) or {}
-    
-    final_model_constructor_args = {**config_init_params, **specific_model_init_overrides, **general_model_init_overrides}
+      
+    final_model_constructor_args = kwargs_for_model_calculate_and_init
 
     model_constructors: Dict[str, Callable[..., RecoveryModel]] = {
         'simple': SimpleRecoveryModel, 'miscible': MiscibleRecoveryModel,
         'immiscible': ImmiscibleRecoveryModel, 'hybrid': HybridRecoveryModel,
         'koval': KovalRecoveryModel, 'layered': LayeredRecoveryModel 
     }
+
     constructor = model_constructors.get(model_name_lower)
     if not constructor:
         raise ValueError(f"Unknown recovery model: {model_name_lower}. Valid: {list(model_constructors.keys())}")

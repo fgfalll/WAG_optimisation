@@ -75,17 +75,37 @@ class OptimizationEngine:
         },
         'v_dp_coefficient': {
             'description': 'Dykstra-Parsons coefficient for heterogeneity',
-            'range_factor': 0.35, # Varies significantly, allow a wider range
+            'range_factor': 0.35,
             'type': 'eor'
         },
         'mobility_ratio': {
             'description': 'Mobility Ratio (M)',
-            'range_factor': 0.50, # Highly sensitive, allow wide exploration
+            'range_factor': 0.50,
             'type': 'eor'
         },
         'WAG_ratio': {
             'description': 'Water-Alternating-Gas Ratio',
-            'range_factor': 0.60, # Very wide range, as it's a key design parameter
+            'range_factor': 0.60,
+            'type': 'eor'
+        },
+        'gravity_factor': {
+            'description': 'Gravity factor in miscible recovery model',
+            'range_factor': 0.75,
+            'type': 'eor'
+        },
+        'sor': {
+            'description': 'Residual Oil Saturation for immiscible model',
+            'range_factor': 0.20,
+            'type': 'eor'
+        },
+        'transition_alpha': {
+            'description': 'Transition center for hybrid recovery model',
+            'range_factor': 0.15,
+            'type': 'eor'
+        },
+        'transition_beta': {
+            'description': 'Transition steepness for hybrid recovery model',
+            'range_factor': 0.50,
             'type': 'eor'
         }
     }
@@ -143,6 +163,7 @@ class OptimizationEngine:
         
         self._chaos_state: float = random.random()
         self._best_fitness_history: List[float] = []
+        self._is_stagnated: bool = False
 
         self.eos_model_instance: Optional[EOSModel] = None
         if self.reservoir.eos_model and isinstance(self.reservoir.eos_model, EOSModelParameters):
@@ -170,9 +191,21 @@ class OptimizationEngine:
         self.eor_params = deepcopy(self._base_eor_params)
         self.economic_params = deepcopy(self._base_economic_params)
         self.operational_params = deepcopy(self._base_operational_params)
+        
+        default_model = 'hybrid'
+        self.recovery_model = getattr(self.operational_params, 'recovery_model_selection', default_model)
+        
+        if not hasattr(self.operational_params, 'recovery_model_selection'):
+            logger.warning(
+                f"OperationalParameters is missing 'recovery_model_selection'. Falling back to default: '{self.recovery_model}'."
+            )
+        else:
+            logger.info(f"Recovery model dynamically selected: '{self.recovery_model}'")
+
         self._unlocked_params_for_current_run = []
         self._best_fitness_history = []
         self._chaos_state = random.random()
+        self._is_stagnated = False
 
     def prepare_for_rerun_with_unlocked_params(self, params_to_unlock: List[str]):
         self.reset_to_base_state()
@@ -233,7 +266,6 @@ class OptimizationEngine:
         If no override is present, it calculates a representative value using
         the best available data source (WellAnalysis > PVT).
         """
-        # --- [MODIFIED] Prioritize the override value from the main application ---
         if self._mmp_value_init_override is not None:
             logger.info(f"Using externally provided MMP override value: {self._mmp_value_init_override:.2f} psi.")
             self._mmp_value = self._mmp_value_init_override
@@ -308,18 +340,21 @@ class OptimizationEngine:
             except Exception as e_eos:
                 logger.warning(f"EOS calculation failed at P={pressure}psi. Using fallback properties. Error: {e_eos}")
         
-        rf_call_kwargs.update({
-            'v_dp_coefficient': eor_operational_params_dict.get('v_dp_coefficient', self.eor_params.v_dp_coefficient),
-            'mobility_ratio': eor_operational_params_dict.get('mobility_ratio', self.eor_params.mobility_ratio),
-            'WAG_ratio': eor_operational_params_dict.get('WAG_ratio', self.eor_params.WAG_ratio)
-        })
+        # Pass all optimizable parameters to the kwargs dict for maximum flexibility
+        rf_call_kwargs.update(eor_operational_params_dict)
+
+        # --- [FIX] ---
+        # Remove keys that are passed as explicit positional arguments to recovery_factor
+        # to avoid the "multiple values for argument" TypeError.
+        # The signature is: recovery_factor(pressure, rate, porosity, mmp, ...)
+        rf_call_kwargs.pop('pressure', None)
+        rf_call_kwargs.pop('rate', None)
+        rf_call_kwargs.pop('porosity', None) # Also remove porosity in case it's an unlocked param
 
         effective_co2_rate_for_rf = base_injection_rate
         if self.eor_params.injection_scheme == 'wag':
             water_fraction_rf = eor_operational_params_dict.get('water_fraction', 0.5)
             effective_co2_rate_for_rf = base_injection_rate * (1.0 - water_fraction_rf)
-            if 'cycle_length_days' in eor_operational_params_dict: rf_call_kwargs['cycle_length_days'] = eor_operational_params_dict['cycle_length_days']
-            rf_call_kwargs['water_fraction'] = water_fraction_rf
 
         rf_val = recovery_factor(
             pressure,
@@ -517,16 +552,20 @@ class OptimizationEngine:
         b = {'pressure': (min_p, self.eor_params.max_pressure_psi),
              'rate': (self.eor_params.min_injection_rate_bpd, self.eor_params.max_injection_rate_bpd)}
         
-        if 'v_dp_coefficient' not in self._unlocked_params_for_current_run:
-            b['v_dp_coefficient'] = (0.3, 0.8)
-        if 'mobility_ratio' not in self._unlocked_params_for_current_run:
-            b['mobility_ratio'] = (0.8, 3.0)
+        # Always optimize a wide range of physics-based EOR parameters
+        b['v_dp_coefficient'] = (0.3, 0.8)
+        b['mobility_ratio'] = (0.8, 5.0)
+        b['gravity_factor'] = (0.05, 0.5)
+        b['sor'] = (0.15, 0.35)
+        
+        if self.recovery_model == 'hybrid':
+            b['transition_alpha'] = (0.8, 1.2)
+            b['transition_beta'] = (10.0, 40.0)
 
         if self.eor_params.injection_scheme == 'wag': 
             b['cycle_length_days'] = (self.eor_params.min_cycle_length_days, self.eor_params.max_cycle_length_days)
             b['water_fraction'] = (self.eor_params.min_water_fraction, self.eor_params.max_water_fraction)
-            if 'WAG_ratio' not in self._unlocked_params_for_current_run:
-                 b['WAG_ratio'] = (0.1, 5.0)
+            b['WAG_ratio'] = (0.1, 5.0)
             
         for param_key in self._unlocked_params_for_current_run:
             constraint_info = self.RELAXABLE_CONSTRAINTS.get(param_key)
@@ -546,7 +585,7 @@ class OptimizationEngine:
             if base_val is not None:
                 range_factor = constraint_info['range_factor']
                 b[param_key] = (base_val * (1 - range_factor), base_val * (1 + range_factor))
-                logger.info(f"Re-run: Adding unlocked param '{param_key}' to bounds: ({b[param_key][0]:.3g}, {b[param_key][1]:.3g})")
+                logger.info(f"Re-run: Overriding bounds for unlocked param '{param_key}' to: ({b[param_key][0]:.3g}, {b[param_key][1]:.3g})")
 
         return b
 
@@ -696,14 +735,21 @@ class OptimizationEngine:
         return mutated_pop
 
     def _adapt_ga_parameters(self, population: List[Dict[str, float]], fitnesses: List[float], ga_config_mutable: GeneticAlgorithmParams, base_ga_config: GeneticAlgorithmParams):
-        stagnation_counter = 0
+        # --- [MODIFIED] New stagnation detection and logging logic ---
+        is_stagnation_period = False
         if len(self._best_fitness_history) > base_ga_config.stagnation_generations_limit:
             recent_best = self._best_fitness_history[-1]
             past_best = self._best_fitness_history[-base_ga_config.stagnation_generations_limit]
             if np.isclose(recent_best, past_best):
-                stagnation_counter = base_ga_config.stagnation_generations_limit
-                logger.warning(f"GA stagnation detected. Best fitness unchanged for {stagnation_counter} generations.")
+                is_stagnation_period = True
 
+        if is_stagnation_period and not self._is_stagnated:
+            logger.warning(f"GA stagnation detected: Best fitness unchanged for {base_ga_config.stagnation_generations_limit} generations. Activating adaptive measures.")
+            self._is_stagnated = True
+        elif not is_stagnation_period and self._is_stagnated:
+            logger.info("GA has overcome stagnation. Deactivating adaptive measures.")
+            self._is_stagnated = False
+        
         if len(fitnesses) > 1:
             fitness_std_dev = np.std(fitnesses)
             fitness_range = np.max(fitnesses) - np.min(fitnesses)
@@ -713,26 +759,48 @@ class OptimizationEngine:
 
         if base_ga_config.adaptive_mutation_enabled:
             current_rate = ga_config_mutable.mutation_rate
-            if stagnation_counter > 0:
+            new_rate = current_rate
+            if self._is_stagnated:
                 new_rate = min(current_rate * 1.5, base_ga_config.max_mutation_rate)
+                if not np.isclose(new_rate, current_rate):
+                    logger.info(f"Adaptive Action: Increasing mutation rate from {current_rate:.4f} to {new_rate:.4f}.")
             elif diversity_metric < 0.1:
                 new_rate = min(current_rate * 1.1, base_ga_config.max_mutation_rate)
             else:
                 new_rate = max(current_rate * 0.95, base_ga_config.mutation_rate)
-            
             ga_config_mutable.mutation_rate = np.clip(new_rate, base_ga_config.min_mutation_rate, base_ga_config.max_mutation_rate)
 
         if base_ga_config.dynamic_elitism_enabled:
-            if stagnation_counter > 0:
-                ga_config_mutable.elite_count = max(base_ga_config.min_elite_count, ga_config_mutable.elite_count - 1)
+            current_elites = ga_config_mutable.elite_count
+            new_elites = current_elites
+            if self._is_stagnated:
+                new_elites = max(base_ga_config.min_elite_count, current_elites - 1)
+                if new_elites != current_elites:
+                    logger.info(f"Adaptive Action: Reducing elite count from {current_elites} to {new_elites}.")
             else:
-                ga_config_mutable.elite_count = base_ga_config.elite_count
-        
-        logger.debug(f"GA Adapting: Mutation Rate={ga_config_mutable.mutation_rate:.3f}, Elite Count={ga_config_mutable.elite_count}, Diversity={diversity_metric:.3f}")
+                new_elites = base_ga_config.elite_count
+            ga_config_mutable.elite_count = new_elites
+
+    def _smart_select_recovery_model(self):
+        """
+        Automatically selects 'koval' model if its specific parameters are being optimized
+        and the current model is the default 'hybrid' to prevent stagnation.
+        """
+        if hasattr(self.operational_params, 'recovery_model_selection'):
+            return 
+
+        if self.recovery_model != 'hybrid':
+            return
+
+        optimization_params = self._get_ga_parameter_bounds().keys()
+        if 'v_dp_coefficient' in optimization_params or 'mobility_ratio' in optimization_params:
+            logger.info("Auto-switching to 'koval' recovery model because its parameters are being optimized.")
+            self.recovery_model = 'koval'
 
     def optimize_genetic_algorithm(self, ga_params_override: Optional[GeneticAlgorithmParams] = None, handle_target_miss: bool = False, **kwargs) -> Dict[str, Any]:
         self.reset_to_base_state()
         self._refresh_operational_parameters()
+        self._smart_select_recovery_model()
         
         base_cfg = ga_params_override or self.ga_params_default_config
         current_cfg = deepcopy(base_cfg)
@@ -811,7 +879,9 @@ class OptimizationEngine:
         return self._results
 
     def optimize_bayesian(self, n_iter_override: Optional[int]=None, init_points_override: Optional[int]=None, method_override: Optional[str]=None, initial_solutions_from_ga: Optional[List[Dict[str,Any]]]=None, handle_target_miss: bool = False, **kwargs) -> Dict[str,Any]:
+        self.reset_to_base_state()
         self._refresh_operational_parameters()
+        self._smart_select_recovery_model()
         bo_params = self.bo_params_default_config
         n_i = n_iter_override if n_iter_override is not None else bo_params.n_iterations
         init_r = init_points_override if init_points_override is not None else bo_params.n_initial_points
@@ -853,7 +923,6 @@ class OptimizationEngine:
         return self._results
 
     def hybrid_optimize(self, ga_params_override: Optional[GeneticAlgorithmParams]=None, n_iter_override: Optional[int]=None, init_points_override: Optional[int]=None, handle_target_miss: bool = False, **kwargs) -> Dict[str,Any]:
-        self._refresh_operational_parameters()
         ga_p_h = ga_params_override or self.ga_params_default_config
         
         logger.info(f"Hybrid Opt: Starting GA Phase. Gens:{ga_p_h.generations}, Pop:{ga_p_h.population_size}")
