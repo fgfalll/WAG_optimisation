@@ -1,0 +1,56 @@
+{
+  "fault_scenario": "single_fault",
+  "description": "Configuration for fault mechanics in CO2 EOR simulation",
+  "fault_cells": [[10, 11, 12, 13, 14]],
+  "fault_orientations": ["strike_slip"],
+  "faults": [
+    {
+      "fault_id": 0,
+      "cohesion": 500.0,
+      "friction_coefficient": 0.6,
+      "dilation_angle": 5.0,
+      "initial_aperture": 0.1,
+      "maximum_aperture": 10.0,
+      "healing_rate": 0.01,
+      "stiffness": 1.0e6,
+      "transmissibility_multiplier": 1.0
+    }
+  ],
+  "fault_geometries": [
+    {
+      "fault_id": 0,
+      "fault_type": "strike_slip",
+      "strike": 90.0,
+      "dip": 0.0,
+      "center_coordinates": [2250, 0, 0],
+      "length": 100.0,
+      "width": 100.0,
+      "connected_cells": [10, 11, 12, 13, 14]
+    }
+  ],
+  "analysis_settings": {
+    "enable_fault_mechanics": true,
+    "update_frequency": 1,
+    "leakage_risk_thresholds": {
+      "low": 0.1,
+      "moderate": 0.3,
+      "high": 0.6
+    },
+    "failure_threshold": 1.0,
+    "transmissibility_leakage_threshold": 5.0,
+    "baseline_pressure": 2000.0,
+    "injection_safety_margin": 0.8
+  },
+  "visualization_settings": {
+    "show_failure_ratio": true,
+    "show_cumulative_slip": true,
+    "show_transmissibility": true,
+    "show_pressure_evolution": true,
+    "risk_level_colors": {
+      "low": "green",
+      "moderate": "yellow",
+      "high": "orange",
+      "very_high": "red"
+    }
+  }
+}

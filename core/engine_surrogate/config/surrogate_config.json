@@ -1,0 +1,41 @@
+{
+  "model_type": "analytical",
+  "recovery_model": "hybrid",
+  "profile_model": "plateau_decline",
+  "parameter_ranges": {
+    "injection_rate": [100.0, 100000.0],
+    "target_pressure_psi": [1000.0, 8000.0],
+    "mobility_ratio": [0.1, 50.0],
+    "porosity": [0.05, 0.35],
+    "permeability": [1.0, 1000.0],
+    "mmp": [1500.0, 4000.0],
+    "WAG_ratio": [0.0, 4.0],
+    "kv_kh_ratio": [0.01, 1.0]
+  },
+  "response_surface": {
+    "enabled": false,
+    "type": "polynomial",
+    "degree": 2,
+    "n_training_samples": 500,
+    "sampling_method": "lhs",
+    "rbf_function": "multiquadric",
+    "smooth": 0.0
+  },
+  "feature_transform": {
+    "scaling_method": "standard",
+    "apply_log_transform": ["injection_rate", "permeability"]
+  },
+  "performance": {
+    "target_evaluation_time_ms": 1.0,
+    "target_accuracy_percent": 10.0,
+    "enable_profiling": false
+  },
+  "profile_generator": {
+    "model_type": "plateau_decline",
+    "plateau_fraction": 0.3,
+    "decline_rate": 0.15,
+    "ramp_up_fraction": 0.1,
+    "arps_decline_type": "hyperbolic",
+    "arps_b_factor": 0.5
+  }
+}

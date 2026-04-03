@@ -1,0 +1,194 @@
+# CO2EORSuite Validation Rules
+# This central file defines validation logic for parameters across the application.
+#
+# Rule Types:
+#   type: The expected data type (float, int, string).
+#   range_check: The severity level for range violations ('warn' or 'error').
+#     - 'warn': Shows a yellow warning message but allows the value.
+#     - 'error': Shows a red error message. Can be used to block operations.
+#   min: The minimum acceptable value (inclusive).
+#   max: The maximum acceptable value (inclusive).
+
+# ===================================================================
+# Rules for the Main Configuration Tabs
+# Scope matches the ConfigWidget's internal structure.
+# ===================================================================
+ConfigWidget:
+  EconomicParameters.interest_rate:
+    type: float
+    range_check: warn
+    min: 0.0
+    max: 0.35
+  EconomicParameters.oil_price:
+    type: float
+    range_check: warn
+    min: 10.0
+    max: 300.0
+  EconomicParameters.co2_purchase_price:
+    type: float
+    range_check: warn
+    min: 0.0
+    max: 500.0
+  EconomicParameters.co2_transport_cost:
+    type: float
+    range_check: warn
+    min: 0.0
+    max: 100.0
+  EORParameters.min_miscibility_pressure:
+    type: float
+    range_check: warn
+    min: 500.0
+    max: 10000.0
+  OperationalParameters.project_lifetime_years:
+    type: int
+    range_check: warn
+    min: 1
+    max: 100
+  OperationalParameters.max_injection_rate_per_well:
+    type: float
+    range_check: warn
+    min: 100.0
+    max: 50000.0
+  ProfileParameters.plateau_duration_fraction_of_life:
+    type: float
+    range_check: error
+    min: 0.0
+    max: 1.0
+  ProfileParameters.hyperbolic_b_factor:
+    type: float
+    range_check: error
+    min: 0.0
+    max: 1.0
+  GeneticAlgorithmParams.population_size:
+    type: int
+    range_check: warn
+    min: 10
+    max: 1000
+  GeneticAlgorithmParams.crossover_rate:
+    type: float
+    range_check: error
+    min: 0.0
+    max: 1.0
+  GeneticAlgorithmParams.mutation_rate:
+    type: float
+    range_check: error
+    min: 0.0
+    max: 1.0
+  BayesianOptimizationParams.bo_iterations:
+    type: int
+    range_check: warn
+    min: 5
+    max: 500
+
+DataManagementWidget:
+  UniformReservoir.nx:
+    type: int
+    range_check: warn
+    min: 5
+    max: 500
+  UniformReservoir.ny:
+    type: int
+    range_check: warn
+    min: 5
+    max: 500
+  UniformReservoir.nz:
+    type: int
+    range_check: warn
+    min: 1
+    max: 100
+  UniformReservoir.porosity:
+    type: float
+    range_check: error
+    min: 0.01
+    max: 0.5
+  UniformReservoir.perm:
+    type: float
+    range_check: warn
+    min: 0.1
+    max: 10000.0
+  SimplifiedPVT.reservoir_temp:
+    type: float
+    range_check: warn
+    min: 50.0
+    max: 400.0
+  SimplifiedPVT.ref_pressure:
+    type: float
+    range_check: warn
+    min: 100.0
+    max: 15000.0
+
+# ===================================================================
+# Rules for the Data Management Page
+# Scope matches the DataManagementWidget class name.
+# ===================================================================
+DataManagementWidget:
+  UniformReservoir.nx:
+    type: int
+    range_check: warn
+    min: 5
+    max: 500
+  UniformReservoir.ny:
+    type: int
+    range_check: warn
+    min: 5
+    max: 500
+  UniformReservoir.nz:
+    type: int
+    range_check: warn
+    min: 1
+    max: 100
+  UniformReservoir.porosity:
+    type: float
+    range_check: error # Porosity must be a fraction
+    min: 0.01
+    max: 0.5
+  UniformReservoir.perm:
+    type: float
+    range_check: warn
+    min: 0.1      # mD
+    max: 10000.0
+  SimplifiedPVT.reservoir_temp:
+    type: float
+    range_check: warn
+    min: 50.0     # °F
+    max: 400.0
+  SimplifiedPVT.ref_pressure:
+    type: float
+    range_check: warn
+    min: 100.0    # psia
+    max: 15000.0
+
+# ===================================================================
+# Rules for the MMP & Well Analysis Page
+# ===================================================================
+MMPWellAnalysisWidget:
+  analysis_temperature:
+    type: float
+    range_check: warn
+    min: 50.0
+    max: 400.0
+
+# ===================================================================
+# Rules for the Sensitivity Analysis Page
+# ===================================================================
+SensitivityWidget:
+  number_of_steps:
+    type: int
+    range_check: warn
+    min: 2
+    max: 101 # Odd numbers are common, e.g., 11 for +/- 5 steps
+
+# ===================================================================
+# Rules for the Uncertainty Quantification (UQ) Page
+# ===================================================================
+UQWidget:
+  mc_samples:
+    type: int
+    range_check: warn
+    min: 100
+    max: 100000
+  pce_order:
+    type: int
+    range_check: error
+    min: 1
+    max: 5 # Higher orders can be unstable

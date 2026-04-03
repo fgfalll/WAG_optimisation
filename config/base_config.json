@@ -1,0 +1,857 @@
+{
+  "Logging": {
+    "level": "WARNING",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "log_file": "app_co2eor.log",
+    "session_based": true
+  },
+  "GeneralFallbacks": {
+    "mmp_default_psi": 2500.0,
+    "porosity_default_fraction": 0.15,
+    "api_gravity_default": 35.0,
+    "default_injection_gas_composition": {
+      "CO2": 0.95,
+      "N2": 0.03,
+      "C1": 0.02
+    },
+    "random_seed": 42
+  },
+  "ReservoirDataDefaults": {
+    "ooip_stb": 25000000
+  },
+  "OperationalParametersDefaults": {
+    "project_lifetime_years": 15,
+    "default_recovery_model": "hybrid",
+    "default_optimization_objective": "npv"
+  },
+  "EORParametersDefaults": {
+    "injection_rate": 5000.0,
+    "WAG_ratio": 1.0,
+    "injection_scheme": "continuous",
+    "min_cycle_length_days": 15.0,
+    "max_cycle_length_days": 90.0,
+    "min_water_fraction": 0.2,
+    "max_water_fraction": 0.8,
+    "target_pressure_psi": 3000.0,
+    "max_pressure_psi": 6000.0,
+    "min_injection_rate_bpd": 1000.0,
+    "v_dp_coefficient": 0.55,
+    "mobility_ratio": 2.5,
+    "co2_density_tonne_per_mscf": 0.05297,
+    "max_injector_bhp_psi": 8000.0,
+    "days_per_year": 365.0,
+    "psi_to_pa_conversion": 6894.76,
+    "fahrenheit_to_kelvin_offset": 273.15,
+    "fahrenheit_to_kelvin_scale": 0.55556,
+    "supercritical_co2_density_kg_m3": 750.0,
+    "critical_temperature_co2_k": 304.13,
+    "critical_pressure_co2_pa": 7376000.0,
+    "molecular_weight_co2_g_mol": 44.01,
+    "universal_gas_constant_j_mol_k": 8.314,
+    "dissolution_time_constant": 0.05,
+    "diffusion_coefficient_co2_water": 1.9e-09,
+    "henry_constant_co2": 0.033,
+    "residual_gas_saturation_trapping": 0.05,
+    "solubility_coefficient_co2": 0.03,
+    "co2_oil_interfacial_tension": 30.0,
+    "gravity_acceleration": 9.81,
+    "default_oil_viscosity_cp": 2.0,
+    "default_co2_viscosity_cp": 0.08,
+    "minimum_relative_permeability": 0.01,
+    "connate_water_saturation": 0.2,
+    "residual_oil_saturation": 0.25,
+    "critical_gas_saturation": 0.05,
+    "maximum_relative_permeability_oil": 0.8,
+    "maximum_relative_permeability_gas": 0.4,
+    "maximum_relative_permeability_water": 0.3,
+    "endpoint_oil_relative_permeability": 0.8,
+    "endpoint_gas_relative_permeability": 0.4,
+    "endpoint_water_relative_permeability": 0.3,
+    "injection_setpoint_factor": 0.85,
+    "production_setpoint_factor": 1.15,
+    "containment_safety_margin_ft": 50.0,
+    "bhp_utilization_threshold": 0.8,
+    "maintenance_health_threshold": 0.7,
+    "max_reduction_factor": 0.3,
+    "default_formation_damage_factor": 0.8,
+    "days_per_year_fault": 365.0,
+    "strike_slip_geometry_factor": 2.0,
+    "normal_geometry_factor": 1.5,
+    "reverse_geometry_factor": 1.2,
+    "oblique_geometry_factor": 1.8,
+    "default_fault_strike": 90.0,
+    "default_fault_dip": 0.0,
+    "default_fault_width": 100.0,
+    "dummy_fault_strike": 90.0,
+    "dummy_fault_dip": 0.0,
+    "dummy_fault_center_depth": 5000.0,
+    "dummy_fault_length": 1000.0,
+    "dummy_fault_width": 100.0,
+    "default_fault_cohesion": 500.0,
+    "default_fault_friction_coefficient": 0.6,
+    "default_fault_dilation_angle": 5.0,
+    "default_fault_initial_aperture": 0.1,
+    "default_fault_maximum_aperture": 10.0,
+    "default_fault_healing_rate": 0.01,
+    "default_fault_stiffness": 1000000.0,
+    "leakage_transmissibility_threshold": 5.0,
+    "baseline_pressure": 2000.0,
+    "leakage_failure_threshold": 0.6,
+    "leakage_pressure_factor_threshold": 1.2,
+    "low_risk_threshold": 0.1,
+    "moderate_risk_threshold": 0.3,
+    "high_risk_threshold": 0.6,
+    "default_leakage_depth": 5000.0,
+    "injection_safety_margin": 0.8,
+    "min_wag_cycle_length": 30,
+    "initial_wag_cycles": 3,
+    "initial_wag_cycle_length": 45,
+    "standard_wag_cycle_length": 90,
+    "mobility_ratio_factor": 0.001,
+    "high_mobility_threshold": 2.0,
+    "max_enhanced_wag_ratio": 2.0,
+    "wag_ratio_enhancement_factor": 1.5,
+    "default_gas_fvf": 0.005,
+    "co2_taper_percentage": 0.1,
+    "min_co2_taper_factor": 0.85,
+    "exponential_decay_factor": 3.0,
+    "log_progress_factor": 10.0,
+    "numerical_stability_factor": 0.5,
+    "saturation_damping_factor": 0.8,
+    "pressure_damping_factor": 0.9,
+    "cfl_safety_factor": 0.15,
+    "spatial_smoothing_iterations": 2,
+    "spatial_smoothing_weight": 0.2,
+    "temporal_saturation_damping": 0.7,
+    "default_co2_injection_saturation": 0.8,
+    "default_water_injection_saturation": 0.2,
+    "inlet_transition_length": 3.0,
+    "pressure_tolerance": 1.0,
+    "max_pressure_iterations": 50,
+    "mass_balance_tolerance": 0.0001,
+    "rate_smoothing_factor": 0.3,
+    "max_rate_change_fraction": 0.2,
+    "flux_limiter_type": "van_leer"
+  },
+  "EconomicParametersDefaults": {
+    "oil_price_usd_per_bbl": 70.0,
+    "co2_purchase_cost_usd_per_tonne": 50.0,
+    "co2_recycle_cost_usd_per_tonne": 15.0,
+    "water_injection_cost_usd_per_bbl": 1.0,
+    "water_disposal_cost_usd_per_bbl": 2.0,
+    "discount_rate_fraction": 0.1,
+    "capex_usd": 5000000.0,
+    "fixed_opex_usd_per_year": 200000.0,
+    "variable_opex_usd_per_bbl": 5.0,
+    "npv_time_steps_per_year": 1
+  },
+  "ProfileParametersDefaults": {
+    "oil_profile_type": "plateau_linear_decline",
+    "plateau_duration_fraction_of_life": 0.3,
+    "initial_decline_rate_annual_fraction": 0.12,
+    "hyperbolic_b_factor": 0.5,
+    "min_economic_rate_fraction_of_peak": 0.05,
+    "oil_annual_fraction_of_total": null,
+    "injection_profile_type": "constant_rate",
+    "warn_if_defaults_used": true
+  },
+  "GeneticAlgorithmParamsDefaults": {
+    "num_generations": 10,
+    "sol_per_pop": 60,
+    "num_parents_mating": 10,
+    "parent_selection_type": "sss",
+    "crossover_type": "single_point",
+    "crossover_probability": 0.8,
+    "mutation_type": "random",
+    "mutation_probability": 0.15,
+    "keep_elitism": 2,
+    "num_diverse_solutions_for_bo": 10,
+    "diversity_threshold_for_bo": 0.2
+  },
+  "AdvancedEngineParamsDefaults": {
+    "use_simple_physics": true
+  },
+  "FaultMechanics": {
+    "enabled": false,
+    "note": "Set to true only when fault data is provided in grid.fault_cells"
+  },
+  "RecoveryModelParamsDefaults": {
+    "Koval": {
+      "v_dp_coefficient": 0.5,
+      "mobility_ratio": 2.0,
+      "mu_co2": 0.07,
+      "mu_oil": 3.0
+    },
+    "Miscible": {
+      "kv_factor": 0.6,
+      "gravity_factor": 0.05,
+      "mu_co2": 0.06,
+      "mu_oil": 4.0,
+      "rel_perm": {
+        "co2": 0.75,
+        "oil": 0.35
+      },
+      "dip_angle": 5.0,
+      "miscible_mobility_penalty_factor": 0.05,
+      "miscible_gravity_penalty_factor": 0.02,
+      "miscible_compositional_penalty_factor": 0.5,
+      "miscible_heterogeneity_penalty_factor": 0.1
+    },
+    "Immiscible": {
+      "sor": 0.28,
+      "krw_max": 0.35,
+      "mu_water": 0.6,
+      "mu_oil": 4.0,
+      "swc": 0.22,
+      "kro_max": 0.75,
+      "max_rf_cap": 0.35
+    },
+    "Hybrid": {
+      "mode": "sigmoid",
+      "transition_alpha": 0.9,
+      "transition_beta": 15.0,
+      "use_gpu": false,
+      "x_points": [
+        0.6,
+        0.85,
+        1.0,
+        1.15,
+        1.4
+      ],
+      "y_points": [
+        0.08,
+        0.25,
+        0.55,
+        0.75,
+        0.92
+      ]
+    },
+    "Layered": {
+      "default_layer_definitions": [
+        {
+          "pv_fraction": 0.3,
+          "perm_factor": 3.0,
+          "porosity": 0.25
+        },
+        {
+          "pv_fraction": 0.5,
+          "perm_factor": 1.0,
+          "porosity": 0.2
+        },
+        {
+          "pv_fraction": 0.2,
+          "perm_factor": 0.2,
+          "porosity": 0.15
+        }
+      ],
+      "base_model_type": "koval"
+    }
+  },
+  "MMPCalculation": {
+    "default_method": "auto",
+    "correlation_methods": {
+      "YelligGlaso": {
+        "params": null
+      },
+      "Cronquist": {
+        "params": null
+      },
+      "Kovalev": {
+        "params": null
+      }
+    },
+    "allow_compositional_fallback": true,
+    "compositional_input_required": [
+      "C1",
+      "C2",
+      "C3",
+      "IC4",
+      "NC4",
+      "IC5",
+      "NC5",
+      "C6",
+      "C7+"
+    ],
+    "co2_purity_threshold": 0.9
+  },
+  "UISettings": {
+    "sensitivity_plot_points": 25
+  },
+  "Parsers": {
+    "LASParser": {
+      "depth_mnemonic": [
+        "DEPT",
+        "DEPTH"
+      ],
+      "null_value": -999.25
+    }
+  },
+  "PVTPropertiesDefaults": {
+    "pressure_points": [
+      3000.0
+    ],
+    "oil_viscosity": [
+      1.5
+    ],
+    "co2_viscosity": [
+      0.02
+    ],
+    "oil_fvf": [
+      1.2
+    ],
+    "gas_fvf": [
+      0.005
+    ],
+    "rs": [
+      800.0
+    ],
+    "pvt_type": "black_oil",
+    "gas_specific_gravity": 0.7,
+    "temperature": 180.0,
+    "c7_plus_fraction": 0.3
+  },
+  "ui_config": {
+    "ai_assistant": {
+      "services": {
+        "OpenAI": {
+          "models": [
+            "gpt-4o",
+            "gpt-4-turbo",
+            "gpt-3.5-turbo"
+          ],
+          "model_endpoint": "/models"
+        },
+        "Gemini": {
+          "models": [
+            "gemini-1.5-pro-latest",
+            "gemini-1.5-flash-latest"
+          ],
+          "model_endpoint": null
+        },
+        "OpenRouter": {
+          "models": [
+            "google/gemini-flash-1.5",
+            "openai/gpt-4o",
+            "mistralai/mistral-large"
+          ],
+          "model_endpoint": "/models"
+        }
+      },
+      "default_tasks": {
+        "General Query": {
+          "prompt": "You are a helpful assistant for CO2 EOR projects. Answer the user's query based on the provided context.",
+          "context_params": []
+        },
+        "Explain Parameter": {
+          "prompt": "Explain the following parameter and its significance in CO2 EOR projects:",
+          "context_params": [
+            "selected_parameter"
+          ]
+        },
+        "Interpret Sensitivity Results": {
+          "prompt": "Interpret the provided sensitivity analysis results. Identify the most influential parameters and explain their impact on the objective function.",
+          "context_params": [
+            "sa_results"
+          ]
+        },
+        "Interpret UQ Results": {
+          "prompt": "Interpret the provided uncertainty quantification results. Describe the distribution of the objective function and the associated uncertainty.",
+          "context_params": [
+            "uq_results"
+          ]
+        },
+        "Brainstorm EOR Strategy": {
+          "prompt": "Based on the provided reservoir and fluid properties, brainstorm potential EOR strategies. Discuss the pros and cons of each.",
+          "context_params": [
+            "reservoir_summary",
+            "pvt_properties"
+          ]
+        },
+        "Draft Report Section": {
+          "prompt": "Draft a section for a technical report based on the user's request and the provided data.",
+          "context_params": [
+            "optimization_engine_state",
+            "reservoir_summary"
+          ]
+        }
+      },
+      "available_context_params": [
+        "reservoir_summary",
+        "pvt_properties",
+        "economic_parameters",
+        "eor_parameters",
+        "operational_parameters",
+        "profile_parameters",
+        "ga_parameters",
+        "bo_parameters",
+        "optimization_engine_state",
+        "sa_results",
+        "uq_results",
+        "selected_parameter"
+      ]
+    },
+    "analysis": {
+      "supported_distributions": [
+        "Normal",
+        "Uniform",
+        "LogNormal",
+        "Triangular"
+      ],
+      "distribution_parameters": {
+        "Normal": [
+          [
+            "Mean (\u041e\u0458)",
+            "mu"
+          ],
+          [
+            "Std Dev (\u041f\u0453)",
+            "sigma"
+          ]
+        ],
+        "Uniform": [
+          [
+            "Min",
+            "lower"
+          ],
+          [
+            "Max",
+            "upper"
+          ]
+        ],
+        "LogNormal": [
+          [
+            "Log Mean (\u041e\u0458)",
+            "log_mu"
+          ],
+          [
+            "Log Std Dev (\u041f\u0453)",
+            "log_sigma"
+          ]
+        ],
+        "Triangular": [
+          [
+            "Min (a)",
+            "lower"
+          ],
+          [
+            "Mode (c)",
+            "mode"
+          ],
+          [
+            "Max (b)",
+            "upper"
+          ]
+        ]
+      }
+    },
+    "config_widget": {
+      "oil_profile_display_map": {
+        "linear_distribution": "Linear Distribution",
+        "plateau_linear_decline": "Plateau with Linear Decline",
+        "plateau_exponential_decline": "Plateau with Exponential Decline",
+        "plateau_hyperbolic_decline": "Plateau with Hyperbolic Decline",
+        "custom_fractions": "Custom Annual Fractions"
+      },
+      "injection_profile_display_map": {
+        "constant_during_phase": "Constant During Each Phase"
+      },
+      "objectives_display_map": {
+        "npv": "Net Present Value (NPV)",
+        "recovery_factor": "Recovery Factor (RF)",
+        "co2_utilization": "CO2 Utilization"
+      },
+      "special_dropdowns": {
+        "time_resolution": [
+          "weekly",
+          "monthly",
+          "quarterly",
+          "yearly"
+        ],
+        "injection_scheme": [
+          "continuous",
+          "wag",
+          "huff_n_puff",
+          "swag",
+          "tapered",
+          "pulsed"
+        ],
+        "recovery_model_selection": [
+          "simple",
+          "miscible",
+          "immiscible",
+          "hybrid",
+          "koval",
+          "layered"
+        ],
+        "strategy": [
+          "best1bin",
+          "best1exp",
+          "rand1exp",
+          "randtobest1exp",
+          "currenttobest1exp",
+          "best2exp",
+          "rand2exp",
+          "randtobest1bin",
+          "currenttobest1bin",
+          "best2bin",
+          "rand2bin",
+          "rand1bin"
+        ],
+        "acquisition_function": [
+          "ucb",
+          "ei",
+          "poi"
+        ],
+        "parent_selection_type": [
+          "sss",
+          "rws",
+          "sus",
+          "rank",
+          "random",
+          "tournament"
+        ],
+        "crossover_type": [
+          "single_point",
+          "two_points",
+          "uniform",
+          "scattered"
+        ],
+        "mutation_type": [
+          "random",
+          "swap",
+          "inversion",
+          "scramble",
+          "adaptive"
+        ],
+        "tuner_method": [
+          "bayesian",
+          "grid",
+          "random"
+        ]
+      },
+      "wag_params": [
+        "WAG_ratio",
+        "min_cycle_length_days",
+        "max_cycle_length_days",
+        "min_water_fraction",
+        "max_water_fraction"
+      ]
+    },
+    "optimization": {
+      "methods": {
+        "Hybrid (GA -> Bayesian)": "hybrid_optimize",
+        "Genetic Algorithm (PyGAD)": "optimize_genetic_algorithm",
+        "Bayesian Optimization": "optimize_bayesian",
+        "Particle Swarm Optimization (PSO)": "optimize_pso",
+        "Differential Evolution (DE)": "optimize_de"
+      },
+      "objectives": {
+        "Net Present Value (NPV)": "npv",
+        "Recovery Factor (RF)": "recovery_factor",
+        "CO2 Utilization": "co2_utilization"
+      },
+      "parameter_metadata": {
+        "pressure": {
+          "display": "Injection Pressure",
+          "unit": "(psi)"
+        },
+        "rate": {
+          "display": "Injection Rate",
+          "unit": "(bpd)"
+        },
+        "v_dp_coefficient": {
+          "display": "V_DP Coefficient",
+          "unit": "(dim.)"
+        },
+        "mobility_ratio": {
+          "display": "Mobility Ratio",
+          "unit": "(dim.)"
+        },
+        "WAG_ratio": {
+          "display": "WAG Ratio",
+          "unit": ""
+        },
+        "oil_price_usd_per_bbl": {
+          "display": "Oil Price",
+          "unit": "($/bbl)"
+        },
+        "co2_purchase_cost_usd_per_tonne": {
+          "display": "CO2 Purchase Cost",
+          "unit": "($/tonne)"
+        },
+        "wellbore_pressure": {
+          "display": "Wellbore Pressure",
+          "unit": "(psi)"
+        },
+        "num_generations": {
+          "display": "Generations",
+          "unit": "",
+          "description": "The number of generations to run the GA for."
+        },
+        "sol_per_pop": {
+          "display": "Population Size",
+          "unit": "",
+          "description": "Total number of individuals in each generation."
+        },
+        "crossover_probability": {
+          "display": "Crossover Probability",
+          "unit": ""
+        },
+        "mutation_probability": {
+          "display": "Mutation Probability",
+          "unit": ""
+        },
+        "keep_elitism": {
+          "display": "Elitism Count",
+          "unit": "",
+          "description": "Number of best individuals to guarantee survival."
+        },
+        "num_diverse_solutions_for_bo": {
+          "display": "GA Seeds for BO",
+          "unit": "",
+          "description": "Number of diverse, high-performing solutions to pass from the GA to the BO phase in a hybrid run."
+        },
+        "n_iterations": {
+          "display": "BO Iterations",
+          "unit": ""
+        },
+        "n_initial_points": {
+          "display": "BO Random Initial Points",
+          "unit": "",
+          "description": "Number of random points to sample before starting optimization. Is automatically set to 0 in a hybrid run."
+        },
+        "acquisition_function": {
+          "display": "BO Acquisition Function",
+          "unit": "",
+          "description": "Strategy used by BO. 'ucb' balances exploration/exploitation. 'ei' is more exploitative."
+        },
+        "acq_kappa": {
+          "display": "BO Kappa (for UCB)",
+          "unit": "",
+          "description": "Controls exploration-exploitation trade-off for UCB. Higher values favor exploration."
+        },
+        "acq_xi": {
+          "display": "BO Xi (for EI/POI)",
+          "unit": "",
+          "description": "Controls exploitation trade-off for EI/POI. Higher values favor more exploitation."
+        },
+        "n_particles": {
+          "display": "Number of Particles",
+          "unit": "",
+          "description": "The size of the swarm."
+        },
+        "iters": {
+          "display": "Iterations",
+          "unit": "",
+          "description": "The number of iterations to run the PSO for."
+        },
+        "c1": {
+          "display": "Cognitive Parameter (c1)",
+          "unit": "",
+          "description": "The weight of the particle's personal best experience."
+        },
+        "c2": {
+          "display": "Social Parameter (c2)",
+          "unit": "",
+          "description": "The weight of the swarm's global best experience."
+        },
+        "w": {
+          "display": "Inertia (w)",
+          "unit": "",
+          "description": "Controls the momentum of the particles, influencing exploration."
+        },
+        "strategy": {
+          "display": "DE Strategy",
+          "unit": "",
+          "description": "The differential evolution strategy to use (e.g., 'best1bin', 'rand1exp')."
+        },
+        "maxiter": {
+          "display": "Max Iterations",
+          "unit": "",
+          "description": "The maximum number of generations to run the DE for."
+        },
+        "popsize": {
+          "display": "Population Size Multiplier",
+          "unit": "",
+          "description": "Multiplied by the number of parameters to get the total population size."
+        },
+        "mutation": {
+          "display": "Mutation Factor",
+          "unit": "",
+          "description": "The mutation constant (often F), a float or tuple (min, max)."
+        },
+        "recombination": {
+          "display": "Recombination Factor",
+          "unit": "",
+          "description": "The recombination constant (often CR)."
+        },
+        "porosity": {
+          "display": "Reservoir Porosity",
+          "unit": "(v/v)"
+        },
+        "permeability": {
+          "display": "Reservoir Permeability",
+          "unit": "(mD)"
+        },
+        "ooip_stb": {
+          "display": "Original Oil In Place",
+          "unit": "(STB)"
+        }
+      }
+    }
+  },
+  "SurrogateEngine": {
+    "model_type": "analytical",
+    "recovery_model": "hybrid",
+    "profile_model": "plateau_decline",
+    "parameter_ranges": {
+      "injection_rate": [
+        100.0,
+        100000.0
+      ],
+      "target_pressure_psi": [
+        1000.0,
+        8000.0
+      ],
+      "mobility_ratio": [
+        0.1,
+        50.0
+      ],
+      "porosity": [
+        0.05,
+        0.35
+      ],
+      "permeability": [
+        1.0,
+        1000.0
+      ],
+      "mmp": [
+        1500.0,
+        4000.0
+      ],
+      "WAG_ratio": [
+        0.0,
+        4.0
+      ],
+      "kv_kh_ratio": [
+        0.01,
+        1.0
+      ]
+    },
+    "response_surface": {
+      "enabled": false,
+      "type": "polynomial",
+      "degree": 2,
+      "n_training_samples": 500,
+      "sampling_method": "lhs",
+      "rbf_function": "multiquadric",
+      "smooth": 0.0
+    },
+    "feature_transform": {
+      "scaling_method": "standard",
+      "apply_log_transform": [
+        "injection_rate",
+        "permeability"
+      ]
+    },
+    "performance": {
+      "target_evaluation_time_ms": 1.0,
+      "target_accuracy_percent": 10.0,
+      "enable_profiling": false
+    },
+    "profile_generator": {
+      "model_type": "plateau_decline",
+      "plateau_fraction": 0.3,
+      "decline_rate": 0.15,
+      "ramp_up_fraction": 0.1,
+      "arps_decline_type": "hyperbolic",
+      "arps_b_factor": 0.5
+    }
+  },
+  "EmpiricalFittingParameters": {
+    "c7_plus_fraction": {
+      "default": 0.57,
+      "min": 0.0,
+      "max": 1.0,
+      "description": "C7+ fraction in oil composition",
+      "unit": "fraction"
+    },
+    "alpha_base": {
+      "default": 1.0,
+      "min": 0.1,
+      "max": 5.0,
+      "description": "Miscibility transition midpoint",
+      "unit": "dimensionless"
+    },
+    "miscibility_window": {
+      "default": 0.011,
+      "min": 0.001,
+      "max": 0.1,
+      "description": "Transition sharpness (beta parameter)",
+      "unit": "dimensionless"
+    },
+    "breakthrough_time_years": {
+      "default": 1.5,
+      "min": 0.1,
+      "max": 10.0,
+      "description": "Time to CO2 breakthrough",
+      "unit": "years"
+    },
+    "trapping_efficiency": {
+      "default": 0.4,
+      "min": 0.0,
+      "max": 1.0,
+      "description": "Fraction of injected CO2 trapped",
+      "unit": "fraction"
+    },
+    "initial_gor_scf_per_stb": {
+      "default": 500.0,
+      "min": 0.0,
+      "max": 10000.0,
+      "description": "Initial gas-oil ratio",
+      "unit": "SCF/STB"
+    },
+    "transverse_mixing_calibration": {
+      "default": 0.5,
+      "min": 0.0,
+      "max": 1.0,
+      "description": "PhD heterogeneity calibration",
+      "unit": "dimensionless"
+    },
+    "omega_tl": {
+      "default": 0.6,
+      "min": 0.0,
+      "max": 1.0,
+      "description": "Todd-Longstaff mixing parameter",
+      "unit": "dimensionless"
+    },
+    "k_ro_0": {
+      "default": 0.8,
+      "min": 0.1,
+      "max": 1.0,
+      "description": "Oil relative permeability endpoint",
+      "unit": "dimensionless"
+    },
+    "k_rg_0": {
+      "default": 1.0,
+      "min": 0.1,
+      "max": 1.0,
+      "description": "Gas relative permeability endpoint",
+      "unit": "dimensionless"
+    },
+    "n_o": {
+      "default": 2.0,
+      "min": 1.0,
+      "max": 5.0,
+      "description": "Oil Corey exponent",
+      "unit": "dimensionless"
+    },
+    "n_g": {
+      "default": 2.0,
+      "min": 1.0,
+      "max": 5.0,
+      "description": "Gas Corey exponent",
+      "unit": "dimensionless"
+    }
+  }
+}

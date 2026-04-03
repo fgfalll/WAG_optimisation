@@ -1,0 +1,95 @@
+[
+  {
+    "name": "SPE 3: Sandstone Reservoir for CO2-EOR",
+    "overview": "This dataset represents a typical sandstone reservoir suitable for CO2 Enhanced Oil Recovery. It is based on the 3rd SPE Comparative Solution Project (SPE 3) and is widely used as a benchmark for CO2 sequestration and EOR studies. The properties are characteristic of a fluvial-deltaic depositional environment.",
+    "reference": "Kenyon, D. E., & Behie, A. (1987). Third SPE Comparative Solution Project: Gas Cycling of Retrograde Condensate Reservoirs. Journal of Petroleum Technology, 39(08), 981-997. doi:10.2118/12278-PA",
+    "parameters": {
+      "reservoir": {
+        "initial_pressure": 3000,
+        "temperature": 190,
+        "porosity": 0.2,
+        "permeability": 100,
+        "net_thickness": 50,
+        "depth": 8000,
+        "oil_saturation": 0.6,
+        "water_saturation": 0.4,
+        "rock_compressibility": "4.0E-6"
+      },
+      "pvt": {
+        "oil_api_gravity": 35,
+        "oil_viscosity": 1.5,
+        "gas_oil_ratio": 800,
+        "bubble_point_pressure": 2500,
+        "oil_formation_volume_factor": 1.3,
+        "gas_specific_gravity": 0.7
+      },
+      "eor": {
+        "minimum_miscibility_pressure": 2800,
+        "co2_injection_rate": 5.0,
+        "co2_purity": 0.98
+      }
+    }
+  },
+  {
+    "name": "Weyburn Field: Carbonate Reservoir (CO2-EOR)",
+    "overview": "This dataset is representative of the Weyburn Field in Saskatchewan, Canada, a large carbonate reservoir and one of the world's largest CO2-EOR projects. The data reflects a Mississippian-aged carbonate formation with moderate porosity and low permeability, making it a challenging but successful EOR target.",
+    "reference": "Whittaker, S., et al. (2004). The IEA Weyburn CO2 Monitoring and Storage Project. Paper presented at the 7th International Conference on Greenhouse Gas Control Technologies, Vancouver, BC, Canada. September 2004.",
+    "parameters": {
+      "reservoir": {
+        "initial_pressure": 2100,
+        "temperature": 150,
+        "porosity": 0.12,
+        "permeability": 20,
+        "net_thickness": 80,
+        "depth": 4600,
+        "oil_saturation": 0.75,
+        "water_saturation": 0.25,
+        "rock_compressibility": "5.0E-6"
+      },
+      "pvt": {
+        "oil_api_gravity": 30,
+        "oil_viscosity": 10.0,
+        "gas_oil_ratio": 400,
+        "bubble_point_pressure": 1800,
+        "oil_formation_volume_factor": 1.15,
+        "gas_specific_gravity": 0.8
+      },
+      "eor": {
+        "minimum_miscibility_pressure": 3500,
+        "co2_injection_rate": 8.0,
+        "co2_purity": 0.95
+      }
+    }
+  },
+  {
+    "name": "Simplified Hypothetical Reservoir",
+    "overview": "Simplified reservoir simulation dataset for a small, hypothetical reservoir.",
+    "reference": "Internal Gemini Dataset",
+    "parameters": {
+      "reservoir": {
+        "initial_pressure": 3000,
+        "temperature": 200,
+        "porosity": 0.25,
+        "permeability": 500,
+        "net_thickness": 50,
+        "depth": 8000,
+        "oil_saturation": 0.8,
+        "water_saturation": 0.2,
+        "rock_compressibility": "4.0E-6"
+      },
+      "pvt": {
+        "oil_api_gravity": 35,
+        "oil_viscosity": 1.5,
+        "gas_oil_ratio": 800,
+        "bubble_point_pressure": 2500,
+        "oil_formation_volume_factor": 1.3,
+        "gas_specific_gravity": 0.7
+      },
+      "eor": {
+        "minimum_miscibility_pressure": 2800,
+        "co2_injection_rate": 5.0,
+        "co2_purity": 0.98
+      }
+    }
+  }
+]

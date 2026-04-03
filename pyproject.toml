@@ -1,0 +1,134 @@
+[project]
+name = "co2eor-optimizer"
+version = "0.8.5"
+description = "CO2 Enhanced Oil Recovery Optimization Software"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Proprietary"}
+authors = [
+    {name = "TIndustials", email = "contact@tarascv.netlify.app"}
+]
+maintainers = [
+    {name = "TIndustials", email = "contact@tarascv.netlify.app"}
+]
+keywords = [
+    "co2",
+    "eor",
+    "enhanced oil recovery",
+    "optimization",
+    "reservoir simulation",
+    "petroleum engineering"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "License :: Other/Proprietary",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+]
+
+dependencies = [
+    "PyQt6>=6.6",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+    "plotly>=5.14",
+    "pyqt6-webengine>=6.6",
+    "pyyaml>=6.0",
+    "qtawesome>=1.3",
+    "markdown>=3.4",
+    "pint>=0.21",
+    "numpy_financial>=1.0",
+    "SALib>=1.4",
+    "UQpy>=1.2",
+    "bayesian-optimization>=1.3",
+    "pygad>=3.0",
+    "pyswarms>=1.3",
+    "gstools>=1.4",
+    "lasio>=0.30",
+    "requests>=2.31",
+    "kaleido>=0.2",
+    "openai>=1.0",
+    "google-generativeai>=0.3",
+    "psutil>=5.9",
+    "GPUtil>=1.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "pytest-qt>=4.2",
+    "pytest-xdist>=3.3",
+    "black>=23.0",
+    "ruff>=0.1",
+    "mypy>=1.5",
+]
+
+[project.scripts]
+co2eor = "co2eor_optimizer.main:main"
+
+[project.urls]
+Homepage = "https://tarascv.netlify.app/"
+Documentation = "https://tarascv.netlify.app/docs"
+Repository = "https://github.com/tarascv/co2eor-optimizer"
+Issues = "https://github.com/tarascv/co2eor-optimizer/issues"
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["co2eor_optimizer*"]
+exclude = ["tests*", "venv*", "venv", "*.egg-info", ".git"]
+
+[tool.setuptools.package-data]
+"co2eor_optimizer" = [
+    "config/*.json",
+    "config/*.yaml",
+    "help/*.md",
+    "help/*.yaml",
+    "translations/*.ts",
+    "translations/*.qm",
+    "ui/assets/*.ico",
+    "ui/assets/*.png",
+    "ui/dialogs/mathjax/*.*",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501", "N803", "N806"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+qt_api = "pyqt6"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+plugins = ["mypy_django_plugin.main"]

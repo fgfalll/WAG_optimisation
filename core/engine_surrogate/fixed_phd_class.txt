@@ -1,0 +1,86 @@
+class PhDHybridSurrogate(AnalyticalRecoveryModel):
+    """
+    PhD-level hybrid surrogate model addressing miscibility cliff problem.
+    """
+    def __init__(self):
+        super().__init__("phd_hybrid")
+
+    def calculate_recovery(self, **params) -> float:
+        """Calculate PhD-level hybrid recovery factor."""
+        import numpy as np
+        from core.engine_surrogate.analytical_models import EPSILON, S_WI_CONNATE
+
+        # Extract parameters with defaults
+        pressure = params.get("pressure", params.get("target_pressure_psi", 3000.0))
+        mmp = params.get("mmp", 2500.0)
+        c7_plus = np.clip(params.get("c7_plus_fraction", 0.3), 0.1, 0.5)
+        hcpvi = params.get("hcpvi", 1.0)
+        v_dp = np.clip(params.get("v_dp", params.get("v_dp_coefficient", 0.5)), 0.0, 0.8)
+        s_wi = np.clip(params.get("s_wi", params.get("connate_water_saturation", S_WI_CONNATE)), 0.0, 0.8)
+        viscosity_oil = params.get("viscosity_oil", params.get("mu_oil", 2.0))
+        viscosity_inj = params.get("viscosity_inj", params.get("co2_viscosity", 0.05))
+        co2_solubility = params.get("co2_solubility", 400.0)
+
+        # === Thermodynamic weighting function ===
+        # FIXED: Center transition at P/MMP = 1.0 (not 0.95)
+        p_ratio = pressure / max(mmp, EPSILON)
+
+        alpha_base = 1.0  # Centered at MMP
+        lambda_c7 = 0.1  # C7+ sensitivity
+        alpha_eff = alpha_base + lambda_c7 * (c7_plus - 0.3)
+
+        beta_transition = 15.0
+
+        arg = beta_transition * (p_ratio - alpha_eff)
+        arg = np.clip(arg, -700, 700)
+        omega = 0.5 * (1.0 + np.tanh(arg))
+
+        # === Mobility ratio ===
+        mobility_ratio_raw = viscosity_oil / max(viscosity_inj, EPSILON)
+        mobility_ratio = max(mobility_ratio_raw, 1.0)
+
+        # === Heterogeneity factor ===
+        v_dp_safe = np.clip(v_dp, 0.0, 0.75)
+        h_factor = 1.0 / (1.0 - v_dp_safe) ** 2
+        h_factor = np.clip(h_factor, 1.0, 20.0)
+
+        m_eff = mobility_ratio * h_factor
+
+        # === Miscible displacement efficiency ===
+        if m_eff < 5.0:
+            displacement_eff_mis = 0.85
+        elif m_eff < 15.0:
+            displacement_eff_mis = 0.75
+        elif m_eff < 50.0:
+            displacement_eff_mis = 0.60
+        else:
+            displacement_eff_mis = 0.45
+
+        rf_mis = displacement_eff_mis * (1.0 - s_wi)
+
+        # === Immiscible recovery limit ===
+        if mobility_ratio_raw > 10:
+            rf_limit = 0.20 + 0.15 * (1.0 - v_dp_safe)
+        elif mobility_ratio_raw > 5:
+            rf_limit = 0.25 + 0.15 * (1.0 - v_dp_safe)
+        elif mobility_ratio_raw > 2:
+            rf_limit = 0.30 + 0.15 * (1.0 - v_dp_safe)
+        else:
+            rf_limit = 0.35 + 0.20 * (1.0 - v_dp_safe)
+
+        rf_limit = np.clip(rf_limit, 0.10, 0.50)
+
+        # === CO2 solubility enhancement ===
+        solubility_factor = 1.0 + 0.02 * np.log10(max(co2_solubility, 10.0) / 100.0)
+        solubility_factor = np.clip(solubility_factor, 1.0, 1.15)
+
+        # === Complete hybrid recovery model ===
+        rf_hybrid = omega * rf_mis * solubility_factor + (1.0 - omega) * rf_limit
+
+        # === Dynamic mass balance constraint ===
+        tau = 2.0
+        mass_balance_factor = 1.0 - np.exp(-hcpvi / max(tau, EPSILON))
+        rf_final = rf_hybrid * mass_balance_factor
+
+        # FIXED: Remove aggressive minimum clamp
+        return float(np.clip(rf_final, 0.01, 0.90))

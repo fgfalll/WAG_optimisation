@@ -1,0 +1,13 @@
+{
+  "eos_composition": {
+    "eos_type": "PR",
+    "component_properties": [
+      [0.8, 44.0, 304.2, 1071.0, 0.225],
+      [0.2, 16.0, 190.6, 464.0, 0.011]
+    ],
+    "binary_interaction_coeffs": [
+      [0.0, 0.1],
+      [0.1, 0.0]
+    ]
+  }
+}
