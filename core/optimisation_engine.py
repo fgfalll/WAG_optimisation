@@ -168,6 +168,7 @@ class OptimizationEngine:
         advanced_engine_params_instance: Optional[AdvancedEngineParams] = None,
         co2_storage_params_instance: Optional[CO2StorageParameters] = None,
         well_data_list: Optional[List[Any]] = None,
+        fitting_params_instance: Optional[Any] = None,
         mmp_init_override: Optional[float] = None,
     ):
         self._base_reservoir_data = deepcopy(reservoir)
@@ -184,6 +185,17 @@ class OptimizationEngine:
             advanced_engine_params_instance or AdvancedEngineParams()
         )
         self._base_well_data_list = deepcopy(well_data_list)
+        self._base_fitting_params = deepcopy(fitting_params_instance)
+        
+        self.reservoir = deepcopy(self._base_reservoir_data)
+        self.pvt = deepcopy(self._base_pvt_data)
+        self.eor_params = deepcopy(self._base_eor_params)
+        self.economic_params = deepcopy(self._base_economic_params)
+        self.operational_params = deepcopy(self._base_operational_params)
+        self.co2_storage_params = deepcopy(self._base_co2_storage_params)
+        self.profile_params = deepcopy(profile_params_instance or ProfileParameters())
+        self.well_data_list = deepcopy(self._base_well_data_list)
+        self.fitting_params = deepcopy(self._base_fitting_params)
 
         self.RELAXABLE_CONSTRAINTS = {
             k: {
@@ -206,7 +218,6 @@ class OptimizationEngine:
         self.pso_params_default_config = pso_params_instance or ParticleSwarmParams()
         self.de_params_default_config = de_params_instance or DifferentialEvolutionParams()
 
-        self.profile_params = profile_params_instance or ProfileParameters()
         self.profiler = None  # Will be instantiated on-demand with the physics-based model
         self.dca_analyzer = DeclineCurveAnalyzer()
 
@@ -370,8 +381,8 @@ class OptimizationEngine:
             # Try new field first, fall back to old boolean field
             engine_type_str = getattr(self.advanced_engine_params, "engine_type", None)
             if engine_type_str is None:
-                use_simple = getattr(self.advanced_engine_params, "use_simple_physics", True)
-                engine_type_str = "simple" if use_simple else "detailed"
+                # Force surrogate as the primary default unless explicitly overridden
+                engine_type_str = "surrogate"
 
             # Map string to EngineType enum
             engine_type = EngineType(engine_type_str)
@@ -709,18 +720,45 @@ class OptimizationEngine:
                     eor_params=current_eor_params,
                     operational_params=self.operational_params,
                     economic_params=econ_params,
+                    fitting_params=kwargs.get("fitting_params_override", getattr(self, "fitting_params", None)),
                     **sim_kwargs
                 )
 
                 # Convert results to profile format expected by rest of code
                 time_res = self.operational_params.time_resolution
+                time_vector = results.get('time_vector', np.array([]))
+                
+                # Calculate time step sizes (dt) in days for integration of rates
+                if len(time_vector) > 1:
+                    dt = np.diff(time_vector, prepend=time_vector[0] - (time_vector[1] - time_vector[0]))
+                else:
+                    # Fallback for single-point results
+                    dt = np.array([365.25]) if time_res == "yearly" else np.array([30.4])
+
+                # standardizing results: most engines return rates (per day)
+                # but economics/objectives expect volumes per interval (e.g. STB per year)
                 profiles = {
-                    f"{time_res}_oil_stb": results.get('oil_production_rate', np.array([])),
-                    f"{time_res}_gas_stb": results.get('gas_production_rate', np.array([])),
-                    f"{time_res}_water_stb": results.get('water_production_rate', np.array([])),
-                    f"{time_res}_pressure": results.get('pressure', np.array([])),  # Add pressure data
-                    "co2_injection_mscf": results.get('co2_injection', np.array([])),
-                    "time_vector": results.get('time_vector', np.array([])),
+                    # Volume integrated profiles for objective calculations
+                    f"{time_res}_oil_stb": results.get('oil_production_rate', np.array([])) * dt,
+                    f"{time_res}_gas_stb": results.get('gas_production_rate', np.array([])) * dt,
+                    f"{time_res}_water_stb": results.get('water_production_rate', np.array([])) * dt,
+                    f"{time_res}_pressure": results.get('pressure', np.array([])),
+                    f"{time_res}_co2_purchased_mscf": results.get('co2_injection', np.array([])) * dt,
+                    f"{time_res}_co2_produced_mscf": results.get('gas_production_rate', np.array([])) * dt, # Assume produced gas is mostly CO2
+                    
+                    # Keep generic rate aliases for backward compatibility with plotters
+                    "oil_production_rate": results.get('oil_production_rate', np.array([])),
+                    "gas_production_rate": results.get('gas_production_rate', np.array([])),
+                    "water_production_rate": results.get('water_production_rate', np.array([])),
+                    "co2_injection": results.get('co2_injection', np.array([])),
+                    "co2_injection_mscf": results.get('co2_injection', np.array([])) * dt,
+                    
+                    # Pre-calculated scalars
+                    "npv": results.get('npv', 0.0),
+                    "cumulative_oil": results.get('cumulative_oil', 0.0),
+                    "co2_stored": results.get('co2_stored', 0.0),
+                    
+                    "time_vector": time_vector,
                 }
                 rf = results.get('recovery_factor', 0.0)
 
@@ -1087,7 +1125,7 @@ class OptimizationEngine:
             return FAILURE_PENALTY * 0.1
 
         # 3. Plume Containment Constraint
-        plume_containment = eval_results.get("plume_containment", 0.0)
+        plume_containment = eval_results.get("plume_containment", 1.0)
         # Ensure plume_containment is a scalar for formatting
         if isinstance(plume_containment, np.ndarray):
             plume_containment = float(plume_containment.item())
