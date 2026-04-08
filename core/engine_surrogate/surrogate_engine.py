@@ -231,7 +231,7 @@ class SurrogateEngine:
                     q_total_draw_rb = profile_result["oil_profile"][i] * bo + profile_result["water_profile"][i] + nominal_gas_rb
                     
                     # 3. Dynamic Fractional Flow Override
-                    if params.get("use_dynamic_fractional_flow", False):
+                    if params.get("use_dynamic_fractional_flow", True):
                         S_wi = params.get("connate_water_saturation", 0.25)
                         S_orm = params.get("residual_oil_saturation", 0.25)
                         S_norm = np.clip(S_g / max(1.0 - S_wi - S_orm, 1e-6), 0.0, 1.0)
@@ -258,17 +258,27 @@ class SurrogateEngine:
                         
                         K_val = H_k * M_e
                         
-                        # Use Koval fractional flow equation based on t_D (HCPVI)
-                        # instead of incorrectly using average saturation S_norm in the local f_g equation.
-                        t_D = np.clip(cum_inj_rb / max(pore_volume_rb * max(1.0 - S_wi - S_orm, 1e-6), 1e-6), 0.0, 100.0)
+                        # Use Koval fractional flow equation based on cumulative volume injected
+                        # Need to track dimensionless pore volumes injected (HCPVI)
+                        t_D = cum_inj_rb / max(pore_volume_rb, 1e-6)
                         
-                        if t_D < 1.0 / max(K_val, 1e-6):
+                        # Koval's fractional flow equation
+                        if t_D <= 0:
                             f_g = 0.0
-                        elif K_val > 1.0:
-                            f_g = (K_val - np.sqrt(K_val / max(t_D, 1e-6))) / (K_val - 1.0)
-                            f_g = np.clip(f_g, 0.0, 1.0)
-                        else:
+                        elif K_val <= 1.0:
                             f_g = 1.0 if t_D >= 1.0 else 0.0
+                        else:
+                            # Standard Koval f_g derivative
+                            if t_D < 1.0 / K_val:
+                                f_g = 0.0  # Pre-breakthrough
+                            else:
+                                f_g = (K_val - np.sqrt(K_val / max(t_D, 1e-6))) / (K_val - 1.0)
+                                f_g = np.clip(f_g, 0.0, 1.0)
+                        
+                        # In dynamic mode, total fluid withdrawal is driven by injection 
+                        # (voidage replacement) rather than the static analytical profile generator.
+                        vrr = params.get("voidage_replacement_ratio", 1.0)
+                        q_total_draw_rb = q_inj_step * vrr
                         
                         # Set profiles based strictly on fluid mobility ratio and withdrawal speed
                         q_gas_rb = q_total_draw_rb * f_g
@@ -335,7 +345,7 @@ class SurrogateEngine:
             oil_profile = profile_result["oil_profile"]
             dt = np.diff(time_vector, prepend=0)
             
-            if params.get("use_dynamic_fractional_flow", False):
+            if params.get("use_dynamic_fractional_flow", True):
                 # Calculate rigorous RF from integrated fractional flow
                 cum_oil_shape = np.cumsum(oil_profile * dt)
                 max_cum_shape = cum_oil_shape[-1] if len(cum_oil_shape) > 0 and cum_oil_shape[-1] > 0 else 1.0

@@ -127,8 +127,8 @@ class DataManagementWidget(QWidget):
 
     SURROGATE_TUNING_DEFS = {
         # Miscibility transition parameters
-        'alpha_base': ("Alpha Base (transition midpoint)", "lineedit", float, {'default_value': 1.0, 'min': 0.001, 'max': 5.0}),
-        'miscibility_window': ("Miscibility Window (beta)", "lineedit", float, {'default_value': 0.011, 'min': 0.001, 'max': 0.1, 'decimals': 4}),
+        'alpha_base': ("Alpha Base (P/MMP midpoint)", "lineedit", float, {'default_value': 1.0, 'min': 0.5, 'max': 1.5, 'decimals': 3}),
+        'miscibility_window': ("Miscibility Window (ΔP/MMP)", "lineedit", float, {'default_value': 0.10, 'min': 0.01, 'max': 0.5, 'decimals': 3}),
 
         # Production dynamics
         'breakthrough_time_years': ("CO2 Breakthrough Time (years)", "lineedit", float, {'default_value': 1.5, 'min': 0.1, 'max': 10.0}),
@@ -611,6 +611,46 @@ class DataManagementWidget(QWidget):
             if sorw is not None and 'k_rg_0' in self.manual_inputs_widgets:
                 self.manual_inputs_widgets['k_rg_0'].set_value(round(max(0.1, 1.0 - sorw), 2))
                 
+            # 2. C7+ Fraction Estimation
+            c7_est = None
+            api = self.manual_inputs_values.get('api_gravity', 35.0)
+            gor = self.manual_inputs_values.get('sol_gor', 500.0)
+
+            # A. Attempt to get explicit mole fractions from EOS compositional setup
+            if self.config_manager and self.config_manager.is_loaded:
+                eos_data = self.config_manager.get_section("eos_composition")
+                if eos_data and "component_names" in eos_data and "component_properties" in eos_data:
+                    names = eos_data["component_names"]
+                    props = eos_data["component_properties"]
+                    try:
+                        # Find indices for all components C7 and heavier
+                        c7_idx = [i for i, n in enumerate(names) if 'C7' in n.upper() or 'C10' in n.upper() or 'C12' in n.upper() or 'HEAVY' in n.upper() or 'PLUS' in n.upper() or '+' in n]
+                        if c7_idx:
+                            c7_est = sum(props[i][0] for i in c7_idx) # Sum of mole fractions
+                            logger.info(f"Extracted C7+ fraction ({c7_est}) directly from EOS Composition.")
+                    except Exception as e:
+                        logger.warning(f"Could not extract C7+ from EOS: {e}")
+
+            # B. Check if we have Detailed Black Oil PVT data to extract max Rs as GOR
+            if c7_est is None and self.use_detailed_pvt_checkbox.isChecked() and self.detailed_pvt_data:
+                pvto = self.detailed_pvt_data.get('PVTO', np.array([]))
+                if pvto.size > 0 and pvto.shape[1] > 1:
+                    max_rs = np.max(pvto[:, 1])
+                    if max_rs > 0:
+                        gor = max_rs # Override manual GOR with max Rs from table
+                        logger.info(f"Using max Rs ({gor} scf/bbl) from detailed PVTO table for C7+ estimation.")
+
+            # C. Fallback to empirical correlations (Katz-Firoozabadi or Ovalle)
+            if c7_est is None:
+                if api < 45.0:
+                    c7_est = max(0.01, min(0.99, 1.0 - 0.015 * api)) # Katz-Firoozabadi for Black Oil
+                else:
+                    gor_mscf = max(gor / 1000.0, 0.01)
+                    c7_est = max(0.01, min(0.99, 0.3157 * (gor_mscf ** -0.9205))) # Ovalle for Volatile Oil
+
+            if 'c7_plus_fraction' in self.manual_inputs_widgets:
+                self.manual_inputs_widgets['c7_plus_fraction'].set_value(round(c7_est, 3))
+                
             # 3. Todd-Longstaff Omega (Web Research: 1/3 for heterogeneous field, 2/3 for homogeneous/lab)
             v_dp = self.manual_inputs_values.get('v_dp_coefficient', 0.7)
             omega = 0.33 if v_dp > 0.6 else 0.66
@@ -662,11 +702,15 @@ class DataManagementWidget(QWidget):
             if 'trapping_efficiency' in self.manual_inputs_widgets:
                 self.manual_inputs_widgets['trapping_efficiency'].set_value(round(trapping, 2))
 
-            # 7. Miscibility Window and Alpha Base (Defaults for typical CO2 EOR)
+            # 7. Miscibility Window and Alpha Base (Physics-based defaults)
             if 'miscibility_window' in self.manual_inputs_widgets:
-                self.manual_inputs_widgets['miscibility_window'].set_value(0.011) # Narrow transition naturally
+                misc_win = 0.05 if api > 40.0 else 0.10
+                self.manual_inputs_widgets['miscibility_window'].set_value(misc_win)
+            
             if 'alpha_base' in self.manual_inputs_widgets:
-                self.manual_inputs_widgets['alpha_base'].set_value(1.0) # Midpoint usually 1.0 at MMP
+                # Alpha base defines exact P/MMP ratio where miscibility transition is 50%
+                alpha_base_est = 1.0 - 0.1 * (c7_est - 0.3)
+                self.manual_inputs_widgets['alpha_base'].set_value(round(alpha_base_est, 3))
 
             QMessageBox.information(self, self.tr("Estimation Complete"), self.tr("Advanced tuning parameters have been estimated using industry heuristic correlations (Todd-Longstaff, Dykstra-Parsons) from Reservoir & PVT inputs."))
         except Exception as e:
