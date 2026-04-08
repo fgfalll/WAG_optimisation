@@ -383,16 +383,23 @@ class DataIntegrationEngine:
         return ReservoirData(
             grid=grid,
             pvt_tables=pvt_tables,
-            ooip_stb=res_params["ooip_stb"],
-            initial_pressure=res_params["initial_pressure"],
-            temperature=res_params["temperature"],
-            rock_compressibility=res_params["rock_compressibility"],
+            ooip_stb=res_params.get("ooip_stb", 1000000.0),
+            initial_pressure=res_params.get("initial_pressure", 4000.0),
+            temperature=res_params.get("temperature", 150.0),
+            rock_compressibility=res_params.get("rock_compressibility", 3e-6),
             average_porosity=np.mean(porosity),
             average_permeability=np.mean(perm_x),
-            initial_water_saturation=res_params["initial_water_saturation"],
+            initial_water_saturation=res_params.get("initial_water_saturation", 0.25),
             thickness_ft=nz * dz / 0.3048,
             area_acres=(nx * dx * ny * dy) / 4046.86,
             length_ft=(nx * dx) / 0.3048,
+            rock_type=res_params.get("rock_type", "sandstone"),
+            depositional_environment=res_params.get("depositional_environment", "fluvial"),
+            structural_complexity=res_params.get("structural_complexity", "simple"),
+            dip_angle=res_params.get("dip_angle", 0.0),
+            oil_fvf=res_params.get("oil_fvf", 1.2),
+            density_contrast=res_params.get("density_contrast", 0.3),
+            interfacial_tension=res_params.get("interfacial_tension", 5.0)
         )
 
     def _create_pvt_properties(self, data: Dict[str, Any]) -> PVTProperties:

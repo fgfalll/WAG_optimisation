@@ -72,8 +72,10 @@ class ManualWellDialog(QDialog):
     """A dialog to manually input a well with detailed perforations and an optional path editor."""
 
     KEY_PARAM_DEFS = {
-        "API": ("Oil Gravity (°API)", "lineedit", float, {"default_value": 27.0}),
-        "Temperature": ("Reservoir Temperature (°F)", "lineedit", float, {"default_value": 175.0}),
+        "SurfaceX": ("Surface X Coordinate (ft)", "lineedit", float, {"default_value": 0.0}),
+        "SurfaceY": ("Surface Y Coordinate (ft)", "lineedit", float, {"default_value": 0.0}),
+        "WellboreRadius": ("Wellbore Radius (ft)", "lineedit", float, {"default_value": 0.35}),
+        "SkinFactor": ("Skin Factor", "lineedit", float, {"default_value": 0.0}),
         "TopDepth": ("Well Top Depth / MD (ft)", "lineedit", float, {"default_value": 1.0}),
         "BottomDepth": (
             "Well Bottom Depth / MD (ft)",
@@ -280,8 +282,10 @@ class ManualWellDialog(QDialog):
 
     def _update_ui_state(self):
         has_perforations = self.perf_table.rowCount() > 0
-        self.key_param_widgets["API"].setEnabled(not has_perforations)
-        self.key_param_widgets["Temperature"].setEnabled(not has_perforations)
+        if "SurfaceX" in self.key_param_widgets:
+            self.key_param_widgets["SurfaceX"].setEnabled(not has_perforations)
+        if "SurfaceY" in self.key_param_widgets:
+            self.key_param_widgets["SurfaceY"].setEnabled(not has_perforations)
         self.no_perf_warning_label.setVisible(not has_perforations)
 
     def get_well_data(self) -> Optional[WellData]:
@@ -296,6 +300,8 @@ class ManualWellDialog(QDialog):
             if not path_to_use:
                 top = self.key_param_values.get("TopDepth")
                 bottom = self.key_param_values.get("BottomDepth")
+                sx = self.key_param_values.get("SurfaceX", 0.0)
+                sy = self.key_param_values.get("SurfaceY", 0.0)
                 if top is None or bottom is None or bottom <= top:
                     raise ValueError(
                         self.tr(
@@ -310,8 +316,8 @@ class ManualWellDialog(QDialog):
                     depths_np = np.append(depths_np, bottom)
                 if depths_np.size == 0:
                     depths_np = np.array([top, bottom])
-                # Create 3D path: [x, y, z] where y=0 and z=depth
-                well_path_np = np.column_stack((np.zeros_like(depths_np), np.zeros_like(depths_np), depths_np))
+                # Create 3D path: [x, y, z] using SurfaceX and SurfaceY
+                well_path_np = np.column_stack((np.full_like(depths_np, sx), np.full_like(depths_np, sy), depths_np))
             else:
                 # Convert 2D path points [x, depth] to 3D [x, 0, depth]
                 well_path_np = np.array([[p.x(), 0.0, p.y()] for p in path_to_use])
@@ -347,13 +353,18 @@ class ManualWellDialog(QDialog):
             if not perfs:
                 final_metadata["perforations_treatment"] = "entire_wellbore"
 
+            well_props = {
+                "WellboreRadius": [self.key_param_values.get("WellboreRadius", 0.35)],
+                "SkinFactor": [self.key_param_values.get("SkinFactor", 0.0)],
+            }
+
             return WellData(
                 name=well_name,
                 depths=depths_np,
                 well_path=well_path_np,
                 perforation_properties=perfs,
                 metadata=final_metadata,
-                properties={},
+                properties=well_props,
                 units={},
             )
         except Exception as e:

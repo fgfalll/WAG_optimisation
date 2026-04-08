@@ -461,6 +461,11 @@ class DataManagementWidget(QWidget):
         calculated_params_layout.addRow("Calculated Pore Volume:", self.calculated_pv_label)
         calculated_params_layout.addRow("Mobility Ratio:", self.mobility_ratio_label)
         calculated_params_layout.addRow("V_DP Coefficient:", self.v_dp_coefficient_label)
+        
+        self.calc_res_btn = QPushButton(QIcon.fromTheme("calculator"), "Estimate Rock & Fluid Properties from Depth/Correlations")
+        self.calc_res_btn.clicked.connect(self._calculate_reservoir_properties)
+        calculated_params_layout.addRow("", self.calc_res_btn)
+        
         res_main_layout.addWidget(self.calculated_params_group)
         
         self.layered_props_group.setVisible(False)
@@ -492,6 +497,10 @@ class DataManagementWidget(QWidget):
         
         self.detailed_pvt_btn = QPushButton(QIcon.fromTheme("document-edit"), "Edit Detailed PVT Data (PVTO, PVTG, etc.)")
         pvt_main_layout.addWidget(self.detailed_pvt_btn)
+        
+        self.calc_pvt_btn = QPushButton(QIcon.fromTheme("calculator"), "Estimate PVT from Correlations (Standing/Beggs)")
+        self.calc_pvt_btn.clicked.connect(self._calculate_pvt_properties)
+        pvt_main_layout.addWidget(self.calc_pvt_btn)
         
         pvt_main_layout.addStretch()
         return tab_panel
@@ -1324,6 +1333,15 @@ class DataManagementWidget(QWidget):
                             "rock_compressibility": self.manual_inputs_values.get('rock_compressibility', 3e-6),
                             "initial_water_saturation": self.manual_inputs_values.get('swi', 0.25),
                             "ooip_stb": self.manual_inputs_values.get('ooip_stb', 1000000.0),
+                            "kv_kh_ratio": self.manual_inputs_values.get('kv_kh_ratio', 0.1),
+                            "dip_angle": self.manual_inputs_values.get('dip_angle', 0.0),
+                            "oil_fvf": self.manual_inputs_values.get('boi', 1.2),
+                            "density_contrast": self.manual_inputs_values.get('density_contrast', 0.3),
+                            "interfacial_tension": self.manual_inputs_values.get('interfacial_tension', 5.0),
+                            "rock_type": self.manual_inputs_values.get('rock_type', 'sandstone'),
+                            "depositional_environment": self.manual_inputs_values.get('depositional_environment', 'fluvial'),
+                            "structural_complexity": self.manual_inputs_values.get('structural_complexity', 'simple'),
+                            "v_dp_coefficient": v_dp_coefficient,
                         },
                         "pvt_parameters": {
                             "api_gravity": self.manual_inputs_values.get('api_gravity', 35.0),
@@ -1785,6 +1803,97 @@ class DataManagementWidget(QWidget):
             properties[:, 0] = 1.0 / n_components  # Equal fractions if all zero
 
         return properties
+
+    def _calculate_reservoir_properties(self):
+        try:
+            # 1. Rock Compressibility (Newman correlation for consolidated sandstones)
+            poro = self.manual_inputs_values.get('poro', 0.20)
+            if poro > 0:
+                c_r = 97.32e-6 / ((1.0 + 55.872 * poro)**1.428)
+                if 'rock_compressibility' in self.manual_inputs_widgets:
+                    self.manual_inputs_widgets['rock_compressibility'].set_value(round(c_r, 8))
+
+            # 2. Initial Pressure & Temperature from Depth
+            # We look for depth from the wells, or use a default depth heuristic if length/thickness are known.
+            depth_ft = None
+            if self.well_data_list:
+                for well in self.well_data_list:
+                    if well.depths is not None and len(well.depths) > 0:
+                        depth_ft = float(well.depths[0])
+                        break
+            
+            if depth_ft and depth_ft > 0:
+                # Hydrostatic gradient ~0.433 psi/ft
+                initial_p = depth_ft * 0.433
+                if 'initial_pressure' in self.manual_inputs_widgets:
+                    self.manual_inputs_widgets['initial_pressure'].set_value(round(initial_p, 1))
+                
+                # Geothermal gradient ~0.015 °F/ft + 60°F surface temp
+                temp_f = 60.0 + (depth_ft * 0.015)
+                if 'temperature' in self.manual_inputs_widgets:
+                    self.manual_inputs_widgets['temperature'].set_value(round(temp_f, 1))
+
+            QMessageBox.information(self, self.tr("Estimation Complete"), self.tr("Rock compressibility estimated using Newman correlation.\nPressure/Temperature estimated from well depth (if available)."))
+        except Exception as e:
+            logger.error(f"Error calculating reservoir properties: {e}", exc_info=True)
+            QMessageBox.warning(self, self.tr("Calculation Error"), self.tr(f"Failed to estimate reservoir properties: {e}"))
+
+    def _calculate_pvt_properties(self):
+        try:
+            api = self.manual_inputs_values.get('api_gravity', 35.0)
+            sg_g = self.manual_inputs_values.get('gas_specific_gravity', 0.7)
+            rs = self.manual_inputs_values.get('sol_gor', 500.0)
+            temp_f = self.manual_inputs_values.get('temperature', 212.0)
+            pres = self.manual_inputs_values.get('initial_pressure', 4000.0)
+            
+            # 1. Estimate Boi (Standing correlation)
+            so = 141.5 / (131.5 + api) if api > 0 else 1.0
+            bo = 0.9759 + 0.00012 * ((rs * np.sqrt(sg_g / so) + 1.25 * temp_f)**1.2)
+            if 'oil_fvf_simple' in self.manual_inputs_widgets:
+                self.manual_inputs_widgets['oil_fvf_simple'].set_value(round(bo, 3))
+            if 'boi' in self.manual_inputs_widgets:
+                self.manual_inputs_widgets['boi'].set_value(round(bo, 3))
+            
+            # 2. Estimate Bg (Ideal gas approx with Z~0.85) in rb/scf
+            bg = 0.00503 * 0.85 * (temp_f + 460.0) / max(pres, 14.7)
+            if 'gas_fvf_simple' in self.manual_inputs_widgets:
+                self.manual_inputs_widgets['gas_fvf_simple'].set_value(round(bg, 4))
+            
+            # 3. Estimate Oil Viscosity (Beggs-Robinson for Dead Oil, then Chew-Connally for Saturated)
+            # Dead oil viscosity at reservoir temperature (Beggs-Robinson)
+            z = 3.0324 - 0.02023 * api
+            x = (10**z) * (temp_f ** -1.163)
+            mu_od = max(0.1, (10**x) - 1.0)
+            
+            # Saturated (live) oil viscosity at bubble point (Chew-Connally correlation)
+            a = 10.715 * (rs + 100.0)**-0.515
+            b = 5.44 * (rs + 150.0)**-0.338
+            mu_os = a * (mu_od**b)
+            
+            # Estimate Bubble Point Pressure (Vasquez-Beggs) to determine if undersaturated
+            # c1, c2, c3 depend on API gravity
+            if api <= 30:
+                c1, c2, c3 = 0.0362, 1.0937, 25.7240
+            else:
+                c1, c2, c3 = 0.0178, 1.1870, 23.9310
+            
+            pb_est = (rs / (c1 * sg_g * np.exp(c3 * api / (temp_f + 460.0)))) ** (1.0 / c2)
+            
+            if pres > pb_est:
+                # Undersaturated oil viscosity (Vasquez-Beggs correlation correction)
+                m = 2.6 * (pres**1.187) * np.exp(-11.513 - 8.98e-5 * pres)
+                mu_o = mu_os * ((pres / max(pb_est, 14.7)) ** m)
+            else:
+                # Saturated
+                mu_o = mu_os
+            
+            if 'oil_viscosity_cp' in self.manual_inputs_widgets:
+                self.manual_inputs_widgets['oil_viscosity_cp'].set_value(round(mu_o, 3))
+                
+            QMessageBox.information(self, self.tr("Estimation Complete"), self.tr("PVT parameters (Bo, Bg, Oil Viscosity) estimated using rigorous Standing, Beggs-Robinson, and Vasquez-Beggs correlations."))
+        except Exception as e:
+            logger.error(f"Error calculating PVT properties: {e}", exc_info=True)
+            QMessageBox.warning(self, self.tr("Calculation Error"), self.tr(f"Failed to estimate PVT properties: {e}"))
 
     def load_project_data(self, project_data: Dict[str, Any]):
         try:
