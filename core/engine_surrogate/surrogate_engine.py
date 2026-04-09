@@ -283,7 +283,13 @@ class SurrogateEngine:
                         # Set profiles based strictly on fluid mobility ratio and withdrawal speed
                         q_gas_rb = q_total_draw_rb * f_g
                         q_oil_rb = q_total_draw_rb * (1.0 - f_g)
-                        
+
+                        # Strict physical bound: cannot produce more oil than exists
+                        remaining_oil_rb = max(0.0, ooip * bo - cum_oil_rb)
+                        if q_oil_rb * step_dt > remaining_oil_rb:
+                            q_oil_rb = remaining_oil_rb / max(step_dt, 1e-6)
+                            q_gas_rb = q_total_draw_rb - q_oil_rb
+
                         profile_result["oil_profile"][i] = q_oil_rb / bo
                         profile_result["gas_profile"][i] = q_gas_rb / (1000.0 * bg_dynamic)
                         # Water ignored for simplicity in CO2 phase tracking

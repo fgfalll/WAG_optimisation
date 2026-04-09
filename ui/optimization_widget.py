@@ -59,7 +59,7 @@ from core.data_models import (
     ParticleSwarmParams,
     DifferentialEvolutionParams,
 )
-from core.Phys_engine_full.material_balance import create_material_balance_from_optimization
+from analysis.material_balance import create_material_balance_from_optimization
 
 # --- Imports for integrated MMP Analysis ---
 try:

@@ -378,7 +378,7 @@ def create_material_balance_from_optimization(optimization_results: Dict[str, an
     # Extract CO2 profiles from optimization results
     profiles = optimization_results.get('optimized_profiles', {})
     
-    injected_key = f'{resolution}_co2_injected_mscf'
+    injected_key = f'{resolution}_co2_purchased_mscf'
     produced_key = f'{resolution}_co2_produced_mscf'
     recycled_key = f'{resolution}_co2_recycled_mscf'
 

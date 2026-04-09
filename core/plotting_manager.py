@@ -3,7 +3,6 @@ from plotly.subplots import make_subplots
 import numpy as np
 from typing import Optional, Dict, Any
 from copy import deepcopy
-from analysis.profiler_refactored import ProductionProfiler
 
 class PlottingManager:
     def __init__(self, engine):
@@ -90,25 +89,17 @@ class PlottingManager:
     def plot_production_profiles(self, results_to_use: Optional[Dict[str, Any]] = None) -> go.Figure:
         """Generates a plot of production profiles from optimization results."""
         source = results_to_use or self.engine._results
-        if not (source and 'optimized_params_final_clipped' in source):
+        if not source:
             return go.Figure().update_layout(title_text="No results to plot.")
-        
-        final_params_dict = source['optimized_params_final_clipped']
-        rf = source.get('final_metrics', {}).get('recovery_factor', 0.0)
-        
-        temp_eor_params = deepcopy(self.engine.eor_params)
-        for key, value in final_params_dict.items():
-            if hasattr(temp_eor_params, key):
-                setattr(temp_eor_params, key, value)
 
-        profiler = ProductionProfiler(self.engine.reservoir, self.engine.pvt, temp_eor_params, self.engine.operational_params, self.engine.profile_params)
-        profiles = profiler.generate_all_profiles(ooip_stb=self.engine.reservoir.ooip_stb)
-        
+        profiles = source.get('optimized_profiles', {})
+        if not profiles:
+            return go.Figure().update_layout(title_text="No profile data found in results.")
+
         resolution = self.engine.operational_params.time_resolution
         profile_key = f'{resolution}_oil_stb'
         if profile_key not in profiles:
             return go.Figure().update_layout(title_text=f"No data for '{resolution}' resolution.")
-
         time_steps = np.arange(1, len(profiles[profile_key]) + 1)
         
         fig = make_subplots(specs=[[{"secondary_y": True}]])
