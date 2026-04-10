@@ -16,21 +16,24 @@ logger = logging.getLogger(__name__)
 
 from core.data_models import ReservoirData, EORParameters, OperationalParameters
 
+
 class EngineType(Enum):
-    """Available simulation engine types"""
-    SIMPLE = "simple"
-    DETAILED = "detailed"
+    """Available simulation engine types - SURROGATE ONLY for PhD consistency"""
+
     SURROGATE = "surrogate"
-    COMPOSITIONAL = "compositional"
+
 
 class SimulationEngineInterface(ABC):
     """Abstract interface for all simulation engines"""
 
     @abstractmethod
-    def evaluate_scenario(self, reservoir_data: ReservoirData,
-                          eor_params: EORParameters,
-                          operational_params: OperationalParameters,
-                          economic_params: Optional[Dict] = None) -> Dict[str, Any]:
+    def evaluate_scenario(
+        self,
+        reservoir_data: ReservoirData,
+        eor_params: EORParameters,
+        operational_params: OperationalParameters,
+        economic_params: Optional[Dict] = None,
+    ) -> Dict[str, Any]:
         """Evaluate a scenario and return comprehensive results"""
         pass
 
@@ -40,8 +43,9 @@ class SimulationEngineInterface(ABC):
         pass
 
     @abstractmethod
-    def validate_parameters(self, reservoir_data: ReservoirData,
-                           eor_params: EORParameters) -> Dict[str, bool]:
+    def validate_parameters(
+        self, reservoir_data: ReservoirData, eor_params: EORParameters
+    ) -> Dict[str, bool]:
         """Validate input parameters"""
         pass
 
@@ -52,38 +56,42 @@ class SurrogateEngineWrapper(SimulationEngineInterface):
     def __init__(self, model_type="analytical", recovery_model_type="hybrid"):
         try:
             from .engine_surrogate.surrogate_engine import SurrogateEngineWrapper as InnerWrapper
+
             self.engine = InnerWrapper(
-                model_type=model_type,
-                recovery_model_type=recovery_model_type
+                model_type=model_type, recovery_model_type=recovery_model_type
             )
         except ImportError as e:
             raise ImportError(f"Surrogate engine is not available: {e}")
 
-    def evaluate_scenario(self, reservoir_data: ReservoirData,
-                          eor_params: EORParameters,
-                          operational_params: OperationalParameters,
-                          economic_params: Optional[Dict] = None,
-                          **kwargs) -> Dict[str, Any]:
+    def evaluate_scenario(
+        self,
+        reservoir_data: ReservoirData,
+        eor_params: EORParameters,
+        operational_params: OperationalParameters,
+        economic_params: Optional[Dict] = None,
+        **kwargs,
+    ) -> Dict[str, Any]:
         """Evaluate scenario using surrogate engine"""
         results = self.engine.evaluate_scenario(
             reservoir_data=reservoir_data,
             eor_params=eor_params,
             operational_params=operational_params,
             economic_params=economic_params,
-            **kwargs
+            **kwargs,
         )
-        results['engine_type'] = 'surrogate'
+        results["engine_type"] = "surrogate"
         return results
 
     def get_engine_info(self) -> Dict[str, Any]:
         return {
             "engine_type": "surrogate",
             "description": "Fast analytical surrogate based on PhD verified physics",
-            "available": True
+            "available": True,
         }
 
-    def validate_parameters(self, reservoir_data: ReservoirData,
-                           eor_params: EORParameters) -> Dict[str, bool]:
+    def validate_parameters(
+        self, reservoir_data: ReservoirData, eor_params: EORParameters
+    ) -> Dict[str, bool]:
         return {"valid": True}
 
 
@@ -93,39 +101,36 @@ class EngineFactory:
     @staticmethod
     def create_engine(engine_type: Union[str, EngineType], **kwargs) -> SimulationEngineInterface:
         """
-        Create a simulation engine instance. 
+        Create a simulation engine instance.
         Always returns the Surrogate engine for PhD consistency.
         """
         logger.info("EngineFactory: Routing all simulation requests to Surrogate Engine.")
-        
+
         # Always return surrogate for PhD consistency, ignoring the requested type
         return SurrogateEngineWrapper(
-            model_type=kwargs.get('model_type', 'analytical'),
-            recovery_model_type=kwargs.get('recovery_model_type', 'hybrid')
+            model_type=kwargs.get("model_type", "analytical"),
+            recovery_model_type=kwargs.get("recovery_model_type", "hybrid"),
         )
 
     @staticmethod
     def get_available_engines() -> Dict[str, bool]:
         """Get a dictionary of available engine types and their status"""
-        return {
-            "simple": False,
-            "detailed": False,
-            "surrogate": True,
-            "compositional": False
-        }
+        return {"surrogate": True}
 
     @staticmethod
-    def switch_engine(current_engine: SimulationEngineInterface,
-                      target_type: Union[str, EngineType]) -> SimulationEngineInterface:
-        """Switch between engine types while maintaining state if possible"""
-        return EngineFactory.create_engine(target_type)
+    def switch_engine(
+        current_engine: SimulationEngineInterface, target_type: Union[str, EngineType]
+    ) -> SimulationEngineInterface:
+        """Switch engine type - only surrogate is available"""
+        logger.warning("Engine switching is deprecated. Only surrogate engine is available.")
+        return EngineFactory.create_engine("surrogate")
 
     @staticmethod
     def test_engine_availability(engine_type: Union[str, EngineType]) -> bool:
         """Test if a specific engine type is available for use"""
-        return True
+        return engine_type == EngineType.SURROGATE
 
 
 def get_default_engine() -> str:
     """Always returns surrogate for PhD consistency."""
-    return 'surrogate'
+    return "surrogate"

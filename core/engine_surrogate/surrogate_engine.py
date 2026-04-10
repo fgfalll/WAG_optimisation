@@ -150,6 +150,12 @@ class SurrogateEngine:
             profile_params.pop("injection_rate", None)
             profile_params.pop("ooip_stb", None)  # Already passed as ooip
 
+            # Map optimizer profile parameters to FastProfileGenerator expected names
+            if "plateau_duration_fraction" in profile_params:
+                profile_params["plateau_fraction"] = profile_params.pop("plateau_duration_fraction")
+            if "hyperbolic_b_factor" in profile_params:
+                profile_params["b_factor"] = profile_params.pop("hyperbolic_b_factor")
+
             profile_result = self.profile_generator.generate_profile(
                 ooip=reservoir_data.ooip_stb,
                 recovery_factor=recovery_factor,

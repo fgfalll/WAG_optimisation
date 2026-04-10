@@ -51,6 +51,17 @@ class SafeFileHandler(logging.FileHandler):
             pass
 
 
+class SafeQueueListener(logging.handlers.QueueListener):
+    """
+    QueueListener that gracefully handles broken pipes on Windows during shutdown.
+    """
+    def dequeue(self, block: bool) -> logging.LogRecord:
+        try:
+            return super().dequeue(block)
+        except (EOFError, BrokenPipeError, OSError):
+            # Return the sentinel to gracefully stop the listener
+            return None
+
 def setup_queue_logging(
     log_file_path: Path,
     level: int = logging.DEBUG,
@@ -85,7 +96,7 @@ def setup_queue_logging(
         formatter = logging.Formatter(format_str)
         file_handler.setFormatter(formatter)
 
-        _listener = logging.handlers.QueueListener(
+        _listener = SafeQueueListener(
             _queue,
             file_handler,
             respect_handler_level=True

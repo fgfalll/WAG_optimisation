@@ -139,12 +139,12 @@ class DataIntegrationEngine:
             # Apply geostatistical modeling if validation passes
             if validation_results["is_valid"]:
                 processed_data = self._apply_geostatistical_modeling(preprocessed_data)
-                
+
                 # Create GeomechanicsParameters object if enabled
                 geomech_obj = self._create_geomechanics_parameters(preprocessed_data)
                 if geomech_obj:
                     processed_data["geomechanics_parameters_obj"] = geomech_obj
-                
+
                 validation_results["processed_data"] = processed_data
 
             return validation_results
@@ -270,22 +270,17 @@ class DataIntegrationEngine:
         return EmpiricalFittingParameters(
             # Fluid composition
             c7_plus_fraction=fitting_data.get("c7_plus_fraction", 0.35),
-
             # Miscibility transition parameters
             alpha_base=fitting_data.get("alpha_base", 1.0),
             miscibility_window=fitting_data.get("miscibility_window", 0.011),
-
             # Production dynamics
             breakthrough_time_years=fitting_data.get("breakthrough_time_years", 1.5),
             trapping_efficiency=fitting_data.get("trapping_efficiency", 0.4),
-
             # Initial conditions
             initial_gor_scf_per_stb=fitting_data.get("initial_gor_scf_per_stb", 500.0),
-
             # Mobility and mixing
             transverse_mixing_calibration=fitting_data.get("transverse_mixing_calibration", 0.5),
             omega_tl=fitting_data.get("omega_tl", 0.6),
-
             # Relative permeability endpoints (Corey parameters)
             k_ro_0=fitting_data.get("k_ro_0", 0.8),
             k_rg_0=fitting_data.get("k_rg_0", 0.3),
@@ -399,7 +394,7 @@ class DataIntegrationEngine:
             dip_angle=res_params.get("dip_angle", 0.0),
             oil_fvf=res_params.get("oil_fvf", 1.2),
             density_contrast=res_params.get("density_contrast", 0.3),
-            interfacial_tension=res_params.get("interfacial_tension", 5.0)
+            interfacial_tension=res_params.get("interfacial_tension", 5.0),
         )
 
     def _create_pvt_properties(self, data: Dict[str, Any]) -> PVTProperties:
@@ -564,47 +559,29 @@ class DataIntegrationEngine:
         return processed_wells
 
     def _validate_engine_compatibility(self, engine_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate data compatibility with both engines"""
+        """Validate data compatibility with surrogate engine only"""
         compatibility = {
-            "simple_engine": {"compatible": True, "issues": []},
-            "detailed_engine": {"compatible": True, "issues": []},
+            "surrogate_engine": {"compatible": True, "issues": []},
         }
 
         try:
-            # Test simple engine compatibility
-            simple_engine = self.engine_factory.create_engine("simple")
-            simple_validation = simple_engine.validate_parameters(
+            surrogate_engine = self.engine_factory.create_engine("surrogate")
+            surrogate_validation = surrogate_engine.validate_parameters(
                 engine_data["reservoir_data"], engine_data["eor_parameters"]
             )
 
-            if not all(simple_validation.values()):
-                compatibility["simple_engine"]["compatible"] = False
-                compatibility["simple_engine"]["issues"] = [
+            if not all(surrogate_validation.values()):
+                compatibility["surrogate_engine"]["compatible"] = False
+                compatibility["surrogate_engine"]["issues"] = [
                     f"Parameter {param}: {status}"
-                    for param, status in simple_validation.items()
-                    if not status
-                ]
-
-            # Test detailed engine compatibility
-            detailed_engine = self.engine_factory.create_engine("detailed")
-            detailed_validation = detailed_engine.validate_parameters(
-                engine_data["reservoir_data"], engine_data["eor_parameters"]
-            )
-
-            if not all(detailed_validation.values()):
-                compatibility["detailed_engine"]["compatible"] = False
-                compatibility["detailed_engine"]["issues"] = [
-                    f"Parameter {param}: {status}"
-                    for param, status in detailed_validation.items()
+                    for param, status in surrogate_validation.items()
                     if not status
                 ]
 
         except Exception as e:
             logger.error(f"Error testing engine compatibility: {e}")
-            compatibility["simple_engine"]["compatible"] = False
-            compatibility["detailed_engine"]["compatible"] = False
-            compatibility["simple_engine"]["issues"].append(f"Engine test failed: {e}")
-            compatibility["detailed_engine"]["issues"].append(f"Engine test failed: {e}")
+            compatibility["surrogate_engine"]["compatible"] = False
+            compatibility["surrogate_engine"]["issues"].append(f"Engine test failed: {e}")
 
         return compatibility
 
@@ -700,9 +677,7 @@ class DataIntegrationEngine:
 
         return len(errors) == 0, errors
 
-    def _validate_geomechanics_parameters(
-        self, params: Dict[str, Any]
-    ) -> Tuple[bool, List[str]]:
+    def _validate_geomechanics_parameters(self, params: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """Validate geomechanics parameters"""
         errors = []
 

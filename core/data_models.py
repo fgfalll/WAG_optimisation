@@ -554,9 +554,15 @@ class HuffNPuffParams:
     max_cycles: int = 10
 
     # Pressure dynamics parameters for huff-n-puff cycles
-    max_pressure_increase_psi_day: float = 100.0  # Maximum pressure increase during injection (psi/day)
-    min_pressure_decline_psi_day: float = 5.0   # Minimum pressure decline during production (psi/day)
-    max_pressure_decline_psi_day: float = 80.0   # Maximum pressure decline during production (psi/day)
+    max_pressure_increase_psi_day: float = (
+        100.0  # Maximum pressure increase during injection (psi/day)
+    )
+    min_pressure_decline_psi_day: float = (
+        5.0  # Minimum pressure decline during production (psi/day)
+    )
+    max_pressure_decline_psi_day: float = (
+        80.0  # Maximum pressure decline during production (psi/day)
+    )
     soaking_pressure_decline_psi_day: float = 2.0  # Pressure decline during soaking (psi/day)
 
     def __post_init__(self):
@@ -652,23 +658,23 @@ class EORParameters:
     WAG_ratio: float = 1.0  # Added missing attribute
     cycle_length_days: float = 90.0
     water_fraction: float = 0.5
-    
+
     # Flattened UI Injection Scheme parameters
     huff_n_puff_cycle_length_days: float = 90.0
     huff_n_puff_injection_period_days: float = 30.0
     huff_n_puff_soaking_period_days: float = 15.0
     huff_n_puff_production_period_days: float = 45.0
     huff_n_puff_max_cycles: int = 10
-    
+
     swag_water_gas_ratio: float = 1.0
     swag_simultaneous_injection: bool = True
     swag_mixing_efficiency: float = 1.0
-    
+
     tapered_initial_rate_multiplier: float = 2.0
     tapered_final_rate_multiplier: float = 0.5
     tapered_duration_years: float = 5.0
     tapered_function: str = "linear"
-    
+
     pulsed_pulse_duration_days: float = 15.0
     pulsed_pause_duration_days: float = 15.0
     pulsed_intensity_multiplier: float = 2.0
@@ -693,8 +699,8 @@ class EORParameters:
 
     # Well control parameters (added for BHP-based control - Phase 3)
     injector_target_bhp_psi: float = 4000.0  # Target bottom-hole pressure for injectors
-    producer_target_bhp_psi: float = 1500.0   # Target bottom-hole pressure for producers
-    use_bhp_control: bool = True              # Enable BHP-based well control
+    producer_target_bhp_psi: float = 1500.0  # Target bottom-hole pressure for producers
+    use_bhp_control: bool = True  # Enable BHP-based well control
     pressure_control_min_scaling_factor: float = 0.01  # Minimum injection rate scaling factor
 
     # Removed: timestep_days - Use CCUSParameters.timestep_days instead to avoid duplication
@@ -894,8 +900,7 @@ class EORParameters:
         valid_limiters = ["van_leer", "superbee"]
         if self.flux_limiter_type not in valid_limiters:
             raise ValueError(
-                f"Flux limiter type must be one of: {valid_limiters}. "
-                f"Got: {self.flux_limiter_type}"
+                f"Flux limiter type must be one of: {valid_limiters}. Got: {self.flux_limiter_type}"
             )
 
         if self.injection_scheme == "huff_n_puff" and self.huff_n_puff is None:
@@ -1116,7 +1121,12 @@ class GeneticAlgorithmParams:
             raise ValueError("Adaptive Mutation High must be between 0.0 and 1.0.")
         if not (0.0 <= self.restart_diversity_fraction <= 1.0):
             raise ValueError("Restart Diversity Fraction must be between 0.0 and 1.0.")
-        if self.constraint_handling_method not in ["static", "adaptive", "death", "adaptive_penalty"]:
+        if self.constraint_handling_method not in [
+            "static",
+            "adaptive",
+            "death",
+            "adaptive_penalty",
+        ]:
             raise ValueError("Constraint Handling Method must be 'static', 'adaptive', or 'death'.")
         if self.penalty_factor < 0:
             raise ValueError("Penalty Factor must be non-negative.")
@@ -1367,6 +1377,7 @@ class CO2StorageParameters:
     reservoir_seal_integrity_factor: float = 0.9
     monitoring_cost_usd_per_tonne: float = 5.0
     max_injection_pressure_frac: float = 0.8
+    min_injection_pressure_psi: float = 1000.0
     plume_containment_safety_factor: float = 1.2
 
     def __post_init__(self):
@@ -1421,9 +1432,11 @@ class AdvancedEngineParams:
     breakthrough_fallback_penalty: float = 0.0
     fracture_pressure_multiplier: float = 1.5
     pressure_control_min_scaling_factor: float = 0.01
-    use_simple_physics: bool = True  # DEPRECATED: Kept for backward compatibility
-    engine_type: str = "surrogate"  # New: Engine type - "simple", "detailed", or "surrogate"
-    recovery_model_type: str = "hybrid"  # New: Recovery model for surrogate engine ("hybrid", "phd_hybrid", etc.)
+    use_simple_physics: bool = True  # DEPRECATED: Always ignored, surrogate engine only
+    engine_type: str = "surrogate"  # Engine type - only "surrogate" is valid
+    recovery_model_type: str = (
+        "hybrid"  # New: Recovery model for surrogate engine ("hybrid", "phd_hybrid", etc.)
+    )
 
     @classmethod
     def from_config_dict(cls, config_dict: Dict[str, Any], **kwargs):
@@ -1568,9 +1581,9 @@ class PhysicalConstants:
     # Numerical Constants (tolerances and small value thresholds)
     # =========================================================================
     NUMERICAL_EPSILON_DEFAULT: float = 1e-9
-    NUMERICAL_EPSILON_MACRO: float = 1e-6     # 0.0001% tolerance
-    NUMERICAL_EPSILON_MICRO: float = 1e-8     # 0.000001% tolerance
-    NUMERICAL_EPSILON_ULTRA: float = 1e-12     # Machine precision
+    NUMERICAL_EPSILON_MACRO: float = 1e-6  # 0.0001% tolerance
+    NUMERICAL_EPSILON_MICRO: float = 1e-8  # 0.000001% tolerance
+    NUMERICAL_EPSILON_ULTRA: float = 1e-12  # Machine precision
 
     # =========================================================================
     # Physics Constants
@@ -1932,11 +1945,7 @@ class ReservoirState:
 
     @classmethod
     def create_initial_state(
-        cls,
-        grid,
-        initial_pressure: float,
-        initial_water_sat: float,
-        temperature: float = 353.15
+        cls, grid, initial_pressure: float, initial_water_sat: float, temperature: float = 353.15
     ) -> "ReservoirState":
         """
         Create initial reservoir state.
@@ -1974,7 +1983,7 @@ class ReservoirState:
             oil_saturation=oil_saturation,
             gas_saturation=gas_saturation,
             temperature=temperature,
-            time=0.0
+            time=0.0,
         )
 
     @classmethod
@@ -2031,6 +2040,7 @@ class EmpiricalFittingParameters:
     - Relative permeability and Corey exponents
     - Todd-Longstaff mixing
     """
+
     # Fluid composition
     c7_plus_fraction: float = 0.57  # C7+ fraction (0.0-1.0)
 
@@ -2065,21 +2075,31 @@ class EmpiricalFittingParameters:
         if self.alpha_base <= 0:
             raise ValueError(f"alpha_base must be positive, got {self.alpha_base}")
         if not (0.001 <= self.miscibility_window <= 0.1):
-            raise ValueError(f"miscibility_window must be between 0.001 and 0.1, got {self.miscibility_window}")
+            raise ValueError(
+                f"miscibility_window must be between 0.001 and 0.1, got {self.miscibility_window}"
+            )
 
         # Production dynamics
         if not (0.1 <= self.breakthrough_time_years <= 10.0):
-            raise ValueError(f"breakthrough_time_years must be between 0.1 and 10, got {self.breakthrough_time_years}")
+            raise ValueError(
+                f"breakthrough_time_years must be between 0.1 and 10, got {self.breakthrough_time_years}"
+            )
         if not (0.0 <= self.trapping_efficiency <= 1.0):
-            raise ValueError(f"trapping_efficiency must be between 0 and 1, got {self.trapping_efficiency}")
+            raise ValueError(
+                f"trapping_efficiency must be between 0 and 1, got {self.trapping_efficiency}"
+            )
 
         # Initial conditions
         if self.initial_gor_scf_per_stb < 0:
-            raise ValueError(f"initial_gor_scf_per_stb must be non-negative, got {self.initial_gor_scf_per_stb}")
+            raise ValueError(
+                f"initial_gor_scf_per_stb must be non-negative, got {self.initial_gor_scf_per_stb}"
+            )
 
         # Mobility and mixing
         if not (0.0 <= self.transverse_mixing_calibration <= 1.0):
-            raise ValueError(f"transverse_mixing_calibration must be between 0 and 1, got {self.transverse_mixing_calibration}")
+            raise ValueError(
+                f"transverse_mixing_calibration must be between 0 and 1, got {self.transverse_mixing_calibration}"
+            )
         if not (0.0 <= self.omega_tl <= 1.0):
             raise ValueError(f"omega_tl must be between 0 and 1, got {self.omega_tl}")
 
@@ -2096,7 +2116,9 @@ class EmpiricalFittingParameters:
             raise ValueError(f"n_g must be between 1 and 5, got {self.n_g}")
 
     @classmethod
-    def from_config_dict(cls, config_dict: Dict[str, Any], **kwargs) -> "EmpiricalFittingParameters":
+    def from_config_dict(
+        cls, config_dict: Dict[str, Any], **kwargs
+    ) -> "EmpiricalFittingParameters":
         """Create EmpiricalFittingParameters from config dictionary."""
         config = config_dict.copy()
         config.update(kwargs)

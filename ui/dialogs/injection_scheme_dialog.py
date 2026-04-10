@@ -623,74 +623,25 @@ class InjectionSchemeDialog(QDialog):
         self._update_preview()
 
     def validate_for_engine(self, engine_type: str) -> bool:
-        """Validate injection scheme parameters for specific engine type.
-
-        This method performs engine-specific validation of injection scheme parameters
-        to ensure compatibility with the selected simulation engine.
+        """Validate injection scheme parameters for surrogate engine only.
 
         Args:
-            engine_type: The engine type ("simple", "detailed", or "surrogate")
+            engine_type: The engine type (only "surrogate" is valid)
 
         Returns:
             True if parameters are valid for the engine, False otherwise
         """
         try:
-            # Get current parameters
+            if engine_type != "surrogate":
+                logger.warning(f"Only surrogate engine is supported, got: {engine_type}")
+                return False
+
             current_params = self._get_current_parameters()
 
-            if engine_type == "simple":
-                # Simple engine only needs basic params
-                required_params = ["injection_rate", "target_pressure_psi", "max_pressure_psi"]
-                for param in required_params:
-                    value = self.original_parameters.get(param)
-                    if value is not None and value <= 0:
-                        logger.warning(f"Simple engine validation: {param} must be positive")
-                        return False
-
-                # WAG scheme validation for simple engine
-                if self.current_scheme == "wag":
-                    wag_ratio = current_params.get("WAG_ratio", 1.0)
-                    if not (0.1 <= wag_ratio <= 5.0):
-                        logger.warning(f"Simple engine: WAG ratio {wag_ratio} out of range [0.1, 5.0]")
-                        return False
-
-            elif engine_type == "detailed":
-                # Detailed engine needs all parameters with stricter validation
-                required_params = [
-                    "injection_rate", "target_pressure_psi", "max_pressure_psi",
-                    "mobility_ratio", "injection_scheme"
-                ]
-                for param in required_params:
-                    value = self.original_parameters.get(param)
-                    if value is None or value <= 0:
-                        logger.warning(f"Detailed engine validation: {param} is required and must be positive")
-                        return False
-
-                # Pressure constraints for detailed engine
-                target_p = self.original_parameters.get("target_pressure_psi", 0)
-                max_p = self.original_parameters.get("max_pressure_psi", 0)
-                if max_p < target_p:
-                    logger.warning(f"Detailed engine: Max pressure {max_p} must be >= target pressure {target_p}")
-                    return False
-
-                # Temperature validation for detailed engine
-                temp = self.original_parameters.get("temperature", 0)
-                if not (50 <= temp <= 300):
-                    logger.warning(f"Detailed engine: Temperature {temp} must be in range [50, 300]°F")
-                    return False
-
-                # Mobility ratio validation for detailed engine
-                mobility = self.original_parameters.get("mobility_ratio", 0)
-                if not (1.0 <= mobility <= 50.0):
-                    logger.warning(f"Detailed engine: Mobility ratio {mobility} must be in range [1.0, 50.0]")
-                    return False
-
-            elif engine_type == "surrogate":
-                # Surrogate has minimal requirements - just basic validation
-                injection_rate = self.original_parameters.get("injection_rate", 0)
-                if injection_rate <= 0:
-                    logger.warning("Surrogate engine: injection_rate must be positive")
-                    return False
+            injection_rate = self.original_parameters.get("injection_rate", 0)
+            if injection_rate <= 0:
+                logger.warning("Surrogate engine: injection_rate must be positive")
+                return False
 
             logger.info(f"Injection scheme validation passed for {engine_type} engine")
             return True

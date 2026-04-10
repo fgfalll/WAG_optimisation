@@ -477,8 +477,10 @@ class MainWindow(QMainWindow):
         else:
             # Fallback for screen geometry if primaryScreen() returns None
             screen_geometry = self.geometry()
-            logger.warning("QApplication.primaryScreen() returned None, using window geometry as fallback.")
-        
+            logger.warning(
+                "QApplication.primaryScreen() returned None, using window geometry as fallback."
+            )
+
         current_geometry = self.geometry()
         min_size = self.minimumSize()
 
@@ -1676,9 +1678,7 @@ class MainWindow(QMainWindow):
             for key, value in operational_params_from_widget.__dict__.items():
                 if hasattr(self.current_operational_params, key):
                     setattr(self.current_operational_params, key, value)
-            logger.info(
-                f"MainWindow - Updated operational parameters from widget"
-            )
+            logger.info(f"MainWindow - Updated operational parameters from widget")
 
         # Handle economic parameters from data management widget
         economic_params_from_widget = project_data_dict.get("economic_parameters")
@@ -1687,9 +1687,7 @@ class MainWindow(QMainWindow):
             for key, value in economic_params_from_widget.__dict__.items():
                 if hasattr(self.current_economic_params, key):
                     setattr(self.current_economic_params, key, value)
-            logger.info(
-                f"MainWindow - Updated economic parameters from widget"
-            )
+            logger.info(f"MainWindow - Updated economic parameters from widget")
 
         is_data_finalization = project_data_dict.get("is_data_finalization", False)
         self._reinitialize_engines_and_analysis_tabs(skip_calculations=is_data_finalization)
@@ -1749,18 +1747,19 @@ class MainWindow(QMainWindow):
         try:
             logger.info(f"Engine type change requested: {engine_type}")
 
-            # Validate engine type
-            valid_types = ["simple", "detailed", "surrogate"]
+            # Validate engine type - only surrogate is available
+            valid_types = ["surrogate"]
             if engine_type not in valid_types:
-                raise ValueError(f"Invalid engine type: {engine_type}. Must be one of {valid_types}")
+                raise ValueError(
+                    f"Invalid engine type: {engine_type}. Must be one of {valid_types}"
+                )
 
             # Update the current advanced engine params
-            if not hasattr(self, 'current_advanced_engine_params'):
+            if not hasattr(self, "current_advanced_engine_params"):
                 from core.data_models import AdvancedEngineParams
+
                 self.current_advanced_engine_params = AdvancedEngineParams()
 
-            # Set both old (for backward compat) and new fields
-            self.current_advanced_engine_params.use_simple_physics = (engine_type == "simple")
             self.current_advanced_engine_params.engine_type = engine_type
 
             # Reinitialize engines with new settings
@@ -1768,8 +1767,7 @@ class MainWindow(QMainWindow):
 
             # Show status message
             self.show_status_message(
-                f"Engine switched to {engine_type}. Optimization engine recreated.",
-                5000
+                f"Engine switched to {engine_type}. Optimization engine recreated.", 5000
             )
 
             logger.info(f"Engine successfully switched to {engine_type}")
@@ -1784,33 +1782,34 @@ class MainWindow(QMainWindow):
         """Handle engine type change from Config Widget (single source of truth).
 
         This is called when the user changes the engine selection in the Config Widget.
-        The Config Widget is now the authoritative location for engine selection.
+        Only surrogate engine is available.
         """
         try:
             logger.info(f"Engine type changed from Config Widget: {engine_type}")
 
-            # Validate engine type
-            valid_types = ["simple", "detailed", "surrogate"]
+            # Validate engine type - only surrogate is available
+            valid_types = ["surrogate"]
             if engine_type not in valid_types:
-                raise ValueError(f"Invalid engine type: {engine_type}. Must be one of {valid_types}")
+                raise ValueError(
+                    f"Invalid engine type: {engine_type}. Must be one of {valid_types}"
+                )
 
             # Update the current advanced engine params
-            if not hasattr(self, 'current_advanced_engine_params'):
+            if not hasattr(self, "current_advanced_engine_params"):
                 from core.data_models import AdvancedEngineParams
+
                 self.current_advanced_engine_params = AdvancedEngineParams()
 
-            # Set both old (for backward compat) and new fields
-            self.current_advanced_engine_params.use_simple_physics = (engine_type == "simple")
             self.current_advanced_engine_params.engine_type = engine_type
 
             # Update data management widget (disable/enable fields based on engine)
-            if hasattr(self, 'data_management_tab'):
+            if hasattr(self, "data_management_tab"):
                 self.data_management_tab.set_engine_type(engine_type)
 
             # Update optimization widget - notify of engine change
             # Note: OptimizationWidget no longer has its own engine selection UI
             # It reads from MainWindow.current_advanced_engine_params
-            if hasattr(self, 'optimization_tab'):
+            if hasattr(self, "optimization_tab"):
                 self.optimization_tab.on_engine_type_changed(engine_type)
 
             # Reinitialize engines if data is loaded
@@ -1819,8 +1818,7 @@ class MainWindow(QMainWindow):
 
             # Show status message
             self.show_status_message(
-                f"Engine switched to {engine_type}. All widgets updated.",
-                5000
+                f"Engine switched to {engine_type}. All widgets updated.", 5000
             )
 
             logger.info(f"Engine successfully switched to {engine_type} from Config Widget")

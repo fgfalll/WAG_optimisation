@@ -891,7 +891,12 @@ class OptimizationWidget(QWidget):
                     "parent_selection_type": ["sss", "rws", "sus", "rank", "random", "tournament"],
                     "crossover_type": ["single_point", "two_points", "uniform", "scattered"],
                     "mutation_type": ["random", "swap", "inversion", "scramble", "adaptive"],
-                    "constraint_handling_method": ["static", "adaptive", "death", "adaptive_penalty"],
+                    "constraint_handling_method": [
+                        "static",
+                        "adaptive",
+                        "death",
+                        "adaptive_penalty",
+                    ],
                 }
                 widget.addItems(options.get(field.name, []))
                 if value in [widget.itemText(i) for i in range(widget.count())]:
@@ -1494,11 +1499,15 @@ class OptimizationWidget(QWidget):
             mb_analysis = self.current_results.get("material_balance_analysis")
 
             if plot_type == self.tr("Convergence"):
-                fig = self.engine.plotting_manager.plot_optimization_convergence(self.current_results)
+                fig = self.engine.plotting_manager.plot_optimization_convergence(
+                    self.current_results
+                )
             elif plot_type == self.tr("Parameter Sensitivity"):
                 param_key = self.sensitivity_param_combo.currentData()
                 if param_key:
-                    fig = self.engine.plotting_manager.plot_parameter_sensitivity(param_key, self.current_results)
+                    fig = self.engine.plotting_manager.plot_parameter_sensitivity(
+                        param_key, self.current_results
+                    )
             elif plot_type == self.tr("Final Production Profiles"):
                 fig = self.engine.plotting_manager.plot_production_profiles(self.current_results)
                 if fig:
@@ -1514,9 +1523,13 @@ class OptimizationWidget(QWidget):
             elif plot_type == self.tr("Objective vs. Parameter (BO)"):
                 param_key = self.bo_sensitivity_param_combo.currentData()
                 if param_key:
-                    fig = self.engine.plotting_manager.plot_objective_vs_parameter(param_key, self.current_results)
+                    fig = self.engine.plotting_manager.plot_objective_vs_parameter(
+                        param_key, self.current_results
+                    )
             elif plot_type == self.tr("CO2 Performance Summary"):
-                fig = self.engine.plotting_manager.plot_co2_performance_summary_table(self.current_results)
+                fig = self.engine.plotting_manager.plot_co2_performance_summary_table(
+                    self.current_results
+                )
             elif plot_type == self.tr("Material Balance") and mb_analysis:
                 fig = mb_analysis["graphs"]["main_balance"]
             elif plot_type == self.tr("Storage Efficiency") and mb_analysis:
@@ -1646,13 +1659,13 @@ class OptimizationWidget(QWidget):
             self.worker = None
 
     def on_engine_type_changed(self, engine_type: str):
-        """Called when engine type changes from Config Widget (single source of truth).
+        """Called when engine type changes from Config Widget.
 
-        Note: The engine selection widget has been moved to Config Widget.
-        This method is called by MainWindow when engine type changes.
+        Note: Only surrogate engine is available. This method is called by
+        MainWindow when engine type changes.
 
         Args:
-            engine_type: The new engine type ("simple", "detailed", or "surrogate")
+            engine_type: The engine type (only "surrogate" is valid)
         """
         try:
             logger.info(f"OptimizationWidget: Engine type changed to '{engine_type}'")
@@ -1662,22 +1675,11 @@ class OptimizationWidget(QWidget):
 
             # Update status
             self.status_label.setText(
-                f"<i>Engine changed to {engine_type} (from Config Widget). Use Apply to update optimization engine.</i>"
+                f"<i>Engine: {engine_type} (from Config Widget). Use Apply to update optimization engine.</i>"
             )
 
         except Exception as e:
-            logger.error(f"Error handling engine type change: {e}", exc_info=True)
-            logger.info(f"Engine type change requested: {engine_type} (use_simple_physics={use_simple})")
-
-            QMessageBox.information(
-                self,
-                "Engine Switching",
-                f"Switching to {engine_type} engine.\n\n"
-                "The optimization engine will be recreated with the new engine type.",
-            )
-
-        except Exception as e:
-            error_msg = f"Error selecting engine: {str(e)}"
+            error_msg = f"Error handling engine type change: {str(e)}"
             QMessageBox.critical(self, "Engine Selection Error", error_msg)
             self.status_label.setText(f"<i><b style='color:red;'>{error_msg}</b></i>")
             logger.error(error_msg, exc_info=True)
