@@ -32,21 +32,18 @@ from PyQt6.QtGui import QIcon, QStandardItemModel, QStandardItem
 from PyQt6.QtCore import pyqtSignal, Qt, QEvent
 
 from ui.widgets.parameter_input_group import ParameterInputGroup
+from ui.utils.scheme_utils import format_scheme_display_name
 
 try:
     from core.data_models import (
         EconomicParameters,
+        CO2StorageParameters,
         EORParameters,
         OperationalParameters,
         ProfileParameters,
+        AdvancedEngineParams,
         GeneticAlgorithmParams,
         BayesianOptimizationParams,
-        CO2StorageParameters,
-        ParticleSwarmParams,
-        DifferentialEvolutionParams,
-        TuningParams,
-        AdvancedEngineParams,
-        GeomechanicsParameters,
     )
     from ui.dialogs.injection_scheme_dialog import InjectionSchemeDialog
 
@@ -56,19 +53,13 @@ try:
         "EOR": EORParameters,
         "Operational": OperationalParameters,
         "Profile": ProfileParameters,
-        "Geomechanics": GeomechanicsParameters,
         "Advanced Engine": AdvancedEngineParams,
         "Genetic Algorithm": GeneticAlgorithmParams,
         "Bayesian Optimizer": BayesianOptimizationParams,
-        "Particle Swarm": ParticleSwarmParams,
-        "Differential Evolution": DifferentialEvolutionParams,
-        "Tuning": TuningParams,
     }
     ALGORITHM_CLASSES = {
         GeneticAlgorithmParams,
         BayesianOptimizationParams,
-        ParticleSwarmParams,
-        DifferentialEvolutionParams,
     }
 except ImportError as e:
     logging.critical(f"ConfigWidget: Core configuration dataclasses not found. {e}")
@@ -85,7 +76,6 @@ class ConfigWidget(QWidget):
     configurations_updated = pyqtSignal(dict)
     save_configuration_to_file_requested = pyqtSignal(dict)
     help_requested = pyqtSignal(str)
-    engine_selection_changed = pyqtSignal(str)  # Signal emitted when engine type changes
 
     def __init__(self, config_manager: "ConfigManager", parent: Optional[QWidget] = None):
         super().__init__(parent)
@@ -236,7 +226,7 @@ class ConfigWidget(QWidget):
             item = self.category_model.item(i)
             self.category_list.setRowHidden(i, text.lower() not in item.text().lower())
 
-    def _on_category_selected(self, current, previous):
+    def _on_category_selected(self, current, _previous):
         if current.isValid():
             self.settings_stack.setCurrentIndex(current.row())
 
@@ -300,7 +290,7 @@ class ConfigWidget(QWidget):
         if eor_instance:
             logger.info(
                 f"ConfigWidget - Current EOR Parameters - Injection Scheme: '{eor_instance.injection_scheme}', "
-                f"WAG Ratio: {eor_instance.WAG_ratio}"
+                f"WAG Ratio: {eor_instance.wag_ratio}"
             )
 
         pending_data = {
@@ -309,14 +299,9 @@ class ConfigWidget(QWidget):
         pending_recovery_params = deepcopy(self.recovery_model_params)
         all_valid = True
 
-        # Handle engine_type from combo box (not tracked in input_groups)
-        if hasattr(self, "engine_type_combo"):
-            engine_type = self.engine_type_combo.currentData()
-            if engine_type and "AdvancedEngineParams" in pending_data:
-                pending_data["AdvancedEngineParams"]["engine_type"] = engine_type
-                logger.info(
-                    f"ConfigWidget: Including engine_type '{engine_type}' in pending changes"
-                )
+        # Ensure engine_type is always surrogate in pending changes
+        if "AdvancedEngineParams" in pending_data:
+            pending_data["AdvancedEngineParams"]["engine_type"] = "surrogate"
 
         for key, widget in self.input_groups.items():
             if not widget.isVisible() or "." not in key:
@@ -377,6 +362,13 @@ class ConfigWidget(QWidget):
                     self.tr("Invalid input for Target Seeking: {}").format(e),
                 )
                 all_valid = False
+
+        if hasattr(self, "eor_scheme_lock_checkbox"):
+            eor_params_name = "EORParameters"
+            if eor_params_name in pending_data:
+                pending_data[eor_params_name]["injection_scheme_locked"] = (
+                    self.eor_scheme_lock_checkbox.isChecked()
+                )
 
         if not all_valid:
             QMessageBox.critical(
@@ -584,6 +576,19 @@ class ConfigWidget(QWidget):
         config_btn.clicked.connect(self._open_eor_injection_scheme_dialog)
         scheme_layout.addWidget(config_btn)
 
+        # Injection scheme lock control
+        scheme_lock_layout = QHBoxLayout()
+        scheme_lock_label = QLabel(self.tr("Lock Injection Scheme (prevent optimizer from changing):"))
+        self.eor_scheme_lock_checkbox = QCheckBox()
+        self.eor_scheme_lock_checkbox.setChecked(instance.injection_scheme_locked)
+        self.eor_scheme_lock_checkbox.stateChanged.connect(
+            lambda state: self._mark_as_dirty()
+        )
+        scheme_lock_layout.addWidget(scheme_lock_label)
+        scheme_lock_layout.addWidget(self.eor_scheme_lock_checkbox)
+        scheme_lock_layout.addStretch()
+        scheme_layout.addLayout(scheme_lock_layout)
+
         layout.addWidget(scheme_group)
 
         # Create relative permeability group
@@ -617,51 +622,38 @@ class ConfigWidget(QWidget):
 
     def _create_engine_constrains_page(self, instance: Any, layout: QVBoxLayout):
         # Engine selection dropdown (FIRST item - single source of truth for engine selection)
-        engine_group = QGroupBox(self.tr("Engine Selection"))
+        engine_group = QGroupBox(self.tr("Active Simulation Engine"))
         engine_group.setToolTip(
             self.tr(
-                "Select the simulation engine to use. This is the primary location for engine selection."
+                "Primary physics-informed reduced-order reservoir simulator with coupled IPR and geomechanics."
             )
         )
-        engine_layout = QFormLayout(engine_group)
-
-        self.engine_type_combo = QComboBox()
-        self.engine_type_combo.addItem(
-            self.tr("Surrogate Engine (ML-based, Very Fast)"), "surrogate"
+        engine_layout = QVBoxLayout(engine_group)
+        engine_badge = QLabel(
+            self.tr(
+                "<b>Physics-Informed Surrogate Engine</b><br>"
+                "• Coupled Darcy-Vogel Inflow Performance (IPR)<br>"
+                "• Solvent-Extended Compositional PVT (Peng-Robinson EOS)<br>"
+                "• Koval & Todd-Longstaff Viscous Fingering<br>"
+                "• Geomechanical Stress-Path, Caprock & Fault Integrity (EPA Class VI)"
+            )
         )
-
-        current_engine = getattr(instance, "engine_type", "surrogate")
-        for i in range(self.engine_type_combo.count()):
-            if self.engine_type_combo.itemData(i) == current_engine:
-                self.engine_type_combo.setCurrentIndex(i)
-                break
-
-        # Connect signal to handle changes
-        self.engine_type_combo.currentTextChanged.connect(self._on_engine_type_combo_changed)
-
-        engine_layout.addRow(self.tr("Simulation Engine:"), self.engine_type_combo)
+        engine_badge.setStyleSheet(
+            "background-color: #eaf2f8; border: 1px solid #b8d5ea; border-radius: 6px; padding: 10px; color: #1a5276;"
+        )
+        engine_layout.addWidget(engine_badge)
         layout.addWidget(engine_group)
 
         # Existing constraint fields
         form_layout = QFormLayout()
 
         include_fields = [
-            "min_gravity_factor",
-            "max_gravity_factor",
-            "min_sor",
-            "max_sor",
-            "min_transition_alpha",
-            "max_transition_alpha",
-            "min_transition_beta",
-            "max_transition_beta",
-            "min_WAG_ratio",
-            "max_WAG_ratio",
+            "min_wag_ratio",
+            "max_wag_ratio",
             "min_cycle_length_days",
             "max_cycle_length_days",
             "min_water_fraction",
             "max_water_fraction",
-            "min_productivity_index",
-            "max_productivity_index",
             "min_wellbore_pressure",
             "max_wellbore_pressure",
         ]
@@ -672,6 +664,28 @@ class ConfigWidget(QWidget):
                 self._create_input_group_for_field(instance, field, form_layout, instance_name)
 
         layout.addLayout(form_layout)
+
+        # Advanced constraint parameters from AdvancedEngineParams
+        advanced_instance = self.config_instances.get("AdvancedEngineParams")
+        if advanced_instance:
+            advanced_group = QGroupBox(self.tr("Advanced Constraint Thresholds"))
+            advanced_group.setStyleSheet("QGroupBox { font-weight: bold; }")
+            advanced_layout = QFormLayout(advanced_group)
+
+            advanced_include_fields = [
+                "fracture_pressure_multiplier",
+                "breakthrough_time_min_years",
+                "min_plume_containment",
+            ]
+
+            for field in fields(advanced_instance):
+                if field.name in advanced_include_fields:
+                    self._create_input_group_for_field(
+                        advanced_instance, field, advanced_layout, "AdvancedEngineParams"
+                    )
+
+            layout.addWidget(advanced_group)
+
         layout.addStretch()
 
     def _create_standard_page(
@@ -1177,36 +1191,14 @@ class ConfigWidget(QWidget):
         """Update the current injection scheme display label (for OperationalParameters)."""
         eor_instance = self.config_instances.get("EORParameters")
         if eor_instance and hasattr(self, "current_scheme_display"):
-            scheme = eor_instance.injection_scheme
-            # Convert scheme name to display format
-            display_name = scheme.replace("_", " ").title()
-            if scheme == "wag":
-                display_name = "WAG"
-            elif scheme == "huff_n_puff":
-                display_name = "Huff-n-Puff"
-            elif scheme == "swag":
-                display_name = "SWAG"
+            display_name = format_scheme_display_name(eor_instance.injection_scheme)
             self.current_scheme_display.setText(display_name)
 
     def _update_current_eor_scheme_display(self):
         """Update the current injection scheme display label (for EORParameters page)."""
         eor_instance = self.config_instances.get("EORParameters")
         if eor_instance and hasattr(self, "current_eor_scheme_display"):
-            scheme = eor_instance.injection_scheme
-            # Convert scheme name to display format
-            display_name = scheme.replace("_", " ").title()
-            if scheme == "wag":
-                display_name = "WAG"
-            elif scheme == "huff_n_puff":
-                display_name = "Huff-n-Puff"
-            elif scheme == "swag":
-                display_name = "SWAG"
-            elif scheme == "tapered":
-                display_name = "Tapered Injection"
-            elif scheme == "pulsed":
-                display_name = "Pulsed Injection"
-            elif scheme == "continuous":
-                display_name = "Continuous Injection"
+            display_name = format_scheme_display_name(eor_instance.injection_scheme)
             self.current_eor_scheme_display.setText(display_name)
 
     def _open_injection_scheme_dialog(self):
@@ -1219,21 +1211,12 @@ class ConfigWidget(QWidget):
         from ui.dialogs.injection_scheme_dialog import InjectionSchemeDialog
 
         dialog = InjectionSchemeDialog(eor_instance, self)
-        dialog.scheme_updated.connect(self._on_eor_scheme_updated)
+        dialog.scheme_updated.connect(self._on_scheme_updated)
         dialog.exec()
 
     def _open_eor_injection_scheme_dialog(self):
         """Open the EOR injection scheme configuration dialog."""
-        eor_instance = self.config_instances.get("EORParameters")
-        if not eor_instance:
-            logger.error("EORParameters instance not found")
-            return
-
-        from ui.dialogs.injection_scheme_dialog import InjectionSchemeDialog
-
-        dialog = InjectionSchemeDialog(eor_instance, self)
-        dialog.scheme_updated.connect(self._on_eor_scheme_updated)
-        dialog.exec()
+        self._open_injection_scheme_dialog()
 
     def _on_scheme_updated(self, updated_params: dict):
         """Handle injection scheme updates from the dialog."""
@@ -1318,7 +1301,7 @@ class ConfigWidget(QWidget):
             "min_economic_rate_fraction_of_peak": "decline" in profile_type,
             "co2_breakthrough_year_fraction": True,
             "co2_production_ratio_after_breakthrough": True,
-            "co2_recycling_efficiency_fraction": True,
+            "co2_recycling_fraction": True,
             "warn_if_defaults_used": True,
         }
         for param_name, is_visible in visibility_map.items():
@@ -1326,42 +1309,3 @@ class ConfigWidget(QWidget):
             if widget_key in self.input_groups:
                 self.input_groups[widget_key].setVisible(is_visible)
 
-    def _on_engine_type_combo_changed(self, engine_display_name: str):
-        """Handle engine selection combo box change."""
-        # Get actual engine type from combo box data
-        engine_type = self.engine_type_combo.currentData()
-        if not engine_type:
-            return
-
-        logger.info(f"ConfigWidget: Engine type selection changed to '{engine_type}'")
-
-        # Mark as dirty
-        self._set_dirty(True)
-
-        # Emit signal to notify other widgets
-        self.engine_selection_changed.emit(engine_type)
-
-        # Update the config_instances to reflect the change (will be applied when user clicks Apply)
-        advanced_params_instance = self.config_instances.get("AdvancedEngineParams")
-        if advanced_params_instance:
-            # Update the engine_type field
-            advanced_params_instance.engine_type = engine_type
-            logger.info(
-                f"ConfigWidget: Updated AdvancedEngineParams.engine_type to '{engine_type}'"
-            )
-
-        visibility_map = {
-            "oil_annual_fraction_of_total": (profile_type == "custom_fractions"),
-            "plateau_duration_fraction_of_life": "plateau" in profile_type,
-            "initial_decline_rate_annual_fraction": "decline" in profile_type,
-            "hyperbolic_b_factor": "hyperbolic" in profile_type,
-            "min_economic_rate_fraction_of_peak": "decline" in profile_type,
-            "co2_breakthrough_year_fraction": True,
-            "co2_production_ratio_after_breakthrough": True,
-            "co2_recycling_efficiency_fraction": True,
-            "warn_if_defaults_used": True,
-        }
-        for param_name, is_visible in visibility_map.items():
-            widget_key = f"{profile_params_instance_name}.{param_name}"
-            if widget_key in self.input_groups:
-                self.input_groups[widget_key].setVisible(is_visible)

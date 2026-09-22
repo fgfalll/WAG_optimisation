@@ -116,9 +116,9 @@ class ManualWellDialog(QDialog):
             self.key_param_widgets[name] = widget
             params_form_layout.addRow(widget)
 
-        self.status_label = QLabel(self.tr("Status:"))
+        self.status_label = QLabel(self.tr("Well Role:"))
         self.status_combo = QComboBox()
-        self.status_combo.addItems(["Active", "Inactive", "Injector"])
+        self.status_combo.addItems(["Producer (Active)", "Producer (Inactive)", "Injector"])
         params_form_layout.addRow(self.status_label, self.status_combo)
 
         self.edit_path_btn = QPushButton()
@@ -157,6 +157,7 @@ class ManualWellDialog(QDialog):
         self.perf_table.model().rowsInserted.connect(self._update_ui_state)
         self.perf_table.model().rowsRemoved.connect(self._update_ui_state)
         self.status_combo.currentIndexChanged.connect(self._update_well_name)
+        self.well_name_edit.textEdited.connect(self._on_well_name_edited)
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
 
@@ -164,18 +165,34 @@ class ManualWellDialog(QDialog):
         self.retranslateUi()
         self._update_well_name()
 
+    def _on_well_name_edited(self, text: str):
+        text_lower = text.strip().lower()
+        if "injector" in text_lower or text_lower.startswith("inj"):
+            idx = self.status_combo.findText("Injector")
+            if idx >= 0 and self.status_combo.currentIndex() != idx:
+                self.status_combo.blockSignals(True)
+                self.status_combo.setCurrentIndex(idx)
+                self.status_combo.blockSignals(False)
+        elif "producer" in text_lower or text_lower.startswith("prod"):
+            idx = self.status_combo.findText("Producer (Active)")
+            if idx >= 0 and self.status_combo.currentIndex() != idx:
+                self.status_combo.blockSignals(True)
+                self.status_combo.setCurrentIndex(idx)
+                self.status_combo.blockSignals(False)
+
     def _update_well_name(self):
         self.well_name_edit.setText(self._generate_default_name())
 
     def _generate_default_name(self) -> str:
         status = self.status_combo.currentText().lower()
-        if status in ["active", "inactive"]:
-            well_type = "producer"
-        else:
+        if "injector" in status:
             well_type = "injector"
+        else:
+            well_type = "producer"
 
+        existing_lower = [n.lower() for n in self.existing_names]
         count = 1
-        while f"well-{well_type}-{count}" in self.existing_names:
+        while f"well-{well_type}-{count}" in existing_lower:
             count += 1
         return f"Well-{well_type.capitalize()}-{count}"
 
@@ -346,16 +363,22 @@ class ManualWellDialog(QDialog):
 
             final_metadata = self.key_param_values.copy()
             status = self.status_combo.currentText()
-            final_metadata["status"] = status
-            # Explicitly set well type for integration engine
-            final_metadata["type"] = "injector" if status.lower() == "injector" else "producer"
+            status_lower = status.lower()
+            name_lower = well_name.lower()
+
+            if "injector" in status_lower or "injector" in name_lower or name_lower.startswith("inj"):
+                final_metadata["type"] = "injector"
+                final_metadata["status"] = "Injector"
+            else:
+                final_metadata["type"] = "producer"
+                final_metadata["status"] = status
             
             if not perfs:
                 final_metadata["perforations_treatment"] = "entire_wellbore"
 
             well_props = {
-                "WellboreRadius": [self.key_param_values.get("WellboreRadius", 0.35)],
-                "SkinFactor": [self.key_param_values.get("SkinFactor", 0.0)],
+                "WellboreRadius": np.array([self.key_param_values.get("WellboreRadius", 0.35)]),
+                "SkinFactor": np.array([self.key_param_values.get("SkinFactor", 0.0)]),
             }
 
             return WellData(

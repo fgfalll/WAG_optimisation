@@ -17,11 +17,6 @@ from .surrogate_models import (
     create_surrogate_model as create_base_model,
 )
 from .analytical_models import get_analytical_model, get_available_models
-from .response_surfaces import (
-    PolynomialResponseSurface,
-    RBFResponseSurface,
-    create_response_surface,
-)
 
 
 def create_surrogate_model(

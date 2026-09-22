@@ -10,14 +10,14 @@ import pandas as pd
 from typing import Dict, List, Optional, Any, Tuple, Union
 from dataclasses import dataclass, field
 from scipy import stats
-from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from plotly.express import scatter_3d, parallel_coordinates
 import plotly.express as px
 
 logger = logging.getLogger(__name__)
+
+from core.exceptions import SensitivityAnalysisError
 
 @dataclass
 class SensitivityResult:
@@ -117,8 +117,7 @@ class OptimizationAnalyzer:
             return sensitivity_results
 
         except Exception as e:
-            logger.error(f"Error in sensitivity analysis: {e}")
-            return {}
+            raise SensitivityAnalysisError(f"Sensitivity analysis failed: {e}") from e
 
     def _correlation_sensitivity(self, param_values: np.ndarray, obj_values: np.ndarray,
                                param_name: str) -> SensitivityResult:

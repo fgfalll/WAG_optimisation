@@ -1,0 +1,460 @@
+Module,Line,Exception Type,Body Length
+analysis/breakthrough_physics.py,161,"(ImportError, TypeError, ValueError, RuntimeError)",2
+analysis/decline_curve_analysis.py,118,"(RuntimeError, ValueError, TypeError)",3
+analysis/decline_curve_analysis.py,144,"(RuntimeError, ValueError, TypeError)",2
+analysis/decline_curve_analysis.py,315,"(RuntimeError, ValueError, TypeError, FloatingPointError)",2
+analysis/material_balance.py,21,ImportError,3
+analysis/material_balance.py,378,Exception,2
+analysis/material_balance.py,111,Exception,1
+analysis/profiler.py,58,Exception,1
+analysis/profiler.py,367,Exception,1
+analysis/profiler_refactored.py,69,Exception,2
+analysis/sensitivity_analyzer.py,33,ImportError,2
+analysis/sensitivity_analyzer.py,66,Exception,2
+analysis/sensitivity_analyzer.py,300,"(AttributeError, KeyError, ValueError, IndexError)",2
+analysis/sensitivity_analyzer.py,415,ValueError,1
+analysis/sensitivity_analyzer.py,569,"(ValueError, AttributeError)",1
+analysis/sensitivity_analyzer.py,685,"(ValueError, AttributeError)",1
+analysis/sensitivity_analyzer.py,767,Exception,2
+analysis/sensitivity_analyzer.py,202,Exception,1
+analysis/sensitivity_analyzer.py,245,Exception,2
+analysis/sensitivity_analyzer.py,331,Exception,1
+analysis/sensitivity_analyzer.py,662,Exception,2
+analysis/sensitivity_analyzer.py,535,Exception,2
+analysis/uq_engine.py,24,ImportError,5
+analysis/uq_engine.py,211,IndexError,1
+analysis/uq_engine.py,215,Exception,1
+analysis/uq_engine.py,273,ImportError,3
+analysis/uq_engine.py,350,Exception,3
+analysis/uq_engine.py,360,Exception,2
+analysis/uq_engine.py,189,"(ValueError, TypeError)",1
+analysis/well_analysis.py,71,Exception,2
+analysis/well_analysis.py,156,Exception,2
+audit/__main__.py,23,Exception,4
+audit/pipeline.py,65,Exception,1
+audit/pipeline.py,121,Exception,1
+audit/pipeline.py,161,Exception,1
+core/compositional_engine/components/registry.py,208,ValueError,2
+core/compositional_engine/components/registry.py,282,ValueError,1
+core/compositional_engine/compositional_engine.py,869,Exception,5
+core/compositional_engine/compositional_engine.py,191,Exception,2
+core/compositional_engine/compositional_engine.py,780,"(ValueError, TypeError)",1
+core/compositional_engine/engine_wrapper.py,118,Exception,2
+core/compositional_engine/engine_wrapper.py,188,Exception,2
+core/compositional_engine/flow/compositional_solver.py,36,ImportError,2
+core/compositional_engine/flow/compositional_solver.py,287,Exception,1
+core/compositional_engine/flow/compositional_solver.py,781,.LinAlgError,2
+core/compositional_engine/flow/compositional_solver.py,576,Exception,4
+core/compositional_engine/flow/compositional_solver.py,621,Exception,1
+core/compositional_engine/flow/compositional_solver.py,628,Exception,1
+core/compositional_engine/flow/compositional_solver.py,635,Exception,1
+core/compositional_engine/flow/compositional_solver.py,887,Exception,1
+core/compositional_engine/flow/compositional_solver.py,1226,Exception,3
+core/compositional_engine/flow/compositional_solver.py,714,"(FloatingPointError, ZeroDivisionError, ValueError, IndexError, KeyError, RuntimeError)",1
+core/compositional_engine/flow/compositional_solver.py,605,Exception,1
+core/compositional_engine/phase_behavior/flash_calculator.py,84,ImportError,2
+core/compositional_engine/phase_behavior/flash_calculator.py,143,Exception,4
+core/compositional_engine/phase_behavior/flash_calculator.py,293,"(FloatingPointError, ZeroDivisionError, ValueError, RuntimeError)",1
+core/compositional_engine/phase_behavior/flash_calculator.py,396,Exception,2
+core/compositional_engine/phase_behavior/flash_calculator.py,315,"(FloatingPointError, ZeroDivisionError, ValueError, RuntimeError)",3
+core/compositional_engine/phase_behavior/flash_calculator.py,327,"(FloatingPointError, ZeroDivisionError, ValueError, RuntimeError)",2
+core/compositional_engine/phase_behavior/miscibility_detector.py,168,ImportError,2
+core/compositional_engine/phase_behavior/miscibility_detector.py,278,Exception,2
+core/compositional_engine/phase_behavior/miscibility_detector.py,265,Exception,1
+core/compositional_engine/properties/eos_wrapper.py,60,ImportError,2
+core/compositional_engine/properties/eos_wrapper.py,128,Exception,2
+core/data_integration_engine.py,152,Exception,4
+core/data_integration_engine.py,219,Exception,3
+core/data_integration_engine.py,627,Exception,3
+core/data_integration_engine.py,834,Exception,2
+core/data_models.py,144,"(IndexError, ValueError)",1
+core/engine_factory.py,64,ImportError,1
+core/engine_simple/examples.py,203,Exception,1
+core/engine_simple/examples.py,650,Exception,3
+core/engine_simple/multiphase_flow_adapter.py,47,ImportError,1
+core/engine_simple/multiphase_flow_adapter.py,247,Exception,2
+core/engine_simple/multiphase_flow_adapter.py,307,Exception,2
+core/engine_simple/multiphase_flow_adapter.py,353,Exception,1
+core/engine_simple/multiphase_flow_adapter.py,473,"(ValueError, TypeError, ZeroDivisionError, FloatingPointError)",1
+core/engine_simple/optimization_interface.py,255,Exception,4
+core/engine_simple/optimization_interface.py,595,Exception,2
+core/engine_simple/parameter_estimation.py,279,.LinAlgError,2
+core/engine_simple/parameter_estimation.py,212,Exception,2
+core/engine_simple/parameter_estimation.py,261,Exception,2
+core/engine_simple/reservoir_engine.py,582,Exception,2
+core/engine_simple/reservoir_engine.py,214,Exception,2
+core/engine_simple/reservoir_engine.py,231,Exception,4
+core/engine_surrogate/analytical_models.py,41,ImportError,3
+core/engine_surrogate/analytical_models.py,130,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
+core/engine_surrogate/analytical_models.py,243,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
+core/engine_surrogate/analytical_models.py,368,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
+core/engine_surrogate/analytical_models.py,510,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
+core/engine_surrogate/feature_transformer.py,21,ImportError,2
+core/engine_surrogate/response_surfaces.py,22,ImportError,3
+core/engine_surrogate/surrogate_engine.py,539,Exception,2
+core/engine_surrogate/surrogate_engine.py,696,Exception,1
+core/engine_surrogate/surrogate_engine.py,683,Exception,1
+core/engine_surrogate/surrogate_models.py,553,Exception,2
+core/engine_surrogate/surrogate_models.py,668,ImportError,2
+core/engine_surrogate/surrogate_models.py,792,Exception,2
+core/engine_surrogate/training_data.py,20,ImportError,2
+core/engine_surrogate/training_data.py,133,Exception,2
+core/geology/geostatistical_modeling.py,173,Exception,2
+core/geology/geostatistical_modeling.py,287,Exception,2
+core/geology/geostatistical_modeling.py,469,Exception,4
+core/geology/geostatistical_modeling.py,614,Exception,2
+core/geology/geostatistical_modeling.py,140,Exception,3
+core/geology/geostatistical_modeling.py,256,Exception,2
+core/geology/geostatistical_modeling.py,159,ValueError,3
+core/geology/geostatistical_modeling.py,560,ValueError,2
+core/geology/geostatistical_modeling.py,252,ValueError,2
+core/objectives/economic.py,11,ImportError,2
+core/objectives/production.py,16,ImportError,1
+core/objectives/storage.py,100,"(TypeError, ValueError)",1
+core/objectives/storage.py,105,"(TypeError, ValueError)",1
+core/objectives/wrapper.py,130,Exception,1
+core/optimisation_engine.py,26,ImportError,1
+core/optimisation_engine.py,42,ImportError,2
+core/optimisation_engine.py,57,ImportError,6
+core/optimisation_engine.py,319,Exception,3
+core/optimisation_engine.py,385,ImportError,3
+core/optimisation_engine.py,389,Exception,3
+core/optimisation_engine.py,459,"(RuntimeError, AttributeError)",1
+core/optimisation_engine.py,480,"(RuntimeError, ValueError, ZeroDivisionError, ArithmeticError)",1
+core/optimisation_engine.py,555,Exception,4
+core/optimisation_engine.py,1253,Exception,1
+core/optimisation_engine.py,1699,Exception,2
+core/optimisation_engine.py,2229,Exception,1
+core/optimisation_engine.py,3808,Exception,2
+core/optimisation_engine.py,4505,Exception,2
+core/optimisation_engine.py,296,Exception,3
+core/optimisation_engine.py,363,Exception,3
+core/optimisation_engine.py,764,ValueError,1
+core/optimisation_engine.py,1030,Exception,1
+core/optimisation_engine.py,1053,ValueError,1
+core/optimisation_engine.py,3036,"(OSError, IOError, ValueError)",1
+core/optimisation_engine.py,4328,Exception,2
+core/optimisation_engine.py,713,Exception,1
+core/optimisation_engine.py,2291,Exception,1
+core/optimization_analysis.py,860,Exception,2
+core/optimization_analysis.py,884,Exception,2
+core/optimization_analysis.py,121,Exception,1
+core/optimization_analysis.py,298,Exception,2
+core/optimization_analysis.py,360,Exception,2
+core/optimization_analysis.py,430,Exception,2
+core/optimization_analysis.py,538,Exception,2
+core/optimization_analysis.py,611,Exception,2
+core/optimization_analysis.py,694,Exception,2
+core/optimization_analysis.py,767,Exception,2
+core/optimization_analysis.py,835,Exception,2
+core/plotting_manager.py,620,ImportError,2
+core/plotting_manager.py,644,ImportError,2
+core/plotting_manager.py,666,ImportError,2
+core/plotting_manager.py,688,ImportError,2
+core/plotting_manager.py,1054,Exception,1
+core/plotting_manager.py,418,Exception,1
+core/simulation/__init__.py,18,ImportError,1
+core/simulation/__init__.py,23,ImportError,1
+core/simulation/profile_generator.py,23,ImportError,11
+core/simulation/profile_generator.py,79,Exception,1
+core/simulation/profile_generator.py,298,Exception,1
+core/simulation/profile_generator.py,308,Exception,3
+core/simulation/recovery_models.py,28,ImportError,1
+core/simulation/recovery_models.py,799,"(TypeError, ValueError, KeyError)",1
+core/simulation/recovery_models.py,610,"(RuntimeError, ValueError, ArithmeticError)",3
+core/simulation/simulator_exporter.py,55,Exception,2
+core/unified_engine/core/time_stepper.py,359,Exception,6
+core/unified_engine/engines/detailed_engine.py,206,ImportError,1
+core/unified_engine/engines/detailed_engine.py,208,Exception,1
+core/unified_engine/engines/wrapper.py,177,Exception,4
+core/unified_engine/physics/co2_properties.py,23,ImportError,1
+core/unified_engine/physics/eos/__init__.py,743,Exception,1
+core/unified_engine/solvers/flow_solver.py,256,Exception,2
+core/unified_engine/solvers/flow_solver.py,369,.LinAlgError,2
+core/utils/profiler_utils.py,16,ImportError,2
+core/validation/data_quality_validator.py,149,Exception,2
+core/validation/data_quality_validator.py,240,Exception,2
+core/validation/data_quality_validator.py,318,Exception,2
+core/validation/data_quality_validator.py,381,Exception,2
+core/validation/data_quality_validator.py,427,Exception,2
+evaluation/mmp.py,12,ImportError,1
+evaluation/mmp.py,376,Exception,1
+main.py,53,OSError,2
+main.py,220,Exception,2
+main.py,267,Exception,1
+main.py,329,Exception,3
+main.py,376,Exception,4
+main.py,125,ImportError,2
+main.py,170,ImportError,2
+main.py,178,ImportError,2
+parsers/las_parser.py,60,lasio.LASHeaderError,2
+parsers/las_parser.py,64,Exception,2
+parsers/las_parser.py,84,Exception,1
+parsers/las_parser.py,162,KeyError,1
+parsers/las_parser.py,121,"(ValueError, TypeError)",1
+parsers/las_parser.py,148,ValueError,1
+scripts/audit_generator.py,59,Exception,1
+scripts/audit_generator.py,108,Exception,1
+scripts/audit_generator.py,228,Exception,1
+scripts/parse_coverage.py,25,ValueError,1
+scripts/process_las_data.py,82,Exception,2
+tests/conftest.py,20,Exception,1
+tests/core/test_fitness_function.py,294,Exception,1
+tests/core/test_fitness_function.py,321,Exception,1
+tests/core/test_fitness_function.py,348,Exception,1
+tests/core/test_fitness_function.py,376,Exception,1
+tests/core/test_fitness_function.py,407,Exception,1
+tests/core/test_fitness_function.py,437,Exception,1
+tests/core/test_fitness_function.py,467,Exception,1
+tests/core/test_surrogate_engine_reference.py,265,Exception,2
+tests/scientific/mathematical/test_singularity_and_overflow.py,52,"(ValueError, ZeroDivisionError)",1
+tests/test_cmg_surrogate_validation.py,338,ImportError,1
+tests/validation/cmg_output_parser.py,167,Exception,1
+tests/validation/cmg_output_parser.py,288,Exception,2
+tests/validation/cmg_output_parser.py,352,Exception,1
+tests/validation/cmg_output_parser.py,102,Exception,2
+tests/validation/cmg_output_parser.py,110,Exception,2
+tests/validation/cmg_output_parser.py,228,bare_except,1
+tests/validation/cmg_output_parser.py,345,ValueError,1
+tests/validation/cmg_runner.py,135,subprocess.TimeoutExpired,3
+tests/validation/cmg_runner.py,146,Exception,3
+tests/validation/cmg_runner.py,174,Exception,2
+tests/validation/cmg_runner.py,191,Exception,1
+tests/validation/combined_cmg_parser.py,22,ImportError,2
+tests/validation/combined_cmg_parser.py,111,Exception,2
+tests/validation/combined_cmg_parser.py,141,Exception,2
+tests/validation/direct_engine_test.py,115,Exception,3
+tests/validation/empirical_engine_validation.py,171,Exception,2
+tests/validation/empirical_engine_validation.py,461,Exception,1
+tests/validation/engine_validation_plots.py,46,ImportError,5
+tests/validation/engine_validation_plots.py,154,Exception,4
+tests/validation/engine_validation_plots.py,795,Exception,1
+tests/validation/engine_validation_plots.py,802,Exception,1
+tests/validation/engine_validation_plots.py,843,Exception,3
+tests/validation/extract_sr3_reference.py,109,Exception,4
+tests/validation/sr3_parser.py,20,ImportError,1
+tests/validation/sr3_parser.py,23,ImportError,3
+tests/validation/sr3_parser.py,195,Exception,4
+tests/validation/sr3_parser.py,254,Exception,1
+tests/validation/sr3_parser.py,29,ImportError,3
+tests/validation/sr3_reader.py,127,bare_except,1
+tests/validation/sr3_reader.py,155,bare_except,3
+tests/validation/sr3_reader.py,384,bare_except,1
+tests/validation/sr3_reader.py,585,ValueError,1
+tests/validation/sr3_reader.py,227,bare_except,1
+tests/validation/sr3_reader.py,458,bare_except,1
+tests/validation/sr3_reader.py,528,bare_except,1
+tests/validation/sr3_reader.py,533,bare_except,1
+tests/validation/validate_against_cmg.py,556,Exception,1
+tests/validation/validate_all_engines.py,233,Exception,4
+tests/validation/validate_all_engines.py,281,Exception,6
+tests/validation/validate_all_engines.py,482,Exception,4
+tests/validation/validate_all_engines.py,398,Exception,1
+tests/validation/validate_surrogate_against_cmg.py,200,Exception,2
+tests/validation/validate_surrogate_against_cmg.py,516,Exception,4
+tests/validation/validate_surrogate_against_cmg.py,460,Exception,1
+tests/validation/visual_validation.py,86,Exception,2
+ui/analysis_widget.py,58,ImportError,1
+ui/analysis_widget.py,65,ImportError,1
+ui/config_widget.py,64,ImportError,3
+ui/config_widget.py,407,"(ValueError, TypeError)",2
+ui/config_widget.py,1122,Exception,1
+ui/config_widget.py,1153,Exception,1
+ui/config_widget.py,1250,Exception,3
+ui/config_widget.py,1276,Exception,3
+ui/config_widget.py,364,"(ValueError, TypeError)",2
+ui/config_widget.py,1182,ValueError,1
+ui/config_widget.py,1189,Exception,1
+ui/config_widget.py,336,"(ValueError, TypeError)",2
+ui/config_widget.py,345,"(ValueError, TypeError)",2
+ui/data_management_widget.py,27,ImportError,3
+ui/data_management_widget.py,37,ImportError,5
+ui/data_management_widget.py,58,ImportError,3
+ui/data_management_widget.py,746,Exception,2
+ui/data_management_widget.py,761,"(ValueError, TypeError)",1
+ui/data_management_widget.py,774,"(ValueError, TypeError)",2
+ui/data_management_widget.py,1176,Exception,2
+ui/data_management_widget.py,1471,Exception,2
+ui/data_management_widget.py,1628,"(TypeError, KeyError, ZeroDivisionError)",1
+ui/data_management_widget.py,1711,"(KeyError, ZeroDivisionError, TypeError, ValueError)",3
+ui/data_management_widget.py,1773,Exception,2
+ui/data_management_widget.py,1896,Exception,2
+ui/data_management_widget.py,1953,Exception,2
+ui/data_management_widget.py,2011,Exception,2
+ui/data_management_widget.py,181,Exception,1
+ui/data_management_widget.py,190,Exception,1
+ui/data_management_widget.py,850,"(TypeError, ValueError, KeyError)",1
+ui/data_management_widget.py,1027,Exception,9
+ui/data_management_widget.py,1661,Exception,1
+ui/data_management_widget.py,807,"(ValueError, AttributeError)",1
+ui/data_management_widget.py,1152,"(ValueError, AttributeError)",1
+ui/data_management_widget.py,1465,Exception,1
+ui/data_management_widget.py,1649,"(ValueError, AttributeError)",1
+ui/data_management_widget.py,661,Exception,1
+ui/data_management_widget.py,898,Exception,1
+ui/dialogs/injection_scheme_dialog.py,637,Exception,3
+ui/dialogs/injection_scheme_dialog.py,682,Exception,2
+ui/dialogs/optimization_results_dialog.py,19,ImportError,2
+ui/dialogs/optimization_results_dialog.py,165,Exception,1
+ui/dialogs/optimization_results_dialog.py,192,Exception,1
+ui/dialogs/optimization_results_dialog.py,220,Exception,2
+ui/dialogs/optimization_results_dialog.py,257,Exception,1
+ui/dialogs/optimization_results_dialog.py,288,Exception,1
+ui/dialogs/optimization_results_dialog.py,300,Exception,1
+ui/dialogs/optimization_results_dialog.py,317,Exception,1
+ui/dialogs/preferences_dialog.py,154,Exception,2
+ui/dialogs/scenario_editor_dialog.py,24,ImportError,1
+ui/dialogs/scenario_editor_dialog.py,34,ImportError,2
+ui/dialogs/scenario_editor_dialog.py,231,"(ValueError, TypeError)",1
+ui/main_window.py,45,ImportError,1
+ui/main_window.py,52,ImportError,2
+ui/main_window.py,60,ImportError,2
+ui/main_window.py,102,ImportError,5
+ui/main_window.py,824,Exception,4
+ui/main_window.py,885,Exception,1
+ui/main_window.py,912,Exception,1
+ui/main_window.py,922,Exception,1
+ui/main_window.py,931,Exception,1
+ui/main_window.py,945,Exception,1
+ui/main_window.py,1078,Exception,3
+ui/main_window.py,1137,"(FileNotFoundError, json.JSONDecodeError)",2
+ui/main_window.py,1474,Exception,2
+ui/main_window.py,1696,Exception,3
+ui/main_window.py,1747,Exception,3
+ui/main_window.py,2026,Exception,2
+ui/main_window.py,2056,Exception,2
+ui/main_window.py,304,Exception,3
+ui/main_window.py,674,Exception,1
+ui/main_window.py,1203,Exception,3
+ui/main_window.py,1368,Exception,1
+ui/main_window.py,1817,Exception,2
+ui/main_window.py,1909,Exception,1
+ui/main_window.py,328,Exception,2
+ui/main_window.py,1452,Exception,2
+ui/optimization_widget.py,69,ImportError,6
+ui/optimization_widget.py,975,Exception,1
+ui/optimization_widget.py,999,Exception,3
+ui/optimization_widget.py,1444,Exception,5
+ui/optimization_widget.py,1734,Exception,3
+ui/optimization_widget.py,1857,Exception,4
+ui/optimization_widget.py,1927,Exception,2
+ui/optimization_widget.py,2240,Exception,2
+ui/optimization_widget.py,1287,Exception,2
+ui/optimization_widget.py,994,bare_except,1
+ui/sensitivity_widget.py,20,ImportError,3
+ui/sensitivity_widget.py,27,ImportError,2
+ui/sensitivity_widget.py,396,ValueError,2
+ui/sensitivity_widget.py,511,Exception,2
+ui/sensitivity_widget.py,359,Exception,5
+ui/uq_widget.py,32,ImportError,3
+ui/uq_widget.py,412,Exception,3
+ui/widgets/context_bubble.py,14,TypeError,1
+ui/widgets/context_bubble.py,38,TypeError,1
+ui/widgets/depth_profile_dialog.py,10,ImportError,1
+ui/widgets/engine_selection_widget.py,105,Exception,3
+ui/widgets/geomechanics_3d_view.py,25,ImportError,2
+ui/widgets/geomechanics_3d_view.py,389,Exception,2
+ui/widgets/geomechanics_3d_view.py,544,Exception,2
+ui/widgets/geomechanics_3d_view.py,282,Exception,2
+ui/widgets/geomechanics_3d_view.py,511,Exception,2
+ui/widgets/geomechanics_3d_view.py,436,Exception,1
+ui/widgets/log_viewer_dialog.py,35,ImportError,5
+ui/widgets/log_viewer_dialog.py,49,ImportError,2
+ui/widgets/log_viewer_dialog.py,374,ValueError,1
+ui/widgets/manual_well_dialog.py,26,ImportError,2
+ui/widgets/manual_well_dialog.py,53,ImportError,2
+ui/widgets/manual_well_dialog.py,61,ImportError,2
+ui/widgets/manual_well_dialog.py,250,"(ValueError, TypeError)",1
+ui/widgets/manual_well_dialog.py,267,"(ValueError, TypeError)",1
+ui/widgets/manual_well_dialog.py,393,Exception,2
+ui/widgets/manual_well_dialog.py,234,"(ValueError, TypeError)",1
+ui/widgets/manual_well_dialog.py,357,"(AttributeError, ValueError)",1
+ui/widgets/pvt_editor_dialog.py,37,ImportError,4
+ui/widgets/pvt_editor_dialog.py,54,ImportError,2
+ui/widgets/pvt_editor_dialog.py,505,Exception,1
+ui/widgets/pvt_editor_dialog.py,632,Exception,2
+ui/widgets/pvt_editor_dialog.py,735,Exception,2
+ui/widgets/pvt_editor_dialog.py,769,Exception,1
+ui/widgets/pvt_editor_dialog.py,840,"(ValueError, AttributeError)",1
+ui/widgets/pvt_editor_dialog.py,895,"(ValueError, TypeError)",2
+ui/widgets/pvt_editor_dialog.py,903,Exception,2
+ui/widgets/pvt_editor_dialog.py,927,"(ValueError, TypeError)",1
+ui/widgets/pvt_editor_dialog.py,812,"(ValueError, IndexError)",1
+ui/widgets/pvt_table_editor.py,126,Exception,1
+ui/widgets/pvt_table_editor.py,295,Exception,1
+ui/widgets/pvt_table_editor.py,314,Exception,1
+ui/widgets/pvt_table_editor.py,151,ValueError,4
+ui/widgets/pvt_table_editor.py,182,ValueError,1
+ui/widgets/pvt_table_editor.py,259,"(ValueError, TypeError)",3
+ui/workers/ai_query_worker.py,13,ImportError,3
+ui/workers/ai_query_worker.py,20,ImportError,4
+ui/workers/ai_query_worker.py,102,"(ValueError, ImportError)",2
+ui/workers/ai_query_worker.py,106,Exception,2
+ui/workers/ai_query_worker.py,134,PermissionDenied,1
+ui/workers/ai_query_worker.py,136,GoogleAPICallError,1
+ui/workers/ai_query_worker.py,164,AuthenticationError,1
+ui/workers/ai_query_worker.py,166,RateLimitError,1
+ui/workers/ai_query_worker.py,168,APIError,1
+ui/workers/base_worker.py,41,Exception,2
+ui/workers/dca_worker.py,34,Exception,1
+ui/workers/model_list_worker.py,36,httpx.RequestError,2
+ui/workers/model_list_worker.py,39,httpx.HTTPStatusError,2
+ui/workers/model_list_worker.py,42,Exception,2
+ui/workers/optimization_worker.py,54,Exception,2
+ui/workers/sensitivity_analysis_worker.py,67,AttributeError,3
+ui/workers/sensitivity_analysis_worker.py,72,Exception,2
+ui/workers/uq_worker.py,46,AttributeError,3
+ui/workers/uq_worker.py,50,Exception,2
+ui/workers/well_analysis_worker.py,87,Exception,2
+utils/config_manager.py,137,"(KeyError, TypeError, IndexError)",1
+utils/config_manager.py,28,Exception,1
+utils/config_manager.py,36,FileNotFoundError,1
+utils/config_manager.py,42,Exception,2
+utils/config_manager.py,95,json.JSONDecodeError,1
+utils/config_manager.py,97,Exception,1
+utils/error_handler.py,15,ImportError,1
+utils/error_handler.py,739,ImportError,2
+utils/error_handler.py,783,Exception,6
+utils/error_handler.py,827,Exception,6
+utils/error_handler.py,870,Exception,5
+utils/error_handler.py,927,Exception,5
+utils/error_handler.py,958,Exception,4
+utils/error_handler.py,198,Exception,1
+utils/error_handler.py,317,Exception,1
+utils/error_handler.py,541,Exception,1
+utils/error_handler.py,309,Exception,1
+utils/error_handler.py,707,Exception,3
+utils/error_handler.py,937,Exception,6
+utils/file_association.py,60,Exception,2
+utils/file_association.py,85,Exception,2
+utils/file_association.py,98,FileNotFoundError,1
+utils/file_association.py,100,Exception,2
+utils/file_association.py,73,FileNotFoundError,1
+utils/file_association.py,79,FileNotFoundError,1
+utils/grdecl_writer.py,162,IOError,2
+utils/grdecl_writer.py,165,Exception,2
+utils/grdecl_writer.py,46,ValueError,2
+utils/i18n_manager.py,65,Exception,1
+utils/multiprocess_logging.py,43,"(PermissionError, OSError)",1
+utils/multiprocess_logging.py,48,Exception,1
+utils/multiprocess_logging.py,61,"(EOFError, BrokenPipeError, OSError)",1
+utils/multiprocess_logging.py,193,Exception,1
+utils/multiprocess_logging.py,248,Exception,1
+utils/multiprocess_logging.py,161,Exception,1
+utils/project_file_handler.py,73,"(TypeError, IOError)",2
+utils/project_file_handler.py,90,"(IOError, json.JSONDecodeError)",2
+utils/project_file_handler.py,45,Exception,2
+utils/report_generator.py,72,Exception,2
+utils/report_generator.py,93,Exception,1
+utils/report_generator.py,140,Exception,4
+utils/report_generator.py,995,Exception,2
+utils/report_generator.py,1007,Exception,2
+utils/report_generator.py,150,Exception,1
+utils/run_exporter.py,1237,"(TypeError, OverflowError, ValueError)",1
+utils/run_exporter.py,1247,Exception,1
+utils/run_exporter.py,495,Exception,1
+utils/run_exporter.py,1178,Exception,1
+utils/run_exporter.py,1206,Exception,1
+utils/validation_manager.py,36,"(FileNotFoundError, yaml.YAMLError)",2
+utils/validation_manager.py,50,"(IndexError, AttributeError)",1
+utils/validation_manager.py,76,"(ValueError, TypeError)",1

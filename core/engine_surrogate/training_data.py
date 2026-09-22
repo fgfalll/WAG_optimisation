@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 # Check for scipy availability
 try:
     import scipy.stats as stats
+
     SCIPY_AVAILABLE = True
 except ImportError:
     SCIPY_AVAILABLE = False
@@ -170,7 +171,7 @@ class TrainingDataGenerator:
             grids.append(np.linspace(0, 1, n_per_dim))
 
         # Create meshgrid
-        mesh = np.meshgrid(*grids, indexing='ij')
+        mesh = np.meshgrid(*grids, indexing="ij")
 
         # Flatten and stack
         samples = np.column_stack([m.flatten() for m in mesh])
@@ -236,7 +237,7 @@ def get_default_parameter_bounds() -> Dict[str, Tuple[float, float]]:
         "porosity": (0.05, 0.35),  # fraction
         "permeability": (1.0, 1000.0),  # mD
         "mmp": (1500.0, 4000.0),  # psi
-        "WAG_ratio": (0.0, 4.0),  # dimensionless
+        "wag_ratio": (0.0, 4.0),  # dimensionless
         "kv_kh_ratio": (0.01, 1.0),  # dimensionless
     }
 
@@ -285,9 +286,9 @@ def generate_training_data(
 
 def run_simple_engine_batch(
     samples: List[Dict[str, float]],
-    simple_engine,
-    reservoir_data,
-    economic_params=None,
+    _simple_engine=None,
+    _reservoir_data=None,
+    _economic_params=None,
     progress_callback: Optional[Callable] = None,
 ) -> np.ndarray:
     """

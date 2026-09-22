@@ -361,8 +361,9 @@ def _combine_facies_grids(cat_field: np.ndarray, facies_data: List[Dict], facies
 def _create_transition_mask(cat_field: np.ndarray, lower_bound: float,
                            upper_bound: float, transition_width: float) -> np.ndarray:
     """Create mask for transition zone between facies."""
-    transition_lower = upper_bound - transition_width
-    transition_upper = upper_bound + transition_width
+    boundary = lower_bound
+    transition_lower = boundary - transition_width
+    transition_upper = boundary + transition_width
     return (cat_field >= transition_lower) & (cat_field <= transition_upper)
 
 def _blend_facies(grid1: np.ndarray, grid2: np.ndarray, transition_mask: np.ndarray) -> np.ndarray:

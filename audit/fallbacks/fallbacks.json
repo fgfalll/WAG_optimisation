@@ -1,0 +1,2756 @@
+[
+  {
+    "module": "analysis/breakthrough_physics.py",
+    "line": 161,
+    "exception_type": "(ImportError, TypeError, ValueError, RuntimeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/decline_curve_analysis.py",
+    "line": 118,
+    "exception_type": "(RuntimeError, ValueError, TypeError)",
+    "body_statements": 3
+  },
+  {
+    "module": "analysis/decline_curve_analysis.py",
+    "line": 144,
+    "exception_type": "(RuntimeError, ValueError, TypeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/decline_curve_analysis.py",
+    "line": 315,
+    "exception_type": "(RuntimeError, ValueError, TypeError, FloatingPointError)",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/material_balance.py",
+    "line": 21,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "analysis/material_balance.py",
+    "line": 378,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/material_balance.py",
+    "line": 111,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/profiler.py",
+    "line": 58,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/profiler.py",
+    "line": 367,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/profiler_refactored.py",
+    "line": 69,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 33,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 66,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 300,
+    "exception_type": "(AttributeError, KeyError, ValueError, IndexError)",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 415,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 569,
+    "exception_type": "(ValueError, AttributeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 685,
+    "exception_type": "(ValueError, AttributeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 767,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 202,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 245,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 331,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 662,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "line": 535,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/uq_engine.py",
+    "line": 24,
+    "exception_type": "ImportError",
+    "body_statements": 5
+  },
+  {
+    "module": "analysis/uq_engine.py",
+    "line": 211,
+    "exception_type": "IndexError",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/uq_engine.py",
+    "line": 215,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/uq_engine.py",
+    "line": 273,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "analysis/uq_engine.py",
+    "line": 350,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "analysis/uq_engine.py",
+    "line": 360,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/uq_engine.py",
+    "line": 189,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "analysis/well_analysis.py",
+    "line": 71,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "analysis/well_analysis.py",
+    "line": 156,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "audit/__main__.py",
+    "line": 23,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "audit/pipeline.py",
+    "line": 65,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "audit/pipeline.py",
+    "line": 121,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "audit/pipeline.py",
+    "line": 161,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/components/registry.py",
+    "line": 208,
+    "exception_type": "ValueError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/components/registry.py",
+    "line": 282,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/compositional_engine.py",
+    "line": 869,
+    "exception_type": "Exception",
+    "body_statements": 5
+  },
+  {
+    "module": "core/compositional_engine/compositional_engine.py",
+    "line": 191,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/compositional_engine.py",
+    "line": 780,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/engine_wrapper.py",
+    "line": 118,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/engine_wrapper.py",
+    "line": 188,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 36,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 287,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 781,
+    "exception_type": ".LinAlgError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 576,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 621,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 628,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 635,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 887,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 1226,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 714,
+    "exception_type": "(FloatingPointError, ZeroDivisionError, ValueError, IndexError, KeyError, RuntimeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/flow/compositional_solver.py",
+    "line": 605,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/phase_behavior/flash_calculator.py",
+    "line": 84,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/phase_behavior/flash_calculator.py",
+    "line": 143,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "core/compositional_engine/phase_behavior/flash_calculator.py",
+    "line": 293,
+    "exception_type": "(FloatingPointError, ZeroDivisionError, ValueError, RuntimeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/phase_behavior/flash_calculator.py",
+    "line": 396,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/phase_behavior/flash_calculator.py",
+    "line": 315,
+    "exception_type": "(FloatingPointError, ZeroDivisionError, ValueError, RuntimeError)",
+    "body_statements": 3
+  },
+  {
+    "module": "core/compositional_engine/phase_behavior/flash_calculator.py",
+    "line": 327,
+    "exception_type": "(FloatingPointError, ZeroDivisionError, ValueError, RuntimeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/phase_behavior/miscibility_detector.py",
+    "line": 168,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/phase_behavior/miscibility_detector.py",
+    "line": 278,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/phase_behavior/miscibility_detector.py",
+    "line": 265,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/compositional_engine/properties/eos_wrapper.py",
+    "line": 60,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/compositional_engine/properties/eos_wrapper.py",
+    "line": 128,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/data_integration_engine.py",
+    "line": 152,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "core/data_integration_engine.py",
+    "line": 219,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "core/data_integration_engine.py",
+    "line": 627,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "core/data_integration_engine.py",
+    "line": 834,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/data_models.py",
+    "line": 144,
+    "exception_type": "(IndexError, ValueError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/engine_factory.py",
+    "line": 64,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/engine_simple/examples.py",
+    "line": 203,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/engine_simple/examples.py",
+    "line": 650,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "core/engine_simple/multiphase_flow_adapter.py",
+    "line": 47,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/engine_simple/multiphase_flow_adapter.py",
+    "line": 247,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_simple/multiphase_flow_adapter.py",
+    "line": 307,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_simple/multiphase_flow_adapter.py",
+    "line": 353,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/engine_simple/multiphase_flow_adapter.py",
+    "line": 473,
+    "exception_type": "(ValueError, TypeError, ZeroDivisionError, FloatingPointError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/engine_simple/optimization_interface.py",
+    "line": 255,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "core/engine_simple/optimization_interface.py",
+    "line": 595,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_simple/parameter_estimation.py",
+    "line": 279,
+    "exception_type": ".LinAlgError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_simple/parameter_estimation.py",
+    "line": 212,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_simple/parameter_estimation.py",
+    "line": 261,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_simple/reservoir_engine.py",
+    "line": 582,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_simple/reservoir_engine.py",
+    "line": 214,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_simple/reservoir_engine.py",
+    "line": 231,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "core/engine_surrogate/analytical_models.py",
+    "line": 41,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "core/engine_surrogate/analytical_models.py",
+    "line": 130,
+    "exception_type": "(ValueError, TypeError, ArithmeticError, RuntimeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_surrogate/analytical_models.py",
+    "line": 243,
+    "exception_type": "(ValueError, TypeError, ArithmeticError, RuntimeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_surrogate/analytical_models.py",
+    "line": 368,
+    "exception_type": "(ValueError, TypeError, ArithmeticError, RuntimeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_surrogate/analytical_models.py",
+    "line": 510,
+    "exception_type": "(ValueError, TypeError, ArithmeticError, RuntimeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_surrogate/feature_transformer.py",
+    "line": 21,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_surrogate/response_surfaces.py",
+    "line": 22,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "core/engine_surrogate/surrogate_engine.py",
+    "line": 539,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_surrogate/surrogate_engine.py",
+    "line": 696,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/engine_surrogate/surrogate_engine.py",
+    "line": 683,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/engine_surrogate/surrogate_models.py",
+    "line": 553,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_surrogate/surrogate_models.py",
+    "line": 668,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_surrogate/surrogate_models.py",
+    "line": 792,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_surrogate/training_data.py",
+    "line": 20,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/engine_surrogate/training_data.py",
+    "line": 133,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/geology/geostatistical_modeling.py",
+    "line": 173,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/geology/geostatistical_modeling.py",
+    "line": 287,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/geology/geostatistical_modeling.py",
+    "line": 469,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "core/geology/geostatistical_modeling.py",
+    "line": 614,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/geology/geostatistical_modeling.py",
+    "line": 140,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "core/geology/geostatistical_modeling.py",
+    "line": 256,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/geology/geostatistical_modeling.py",
+    "line": 159,
+    "exception_type": "ValueError",
+    "body_statements": 3
+  },
+  {
+    "module": "core/geology/geostatistical_modeling.py",
+    "line": 560,
+    "exception_type": "ValueError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/geology/geostatistical_modeling.py",
+    "line": 252,
+    "exception_type": "ValueError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/objectives/economic.py",
+    "line": 11,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/objectives/production.py",
+    "line": 16,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/objectives/storage.py",
+    "line": 100,
+    "exception_type": "(TypeError, ValueError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/objectives/storage.py",
+    "line": 105,
+    "exception_type": "(TypeError, ValueError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/objectives/wrapper.py",
+    "line": 130,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 26,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 42,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 57,
+    "exception_type": "ImportError",
+    "body_statements": 6
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 319,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 385,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 389,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 459,
+    "exception_type": "(RuntimeError, AttributeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 480,
+    "exception_type": "(RuntimeError, ValueError, ZeroDivisionError, ArithmeticError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 555,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 1253,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 1699,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 2229,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 3808,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 4505,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 296,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 363,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 764,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 1030,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 1053,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 3036,
+    "exception_type": "(OSError, IOError, ValueError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 4328,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 713,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "line": 2291,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 860,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 884,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 121,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 298,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 360,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 430,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 538,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 611,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 694,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 767,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/optimization_analysis.py",
+    "line": 835,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/plotting_manager.py",
+    "line": 620,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/plotting_manager.py",
+    "line": 644,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/plotting_manager.py",
+    "line": 666,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/plotting_manager.py",
+    "line": 688,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/plotting_manager.py",
+    "line": 1054,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/plotting_manager.py",
+    "line": 418,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/simulation/__init__.py",
+    "line": 18,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/simulation/__init__.py",
+    "line": 23,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/simulation/profile_generator.py",
+    "line": 23,
+    "exception_type": "ImportError",
+    "body_statements": 11
+  },
+  {
+    "module": "core/simulation/profile_generator.py",
+    "line": 79,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/simulation/profile_generator.py",
+    "line": 298,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/simulation/profile_generator.py",
+    "line": 308,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "core/simulation/recovery_models.py",
+    "line": 28,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/simulation/recovery_models.py",
+    "line": 799,
+    "exception_type": "(TypeError, ValueError, KeyError)",
+    "body_statements": 1
+  },
+  {
+    "module": "core/simulation/recovery_models.py",
+    "line": 610,
+    "exception_type": "(RuntimeError, ValueError, ArithmeticError)",
+    "body_statements": 3
+  },
+  {
+    "module": "core/simulation/simulator_exporter.py",
+    "line": 55,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/unified_engine/core/time_stepper.py",
+    "line": 359,
+    "exception_type": "Exception",
+    "body_statements": 6
+  },
+  {
+    "module": "core/unified_engine/engines/detailed_engine.py",
+    "line": 206,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/unified_engine/engines/detailed_engine.py",
+    "line": 208,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/unified_engine/engines/wrapper.py",
+    "line": 177,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "core/unified_engine/physics/co2_properties.py",
+    "line": 23,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "core/unified_engine/physics/eos/__init__.py",
+    "line": 743,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "core/unified_engine/solvers/flow_solver.py",
+    "line": 256,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/unified_engine/solvers/flow_solver.py",
+    "line": 369,
+    "exception_type": ".LinAlgError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/utils/profiler_utils.py",
+    "line": 16,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "core/validation/data_quality_validator.py",
+    "line": 149,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/validation/data_quality_validator.py",
+    "line": 240,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/validation/data_quality_validator.py",
+    "line": 318,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/validation/data_quality_validator.py",
+    "line": 381,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "core/validation/data_quality_validator.py",
+    "line": 427,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "evaluation/mmp.py",
+    "line": 12,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "evaluation/mmp.py",
+    "line": 376,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "main.py",
+    "line": 53,
+    "exception_type": "OSError",
+    "body_statements": 2
+  },
+  {
+    "module": "main.py",
+    "line": 220,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "main.py",
+    "line": 267,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "main.py",
+    "line": 329,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "main.py",
+    "line": 376,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "main.py",
+    "line": 125,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "main.py",
+    "line": 170,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "main.py",
+    "line": 178,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "parsers/las_parser.py",
+    "line": 60,
+    "exception_type": "lasio.LASHeaderError",
+    "body_statements": 2
+  },
+  {
+    "module": "parsers/las_parser.py",
+    "line": 64,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "parsers/las_parser.py",
+    "line": 84,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "parsers/las_parser.py",
+    "line": 162,
+    "exception_type": "KeyError",
+    "body_statements": 1
+  },
+  {
+    "module": "parsers/las_parser.py",
+    "line": 121,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "parsers/las_parser.py",
+    "line": 148,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "scripts/audit_generator.py",
+    "line": 59,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "scripts/audit_generator.py",
+    "line": 108,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "scripts/audit_generator.py",
+    "line": 228,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "scripts/parse_coverage.py",
+    "line": 25,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "scripts/process_las_data.py",
+    "line": 82,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/conftest.py",
+    "line": 20,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/core/test_fitness_function.py",
+    "line": 294,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/core/test_fitness_function.py",
+    "line": 321,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/core/test_fitness_function.py",
+    "line": 348,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/core/test_fitness_function.py",
+    "line": 376,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/core/test_fitness_function.py",
+    "line": 407,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/core/test_fitness_function.py",
+    "line": 437,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/core/test_fitness_function.py",
+    "line": 467,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/core/test_surrogate_engine_reference.py",
+    "line": 265,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/scientific/mathematical/test_singularity_and_overflow.py",
+    "line": 52,
+    "exception_type": "(ValueError, ZeroDivisionError)",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/test_cmg_surrogate_validation.py",
+    "line": 338,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/cmg_output_parser.py",
+    "line": 167,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/cmg_output_parser.py",
+    "line": 288,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/validation/cmg_output_parser.py",
+    "line": 352,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/cmg_output_parser.py",
+    "line": 102,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/validation/cmg_output_parser.py",
+    "line": 110,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/validation/cmg_output_parser.py",
+    "line": 228,
+    "exception_type": "bare_except",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/cmg_output_parser.py",
+    "line": 345,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/cmg_runner.py",
+    "line": 135,
+    "exception_type": "subprocess.TimeoutExpired",
+    "body_statements": 3
+  },
+  {
+    "module": "tests/validation/cmg_runner.py",
+    "line": 146,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "tests/validation/cmg_runner.py",
+    "line": 174,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/validation/cmg_runner.py",
+    "line": 191,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/combined_cmg_parser.py",
+    "line": 22,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/validation/combined_cmg_parser.py",
+    "line": 111,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/validation/combined_cmg_parser.py",
+    "line": 141,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/validation/direct_engine_test.py",
+    "line": 115,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "tests/validation/empirical_engine_validation.py",
+    "line": 171,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/validation/empirical_engine_validation.py",
+    "line": 461,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/engine_validation_plots.py",
+    "line": 46,
+    "exception_type": "ImportError",
+    "body_statements": 5
+  },
+  {
+    "module": "tests/validation/engine_validation_plots.py",
+    "line": 154,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "tests/validation/engine_validation_plots.py",
+    "line": 795,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/engine_validation_plots.py",
+    "line": 802,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/engine_validation_plots.py",
+    "line": 843,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "tests/validation/extract_sr3_reference.py",
+    "line": 109,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "tests/validation/sr3_parser.py",
+    "line": 20,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/sr3_parser.py",
+    "line": 23,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "tests/validation/sr3_parser.py",
+    "line": 195,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "tests/validation/sr3_parser.py",
+    "line": 254,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/sr3_parser.py",
+    "line": 29,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "tests/validation/sr3_reader.py",
+    "line": 127,
+    "exception_type": "bare_except",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/sr3_reader.py",
+    "line": 155,
+    "exception_type": "bare_except",
+    "body_statements": 3
+  },
+  {
+    "module": "tests/validation/sr3_reader.py",
+    "line": 384,
+    "exception_type": "bare_except",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/sr3_reader.py",
+    "line": 585,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/sr3_reader.py",
+    "line": 227,
+    "exception_type": "bare_except",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/sr3_reader.py",
+    "line": 458,
+    "exception_type": "bare_except",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/sr3_reader.py",
+    "line": 528,
+    "exception_type": "bare_except",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/sr3_reader.py",
+    "line": 533,
+    "exception_type": "bare_except",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/validate_against_cmg.py",
+    "line": 556,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/validate_all_engines.py",
+    "line": 233,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "tests/validation/validate_all_engines.py",
+    "line": 281,
+    "exception_type": "Exception",
+    "body_statements": 6
+  },
+  {
+    "module": "tests/validation/validate_all_engines.py",
+    "line": 482,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "tests/validation/validate_all_engines.py",
+    "line": 398,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/validate_surrogate_against_cmg.py",
+    "line": 200,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "tests/validation/validate_surrogate_against_cmg.py",
+    "line": 516,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "tests/validation/validate_surrogate_against_cmg.py",
+    "line": 460,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "tests/validation/visual_validation.py",
+    "line": 86,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/analysis_widget.py",
+    "line": 58,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/analysis_widget.py",
+    "line": 65,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 64,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 407,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 1122,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 1153,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 1250,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 1276,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 364,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 1182,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 1189,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 336,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/config_widget.py",
+    "line": 345,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 27,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 37,
+    "exception_type": "ImportError",
+    "body_statements": 5
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 58,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 746,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 761,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 774,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1176,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1471,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1628,
+    "exception_type": "(TypeError, KeyError, ZeroDivisionError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1711,
+    "exception_type": "(KeyError, ZeroDivisionError, TypeError, ValueError)",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1773,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1896,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1953,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 2011,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 181,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 190,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 850,
+    "exception_type": "(TypeError, ValueError, KeyError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1027,
+    "exception_type": "Exception",
+    "body_statements": 9
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1661,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 807,
+    "exception_type": "(ValueError, AttributeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1152,
+    "exception_type": "(ValueError, AttributeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1465,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 1649,
+    "exception_type": "(ValueError, AttributeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 661,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "line": 898,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/dialogs/injection_scheme_dialog.py",
+    "line": 637,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/dialogs/injection_scheme_dialog.py",
+    "line": 682,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/dialogs/optimization_results_dialog.py",
+    "line": 19,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/dialogs/optimization_results_dialog.py",
+    "line": 165,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/dialogs/optimization_results_dialog.py",
+    "line": 192,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/dialogs/optimization_results_dialog.py",
+    "line": 220,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/dialogs/optimization_results_dialog.py",
+    "line": 257,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/dialogs/optimization_results_dialog.py",
+    "line": 288,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/dialogs/optimization_results_dialog.py",
+    "line": 300,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/dialogs/optimization_results_dialog.py",
+    "line": 317,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/dialogs/preferences_dialog.py",
+    "line": 154,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/dialogs/scenario_editor_dialog.py",
+    "line": 24,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/dialogs/scenario_editor_dialog.py",
+    "line": 34,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/dialogs/scenario_editor_dialog.py",
+    "line": 231,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 45,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 52,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 60,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 102,
+    "exception_type": "ImportError",
+    "body_statements": 5
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 824,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 885,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 912,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 922,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 931,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 945,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 1078,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 1137,
+    "exception_type": "(FileNotFoundError, json.JSONDecodeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 1474,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 1696,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 1747,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 2026,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 2056,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 304,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 674,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 1203,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 1368,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 1817,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 1909,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 328,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/main_window.py",
+    "line": 1452,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "line": 69,
+    "exception_type": "ImportError",
+    "body_statements": 6
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "line": 975,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "line": 999,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "line": 1444,
+    "exception_type": "Exception",
+    "body_statements": 5
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "line": 1734,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "line": 1857,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "line": 1927,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "line": 2240,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "line": 1287,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "line": 994,
+    "exception_type": "bare_except",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/sensitivity_widget.py",
+    "line": 20,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/sensitivity_widget.py",
+    "line": 27,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/sensitivity_widget.py",
+    "line": 396,
+    "exception_type": "ValueError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/sensitivity_widget.py",
+    "line": 511,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/sensitivity_widget.py",
+    "line": 359,
+    "exception_type": "Exception",
+    "body_statements": 5
+  },
+  {
+    "module": "ui/uq_widget.py",
+    "line": 32,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/uq_widget.py",
+    "line": 412,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/widgets/context_bubble.py",
+    "line": 14,
+    "exception_type": "TypeError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/context_bubble.py",
+    "line": 38,
+    "exception_type": "TypeError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/depth_profile_dialog.py",
+    "line": 10,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/engine_selection_widget.py",
+    "line": 105,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/widgets/geomechanics_3d_view.py",
+    "line": 25,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/geomechanics_3d_view.py",
+    "line": 389,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/geomechanics_3d_view.py",
+    "line": 544,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/geomechanics_3d_view.py",
+    "line": 282,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/geomechanics_3d_view.py",
+    "line": 511,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/geomechanics_3d_view.py",
+    "line": 436,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/log_viewer_dialog.py",
+    "line": 35,
+    "exception_type": "ImportError",
+    "body_statements": 5
+  },
+  {
+    "module": "ui/widgets/log_viewer_dialog.py",
+    "line": 49,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/log_viewer_dialog.py",
+    "line": 374,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/manual_well_dialog.py",
+    "line": 26,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/manual_well_dialog.py",
+    "line": 53,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/manual_well_dialog.py",
+    "line": 61,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/manual_well_dialog.py",
+    "line": 250,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/manual_well_dialog.py",
+    "line": 267,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/manual_well_dialog.py",
+    "line": 393,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/manual_well_dialog.py",
+    "line": 234,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/manual_well_dialog.py",
+    "line": 357,
+    "exception_type": "(AttributeError, ValueError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 37,
+    "exception_type": "ImportError",
+    "body_statements": 4
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 54,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 505,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 632,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 735,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 769,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 840,
+    "exception_type": "(ValueError, AttributeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 895,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 903,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 927,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "line": 812,
+    "exception_type": "(ValueError, IndexError)",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/pvt_table_editor.py",
+    "line": 126,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/pvt_table_editor.py",
+    "line": 295,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/pvt_table_editor.py",
+    "line": 314,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/pvt_table_editor.py",
+    "line": 151,
+    "exception_type": "ValueError",
+    "body_statements": 4
+  },
+  {
+    "module": "ui/widgets/pvt_table_editor.py",
+    "line": 182,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/widgets/pvt_table_editor.py",
+    "line": 259,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/workers/ai_query_worker.py",
+    "line": 13,
+    "exception_type": "ImportError",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/workers/ai_query_worker.py",
+    "line": 20,
+    "exception_type": "ImportError",
+    "body_statements": 4
+  },
+  {
+    "module": "ui/workers/ai_query_worker.py",
+    "line": 102,
+    "exception_type": "(ValueError, ImportError)",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/workers/ai_query_worker.py",
+    "line": 106,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/workers/ai_query_worker.py",
+    "line": 134,
+    "exception_type": "PermissionDenied",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/workers/ai_query_worker.py",
+    "line": 136,
+    "exception_type": "GoogleAPICallError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/workers/ai_query_worker.py",
+    "line": 164,
+    "exception_type": "AuthenticationError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/workers/ai_query_worker.py",
+    "line": 166,
+    "exception_type": "RateLimitError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/workers/ai_query_worker.py",
+    "line": 168,
+    "exception_type": "APIError",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/workers/base_worker.py",
+    "line": 41,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/workers/dca_worker.py",
+    "line": 34,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "ui/workers/model_list_worker.py",
+    "line": 36,
+    "exception_type": "httpx.RequestError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/workers/model_list_worker.py",
+    "line": 39,
+    "exception_type": "httpx.HTTPStatusError",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/workers/model_list_worker.py",
+    "line": 42,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/workers/optimization_worker.py",
+    "line": 54,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/workers/sensitivity_analysis_worker.py",
+    "line": 67,
+    "exception_type": "AttributeError",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/workers/sensitivity_analysis_worker.py",
+    "line": 72,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/workers/uq_worker.py",
+    "line": 46,
+    "exception_type": "AttributeError",
+    "body_statements": 3
+  },
+  {
+    "module": "ui/workers/uq_worker.py",
+    "line": 50,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "ui/workers/well_analysis_worker.py",
+    "line": 87,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/config_manager.py",
+    "line": 137,
+    "exception_type": "(KeyError, TypeError, IndexError)",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/config_manager.py",
+    "line": 28,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/config_manager.py",
+    "line": 36,
+    "exception_type": "FileNotFoundError",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/config_manager.py",
+    "line": 42,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/config_manager.py",
+    "line": 95,
+    "exception_type": "json.JSONDecodeError",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/config_manager.py",
+    "line": 97,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 15,
+    "exception_type": "ImportError",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 739,
+    "exception_type": "ImportError",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 783,
+    "exception_type": "Exception",
+    "body_statements": 6
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 827,
+    "exception_type": "Exception",
+    "body_statements": 6
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 870,
+    "exception_type": "Exception",
+    "body_statements": 5
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 927,
+    "exception_type": "Exception",
+    "body_statements": 5
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 958,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 198,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 317,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 541,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 309,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 707,
+    "exception_type": "Exception",
+    "body_statements": 3
+  },
+  {
+    "module": "utils/error_handler.py",
+    "line": 937,
+    "exception_type": "Exception",
+    "body_statements": 6
+  },
+  {
+    "module": "utils/file_association.py",
+    "line": 60,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/file_association.py",
+    "line": 85,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/file_association.py",
+    "line": 98,
+    "exception_type": "FileNotFoundError",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/file_association.py",
+    "line": 100,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/file_association.py",
+    "line": 73,
+    "exception_type": "FileNotFoundError",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/file_association.py",
+    "line": 79,
+    "exception_type": "FileNotFoundError",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/grdecl_writer.py",
+    "line": 162,
+    "exception_type": "IOError",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/grdecl_writer.py",
+    "line": 165,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/grdecl_writer.py",
+    "line": 46,
+    "exception_type": "ValueError",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/i18n_manager.py",
+    "line": 65,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/multiprocess_logging.py",
+    "line": 43,
+    "exception_type": "(PermissionError, OSError)",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/multiprocess_logging.py",
+    "line": 48,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/multiprocess_logging.py",
+    "line": 61,
+    "exception_type": "(EOFError, BrokenPipeError, OSError)",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/multiprocess_logging.py",
+    "line": 193,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/multiprocess_logging.py",
+    "line": 248,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/multiprocess_logging.py",
+    "line": 161,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/project_file_handler.py",
+    "line": 73,
+    "exception_type": "(TypeError, IOError)",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/project_file_handler.py",
+    "line": 90,
+    "exception_type": "(IOError, json.JSONDecodeError)",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/project_file_handler.py",
+    "line": 45,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/report_generator.py",
+    "line": 72,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/report_generator.py",
+    "line": 93,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/report_generator.py",
+    "line": 140,
+    "exception_type": "Exception",
+    "body_statements": 4
+  },
+  {
+    "module": "utils/report_generator.py",
+    "line": 995,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/report_generator.py",
+    "line": 1007,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/report_generator.py",
+    "line": 150,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/run_exporter.py",
+    "line": 1237,
+    "exception_type": "(TypeError, OverflowError, ValueError)",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/run_exporter.py",
+    "line": 1247,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/run_exporter.py",
+    "line": 495,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/run_exporter.py",
+    "line": 1178,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/run_exporter.py",
+    "line": 1206,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/validation_manager.py",
+    "line": 36,
+    "exception_type": "(FileNotFoundError, yaml.YAMLError)",
+    "body_statements": 2
+  },
+  {
+    "module": "utils/validation_manager.py",
+    "line": 50,
+    "exception_type": "(IndexError, AttributeError)",
+    "body_statements": 1
+  },
+  {
+    "module": "utils/validation_manager.py",
+    "line": 76,
+    "exception_type": "(ValueError, TypeError)",
+    "body_statements": 1
+  }
+]

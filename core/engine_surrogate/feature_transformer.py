@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # Check for sklearn availability
 try:
     from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
-    from sklearn.decomposition import PCA
+
     SKLEARN_AVAILABLE = True
 except ImportError:
     SKLEARN_AVAILABLE = False
@@ -49,8 +49,12 @@ class FeatureTransformer:
             feature_names: Names of features
         """
         self.scaling_method = scaling_method
-        self.apply_log_transform = apply_log_transform or []
-        self.feature_names = feature_names or []
+        if apply_log_transform is None:
+            raise ValueError("apply_log_transform cannot be None in FeatureTransformer")
+        self.apply_log_transform = apply_log_transform
+        if feature_names is None:
+            raise ValueError("feature_names cannot be None in FeatureTransformer")
+        self.feature_names = feature_names
 
         # Initialize scaler
         if not SKLEARN_AVAILABLE:
@@ -125,7 +129,9 @@ class FeatureTransformer:
         elif self.scaling_method == "standard" and self._manual_scale_mean is not None:
             return (X_transformed - self._manual_scale_mean) / (self._manual_scale_std + 1e-10)
         elif self.scaling_method == "minmax" and self._manual_scale_min is not None:
-            return (X_transformed - self._manual_scale_min) / (self._manual_scale_max - self._manual_scale_min + 1e-10)
+            return (X_transformed - self._manual_scale_min) / (
+                self._manual_scale_max - self._manual_scale_min + 1e-10
+            )
         else:
             return X_transformed
 
@@ -160,7 +166,10 @@ class FeatureTransformer:
         elif self.scaling_method == "standard" and self._manual_scale_mean is not None:
             X_transformed = X_scaled * (self._manual_scale_std + 1e-10) + self._manual_scale_mean
         elif self.scaling_method == "minmax" and self._manual_scale_min is not None:
-            X_transformed = X_scaled * (self._manual_scale_max - self._manual_scale_min + 1e-10) + self._manual_scale_min
+            X_transformed = (
+                X_scaled * (self._manual_scale_max - self._manual_scale_min + 1e-10)
+                + self._manual_scale_min
+            )
         else:
             X_transformed = X_scaled
 
@@ -264,7 +273,7 @@ def get_default_feature_names() -> List[str]:
         "porosity",
         "permeability",
         "mmp",
-        "WAG_ratio",
+        "wag_ratio",
         "kv_kh_ratio",
     ]
 

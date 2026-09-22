@@ -29,11 +29,7 @@ from core.data_models import (
     EmpiricalFittingParameters,
     PhysicalConstants,
 )
-from core.engine_factory import EngineFactory
-from core.geology.geostatistical_modeling import (
-    create_geostatistical_grid,
-    create_facies_based_grid,
-)
+from core.engine_surrogate.surrogate_engine import SurrogateEngineWrapper
 
 _PHYS_CONSTANTS = PhysicalConstants()
 
@@ -47,7 +43,7 @@ class DataIntegrationEngine:
     """
 
     def __init__(self):
-        self.engine_factory = EngineFactory()
+        self.surrogate_engine = SurrogateEngineWrapper()
         self.data_validator = DataValidator()
         self.unit_converter = UnitConverter()
         self.preprocessor = DataPreprocessor()
@@ -150,27 +146,6 @@ class DataIntegrationEngine:
             return validation_results
 
         except Exception as e:
-            # Import global error handler
-            from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
-
-            # Report the error properly instead of just logging
-            report_caught_error(
-                operation="process and validate dataset",
-                exception=e,
-                context={
-                    "dataset_type": type(widget_data).__name__,
-                    "dataset_keys": list(widget_data.keys())
-                    if isinstance(widget_data, dict)
-                    else "non-dict",
-                    "validation_stage": "comprehensive",
-                    "component_results_expected": True,
-                },
-                user_action_suggested="Check dataset format and ensure all required fields are present. Verify that reservoir parameters, PVT data, and well data are properly formatted.",
-                show_dialog=True,
-                severity=ErrorSeverity.ERROR,
-                category=ErrorCategory.DATA,
-            )
-
             logger.error(f"Error in process_and_validate_dataset: {e}")
             return {
                 "is_valid": False,
@@ -274,8 +249,8 @@ class DataIntegrationEngine:
             alpha_base=fitting_data.get("alpha_base", 1.0),
             miscibility_window=fitting_data.get("miscibility_window", 0.011),
             # Production dynamics
-            breakthrough_time_years=fitting_data.get("breakthrough_time_years", 1.5),
             trapping_efficiency=fitting_data.get("trapping_efficiency", 0.4),
+            recycle_growth_rate=fitting_data.get("recycle_growth_rate", 1.5),
             # Initial conditions
             initial_gor_scf_per_stb=fitting_data.get("initial_gor_scf_per_stb", 500.0),
             # Mobility and mixing
@@ -375,6 +350,47 @@ class DataIntegrationEngine:
             * np.exp(-0.0002 * (pressure_points - 4000)),
         }
 
+        # Resolve or create EOS model for CO2-EOR
+        eos_model = None
+        if "eos_model" in res_params and isinstance(res_params["eos_model"], EOSModelParameters):
+            eos_model = res_params["eos_model"]
+        elif "eos_model" in data and isinstance(data["eos_model"], EOSModelParameters):
+            eos_model = data["eos_model"]
+        elif "eos_parameters" in data and isinstance(data["eos_parameters"], EOSModelParameters):
+            eos_model = data["eos_parameters"]
+        else:
+            component_names = ["CO2", "C1", "C4-C6", "C7+", "C10+"]
+            component_properties = np.array([
+                [0.05, 44.01, 304.13, 7.376e6, 0.225],
+                [0.45, 16.04, 190.6, 4.604e6, 0.011],
+                [0.15, 58.12, 425.2, 3.796e6, 0.200],
+                [0.25, 120.0, 550.0, 2.8e6, 0.350],
+                [0.10, 180.0, 650.0, 1.8e6, 0.480],
+            ])
+            binary_interaction_coeffs = np.zeros((len(component_names), len(component_names)))
+            for i in range(1, len(component_names)):
+                binary_interaction_coeffs[0, i] = 0.12
+                binary_interaction_coeffs[i, 0] = 0.12
+
+            eos_model = EOSModelParameters(
+                eos_type="PR",
+                component_names=component_names,
+                component_properties=component_properties,
+                binary_interaction_coeffs=binary_interaction_coeffs,
+            )
+
+        # Physical dimensions in field units (ft, acres)
+        # res_params["block_sizes"] dx, dy, dz are in feet.
+        thickness_ft = float(
+            res_params.get("thickness_ft", res_params.get("thickness", nz * dz))
+        )
+        area_acres = float(
+            res_params.get("area_acres", res_params.get("area", (nx * dx * ny * dy) / 43560.0))
+        )
+        length_ft = float(
+            res_params.get("length_ft", res_params.get("length", nx * dx))
+        )
+
         return ReservoirData(
             grid=grid,
             pvt_tables=pvt_tables,
@@ -385,16 +401,16 @@ class DataIntegrationEngine:
             average_porosity=np.mean(porosity),
             average_permeability=np.mean(perm_x),
             initial_water_saturation=res_params.get("initial_water_saturation", 0.25),
-            thickness_ft=nz * dz / 0.3048,
-            area_acres=(nx * dx * ny * dy) / 4046.86,
-            length_ft=(nx * dx) / 0.3048,
+            thickness_ft=thickness_ft,
+            area_acres=area_acres,
+            length_ft=length_ft,
             rock_type=res_params.get("rock_type", "sandstone"),
             depositional_environment=res_params.get("depositional_environment", "fluvial"),
             structural_complexity=res_params.get("structural_complexity", "simple"),
-            dip_angle=res_params.get("dip_angle", 0.0),
             oil_fvf=res_params.get("oil_fvf", 1.2),
             density_contrast=res_params.get("density_contrast", 0.3),
             interfacial_tension=res_params.get("interfacial_tension", 5.0),
+            eos_model=eos_model,
         )
 
     def _create_pvt_properties(self, data: Dict[str, Any]) -> PVTProperties:
@@ -494,18 +510,23 @@ class DataIntegrationEngine:
             well_shut_in_threshold_bpd=eor_data.get("well_shut_in_threshold_bpd", 10.0),
             max_injector_bhp_psi=eor_data.get("max_injector_bhp_psi", 8000.0),
             timestep_days=eor_data.get("timestep_days", 30.44),
+            enforce_step_flash=eor_data.get("enforce_step_flash", False),
         )
 
     def _create_operational_parameters(self, data: Dict[str, Any]) -> OperationalParameters:
         """Create complete OperationalParameters object"""
         op_data = data.get("operational_parameters", {})
 
+        rec_model = op_data.get("recovery_model_selection", "hybrid")
+        if rec_model == "phd_hybrid":
+            rec_model = "hybrid"
+
         return OperationalParameters(
             project_lifetime_years=op_data.get("project_lifetime_years", 15),
             time_resolution=op_data.get("time_resolution", "yearly"),
             target_objective_name=op_data.get("target_objective_name", None),
             target_objective_value=op_data.get("target_objective_value", None),
-            recovery_model_selection=op_data.get("recovery_model_selection", "hybrid"),
+            recovery_model_selection=rec_model,
             target_tolerance=op_data.get("target_tolerance", 0.05),
         )
 
@@ -565,8 +586,7 @@ class DataIntegrationEngine:
         }
 
         try:
-            surrogate_engine = self.engine_factory.create_engine("surrogate")
-            surrogate_validation = surrogate_engine.validate_parameters(
+            surrogate_validation = self.surrogate_engine.validate_parameters(
                 engine_data["reservoir_data"], engine_data["eor_parameters"]
             )
 

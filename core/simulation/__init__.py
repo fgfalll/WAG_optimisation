@@ -2,10 +2,15 @@
 Simulation tools for CO2 EOR
 """
 
-from .injection_schemes import InjectionSchemes
 from .profile_generator import ProfileGenerator
 
+try:
+    from core.engine_surrogate.profile_generator_fast import FastProfileGenerator
+except ImportError:
+    FastProfileGenerator = None
+
 __all__ = [
-    'InjectionSchemes',
     'ProfileGenerator',
+    'FastProfileGenerator',
 ]
+

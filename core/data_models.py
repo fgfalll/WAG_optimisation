@@ -24,6 +24,40 @@ def from_dict_to_dataclass(cls, data: Dict[str, Any]):
     return cls(**filtered_kwargs)
 
 
+def calculate_koval_from_reservoir(mobility_ratio: float, v_dp_coefficient: float) -> float:
+    """
+    Calculate Koval factor from mobility ratio and Dykstra-Parsons heterogeneity coefficient.
+
+    Koval (1963) showed that the effective displacement efficiency in heterogeneous
+    porous media depends on both mobility ratio and reservoir heterogeneity.
+
+    K = E / M
+    where:
+        E = (0.78 + 0.22 * M^0.25)^4 (heterogeneity factor accounting for mobility contrast)
+        M = mobility_ratio
+        H = 1 / ((1 - v_dp)^2 + epsilon) (heterogeneity from Dykstra-Parsons)
+
+    Args:
+        mobility_ratio: Mobility ratio M (oil_mobility / co2_mobility typically > 1)
+        v_dp_coefficient: Dykstra-Parsons coefficient (0=uniform, 1=highly heterogeneous)
+
+    Returns:
+        Koval factor (typically 0.5-10 for CO2-EOR conditions)
+
+    Reference:
+        Koval, E.J. (1963). "A Method for Predicting the Performance of
+        Miscible Displacement in Heterogeneous Porous Media."
+    """
+    if mobility_ratio <= 0:
+        return 1.0
+
+    E = (0.78 + 0.22 * (mobility_ratio ** 0.25)) ** 4
+    H = 1.0 / ((1.0 - v_dp_coefficient) ** 2 + 1e-6)
+    K = (E * H) / mobility_ratio
+
+    return float(np.clip(K, 0.5, 10.0))
+
+
 @dataclasses.dataclass
 class WellData:
     name: str
@@ -53,6 +87,29 @@ class WellData:
                 return False
 
         return True
+
+
+@dataclasses.dataclass
+class WellScheduleEntry:
+    """Single operation in a well's operational schedule."""
+
+    day: float
+    action: str
+    rate: float
+    duration_days: float
+    bhp_target: float
+    trigger_condition: Optional[str] = None
+    trigger_value: Optional[float] = None
+
+
+@dataclasses.dataclass
+class WellOperationalSchedule:
+    """Complete operational schedule for a single well."""
+
+    well_name: str
+    entries: List[WellScheduleEntry] = dataclasses.field(default_factory=list)
+    control_mode: str = "bhp"
+    max_operations: int = 100
 
 
 @dataclasses.dataclass
@@ -182,9 +239,12 @@ class ReservoirData:
     average_porosity: Optional[float] = None
     initial_water_saturation: Optional[float] = None
     oil_fvf: Optional[float] = None
+    density_contrast: Optional[float] = 0.3
+    interfacial_tension: Optional[float] = 5.0
     rock_type: Optional[str] = None
     depositional_environment: Optional[str] = None
     structural_complexity: Optional[str] = None
+    dip_angle: float = 0.0
     eos_model: Optional[EOSModelParameters] = None
     layer_definitions: Optional[List[LayerDefinition]] = None
     geostatistical_params: Optional["GeostatisticalParams"] = None
@@ -631,6 +691,7 @@ class PulsedInjectionParams:
 @dataclasses.dataclass
 class EORParameters:
     injection_scheme: str = "continuous"
+    injection_scheme_locked: bool = True
     injection_rate: float = 5000.0
 
     huff_n_puff: Optional[HuffNPuffParams] = None
@@ -638,9 +699,29 @@ class EORParameters:
     tapered: Optional[TaperedInjectionParams] = None
     pulsed: Optional[PulsedInjectionParams] = None
 
+    # Tapered injection bounds and parameters
+    min_tapered_duration_years: float = 1.0
+    max_tapered_duration_years: float = 15.0
+    min_tapered_final_rate_multiplier: float = 0.05
+    max_tapered_final_rate_multiplier: float = 1.0
+    min_tapered_initial_rate_multiplier: float = 1.0
+    max_tapered_initial_rate_multiplier: float = 3.0
+
+    # huff_n_puff bounds
+    min_huff_n_puff_injection_period_days: float = 7.0
+    max_huff_n_puff_injection_period_days: float = 90.0
+    min_huff_n_puff_soaking_period_days: float = 1.0
+    max_huff_n_puff_soaking_period_days: float = 60.0
+    min_huff_n_puff_production_period_days: float = 14.0
+    max_huff_n_puff_production_period_days: float = 120.0
+    min_huff_n_puff_max_cycles: int = 1
+    max_huff_n_puff_max_cycles: int = 50
+
     mobility_ratio: float = 5.0
     target_pressure_psi: float = 3000.0
-    max_pressure_psi: float = 6000.0
+    max_pressure_psi: float = 4950.0
+    caprock_fracture_pressure_psi: float = 5500.0
+    caprock_safety_factor: float = 0.90
     min_pressure_factor: float = 1.1
     min_injection_rate_mscfd: float = 5000.0
     max_injection_rate_mscfd: float = 100000.0
@@ -655,9 +736,27 @@ class EORParameters:
     initial_gor: float = 200.0
     default_mmp_fallback: float = 2500.0
     kv_kh_ratio: float = 0.1
-    WAG_ratio: float = 1.0  # Added missing attribute
+    wag_ratio: float = 1.0
     cycle_length_days: float = 90.0
     water_fraction: float = 0.5
+    co2_recycling_fraction: float = (
+        0.9  # Unified parameter for CO2 recycling (both injection & economic)
+    )
+    recycle_compressor_capacity_mscfd: float = 50000.0  # Maximum surface recycle compressor throughput
+    facility_availability: float = 0.95  # Compressor and surface facility uptime fraction
+    co2_recycle_loss_fraction: float = 0.05  # Losses during capture and recompression
+    biot_coefficient: float = 0.80  # Biot poroelastic coefficient
+    poissons_ratio: float = 0.25  # Formation Poisson's ratio
+    overburden_gradient_psi_per_ft: float = 1.0  # Vertical stress gradient
+    horizontal_stress_ratio_k0: float = 0.75  # Shmin / Sv in-situ ratio
+    caprock_tensile_strength_psi: float = 200.0  # Caprock tensile failure limit
+    caprock_cohesion_psi: float = 400.0  # Caprock Mohr-Coulomb cohesion
+    caprock_friction_angle_deg: float = 30.0  # Caprock internal friction angle
+    reservoir_depth_ft: float = 5000.0  # Average formation depth
+    enforce_step_flash: bool = False  # If True, enforce per-step EOS flash calculations; default is False (propagates project PVT baseline)
+    target_miscibility_degree: Optional[float] = None
+    min_miscibility_degree: Optional[float] = None
+    miscibility_weight_penalty: float = 1000.0
 
     # Flattened UI Injection Scheme parameters
     huff_n_puff_cycle_length_days: float = 90.0
@@ -669,10 +768,13 @@ class EORParameters:
     swag_water_gas_ratio: float = 1.0
     swag_simultaneous_injection: bool = True
     swag_mixing_efficiency: float = 1.0
+    swag_cycle_length_days: int = 30
 
+    # Tapered injection - using min/max bounds for optimization flexibility
+    # Minimum final_rate_multiplier is 0.05 (5%) to prevent zero injection
     tapered_initial_rate_multiplier: float = 2.0
-    tapered_final_rate_multiplier: float = 0.5
-    tapered_duration_years: float = 5.0
+    tapered_final_rate_multiplier: float = 0.1  # Default 10%, minimum 5%
+    tapered_duration_years: float = 10.0
     tapered_function: str = "linear"
 
     pulsed_pulse_duration_days: float = 15.0
@@ -690,8 +792,17 @@ class EORParameters:
     productivity_index: float = 5.0
     wellbore_pressure: float = 500.0
     well_shut_in_threshold_bpd: float = 10.0
+    shut_in_mode: int = 0
+    shut_in_ramp_days: int = 30
+    allow_wag_post_shutin: bool = True
+    allow_well_conversion: float = 0.0
+    well_conversion_day: int = 365
     max_injector_bhp_psi: float = 8000.0  # Reduced from 12000 to prevent excessive pressure buildup
     timestep_days: float = 30.44  # Monthly timestep (average days per month)
+
+    # Production rate constraints (prevents unrealistic "bang-bang" production spikes)
+    max_production_rate_stbd: float = 10000.0  # Maximum liquid production rate per well (STB/day)
+    min_production_rate_stbd: float = 0.0  # Minimum production rate (shut-in threshold)
 
     # Pressure control parameters (added for peer review fix)
     min_allowable_pressure_psi: float = 1600.0
@@ -713,7 +824,9 @@ class EORParameters:
     psi_to_pa_conversion: float = (
         6894.76  # Duplicate of PhysicalConstants.PSI_TO_PA, kept for backward compatibility
     )
-    fahrenheit_to_kelvin_offset: float = 273.15
+    fahrenheit_to_kelvin_offset: float = (
+        255.372  # Correct: K = (F - 32) * 5/9 + 273.15 = F * 5/9 + 255.372
+    )
     fahrenheit_to_kelvin_scale: float = 5.0 / 9.0
 
     # CCUS Physics Engine parameters
@@ -736,6 +849,15 @@ class EORParameters:
     solubility_coefficient_co2: float = 0.03
     co2_oil_interfacial_tension: float = 30.0
     gravity_acceleration: float = 9.81
+
+    # CO2 Trapping and Production Physics (research-based defaults)
+    pre_breakthrough_co2_fraction_in_solution_gas: float = 0.05
+    residual_gas_trapping_fraction: float = 0.20
+    solubility_trapping_fraction: float = 0.03
+    co2_production_rate_constant: float = 0.2
+    koval_factor_multiplier: float = 1.0
+    min_koval_factor: float = 0.5
+    max_koval_factor: float = 10.0
 
     # Multiphase Flow parameters
     default_oil_viscosity_cp: float = 2.0
@@ -843,14 +965,33 @@ class EORParameters:
     max_productivity_index: float = 20.0
     min_wellbore_pressure: float = 100.0
     max_wellbore_pressure: float = 2000.0
+    min_max_production_rate: float = 1000.0  # Minimum max production rate (STB/day)
+    max_max_production_rate: float = 15000.0  # Maximum max production rate (STB/day)
 
     # UI Optimization search bounds for WAG
-    min_WAG_ratio: float = 0.1
-    max_WAG_ratio: float = 3.0
+    min_wag_ratio: float = 0.1
+    max_wag_ratio: float = 3.0
     min_cycle_length_days: float = 30.0
     max_cycle_length_days: float = 180.0
     min_water_fraction: float = 0.2
     max_water_fraction: float = 0.8
+
+    # Locked physical parameters - set from lab/geological data (NOT optimized by GA)
+    # These represent nature's constraints and cannot be changed by the algorithm
+    locked_sor: float = 0.25  # Residual Oil Saturation - lab-derived
+    locked_productivity_index: float = 5.0  # Well test value - not optimizable
+    locked_gravity_factor: float = 1.0  # Density difference & Kv/Kh - geological
+    locked_hyperbolic_b_factor: float = 0.5  # Curve fitting - not operational
+    locked_transition_alpha: float = 1.0  # Curve fitting - not operational
+    locked_transition_beta: float = 5.0  # Curve fitting - not operational
+
+    # Caprock fracture pressure - user-definable geological constraint
+    # Injection pressure upper bound MUST be strictly below this value
+    caprock_fracture_pressure_psi: float = (
+        5500.0  # Set from geomechanical data (must exceed max_pressure_psi)
+    )
+    caprock_safety_factor: float = 0.90  # EPA Class VI 90% fracture pressure limit
+    injectivity_index: float = 25.0  # Gas injectivity index per well (MSCFD/psi)
 
     # Injection distribution parameters for better pressure propagation
     injection_zone_cells: int = 3  # Number of cells in injection zone
@@ -888,13 +1029,43 @@ class EORParameters:
     flux_limiter_type: str = "van_leer"
 
     def __post_init__(self):
-        valid_schemes = ["continuous", "huff_n_puff", "swag", "tapered", "pulsed"]
+        valid_schemes = ["continuous", "wag", "huff_n_puff", "swag", "tapered", "pulsed", "storage"]
         if self.injection_scheme not in valid_schemes:
             raise ValueError(f"Injection scheme must be one of: {valid_schemes}")
         if self.max_pressure_psi < self.target_pressure_psi:
             raise ValueError("Max Pressure must be >= Target Pressure.")
         if self.max_injection_rate_mscfd <= self.min_injection_rate_mscfd:
             raise ValueError("Max Injection Rate must be > Min Injection Rate.")
+
+        # Validate min/max bound pairs for optimization constraints
+        if self.min_gravity_factor >= self.max_gravity_factor:
+            raise ValueError("min_gravity_factor must be < max_gravity_factor")
+        if self.min_sor >= self.max_sor:
+            raise ValueError("min_sor must be < max_sor")
+        if self.min_transition_alpha >= self.max_transition_alpha:
+            raise ValueError("min_transition_alpha must be < max_transition_alpha")
+        if self.min_transition_beta >= self.max_transition_beta:
+            raise ValueError("min_transition_beta must be < max_transition_beta")
+        if self.min_plateau_duration_fraction >= self.max_plateau_duration_fraction:
+            raise ValueError(
+                "min_plateau_duration_fraction must be < max_plateau_duration_fraction"
+            )
+        if self.min_ramp_up_fraction >= self.max_ramp_up_fraction:
+            raise ValueError("min_ramp_up_fraction must be < max_ramp_up_fraction")
+        if self.min_hyperbolic_b_factor >= self.max_hyperbolic_b_factor:
+            raise ValueError("min_hyperbolic_b_factor must be < max_hyperbolic_b_factor")
+        if self.min_productivity_index >= self.max_productivity_index:
+            raise ValueError("min_productivity_index must be < max_productivity_index")
+        if self.min_wellbore_pressure >= self.max_wellbore_pressure:
+            raise ValueError("min_wellbore_pressure must be < max_wellbore_pressure")
+        if self.min_wag_ratio >= self.max_wag_ratio:
+            raise ValueError("min_wag_ratio must be < max_wag_ratio")
+        if self.min_cycle_length_days >= self.max_cycle_length_days:
+            raise ValueError("min_cycle_length_days must be < max_cycle_length_days")
+        if self.min_water_fraction >= self.max_water_fraction:
+            raise ValueError("min_water_fraction must be < max_water_fraction")
+        if self.min_producer_bhp_psi >= self.max_producer_bhp_psi:
+            raise ValueError("min_producer_bhp_psi must be < max_producer_bhp_psi")
 
         # Validate flux limiter type
         valid_limiters = ["van_leer", "superbee"]
@@ -903,11 +1074,53 @@ class EORParameters:
                 f"Flux limiter type must be one of: {valid_limiters}. Got: {self.flux_limiter_type}"
             )
 
+        # Validate locked physical parameters (lab/geological data - NOT optimized)
+        if not (0.0 <= self.locked_sor <= 1.0):
+            raise ValueError("locked_sor (Residual Oil Saturation) must be between 0 and 1.")
+        if self.locked_productivity_index <= 0:
+            raise ValueError("locked_productivity_index must be positive.")
+        if self.locked_gravity_factor <= 0:
+            raise ValueError("locked_gravity_factor must be positive.")
+        if not (0.0 <= self.locked_hyperbolic_b_factor <= 1.0):
+            raise ValueError("locked_hyperbolic_b_factor must be between 0 and 1.")
+        if self.locked_transition_alpha <= 0:
+            raise ValueError("locked_transition_alpha must be positive.")
+        if self.locked_transition_beta <= 0:
+            raise ValueError("locked_transition_beta must be positive.")
+        if self.caprock_fracture_pressure_psi <= 0:
+            raise ValueError("caprock_fracture_pressure_psi must be positive.")
+
+        # Validate caprock fracture pressure constraint (EPA Class VI UIC standard)
+        p_safe_ceiling = self.caprock_safety_factor * self.caprock_fracture_pressure_psi
+        if self.max_pressure_psi > p_safe_ceiling:
+            logging.warning(
+                f"max_pressure_psi ({self.max_pressure_psi}) exceeds safe caprock fracture ceiling "
+                f"({p_safe_ceiling:.1f} psi, {self.caprock_safety_factor*100:.0f}% of {self.caprock_fracture_pressure_psi} psi). "
+                f"Auto-clamping to {p_safe_ceiling:.1f} psi to ensure geomechanical containment."
+            )
+            self.max_pressure_psi = p_safe_ceiling
+
         if self.injection_scheme == "huff_n_puff" and self.huff_n_puff is None:
             logging.warning(
                 "injection_scheme is 'huff_n_puff' but no HuffNPuffParams provided. Using defaults."
             )
             self.huff_n_puff = HuffNPuffParams()
+
+    @property
+    def WAG_ratio(self) -> float:
+        return self.wag_ratio
+
+    @WAG_ratio.setter
+    def WAG_ratio(self, val: float) -> None:
+        self.wag_ratio = val
+
+    @property
+    def co2_recycling_efficiency(self) -> float:
+        return self.co2_recycling_fraction
+
+    @co2_recycling_efficiency.setter
+    def co2_recycling_efficiency(self, val: float) -> None:
+        self.co2_recycling_fraction = val
 
     @classmethod
     def from_config_dict(cls, config_dict: Dict[str, Any], **kwargs):
@@ -951,6 +1164,7 @@ class PVTProperties:
     gas_compressibility: float = 3e-4  # Reduced from 1e-3 to more realistic 3e-4 (1/psi)
     water_compressibility: float = 3e-6
     gas_fvf_rb_per_mscf: float = 5.0
+    enforce_step_flash: bool = False  # If True, evaluate EOS flash at every pressure step
 
     def __post_init__(self):
         arrays = [
@@ -985,6 +1199,7 @@ class PVTProperties:
 class OperationalParameters:
     project_lifetime_years: int = 15
     time_resolution: str = "yearly"
+    co2_breakthrough_year_fraction: float = 0.25
     target_objective_name: Optional[str] = None
     target_objective_value: Optional[float] = None
     recovery_model_selection: str = "hybrid"
@@ -1014,13 +1229,12 @@ class OperationalParameters:
         if self.target_objective_name not in valid_targets:
             raise ValueError(f"target_objective_name must be one of {valid_targets}.")
         valid_models = [
-            "simple",
             "miscible",
             "immiscible",
             "hybrid",
+            "phd_hybrid",
             "koval",
-            "layered",
-            "co2_specific",
+            "buckley_leverett",
         ]
         if self.recovery_model_selection not in valid_models:
             raise ValueError(f"recovery_model_selection must be one of: {', '.join(valid_models)}")
@@ -1034,6 +1248,22 @@ class OperationalParameters:
 
 @dataclasses.dataclass
 class ProfileParameters:
+    """
+    Production profile parameters for CO2-EOR simulation.
+
+    Decline Rate Reference Values (from CO2-EOR literature):
+    - Low permeability (< 50 mD): 0.05-0.12 per year
+    - Medium permeability (50-200 mD): 0.12-0.20 per year
+    - High permeability (> 200 mD): 0.20-0.35 per year
+    - Solution gas drive reservoirs: 0.25-0.45 per year
+
+    Physics basis:
+    - Corey (1954): Relative permeability determines rate decline behavior
+    - Darcy's law: q = PI * (p_res - p_wf), if pressure declines rate declines
+    - Fractional flow theory: decline ∝ (M-1)/(M+1) where M = mobility_ratio
+    - Koval (1963): Post-breakthrough acceleration from heterogeneity effects
+    """
+
     oil_profile_type: str = "plateau_hyperbolic_decline"
     injection_profile_type: str = "constant_rate"
     plateau_duration_fraction: float = 0.3
@@ -1045,6 +1275,10 @@ class ProfileParameters:
     co2_recycling_efficiency_fraction: float = 0.9
     water_cut_exponent: float = 1.5
     custom_oil_production_fractions: Optional[List[float]] = None
+    # Decline rate in fraction/year (e.g., 0.15 = 15%/year)
+    # Typical values: 0.05-0.45 depending on reservoir quality and drive mechanism
+    # See class docstring for detailed reference values by reservoir type
+    decline_rate: float = 0.15
 
     def __post_init__(self):
         valid_oil_profiles = [
@@ -1099,6 +1333,8 @@ class GeneticAlgorithmParams:
     restart_diversity_fraction: float = 0.3
     constraint_handling_method: str = "adaptive_penalty"
     penalty_factor: float = 1000.0
+    num_objectives: int = 1
+    secondary_objective: str = "recovery_factor"
 
     def __post_init__(self):
         if not (10 <= self.sol_per_pop <= 1000):
@@ -1130,6 +1366,18 @@ class GeneticAlgorithmParams:
             raise ValueError("Constraint Handling Method must be 'static', 'adaptive', or 'death'.")
         if self.penalty_factor < 0:
             raise ValueError("Penalty Factor must be non-negative.")
+        if not (1 <= self.num_objectives <= 2):
+            raise ValueError("Number of objectives must be 1 (single) or 2 (bi-objective NSGA-II).")
+        valid_secondary_objectives = [
+            "npv",
+            "recovery_factor",
+            "co2_utilization",
+            "storage_efficiency",
+            "miscibility_degree",
+            "average_miscibility_degree",
+        ]
+        if self.num_objectives == 2 and self.secondary_objective not in valid_secondary_objectives:
+            raise ValueError(f"Secondary objective must be one of: {valid_secondary_objectives}")
 
     @classmethod
     def from_config_dict(cls, config_ga_params_dict: Dict[str, Any], **kwargs):
@@ -1172,76 +1420,6 @@ class BayesianOptimizationParams:
     @classmethod
     def from_config_dict(cls, config_dict: Dict[str, Any], **kwargs):
         config = config_dict.copy()
-        config.update(kwargs)
-        return from_dict_to_dataclass(cls, config)
-
-
-@dataclasses.dataclass
-class ParticleSwarmParams:
-    n_particles: int = 40
-    iters: int = 100
-    c1: float = 0.5
-    c2: float = 0.3
-    w: float = 0.9
-
-    def __post_init__(self):
-        if not (10 <= self.n_particles <= 1000):
-            raise ValueError("Number of particles must be between 10 and 1000.")
-        if not (10 <= self.iters <= 1000):
-            raise ValueError("Number of iterations must be between 10 and 1000.")
-        if not (0.0 <= self.c1 <= 4.0):
-            raise ValueError("Cognitive parameter (c1) should be between 0.0 and 4.0.")
-        if not (0.0 <= self.c2 <= 4.0):
-            raise ValueError("Social parameter (c2) should be between 0.0 and 4.0.")
-        if not (0.0 <= self.w <= 1.0):
-            raise ValueError("Inertia weight (w) must be between 0.0 and 1.0.")
-
-    @classmethod
-    def from_config_dict(cls, config_dict: Dict[str, Any], **kwargs):
-        config = config_dict.copy()
-        config.update(kwargs)
-        return from_dict_to_dataclass(cls, config)
-
-
-@dataclasses.dataclass
-class DifferentialEvolutionParams:
-    strategy: str = "best1bin"
-    maxiter: int = 100
-    popsize: int = 15
-    mutation: float = 0.7
-    recombination: float = 0.7
-
-    def __post_init__(self):
-        valid_strategies = [
-            "best1bin",
-            "best1exp",
-            "rand1exp",
-            "randtobest1exp",
-            "currenttobest1exp",
-            "best2exp",
-            "rand2exp",
-            "randtobest1bin",
-            "currenttobest1bin",
-            "best2bin",
-            "rand2bin",
-            "rand1bin",
-        ]
-        if self.strategy not in valid_strategies:
-            raise ValueError(f"Invalid DE strategy. Choose from: {valid_strategies}")
-        if not (1 <= self.popsize <= 100):
-            raise ValueError("Population size multiplier must be between 1 and 100.")
-        if not (10 <= self.maxiter <= 1000):
-            raise ValueError("Max iterations must be between 10 and 1000.")
-        if not (0.0 <= self.mutation <= 2.0):
-            raise ValueError("Mutation factor must be between 0.0 and 2.0.")
-        if not (0.0 <= self.recombination <= 1.0):
-            raise ValueError("Recombination probability must be between 0.0 and 1.0.")
-
-    @classmethod
-    def from_config_dict(cls, config_dict: Dict[str, Any], **kwargs):
-        config = config_dict.copy()
-        if "popsize_multiplier" in config:
-            config["popsize"] = config.pop("popsize_multiplier")
         config.update(kwargs)
         return from_dict_to_dataclass(cls, config)
 
@@ -1364,7 +1542,19 @@ class CCUSParameters:
 
 @dataclasses.dataclass
 class CO2StorageParameters:
-    """Parameters for CO2 storage calculations"""
+    """
+    Parameters for CO2 storage calculations.
+
+    Note: The surrogate engine now directly distinguishes CO2 production from hydrocarbon
+    gas production. The solution_gas_co2_fraction, pre_breakthrough_co2_fraction, and
+    produced_co2_fraction parameters are retained for legacy compatibility and any
+    non-surrogate engine use cases. The surrogate engine calculates CO2/hydrocarbon
+    separation internally based on breakthrough physics.
+
+    References:
+        - OSTI-1204577 (Peck et al. 2017): CO2 storage efficiency factors
+        - Azzolina et al. 2015: CO2 EOR carbon balance
+    """
 
     structural_trapping_factor: float = 0.2
     residual_trapping_factor: float = 0.4
@@ -1378,7 +1568,18 @@ class CO2StorageParameters:
     monitoring_cost_usd_per_tonne: float = 5.0
     max_injection_pressure_frac: float = 0.8
     min_injection_pressure_psi: float = 1000.0
-    plume_containment_safety_factor: float = 1.2
+    plume_containment_safety_factor: float = (
+        1.0  # MUST be <= 1.0 (1.0 = at fracture gradient, safety factor)
+    )
+
+    # CO2 fraction parameters (legacy - surrogate engine handles this internally now)
+    solution_gas_co2_fraction: float = (
+        0.20  # Pre-BT: fraction of solution gas that is CO2 (rest is CH4/hydrocarbons)
+    )
+    pre_breakthrough_co2_fraction: float = (
+        0.05  # Pre-BT: fraction of total gas production that is dissolved CO2
+    )
+    produced_co2_fraction: float = 0.50  # Post-BT: fraction of produced gas that is recycled CO2
 
     def __post_init__(self):
         if not (0.0 <= self.structural_trapping_factor <= 1.0):
@@ -1399,6 +1600,24 @@ class CO2StorageParameters:
             raise ValueError("Min trapping efficiency must be between 0 and 1")
         if not (0.0 <= self.reservoir_seal_integrity_factor <= 1.0):
             raise ValueError("Reservoir seal integrity factor must be between 0 and 1")
+        if not (0.0 <= self.solution_gas_co2_fraction <= 1.0):
+            raise ValueError(
+                f"solution_gas_co2_fraction must be between 0 and 1, got {self.solution_gas_co2_fraction}"
+            )
+        if not (0.0 <= self.pre_breakthrough_co2_fraction <= 1.0):
+            raise ValueError(
+                f"pre_breakthrough_co2_fraction must be between 0 and 1, got {self.pre_breakthrough_co2_fraction}"
+            )
+        if not (0.0 <= self.produced_co2_fraction <= 1.0):
+            raise ValueError(
+                f"produced_co2_fraction must be between 0 and 1, got {self.produced_co2_fraction}"
+            )
+        if self.plume_containment_safety_factor > 1.0:
+            raise ValueError(
+                f"plume_containment_safety_factor must be <= 1.0 (at fracture gradient), "
+                f"got {self.plume_containment_safety_factor}. A value > 1.0 would allow "
+                f"pressures exceeding the caprock fracture gradient - this is unsafe and illegal."
+            )
 
     @classmethod
     def from_config_dict(cls, config_dict: Dict[str, Any], **kwargs):
@@ -1415,7 +1634,7 @@ class AdvancedEngineParams:
             "ooip_stb": 0.25,
             "v_dp_coefficient": 0.35,
             "mobility_ratio": 0.50,
-            "WAG_ratio": 0.60,
+            "wag_ratio": 0.60,
             "gravity_factor": 0.75,
             "sor": 0.20,
             "transition_alpha": 0.15,
@@ -1430,6 +1649,8 @@ class AdvancedEngineParams:
     breakthrough_fallback_time_years: float = 5.0
     breakthrough_fallback_impact_factor: float = 1.0
     breakthrough_fallback_penalty: float = 0.0
+    breakthrough_time_min_years: float = 1.0
+    min_plume_containment: float = 0.6
     fracture_pressure_multiplier: float = 1.5
     pressure_control_min_scaling_factor: float = 0.01
     use_simple_physics: bool = True  # DEPRECATED: Always ignored, surrogate engine only
@@ -1437,6 +1658,23 @@ class AdvancedEngineParams:
     recovery_model_type: str = (
         "hybrid"  # New: Recovery model for surrogate engine ("hybrid", "phd_hybrid", etc.)
     )
+
+    # PhD Geomechanical Containment Formula Parameters
+    # S_cont = γ_safety * [w_p * S_press + w_s * S_seal + w_t * S_struct]
+    containment_pressure_weight: float = 0.5
+    containment_seal_weight: float = 0.3
+    containment_structure_weight: float = 0.2
+    containment_safety_margin: float = 1.0
+    fracture_pressure_limit_fraction: float = 0.9
+    containment_critical_threshold: float = 0.3
+
+    # Environmental Constraint Parameters for GA Optimization
+    # Two-tier system: early generations get warnings, late generations get FAILURE_PENALTY
+    carbon_tax_usd_per_tonne: float = 75.0
+    min_injection_period_fraction: float = 0.5
+    min_avg_storage_efficiency: float = 0.75
+    max_annual_leakage_fraction: float = 0.02
+    early_generation_threshold: float = 0.5
 
     @classmethod
     def from_config_dict(cls, config_dict: Dict[str, Any], **kwargs):
@@ -1532,6 +1770,7 @@ class PhysicalConstants:
     MD_TO_M2: float = 9.869233e-16  # milliDarcy to m^2
     M2_TO_MD: float = 1.0 / 9.869233e-16
     MD_TO_CM2: float = 9.869233e-13  # milliDarcy to cm^2 (1 mD = 9.869e-13 cm^2)
+    MD_TO_FT2: float = 9.869233e-16 * 10.7639  # milliDarcy to ft^2 (mD -> m^2 * m^2 -> ft^2)
 
     # Time conversions
     SECONDS_PER_DAY: float = 86400.0
@@ -1571,6 +1810,13 @@ class PhysicalConstants:
     # Area conversions
     M2_TO_FT2: float = 10.7639  # m² to ft² (1 m² = 10.7639 ft²)
     FT2_TO_M2: float = 1.0 / 10.7639  # ft² to m²
+    FT2_PER_ACRE: float = 43560.0  # square feet per acre
+    ACRES_TO_M2: float = 4046.8564224  # acres to m² (1 acre = 4046.8564224 m²)
+    M2_TO_ACRES: float = 1.0 / 4046.8564224  # m² to acres
+    # Pore volume conversion: ft³-acres to bbl
+    # 1 acre = 43560 ft², 1 bbl = 5.615 ft³
+    # PV (bbl) = area (acres) * thickness (ft) * 43560 (ft²/acre) / 5.615 (ft³/bbl)
+    FT3_ACRE_TO_BBL: float = 43560.0 / 5.615  # ≈ 7758.0 bbl per acre-ft
 
     # Viscosity conversions
     VISC_CP_TO_PA_S: float = 0.001  # centipoise to Pa·s
@@ -1897,8 +2143,12 @@ class FullPhysicsGrid:
         self.dz_array = dz_array
         self.depth = depth
         self.tops = tops
-        self.fault_cells = fault_cells or []
-        self.fault_orientations = fault_orientations or []
+        if fault_cells is None:
+            raise ValueError("fault_cells cannot be None in StructuralGrid")
+        self.fault_cells = fault_cells
+        if fault_orientations is None:
+            raise ValueError("fault_orientations cannot be None in StructuralGrid")
+        self.fault_orientations = fault_orientations
         self.n_cells = dimensions[0] * dimensions[1] * dimensions[2]
 
     @property
@@ -2030,12 +2280,19 @@ class EmpiricalFittingParameters:
     """
     Fitting/calibration parameters for empirical surrogate engine validation.
 
+    NOTE: breakthrough_time is NOT a fitting parameter - it is calculated
+    from Koval (1963) physics in surrogate_engine._build_params_dict().
+    Do NOT add breakthrough_time here as it would override the physics.
+
+    All breakthrough-related parameters are computed from reservoir/EOR
+    properties, not fitted to benchmarks.
+
     These parameters allow users to calibrate the surrogate model to match
     specific reservoir cases (e.g., SPE5, CMG validation, field data).
 
     The parameters are used in the PhDHybridSurrogate model to control:
     - Miscibility transition behavior
-    - Production dynamics (breakthrough, trapping)
+    - Production dynamics (trapping, recycle growth)
     - Fluid composition effects
     - Relative permeability and Corey exponents
     - Todd-Longstaff mixing
@@ -2048,9 +2305,13 @@ class EmpiricalFittingParameters:
     alpha_base: float = 1.0  # Transition midpoint (dimensionless)
     miscibility_window: float = 0.011  # Beta value controlling transition sharpness
 
-    # Production dynamics
-    breakthrough_time_years: float = 1.5  # Time to CO2 breakthrough
+    # NOTE: breakthrough_time_years removed - it's calculated via Koval (1963) physics
+    # Trapping efficiency is also physics-based (Corey 1954), but kept as a
+    # user-adjustable parameter for model flexibility within physical bounds
     trapping_efficiency: float = 0.4  # Fraction of injected CO2 trapped (0.0-1.0)
+    recycle_growth_rate: float = (
+        1.5  # Growth rate for recycled CO2 ramp-up after breakthrough (1/years)
+    )
 
     # Initial conditions
     initial_gor_scf_per_stb: float = 500.0  # Initial gas-oil ratio
@@ -2080,13 +2341,15 @@ class EmpiricalFittingParameters:
             )
 
         # Production dynamics
-        if not (0.1 <= self.breakthrough_time_years <= 10.0):
-            raise ValueError(
-                f"breakthrough_time_years must be between 0.1 and 10, got {self.breakthrough_time_years}"
-            )
+        # NOTE: breakthrough_time validation removed - it's calculated via Koval physics
+        # not a fitted parameter
         if not (0.0 <= self.trapping_efficiency <= 1.0):
             raise ValueError(
                 f"trapping_efficiency must be between 0 and 1, got {self.trapping_efficiency}"
+            )
+        if not (0.01 <= self.recycle_growth_rate <= 10.0):
+            raise ValueError(
+                f"recycle_growth_rate must be between 0.01 and 10, got {self.recycle_growth_rate}"
             )
 
         # Initial conditions

@@ -1,59 +1,146 @@
-# CO2 EOR Optimizer
+<div align="center">
 
-A comprehensive desktop application and computational engine for **CO2 Enhanced Oil Recovery (EOR)** simulation, validation, and optimization. This tool provides reservoir engineers with a lightning-fast, physics-based surrogate modeling environment that bridges the gap between simple analytical screening and full-field compositional simulation (like CMG GEM).
+# CO₂ EOR Optimizer
 
-## Features
+**A physics-informed surrogate reservoir simulator for CO₂ Enhanced Oil Recovery optimization**
 
-### 1. Advanced UI and Data Management
-Built with PyQt6, the application provides an intuitive interface for managing complex reservoir models:
-* **Reservoir Properties:** Define grid dimensions, uniform or layered properties, OOIP volumetrics, relative permeability (Corey), and geostatistical parameters.
-* **PVT & Fluid Properties:** Rigorous built-in thermodynamic calculators for Dead/Live Oil Viscosity (Beggs-Robinson, Chew-Connally), Bubble Point and Compressibility (Vasquez-Beggs), and Formation Volume Factors (Standing). Supports both Black Oil and detailed Equation of State (EOS) compositional models.
-* **Well Management:** Define 3D trajectories, perforation depths, wellbore radius, and skin factors for multiple injectors and producers.
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
+[![PyQt6](https://img.shields.io/badge/GUI-PyQt6-green)](https://pypi.org/project/PyQt6/)
+[![Tests](https://img.shields.io/badge/tests-258%20passed-brightgreen)](.github/workflows/docs.yml)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-informational)](https://fgfalll.github.io/WAG_optimisation/)
+[![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
-### 2. PhD Surrogate Simulation Engine
-A high-performance proxy simulation engine that bypasses the computational overhead of traditional numerical simulators while maintaining strict physical integrity:
-* **Zero-Dimensional Material Balance:** Fully dynamic time-stepping loop that enforces strict voidage replacement and tracks evolving reservoir pressure.
-* **Dynamic Fractional Flow:** Integrates Buckley-Leverett displacement and the Koval heterogeneity method to model viscous fingering, gravity override, and breakthrough timing.
-* **Miscibility Tracking:** Real-time evaluation of the Todd-Longstaff mixing parameter ($\omega$), driven by dynamic Minimum Miscibility Pressure (MMP) calculations and logistic sigmoid transitions based on $C_{7+}$ fractions.
-* **Physics-Based Defaults:** Operates natively on raw physics without requiring empirical "cheat" data, but allows full calibration for proxy-matching against fine-grid compositional models.
+[📖 **Documentation**](https://fgfalll.github.io/WAG_optimisation/) &nbsp;|&nbsp;
+[🏗️ Architecture](https://fgfalll.github.io/WAG_optimisation/architecture/overview/) &nbsp;|&nbsp;
+[🔬 Physics](https://fgfalll.github.io/WAG_optimisation/physics/reservoir_model/) &nbsp;|&nbsp;
+[⚡ Quick Start](#quick-start)
 
-### 3. Empirical Tuning and Proxy Calibration
-For advanced workflows where the surrogate engine must perfectly match historical data or full-field models (e.g., ECLIPSE, Intersect, CMG):
-* Automatic estimation of tuning parameters directly from PVT and coreflood data.
-* Customizable relative permeability endpoints, miscibility windows ($\Delta P/MMP$), transition midpoints ($\alpha_{base}$), and transverse mixing coefficients.
+</div>
 
-### 4. Visualization
-* **2D & 3D Interactive Plots:** Visualize PVT property curves, relative permeability curves, well trajectories, and simulated production profiles (Pressure, Recovery Factor, Gas/Oil ratios) using Plotly and Matplotlib.
+---
 
-## Getting Started
+## What It Does
 
-### Prerequisites
-* Python 3.10+
-* Required packages listed in `requirements.txt` (PyQt6, NumPy, SciPy, Matplotlib, Plotly, etc.)
+CO₂ EOR Optimizer is a **desktop application and scientific computing engine** that bridges the gap between simple analytical screening tools and full-field compositional simulators (CMG GEM, ECLIPSE). It is designed for reservoir engineers who need:
 
-### Installation
-1. Clone the repository.
-2. Create a virtual environment:
-   ```bash
-   python -m venv .venv
-   ```
-3. Activate the virtual environment:
-   * Windows: `.venv\Scripts\activate`
-   * Linux/Mac: `source .venv/bin/activate`
-4. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+- **Fast, physics-rigorous optimization** of CO₂ injection parameters (WAG ratio, injection rate, scheme type)
+- **Economic analysis** — NPV, cashflow, CO₂ purchase/recycle economics, carbon credits
+- **Geomechanical safety enforcement** — EPA Class VI UIC compliance, caprock integrity, fault slip tendency
+- **CO₂ storage accounting** — closed-loop carbon balance with structural, residual, solubility, and mineral trapping
 
-### Running the Application
-Launch the main graphical interface:
+The core simulation engine is a **physics-informed intermediate-order reservoir simulator** (not a pure ML proxy) that couples:
+
+| Model | Implementation |
+|---|---|
+| Fluid displacement | Koval heterogeneity + Todd-Longstaff viscous fingering |
+| PVT / thermodynamics | Solvent-extended Peng-Robinson EOS, multi-stage flash |
+| Well deliverability | Composite Vogel-Darcy IPR (Darcy + Vogel regimes) |
+| Pressure | Coupled material balance with dynamic Bg, VRR tracking |
+| Geomechanics | Stress path, Mohr-Coulomb fault slip, caprock failure |
+| Optimization | GA, Bayesian, PSO, Differential Evolution |
+
+---
+
+## Quick Start
+
 ```bash
+# 1. Clone
+git clone https://github.com/fgfalll/WAG_optimisation.git
+cd WAG_optimisation
+
+# 2. Set up environment
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+# source .venv/bin/activate     # Linux/macOS
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Run
 python main.py
 ```
 
-## Documentation
-Detailed mathematical derivations and engineering workflows for the surrogate engine can be found in the `docs/` folder:
-* **[Surrogate Engine README](docs/SURROGATE_ENGINE_README.md)**: Comprehensive guide covering 1D vs 3D sweep physics, dynamic material balance, proxy tuning parameters, and exact PVT correlation math.
+### Run Tests
+```bash
+python -m pytest tests/ -v
+```
 
-## Validation
-The repository includes a suite of validation scripts (e.g., `validation/empirical_engine_validation.py`) that strictly benchmark the PhD Surrogate Engine's recovery and pressure predictions against standard CMG SR3 output files to ensure engineering accuracy.
+---
+
+## Architecture Overview
+
+```
+co2eor_optimizer/
+├── core/
+│   ├── engine_surrogate/      ← Active physics engine (single source of truth)
+│   │   ├── surrogate_engine.py     ← SurrogateEngineWrapper — main entry point
+│   │   ├── profile_generator_fast.py ← FastProfileGenerator — 4-stream output
+│   │   ├── pvt_state.py             ← SolventExtendedPVTEngine (PR-EOS)
+│   │   ├── geomechanics_fault.py    ← Caprock & fault integrity
+│   │   └── analytical_models.py     ← PhDHybridSurrogate, Koval, B-L models
+│   ├── optimisation_engine.py ← GA / BO / PSO / DE optimizer
+│   └── objectives/            ← NPV, recovery factor, CO₂ storage objectives
+├── ui/                        ← PyQt6 desktop application
+├── evaluation/                ← MMP correlations (Cronquist, Yellig-Metcalfe)
+├── agent_wiki/                ← Full technical documentation (→ GitHub Pages)
+├── tests/                     ← 258 tests, 0 failures
+└── deprecated/                ← Legacy engines (do not modify)
+```
+
+> **📖 Full architecture documentation**: [fgfalll.github.io/WAG_optimisation/](https://fgfalll.github.io/WAG_optimisation/)
+
+---
+
+## Key Features
+
+### 🛢️ Simulation Engine
+- **4-fluid-stream output**: crude oil, natural gas (HC + CO₂), water, injection agent — at daily/monthly/annual resolution
+- **WAG / SWAG / Huff-n-Puff / Tapered / Pulsed** injection schemes
+- **Dynamic breakthrough time** computed from first principles (Koval 1963)
+- **Mass-conservative** WAG mobility buffering (phase contrast, not static multipliers)
+
+### 💰 Economics
+- NPV with user-configured CAPEX, variable OPEX, CO₂ purchase/recycle costs, storage credits
+- Annual cashflow with discounting
+- Carbon tax on leaked CO₂
+
+### 🏛️ Geomechanics
+- Pore pressure → horizontal stress coupling ($\Delta\sigma_h = \gamma_h \Delta P$)
+- Caprock tensile + Mohr-Coulomb shear failure envelopes
+- Fault slip tendency: $T_s = \tau / \sigma_n'$
+- EPA Class VI UIC pressure ceiling enforcement
+
+### ⚙️ Optimization
+- **Genetic Algorithm** with real-valued chromosomes and tournament selection
+- **Bayesian Optimization** (Gaussian Process surrogate)
+- **Particle Swarm Optimization**
+- **Differential Evolution**
+
+---
+
+## Documentation
+
+Full technical documentation is auto-generated from [`agent_wiki/`](agent_wiki/) and deployed to GitHub Pages:
+
+| Section | Contents |
+|---|---|
+| [Architecture](https://fgfalll.github.io/WAG_optimisation/architecture/overview/) | Engine routing, module map, execution flow, dependency graph |
+| [Physics](https://fgfalll.github.io/WAG_optimisation/physics/reservoir_model/) | Reservoir model, PVT, CO₂ properties, displacement, relative permeability |
+| [Development](https://fgfalll.github.io/WAG_optimisation/development/common_pitfalls/) | Change safety matrix, common pitfalls, coding rules, extension points |
+| [Audit](https://fgfalll.github.io/WAG_optimisation/audit/technical_debt/) | Dead code, hardcoded values, fallbacks, suspicious logic |
+| [Verification](https://fgfalll.github.io/WAG_optimisation/verification/verification_strategy/) | 7-level V&V hierarchy, conservation tests, convergence studies |
+| [Validation](https://fgfalll.github.io/WAG_optimisation/validation/benchmarks/) | SPE 5, CMG GEM reference benchmarks |
+
+---
+
+## Requirements
+
+- Python 3.10+
+- PyQt6, NumPy, SciPy, Matplotlib, Plotly
+- See [`requirements.txt`](requirements.txt) for the complete list
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.

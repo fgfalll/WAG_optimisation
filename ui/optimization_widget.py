@@ -1,6 +1,5 @@
 import logging
 import json
-import csv
 import io
 from datetime import datetime
 from pathlib import Path
@@ -56,8 +55,6 @@ from core.data_models import (
     EconomicParameters,
     BayesianOptimizationParams,
     EORParameters,
-    ParticleSwarmParams,
-    DifferentialEvolutionParams,
 )
 from analysis.material_balance import create_material_balance_from_optimization
 
@@ -84,7 +81,7 @@ except ImportError as e:
     _mmp_import_failed = True
 
 
-from config_manager import ConfigManager
+from utils.config_manager import ConfigManager
 
 logger = logging.getLogger(__name__)
 
@@ -122,8 +119,6 @@ class OptimizationWidget(QWidget):
 
         self.ga_param_inputs: Dict[str, QWidget] = {}
         self.bo_param_inputs: Dict[str, QWidget] = {}
-        self.pso_param_inputs: Dict[str, QWidget] = {}
-        self.de_param_inputs: Dict[str, QWidget] = {}
         self.convergence_live_data: List[Dict[str, float]] = []
 
         self.linked_min_max_widgets: Dict[str, Dict[str, QWidget]] = {}
@@ -223,6 +218,12 @@ class OptimizationWidget(QWidget):
                 "Open the main configuration panel for economic, operational, and other settings."
             )
         )
+        self.run_simulation_button.setText(self.tr("Run Simulation"))
+        self.run_simulation_button.setToolTip(
+            self.tr("Load a project to enable the simulation engine.")
+            if not self.run_simulation_button.isEnabled()
+            else self.tr("Run a direct forward simulation with the current parameters without optimization.")
+        )
         self.run_button.setText(self.tr("Run Optimization"))
         self.run_button.setToolTip(
             self.tr("Load a project to enable the optimization engine.")
@@ -248,21 +249,13 @@ class OptimizationWidget(QWidget):
         self.mmp_calculate_button.setText(self.tr(" Calculate MMP Profile"))
 
         # Hyperparameters Panel
-        self.ga_params_group.setTitle(self.tr("Genetic Algorithm (PyGAD)"))
+        self.ga_params_group.setTitle(self.tr("Genetic Algorithm (GA)"))
         self.bo_params_group.setTitle(self.tr("Bayesian Optimization"))
-        self.pso_params_group.setTitle(self.tr("Particle Swarm Optimization"))
-        self.de_params_group.setTitle(self.tr("Differential Evolution"))
         self.hyperparam_tabs.setTabText(
             self.hyperparam_tabs.indexOf(self.ga_params_group), self.tr("GA")
         )
         self.hyperparam_tabs.setTabText(
             self.hyperparam_tabs.indexOf(self.bo_params_group), self.tr("BO")
-        )
-        self.hyperparam_tabs.setTabText(
-            self.hyperparam_tabs.indexOf(self.pso_params_group), self.tr("PSO")
-        )
-        self.hyperparam_tabs.setTabText(
-            self.hyperparam_tabs.indexOf(self.de_params_group), self.tr("DE")
         )
 
         # Results Panel Tabs
@@ -315,7 +308,7 @@ class OptimizationWidget(QWidget):
         # Repopulate plot list with translated names
         current_text = self.plot_list.currentItem().text() if self.plot_list.currentItem() else None
         self.plot_list.clear()
-        plot_options = ["Convergence", "Final Production Profiles", "Parameter Sensitivity"]
+        plot_options = ["Convergence", "Final Production Profiles"]
         if self.current_results and "bayes_opt_obj" in self.current_results:
             plot_options.append("Objective vs. Parameter (BO)")
 
@@ -431,12 +424,16 @@ class OptimizationWidget(QWidget):
         action_button_layout = QHBoxLayout()
         self.configure_button = QPushButton()
         self.configure_button.setIcon(QIcon.fromTheme("document-properties"))
+        self.run_simulation_button = QPushButton()
+        self.run_simulation_button.setIcon(QIcon.fromTheme("media-playback-start"))
+        self.run_simulation_button.setEnabled(False)
         self.run_button = QPushButton()
         self.run_button.setIcon(QIcon.fromTheme("system-run"))
         self.run_button.setEnabled(False)
 
         action_button_layout.addWidget(self.configure_button)
         action_button_layout.addStretch()
+        action_button_layout.addWidget(self.run_simulation_button)
         action_button_layout.addWidget(self.run_button)
         layout.addLayout(action_button_layout)
 
@@ -546,16 +543,6 @@ class OptimizationWidget(QWidget):
         self.bo_params_group = QGroupBox()
         self.bo_params_form = QFormLayout(self.bo_params_group)
         self.hyperparam_tabs.addTab(self.bo_params_group, "")
-
-        # PSO Tab
-        self.pso_params_group = QGroupBox()
-        self.pso_params_form = QFormLayout(self.pso_params_group)
-        self.hyperparam_tabs.addTab(self.pso_params_group, "")
-
-        # DE Tab
-        self.de_params_group = QGroupBox()
-        self.de_params_form = QFormLayout(self.de_params_group)
-        self.hyperparam_tabs.addTab(self.de_params_group, "")
 
         layout.addWidget(self.hyperparam_tabs)
         return container
@@ -685,11 +672,9 @@ class OptimizationWidget(QWidget):
         self.plot_controls_widget = QWidget()
         self.plot_controls_layout = QGridLayout(self.plot_controls_widget)
         self.plot_controls_layout.setContentsMargins(0, 0, 0, 0)
-        self.sensitivity_param_combo = QComboBox()
         self.bo_sensitivity_param_combo = QComboBox()
         self.analysis_param_label = QLabel()
         self.plot_controls_layout.addWidget(self.analysis_param_label, 0, 0)
-        self.plot_controls_layout.addWidget(self.sensitivity_param_combo, 0, 1)
         self.plot_controls_layout.addWidget(self.bo_sensitivity_param_combo, 0, 1)
         self.plot_controls_layout.setColumnStretch(1, 1)
         plot_view_layout.addWidget(self.plot_controls_widget)
@@ -708,6 +693,8 @@ class OptimizationWidget(QWidget):
     def _connect_signals(self):
         """Connects all widget signals to their corresponding slots."""
         self.method_combo.currentTextChanged.connect(self._on_method_changed)
+        self.resolution_combo.currentIndexChanged.connect(self._on_resolution_changed)
+        self.run_simulation_button.clicked.connect(self._run_simulation)
         self.run_button.clicked.connect(self._run_optimization)
         self.configure_button.clicked.connect(self.open_configuration_requested.emit)
         self.log_handler.emitter.log_record_received.connect(self._append_log_message)
@@ -715,7 +702,6 @@ class OptimizationWidget(QWidget):
 
         # Plotting signals
         self.plot_list.currentItemChanged.connect(self._on_analysis_plot_selected)
-        self.sensitivity_param_combo.currentTextChanged.connect(self._generate_selected_plot)
         self.bo_sensitivity_param_combo.currentTextChanged.connect(self._generate_selected_plot)
 
         # --- MMP Signals ---
@@ -737,6 +723,12 @@ class OptimizationWidget(QWidget):
     def update_engine(self, engine: Optional[OptimizationEngine]):
         self.engine = engine
         is_engine_ready = self.engine is not None
+        self.run_simulation_button.setEnabled(is_engine_ready)
+        self.run_simulation_button.setToolTip(
+            self.tr("Run a direct forward simulation with current parameters.")
+            if is_engine_ready
+            else self.tr("Load a project to enable.")
+        )
         self.run_button.setEnabled(is_engine_ready)
         self.run_button.setToolTip(
             self.tr("Run the configured optimization.")
@@ -751,13 +743,15 @@ class OptimizationWidget(QWidget):
             self._populate_dataclass_form(
                 self.engine.bo_params_default_config, self.bo_params_form, self.bo_param_inputs
             )
-            self._populate_dataclass_form(
-                self.engine.pso_params_default_config, self.pso_params_form, self.pso_param_inputs
-            )
-            self._populate_dataclass_form(
-                self.engine.de_params_default_config, self.de_params_form, self.de_param_inputs
-            )
             self._on_method_changed(self.method_combo.currentText())
+
+            engine_resolution = getattr(self.engine.operational_params, "time_resolution", "yearly")
+            idx = self.resolution_combo.findData(engine_resolution)
+            if idx != -1:
+                self.resolution_combo.blockSignals(True)
+                self.resolution_combo.setCurrentIndex(idx)
+                self.resolution_combo.blockSignals(False)
+
             logger.info(
                 "OptimizationWidget engine instance updated and all hyperparameter inputs displayed."
             )
@@ -772,8 +766,6 @@ class OptimizationWidget(QWidget):
         else:
             self._clear_form(self.ga_params_form, self.ga_param_inputs)
             self._clear_form(self.bo_params_form, self.bo_param_inputs)
-            self._clear_form(self.pso_params_form, self.pso_param_inputs)
-            self._clear_form(self.de_params_form, self.de_param_inputs)
             self._update_input_summary_tab()
             logger.warning("OptimizationWidget engine instance removed.")
 
@@ -810,14 +802,6 @@ class OptimizationWidget(QWidget):
                 self._populate_dataclass_form(
                     dc_instance, self.bo_params_form, self.bo_param_inputs
                 )
-            elif dc_name == ParticleSwarmParams.__name__:
-                self._populate_dataclass_form(
-                    dc_instance, self.pso_params_form, self.pso_param_inputs
-                )
-            elif dc_name == DifferentialEvolutionParams.__name__:
-                self._populate_dataclass_form(
-                    dc_instance, self.de_params_form, self.de_param_inputs
-                )
 
         self._update_input_summary_tab()
 
@@ -825,11 +809,14 @@ class OptimizationWidget(QWidget):
         """Shows/hides the relevant hyperparameter sub-tabs based on the selected method."""
         method_key = (self.method_combo.currentData() or "").lower()
         is_hybrid = "hybrid" in method_key
+        is_nsga2 = "nsga" in method_key.lower()
 
-        self.hyperparam_tabs.setTabVisible(0, "genetic" in method_key or is_hybrid)  # GA
-        self.hyperparam_tabs.setTabVisible(1, "bayesian" in method_key or is_hybrid)  # BO
-        self.hyperparam_tabs.setTabVisible(2, "pso" in method_key)  # PSO
-        self.hyperparam_tabs.setTabVisible(3, "de" in method_key)  # DE
+        self.hyperparam_tabs.setTabVisible(
+            0, "genetic" in method_key or is_hybrid or is_nsga2
+        )  # GA
+        self.hyperparam_tabs.setTabVisible(
+            1, "bayesian" in method_key or is_hybrid or is_nsga2
+        )  # BO
 
         for i in range(self.hyperparam_tabs.count()):
             if self.hyperparam_tabs.isTabVisible(i):
@@ -838,6 +825,15 @@ class OptimizationWidget(QWidget):
 
         if self._initial_setup_complete:
             self._update_input_summary_tab()
+
+    def _on_resolution_changed(self, resolution_text: str):
+        """Updates the engine's time_resolution when the user changes the resolution dropdown."""
+        resolution_key = self.resolution_combo.currentData()
+        if not resolution_key:
+            return
+        if self.engine and hasattr(self.engine, "operational_params"):
+            self.engine.operational_params.time_resolution = resolution_key
+            logger.debug(f"Time resolution updated to: {resolution_key} ({resolution_text})")
 
     def _clear_form(self, form_layout: QFormLayout, input_dict: Dict):
         """Removes all rows from a QFormLayout and clears the input widget dictionary."""
@@ -959,7 +955,7 @@ class OptimizationWidget(QWidget):
 
     def _update_min_max_validator(
         self,
-        source_widget: QWidget,
+        _source_widget: QWidget,
         peer_widget: QWidget,
         source_type: str,
         relation: str,
@@ -1014,30 +1010,172 @@ class OptimizationWidget(QWidget):
         """Gathers all current input parameters from the engine and UI forms for display or export."""
         if not self.engine:
             return {}
-        all_params = {
+
+        all_params: Dict[str, Dict[str, Any]] = {
+            "Optimization Setup": {},
+            "Optimization Search Bounds": {},
             "General & Reservoir": {},
+            "Reservoir Parameters": {},
+            "Fluid & PVT Properties": {},
+            "Operational Parameters": {},
             "EOR Parameters": {},
             "Economic Parameters": {},
+            "CO2 Storage Parameters": {},
+            "Well Configuration": {},
+            "MMP Analysis Configuration": {},
             "Genetic Algorithm": {},
             "Bayesian Optimization": {},
             "Particle Swarm Optimization": {},
             "Differential Evolution": {},
         }
 
-        all_params["General & Reservoir"]["MMP (Calculated, psi)"] = self.engine.mmp
-        all_params["General & Reservoir"]["Average Porosity"] = self.engine.avg_porosity
-        all_params["General & Reservoir"]["OOIP (STB)"] = self.engine.reservoir.ooip_stb
-        all_params["General & Reservoir"]["Project Lifetime (years)"] = (
-            self.engine.operational_params.project_lifetime_years
+        # 1. Optimization Setup
+        if hasattr(self, "method_combo") and self.method_combo.count() > 0:
+            all_params["Optimization Setup"]["selected_method"] = self.method_combo.currentText()
+            all_params["Optimization Setup"]["method_key"] = str(self.method_combo.currentData() or "")
+        if hasattr(self, "objective_combo") and self.objective_combo.count() > 0:
+            all_params["Optimization Setup"]["selected_objective"] = self.objective_combo.currentText()
+            all_params["Optimization Setup"]["objective_key"] = str(self.objective_combo.currentData() or "")
+        if hasattr(self, "resolution_combo") and self.resolution_combo.count() > 0:
+            all_params["Optimization Setup"]["time_resolution"] = self.resolution_combo.currentText()
+        all_params["Optimization Setup"]["simulation_engine_type"] = (
+            getattr(self, "selected_engine_type", None) or "surrogate"
         )
+        if getattr(self.engine, "operational_params", None):
+            all_params["Optimization Setup"]["recovery_model"] = getattr(
+                self.engine.operational_params, "recovery_model_selection", "phd_hybrid"
+            )
 
-        for f in fields(self.engine.eor_params):
-            all_params["EOR Parameters"][f.name] = getattr(self.engine.eor_params, f.name)
-        for f in fields(self.engine.economic_params):
-            all_params["Economic Parameters"][f.name] = getattr(self.engine.economic_params, f.name)
+        # 2. Optimization Search Bounds
+        if hasattr(self.engine, "_get_parameter_bounds"):
+            try:
+                bounds = self.engine._get_parameter_bounds()
+                for p_name, b_val in bounds.items():
+                    if isinstance(b_val, (tuple, list)) and len(b_val) >= 2:
+                        all_params["Optimization Search Bounds"][f"{p_name}_range"] = f"[{b_val[0]:.4g}, {b_val[1]:.4g}]"
+                        all_params["Optimization Search Bounds"][f"{p_name}_min"] = float(b_val[0])
+                        all_params["Optimization Search Bounds"][f"{p_name}_max"] = float(b_val[1])
+            except Exception as e:
+                logger.debug(f"Could not retrieve parameter bounds: {e}")
 
-        def get_params_from_ui(tab_index, param_inputs, category_key):
-            if self.hyperparam_tabs.isTabVisible(tab_index):
+        # 3. General & Reservoir (Preserved for backward compatibility)
+        res = getattr(self.engine, "reservoir", None)
+        op = getattr(self.engine, "operational_params", None)
+        all_params["General & Reservoir"]["MMP (Calculated, psi)"] = float(self.engine.mmp or 2000.0)
+        all_params["General & Reservoir"]["Average Porosity"] = float(self.engine.avg_porosity or 0.20)
+        all_params["General & Reservoir"]["OOIP (STB)"] = float(
+            getattr(res, "ooip_stb", 1_000_000.0) or 1_000_000.0
+        )
+        all_params["General & Reservoir"]["Project Lifetime (years)"] = int(
+            getattr(op, "project_lifetime_years", 15) or 15
+        )
+        if res:
+            all_params["General & Reservoir"]["Initial Pressure (psi)"] = float(
+                getattr(res, "initial_pressure", getattr(res, "initial_pressure_psi", 3000.0)) or 3000.0
+            )
+            all_params["General & Reservoir"]["Temperature (°F)"] = float(
+                getattr(res, "temperature", getattr(res, "temperature_f", 160.0)) or 160.0
+            )
+            all_params["General & Reservoir"]["Average Permeability (mD)"] = float(
+                getattr(res, "average_permeability", getattr(res, "permeability_md", 100.0)) or 100.0
+            )
+            if getattr(res, "thickness_ft", None) is not None:
+                all_params["General & Reservoir"]["Thickness (ft)"] = float(res.thickness_ft)
+            if getattr(res, "area_acres", None) is not None:
+                all_params["General & Reservoir"]["Area (acres)"] = float(res.area_acres)
+            if getattr(res, "v_dp_coefficient", None) is not None:
+                all_params["General & Reservoir"]["Dykstra-Parsons (V_DP)"] = float(res.v_dp_coefficient)
+
+        # 4. Reservoir Parameters (Full dataclass reflection)
+        if res and is_dataclass(res):
+            for f in fields(res):
+                val = getattr(res, f.name)
+                if val is None:
+                    continue
+                if isinstance(val, np.ndarray):
+                    if val.size <= 5:
+                        all_params["Reservoir Parameters"][f.name] = val.tolist()
+                    else:
+                        all_params["Reservoir Parameters"][f"{f.name}_shape"] = str(list(val.shape))
+                elif isinstance(val, dict):
+                    if f.name in ("grid", "pvt_tables", "regions"):
+                        all_params["Reservoir Parameters"][f"{f.name}_keys"] = list(val.keys())
+                    elif len(val) <= 10:
+                        all_params["Reservoir Parameters"][f.name] = val
+                elif not is_dataclass(val):
+                    all_params["Reservoir Parameters"][f.name] = val
+
+        # 5. Fluid & PVT Properties
+        pvt = getattr(self.engine, "pvt", None)
+        if pvt and is_dataclass(pvt):
+            for f in fields(pvt):
+                val = getattr(pvt, f.name)
+                if val is None:
+                    continue
+                if isinstance(val, np.ndarray):
+                    if val.size <= 5:
+                        all_params["Fluid & PVT Properties"][f.name] = val.tolist()
+                    else:
+                        all_params["Fluid & PVT Properties"][f"{f.name}_range"] = (
+                            f"[{float(np.min(val)):.4g}, {float(np.max(val)):.4g}] (N={len(val)})"
+                        )
+                elif not isinstance(val, (dict, list)) or len(val) <= 10:
+                    all_params["Fluid & PVT Properties"][f.name] = val
+
+        # 6. Operational Parameters
+        if op and is_dataclass(op):
+            for f in fields(op):
+                val = getattr(op, f.name)
+                if val is not None and not is_dataclass(val):
+                    all_params["Operational Parameters"][f.name] = val
+
+        # 7. EOR Parameters
+        if getattr(self.engine, "eor_params", None) and is_dataclass(self.engine.eor_params):
+            for f in fields(self.engine.eor_params):
+                all_params["EOR Parameters"][f.name] = getattr(self.engine.eor_params, f.name)
+
+        # 8. Economic Parameters
+        if getattr(self.engine, "economic_params", None) and is_dataclass(self.engine.economic_params):
+            for f in fields(self.engine.economic_params):
+                all_params["Economic Parameters"][f.name] = getattr(self.engine.economic_params, f.name)
+
+        # 9. CO2 Storage Parameters
+        co2_store = getattr(self.engine, "co2_storage_params", None)
+        if co2_store and is_dataclass(co2_store):
+            for f in fields(co2_store):
+                val = getattr(co2_store, f.name)
+                if val is not None and not is_dataclass(val):
+                    all_params["CO2 Storage Parameters"][f.name] = val
+
+        # 10. Well Configuration
+        wells = getattr(self.engine, "well_data_list", None) or []
+        n_inj = len([w for w in wells if getattr(w, "metadata", {}).get("type", "producer").lower() == "injector"])
+        n_prod = len([w for w in wells if getattr(w, "metadata", {}).get("type", "producer").lower() != "injector"])
+        all_params["Well Configuration"]["total_wells"] = len(wells)
+        all_params["Well Configuration"]["injector_count"] = n_inj
+        all_params["Well Configuration"]["producer_count"] = n_prod
+        if wells:
+            well_summaries = []
+            for i, w in enumerate(wells):
+                w_name = getattr(w, "name", f"Well-{i+1}")
+                w_type = getattr(w, "metadata", {}).get("type", "producer")
+                well_summaries.append(f"{w_name} ({w_type})")
+            all_params["Well Configuration"]["wells"] = ", ".join(well_summaries)
+
+        # 11. MMP Analysis Configuration
+        if hasattr(self, "mmp_method_combo") and self.mmp_method_combo.count() > 0:
+            all_params["MMP Analysis Configuration"]["mmp_method"] = self.mmp_method_combo.currentText()
+        if hasattr(self, "mmp_c7_mw_input"):
+            all_params["MMP Analysis Configuration"]["c7_plus_mw"] = self.mmp_c7_mw_input.value()
+        if hasattr(self, "mmp_co2_comp_input") and hasattr(self, "mmp_ch4_comp_input") and hasattr(self, "mmp_n2_comp_input"):
+            all_params["MMP Analysis Configuration"]["gas_composition"] = (
+                f"CO2={self.mmp_co2_comp_input.value():.3f}, CH4={self.mmp_ch4_comp_input.value():.3f}, N2={self.mmp_n2_comp_input.value():.3f}"
+            )
+
+        # 12. Optimization Algorithms Hyperparameters
+        def get_params_from_ui(tab_index, param_inputs, category_key, default_dc=None):
+            extracted = False
+            if hasattr(self, "hyperparam_tabs") and self.hyperparam_tabs.isTabVisible(tab_index):
                 for f_name, widget in param_inputs.items():
                     val = None
                     if isinstance(widget, (QSpinBox, QDoubleSpinBox)):
@@ -1050,11 +1188,18 @@ class OptimizationWidget(QWidget):
                         val = widget.text()
                     if val is not None:
                         all_params[category_key][f_name] = val
+                        extracted = True
+            # Fallback to default dataclass if UI form wasn't visible or populated
+            if not extracted and default_dc and is_dataclass(default_dc):
+                for f in fields(default_dc):
+                    all_params[category_key][f.name] = getattr(default_dc, f.name)
 
-        get_params_from_ui(0, self.ga_param_inputs, "Genetic Algorithm")
-        get_params_from_ui(1, self.bo_param_inputs, "Bayesian Optimization")
-        get_params_from_ui(2, self.pso_param_inputs, "Particle Swarm Optimization")
-        get_params_from_ui(3, self.de_param_inputs, "Differential Evolution")
+        get_params_from_ui(
+            0, self.ga_param_inputs, "Genetic Algorithm", getattr(self.engine, "ga_params_default_config", None)
+        )
+        get_params_from_ui(
+            1, self.bo_param_inputs, "Bayesian Optimization", getattr(self.engine, "bo_params_default_config", None)
+        )
 
         return {k: v for k, v in all_params.items() if v}
 
@@ -1088,6 +1233,28 @@ class OptimizationWidget(QWidget):
                 self, self.tr("Engine Error"), self.tr("Optimization Engine is not available.")
             )
             return
+
+        n_injectors = len([w for w in getattr(self.engine, "well_data_list", []) or []
+                          if w.metadata.get("type", "producer").lower() == "injector"])
+        n_producers = len([w for w in getattr(self.engine, "well_data_list", []) or []
+                          if w.metadata.get("type", "producer").lower() != "injector"])
+
+        if n_injectors == 0 and n_producers > 0:
+            reply = QMessageBox.question(
+                self,
+                self.tr("Primary Production Mode"),
+                self.tr(
+                    "No injector wells detected. The optimizer will run in Primary Production mode "
+                    "using Decline Curve Analysis (DCA) without CO2 injection.\n\n"
+                    "Optimization targets will be adjusted for DCA parameters (Initial rate, decline rate, etc.) "
+                    "rather than EOR-specific metrics like CO2 utilization.\n\n"
+                    "Do you want to continue?"
+                ),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            )
+            if reply == QMessageBox.StandardButton.No:
+                return
+
         if self.worker and self.worker.isRunning():
             reply = QMessageBox.question(
                 self,
@@ -1109,24 +1276,27 @@ class OptimizationWidget(QWidget):
 
         kwargs = {}
         method_key_lower = method_name.lower()
-        if "genetic" in method_key_lower or "hybrid" in method_key_lower:
+        if (
+            "genetic" in method_key_lower
+            or "hybrid" in method_key_lower
+            or "nsga" in method_key_lower
+        ):
             params = self._get_params_from_form(GeneticAlgorithmParams, self.ga_param_inputs)
             kwargs["ga_params_override"] = params
-        if "bayesian" in method_key_lower or "hybrid" in method_key_lower:
+        if (
+            "bayesian" in method_key_lower
+            or "hybrid" in method_key_lower
+            or "nsga" in method_key_lower
+        ):
             params = self._get_params_from_form(BayesianOptimizationParams, self.bo_param_inputs)
             kwargs["bo_params_override"] = params
-        if "pso" in method_key_lower:
-            params = self._get_params_from_form(ParticleSwarmParams, self.pso_param_inputs)
-            kwargs["pso_params_override"] = params
-        if "de" in method_key_lower:
-            params = self._get_params_from_form(DifferentialEvolutionParams, self.de_param_inputs)
-            kwargs["de_params_override"] = params
 
         if any(v is None for v in kwargs.values()):
             return
 
         self.results_tabs.setCurrentIndex(0)
         self.run_button.setEnabled(False)
+        self.run_simulation_button.setEnabled(False)
         self.status_label.setText(
             self.tr("<i>Starting optimization with {method_text}...</i>").format(
                 method_text=method_text
@@ -1140,6 +1310,45 @@ class OptimizationWidget(QWidget):
         self.worker.progress_updated.connect(self._on_progress_update)
         self.worker.ga_progress_updated.connect(self._update_convergence_live_plot)
         self.worker.target_unreachable.connect(self._handle_target_unreachable)
+        self.worker.start()
+
+    def _run_simulation(self):
+        """Runs a direct forward simulation using the current project parameters without optimization."""
+        if not self.engine:
+            QMessageBox.warning(
+                self,
+                self.tr("Engine Not Ready"),
+                self.tr("Please load a project to initialize the simulation engine."),
+            )
+            return
+
+        if self.worker and self.worker.isRunning():
+            reply = QMessageBox.question(
+                self,
+                self.tr("Run in Progress"),
+                self.tr(
+                    "A simulation or optimization run is already in progress. Do you want to stop it and start a new one?"
+                ),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            )
+            if reply == QMessageBox.StandardButton.Yes:
+                self.worker.stop()
+            else:
+                return
+
+        self._clear_results(clear_inputs=False)
+        self.engine.chosen_objective = self.objective_combo.currentData()
+
+        self.results_tabs.setCurrentIndex(0)
+        self.run_button.setEnabled(False)
+        self.run_simulation_button.setEnabled(False)
+        self.status_label.setText(self.tr("<i>Running forward reservoir simulation...</i>"))
+
+        self.worker = OptimizationWorker(self.engine, "run_single_simulation", {})
+        self.worker.result_ready.connect(self._on_result)
+        self.worker.error_occurred.connect(self._on_error)
+        self.worker.finished.connect(self._on_worker_finished)
+        self.worker.progress_updated.connect(self._on_progress_update)
         self.worker.start()
 
     def _clear_results(self, clear_inputs=True):
@@ -1170,11 +1379,55 @@ class OptimizationWidget(QWidget):
         if self.engine:
             try:
                 resolution = self.engine.operational_params.time_resolution
+
+                # Build reservoir params dict for breakthrough-aware recycling
+                reservoir_params = {
+                    "v_dp_coefficient": getattr(self.engine.reservoir, "v_dp_coefficient", 0.5),
+                    "v_dp": getattr(self.engine.reservoir, "v_dp", 0.5),
+                    "area_acres": getattr(self.engine.reservoir, "area_acres", 160.0),
+                    "thickness_ft": getattr(self.engine.reservoir, "thickness_ft", 50.0),
+                    "average_porosity": getattr(self.engine.reservoir, "average_porosity", 0.15),
+                    "ooip_stb": getattr(self.engine.reservoir, "ooip_stb", 1e7),
+                    "permeability": getattr(self.engine.reservoir, "average_permeability", 100.0),
+                    "pressure": getattr(self.engine.reservoir, "initial_pressure", 2000.0),
+                    "temperature": getattr(self.engine.reservoir, "temperature", 150.0),
+                    "length_ft": getattr(self.engine.reservoir, "length_ft", 2000.0),
+                    "width_ft": getattr(self.engine.reservoir, "width_ft", 1000.0),
+                }
+
+                # Build EOR params dict for breakthrough-aware recycling
+                eor_params_dict = {
+                    "injection_rate": self.engine.eor_params.injection_rate,
+                    "mobility_ratio": self.engine.eor_params.mobility_ratio,
+                    "recovery_factor": self.current_results.get("recovery_factor", 0.4),
+                    "co2_recycling_fraction": getattr(
+                        self.engine.eor_params, "co2_recycling_fraction", 0.9
+                    ),
+                    "co2_density": self.engine.eor_params.co2_density_tonne_per_mscf
+                    * 1000.0
+                    / 0.053
+                    if hasattr(self.engine.eor_params, "co2_density_tonne_per_mscf")
+                    else 44.0,
+                    "oil_density": 50.0,
+                    "co2_viscosity": 0.08,
+                    "oil_viscosity_cp": getattr(self.engine.eor_params, "oil_viscosity_cp", 2.0),
+                    "gas_oil_ratio_at_breakthrough": getattr(
+                        self.engine.eor_params, "gas_oil_ratio_at_breakthrough", 800.0
+                    ),
+                    "injection_gor": getattr(self.engine.eor_params, "injection_gor", 10000.0),
+                    "initial_gor": getattr(self.engine.eor_params, "initial_gor", 200.0),
+                    "caprock_fracture_pressure_psi": getattr(self.engine.eor_params, "caprock_fracture_pressure_psi", 5500.0),
+                    "caprock_safety_factor": getattr(self.engine.eor_params, "caprock_safety_factor", 0.90),
+                }
+
                 mb_results = create_material_balance_from_optimization(
                     self.current_results,
                     resolution,
                     self.engine.eor_params.co2_density_tonne_per_mscf,
                     self.engine.co2_storage_params.leakage_rate_fraction,
+                    reservoir_params=reservoir_params,
+                    eor_params=eor_params_dict,
+                    eos_model=self.engine.eos_model_instance,
                 )
                 if mb_results:
                     self.current_results["material_balance_analysis"] = mb_results
@@ -1194,9 +1447,14 @@ class OptimizationWidget(QWidget):
 
         self.results_tabs.setCurrentIndex(2)  # Switch to Optimization Summary
 
+        target_plot = (
+            self.tr("Final Production Profiles")
+            if results.get("method") == "single_simulation"
+            else self.tr("Convergence")
+        )
         for i in range(self.plot_list.count()):
             item = self.plot_list.item(i)
-            if item.text() == self.tr("Convergence"):
+            if item.text() == target_plot:
                 self.plot_list.setCurrentItem(item)
                 break
 
@@ -1255,9 +1513,17 @@ class OptimizationWidget(QWidget):
             else str(co2_util)
         )
 
+        is_single = results.get("method") == "single_simulation"
+        status_header = (
+            self.tr("Simulation Complete")
+            if is_single
+            else f"{self.tr('Optimization Complete')}: {self.tr(method)}"
+        )
+        val_header = self.tr("Simulation") if is_single else self.tr("Final Optimized")
+
         summary = (
-            f"<b>{self.tr('Optimization Complete')}: {self.tr(method)}</b><br>"
-            f"{self.tr('Final Optimized')} {self.tr(obj_name)}: <b>{obj_val_str}</b><br><br>"
+            f"<b>{status_header}</b><br>"
+            f"{val_header} {self.tr(obj_name)}: <b>{obj_val_str}</b><br><br>"
             f"<b>{self.tr('Key Performance Indicators')}:</b><br>"
             f"&nbsp;&nbsp;&nbsp;&nbsp;{self.tr('Net Present Value (NPV)')}: <b>{npv_str}</b><br>"
             f"&nbsp;&nbsp;&nbsp;&nbsp;{self.tr('Recovery Factor')}: <b>{rf_str}</b><br>"
@@ -1279,8 +1545,25 @@ class OptimizationWidget(QWidget):
 
         try:
             resolution = self.engine.operational_params.time_resolution if self.engine else "yearly"
-            # Filter to only profiles for the selected resolution
             res_profiles = {k: v for k, v in profiles.items() if k.startswith(resolution)}
+            if not res_profiles:
+                self.detailed_summary_table.clear()
+                self.detailed_summary_table.setRowCount(1)
+                self.detailed_summary_table.setColumnCount(1)
+                self.detailed_summary_table.setItem(
+                    0,
+                    0,
+                    QTableWidgetItem(self.tr("No profile data available for selected resolution.")),
+                )
+                return
+            arr_lengths = [len(v) for v in res_profiles.values()]
+            if len(set(arr_lengths)) > 1:
+                min_len = min(arr_lengths)
+                logger.warning(
+                    f"Profile arrays have different lengths: {dict(zip(res_profiles.keys(), arr_lengths))}. "
+                    f"Truncating to minimum length {min_len}."
+                )
+                res_profiles = {k: v[:min_len] for k, v in res_profiles.items()}
             df = pd.DataFrame(res_profiles)
             df.index = df.index + 1
             df.index.name = self.tr(resolution.title())
@@ -1351,9 +1634,34 @@ class OptimizationWidget(QWidget):
         self.results_tabs.setTabEnabled(4, True)  # Enable Optimization Analysis tab
         self.plot_list.clear()
 
-        plot_options = ["Convergence", "Final Production Profiles", "Parameter Sensitivity"]
+        is_single = (
+            self.current_results.get("method") == "single_simulation"
+            if self.current_results
+            else False
+        )
+        if is_single:
+            plot_options = ["Final Production Profiles", "Well Schedule"]
+        else:
+            plot_options = ["Convergence", "Final Production Profiles", "Well Schedule"]
         if self.current_results and "bayes_opt_obj" in self.current_results:
             plot_options.append("Objective vs. Parameter (BO)")
+
+        # --- NEW: Add Objective Space Scatter and Pareto Front ---
+        method = self.current_results.get("method", "") if self.current_results else ""
+        is_nsga = "nsga" in method.lower()
+        is_hybrid = "hybrid" in method.lower()
+        is_genetic = "genetic" in method.lower()
+        has_pareto = bool(
+            self.current_results.get("pareto_front")
+            or (self.current_results.get("nsga2_full_results_for_hybrid", {}).get("pareto_front"))
+        ) if self.current_results else False
+
+        if is_genetic or is_nsga or is_hybrid or (self.current_results and self.current_results.get("bayes_opt_obj")):
+            plot_options.append("Objective Space Scatter")
+
+        if is_nsga or method == "hybrid_nsga2_bo" or has_pareto:
+            plot_options.append("Pareto Front")
+        # --- END NEW ---
 
         # --- NEW: Add CO2 and Material Balance analysis options ---
         if self.current_results and self.current_results.get("material_balance_analysis"):
@@ -1368,19 +1676,40 @@ class OptimizationWidget(QWidget):
 
         if self.current_results and self.current_results.get("dca_results"):
             plot_options.append("Decline Curve Analysis")
-        if self.current_results and self.current_results.get("method") == "genetic_algorithm":
+        if self.current_results and (
+            is_genetic
+            or is_hybrid
+            or is_nsga
+            or self.current_results.get("pygad_instance")
+            or self.current_results.get("ga_full_results_for_hybrid")
+        ):
+            plot_options.append("Coverage Analysis (Sweep & Diversity)")
             plot_options.append("GA Coverage Distribution")
+
+        has_distance_data = bool(
+            self.current_results
+            and (
+                self.current_results.get("diverse_points_for_bo")
+                or (self.current_results.get("ga_full_results_for_hybrid", {}).get("diverse_points_for_bo"))
+                or self.current_results.get("pygad_instance")
+                or (self.current_results.get("ga_full_results_for_hybrid", {}).get("pygad_instance"))
+                or self.current_results.get("pareto_front")
+                or self.current_results.get("evaluated_points")
+                or self.current_results.get("bayes_opt_obj")
+            )
+        )
+        if has_distance_data:
+            plot_options.append("Euclidean Distance Matrix")
         # --- END NEW ---
 
         for option in plot_options:
             item = QListWidgetItem(QIcon.fromTheme("view-plot"), self.tr(option))
             self.plot_list.addItem(item)
 
-        self._populate_sensitivity_combo()
         self._populate_bo_sensitivity_combo()
 
     def _on_analysis_plot_selected(
-        self, current_item: QListWidgetItem, previous_item: QListWidgetItem
+        self, current_item: QListWidgetItem, _previous_item: QListWidgetItem
     ):
         """Handles the logic for when a new plot type is selected from the list."""
         if not current_item:
@@ -1388,29 +1717,12 @@ class OptimizationWidget(QWidget):
             return
 
         plot_type = current_item.text()
-        show_sensitivity = plot_type == self.tr("Parameter Sensitivity")
         show_bo_sensitivity = plot_type == self.tr("Objective vs. Parameter (BO)")
 
-        self.sensitivity_param_combo.setVisible(show_sensitivity)
         self.bo_sensitivity_param_combo.setVisible(show_bo_sensitivity)
-        self.plot_controls_widget.setVisible(show_sensitivity or show_bo_sensitivity)
+        self.plot_controls_widget.setVisible(show_bo_sensitivity)
 
         self._generate_selected_plot()
-
-    def _populate_sensitivity_combo(self):
-        """Populates the dropdown with parameters available for sensitivity analysis."""
-        self.sensitivity_param_combo.clear()
-        if not self.current_results:
-            return
-
-        params = list(self.current_results.get("optimized_params_final_clipped", {}).keys())
-        econ_params = [f.name for f in fields(EconomicParameters)]
-        all_param_keys = sorted(list(set(params + econ_params)))
-
-        for key in all_param_keys:
-            meta = self.PARAMETER_METADATA.get(key, {})
-            display_name = self.tr(meta.get("display", key.replace("_", " ").title()))
-            self.sensitivity_param_combo.addItem(display_name, userData=key)
 
     def _populate_bo_sensitivity_combo(self):
         """Populates the dropdown for the Bayesian Optimization results plot."""
@@ -1502,12 +1814,6 @@ class OptimizationWidget(QWidget):
                 fig = self.engine.plotting_manager.plot_optimization_convergence(
                     self.current_results
                 )
-            elif plot_type == self.tr("Parameter Sensitivity"):
-                param_key = self.sensitivity_param_combo.currentData()
-                if param_key:
-                    fig = self.engine.plotting_manager.plot_parameter_sensitivity(
-                        param_key, self.current_results
-                    )
             elif plot_type == self.tr("Final Production Profiles"):
                 fig = self.engine.plotting_manager.plot_production_profiles(self.current_results)
                 if fig:
@@ -1520,6 +1826,8 @@ class OptimizationWidget(QWidget):
                             resolution=resolution.title()
                         ),
                     )
+            elif plot_type == self.tr("Well Schedule"):
+                fig = self.engine.plotting_manager.plot_well_schedule(self.current_results)
             elif plot_type == self.tr("Objective vs. Parameter (BO)"):
                 param_key = self.bo_sensitivity_param_combo.currentData()
                 if param_key:
@@ -1542,6 +1850,22 @@ class OptimizationWidget(QWidget):
                 fig = self.engine.dca_analyzer.plot_decline_curve(
                     self.current_results["dca_results"]
                 )
+            elif plot_type in [
+                self.tr("GA Coverage Distribution"),
+                self.tr("Coverage Analysis (Sweep & Diversity)"),
+                self.tr("Coverage Plot"),
+            ]:
+                fig = self.engine.plotting_manager.plot_coverage(self.current_results)
+            elif plot_type == self.tr("Euclidean Distance Matrix"):
+                fig = self.engine.plotting_manager.plot_euclidean_distance_matrix(
+                    self.current_results
+                )
+            elif plot_type == self.tr("Objective Space Scatter"):
+                fig = self.engine.plotting_manager.plot_objective_space_scatter(
+                    self.current_results
+                )
+            elif plot_type == self.tr("Pareto Front"):
+                fig = self.engine.plotting_manager.plot_pareto_front(self.current_results)
 
             if fig:
                 self.analysis_plot_view.setHtml(
@@ -1626,10 +1950,12 @@ class OptimizationWidget(QWidget):
             f"<p style='color:red;'><b>{self.tr('Error')}:</b> {error_msg}</p>"
         )
         self.run_button.setEnabled(self.engine is not None)
+        self.run_simulation_button.setEnabled(self.engine is not None)
 
     def _on_worker_finished(self):
         """Cleans up after the worker thread has finished."""
         self.run_button.setEnabled(self.engine is not None)
+        self.run_simulation_button.setEnabled(self.engine is not None)
         if self.engine:
             self.engine.reset_to_base_state()
             logger.info("Engine state reset to base configuration after worker finished.")
@@ -1702,11 +2028,13 @@ class OptimizationWidget(QWidget):
             return data_dict.item()
         elif is_dataclass(data_dict):
             return asdict(data_dict)
+        elif type(data_dict).__name__ == "Figure":
+            return f"<matplotlib.figure.Figure not serialized>"
         else:
             return data_dict
 
     def _export_run_data(self):
-        """Exports the current run's inputs, results, and graphs to a new folder."""
+        """Exports the current run's inputs, results, and graphs to a new folder using RunDataExporter."""
         if not self.current_results:
             QMessageBox.warning(
                 self,
@@ -1715,7 +2043,10 @@ class OptimizationWidget(QWidget):
             )
             return
 
-        start_dir = str(Path.home())
+        logs_dir = Path.cwd() / "logs"
+        logs_dir.mkdir(parents=True, exist_ok=True)
+        start_dir = str(logs_dir)
+
         target_dir = QFileDialog.getExistingDirectory(
             self, self.tr("Select Directory to Save Export Folder"), start_dir
         )
@@ -1723,76 +2054,33 @@ class OptimizationWidget(QWidget):
             return
 
         try:
-            method = self.current_results.get("method", "optimization").replace("_", "-")
-            timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-            export_folder_name = f"Export-{method}-{timestamp}"
-            export_path = Path(target_dir) / export_folder_name
-            export_path.mkdir(parents=True, exist_ok=True)
+            from utils.run_exporter import RunDataExporter
+
+            plots_to_generate = self._get_all_available_plots() if self.engine else {}
+            input_params = self._get_current_input_parameters()
+
+            export_path = RunDataExporter.export(
+                results=self.current_results,
+                engine=self.engine,
+                input_parameters=input_params,
+                target_dir=target_dir,
+                convergence_live_data=self.convergence_live_data,
+                plots_generator=plots_to_generate,
+            )
+
+            self.status_label.setText(
+                self.tr("<i>Run data successfully exported to {export_path}.</i>").format(
+                    export_path=export_path
+                )
+            )
+            logger.info(f"Run data exported to {export_path}")
         except Exception as e:
+            logger.error(f"Failed to export run data: {e}", exc_info=True)
             QMessageBox.critical(
                 self,
                 self.tr("Export Error"),
-                self.tr("Could not create export directory.\nError: {e}").format(e=e),
+                self.tr("Could not complete run data export.\nError: {e}").format(e=e),
             )
-            return
-
-        # --- Save Comprehensive JSON Data ---
-        try:
-            json_data = {
-                "report_metadata": {
-                    "generation_timestamp": datetime.now().isoformat(),
-                    "method": self.current_results.get("method"),
-                    "objective": self.objective_combo.currentText(),
-                },
-                "input_parameters": self._get_current_input_parameters(),
-                "full_results": self._clean_dict_for_json(self.current_results),
-            }
-            json_file_path = export_path / "full_run_data.json"
-            with open(json_file_path, "w", encoding="utf-8") as f:
-                json.dump(json_data, f, indent=4)
-        except Exception as e:
-            logger.error(f"Failed to write full JSON data: {e}", exc_info=True)
-
-        # --- Save Detailed CSV Summaries ---
-        try:
-            dataframes = self._generate_detailed_csv_export()
-            for name, df in dataframes.items():
-                csv_file_path = export_path / f"summary_{name}.csv"
-                df.to_csv(csv_file_path)
-        except Exception as e:
-            logger.error(f"Failed to write detailed CSV summaries: {e}", exc_info=True)
-
-        # --- Save Text Summary ---
-        try:
-            summary_content = self._generate_detailed_txt_export()
-            summary_file_path = export_path / "results_summary.txt"
-            with open(summary_file_path, "w", encoding="utf-8") as f:
-                f.write(summary_content)
-        except Exception as e:
-            logger.error(f"Failed to write summary text file: {e}", exc_info=True)
-
-        # --- Generate and Save Graphs ---
-        if self.engine:
-            plots_to_generate = self._get_all_available_plots()
-            for plot_name, plot_info in plots_to_generate.items():
-                try:
-                    fig = plot_info["func"](self.current_results)
-                    if fig:
-                        image_path = export_path / f"{plot_name}.png"
-                        width = plot_info.get("width", 1200)
-                        height = plot_info.get("height", 800)
-                        fig.write_image(str(image_path), width=width, height=height)
-                except Exception as e:
-                    logger.error(
-                        f"Failed to generate or save plot '{plot_name}': {e}", exc_info=True
-                    )
-
-        self.status_label.setText(
-            self.tr("<i>Run data successfully exported to {export_path}.</i>").format(
-                export_path=export_path
-            )
-        )
-        logger.info(f"Run data exported to {export_path}")
 
     def _get_all_available_plots(self) -> Dict[str, Dict]:
         """Returns a dictionary of all possible plots and their generation functions for export."""
@@ -1802,6 +2090,7 @@ class OptimizationWidget(QWidget):
         plots = {
             "convergence": {"func": self.engine.plotting_manager.plot_optimization_convergence},
             "production_profiles": {"func": self.engine.plotting_manager.plot_production_profiles},
+            "well_schedule": {"func": self.engine.plotting_manager.plot_well_schedule},
             "co2_summary_table": {
                 "func": self.engine.plotting_manager.plot_co2_performance_summary_table,
                 "width": 800,
@@ -1826,21 +2115,32 @@ class OptimizationWidget(QWidget):
                 "func": lambda r: self.engine.dca_analyzer.plot_decline_curve(r["dca_results"])
             }
 
+        plots["ga_coverage_distribution"] = {
+            "func": self.engine.plotting_manager.plot_coverage
+        }
+        plots["euclidean_distance_matrix"] = {
+            "func": self.engine.plotting_manager.plot_euclidean_distance_matrix
+        }
+
         return plots
 
     def _generate_detailed_csv_export(self) -> Dict[str, pd.DataFrame]:
         """Generates detailed CSV exports of the optimization results for both yearly and daily resolutions."""
-        if not (self.current_results and self.engine):
+        results = self.current_results
+        if not (results and self.engine):
             return {}
 
-        profiles = self.current_results.get("optimized_profiles", {})
-        mb_data = self.current_results.get("material_balance_analysis", {}).get(
-            "material_balance_data", {}
-        )
+        profiles = results.get("optimized_profiles", {})
+        mb_analysis = results.get("material_balance_analysis") or {}
+        mb_data = mb_analysis.get("material_balance_data", {})
 
         dataframes = {}
         for resolution in ["yearly", "daily"]:
-            res_profiles = {k: v for k, v in profiles.items() if k.startswith(resolution)}
+            res_profiles = {
+                k: v
+                for k, v in profiles.items()
+                if k.startswith(resolution) and not k.endswith("_years")
+            }
             if not res_profiles:
                 continue
 
@@ -1916,7 +2216,13 @@ class OptimizationWidget(QWidget):
 
         if self.current_results.get("dca_results"):
             output.write(f"\n--- DECLINE CURVE ANALYSIS SUMMARY ---\n")
-            dca_stats = self.current_results["dca_results"].get("summary", {})
+            dca_raw = self.current_results["dca_results"]
+            dca_stats = dca_raw.get("summary")
+            if dca_stats is None or not isinstance(dca_stats, dict):
+                dca_stats = {
+                    k: v for k, v in dca_raw.items()
+                    if not isinstance(v, (np.ndarray, list))
+                }
             for key, value in sorted(dca_stats.items()):
                 output.write(f"{key.replace('_', ' ').title()}: {value}\n")
 

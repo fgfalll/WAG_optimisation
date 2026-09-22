@@ -15,19 +15,17 @@ try:
         TimestepUnit,
     )
     from core.geology import GeologyEngine
-    from core.simulation.injection_schemes import InjectionSchemes
+    from core.engine_surrogate.profile_generator_fast import FastProfileGenerator
     from core.Phys_engine_full.pressure_dynamics import PressureDynamics
     from core.utils.profiler_utils import ProfilerUtils
-    from core.unified_engine.physics.eos import CubicEOS, PhaseEquilibriumCalculator, ReservoirFluid
     from core.data_models import PhysicalConstants
 except ImportError:
-    # Fallback to relative imports - disable problematic imports for figure generation
     PhysicsEngine = None
     CCUSParameters = None
     GridParameters = None
     TimestepUnit = None
     GeologyEngine = None
-    InjectionSchemes = None
+    FastProfileGenerator = None
     PressureDynamics = None
     ProfilerUtils = None
     ReservoirFluid = None
@@ -70,7 +68,7 @@ class ProfileGenerator:
         self.temperature_F = self.pvt.temperature
 
         self.geology_engine = GeologyEngine(reservoir, self.pvt, eor_params)
-        self.injection_schemes = InjectionSchemes(eor_params)
+        self.profile_generator = FastProfileGenerator(model_type="plateau_decline")
         self.pore_volume_bbl = ProfilerUtils.calculate_pore_volume(reservoir)
 
         self.reservoir_fluid = None
@@ -102,6 +100,52 @@ class ProfileGenerator:
         )
         self.injection_schedule = None
         self.well_control_logic = well_control_logic
+
+    def _eor_params_to_injection_params(self) -> dict:
+        """Convert EORParameters to injection params dict for FastProfileGenerator."""
+        params = {}
+
+        for attr in [
+            "injection_scheme",
+            "wag_ratio",
+            "cycle_length_days",
+            "initial_wag_cycle_length",
+            "standard_wag_cycle_length",
+            "initial_wag_cycles",
+            "mobility_ratio_factor",
+            "high_mobility_threshold",
+            "max_enhanced_wag_ratio",
+            "wag_ratio_enhancement_factor",
+            "co2_taper_percentage",
+            "min_co2_taper_factor",
+            "default_gas_fvf",
+            "swag_simultaneous_injection",
+            "swag_water_gas_ratio",
+            "swag_mixing_efficiency",
+            "swag_cycle_length_days",
+            "tapered_initial_rate_multiplier",
+            "tapered_final_rate_multiplier",
+            "tapered_duration_years",
+            "tapered_function",
+            "pulsed_pulse_duration_days",
+            "pulsed_pause_duration_days",
+            "pulsed_intensity_multiplier",
+            "huff_n_puff_injection_period_days",
+            "huff_n_puff_soaking_period_days",
+            "huff_n_puff_production_period_days",
+            "huff_n_puff_max_cycles",
+        ]:
+            if hasattr(self.eor_params, attr):
+                params[attr] = getattr(self.eor_params, attr)
+
+        if hasattr(self.eor_params, "huff_n_puff"):
+            hnp = self.eor_params.huff_n_puff
+            params["huff_n_puff_injection_period_days"] = getattr(hnp, "injection_period_days", 30)
+            params["huff_n_puff_soaking_period_days"] = getattr(hnp, "soaking_period_days", 7)
+            params["huff_n_puff_production_period_days"] = getattr(hnp, "production_period_days", 60)
+            params["huff_n_puff_max_cycles"] = getattr(hnp, "max_cycles", 10)
+
+        return params
 
     def _create_grid_parameters(self) -> GridParameters:
         # Simplified 1D grid for now. This can be expanded for 3D.
@@ -136,23 +180,24 @@ class ProfileGenerator:
 
         project_life_days = int(self.op_params.project_lifetime_years * ProfilerUtils.DAYS_PER_YEAR)
 
-        # --- Setup Injection Schedule ---
-        daily_co2_inj_sched = np.zeros(project_life_days)
-        daily_water_inj_sched = np.zeros(project_life_days)
-        daily_hnp_cycle = np.zeros(project_life_days, dtype=int)
         geology_enhanced_injection_rate = (
             self.eor_params.injection_rate
             * self.geology_engine.calculate_geology_injection_factor()
         )
 
-        self.injection_schemes.setup_injection_scheme(
-            daily_co2_inj_sched,
-            daily_water_inj_sched,
-            project_life_days,
+        time_vector = np.arange(project_life_days)
+        injection_scheme = getattr(self.eor_params, "injection_scheme", "continuous")
+        injection_params = self._eor_params_to_injection_params()
+
+        co2_injection, water_injection = self.profile_generator._generate_injection_profile(
+            time_vector,
             geology_enhanced_injection_rate,
-            1.0,
-            daily_hnp_cycle,  # b_gas is now placeholder
+            injection_scheme,
+            **injection_params,
         )
+
+        daily_co2_inj_sched = co2_injection
+        daily_water_inj_sched = water_injection
 
         injection_schedule = {
             day: {"co2": daily_co2_inj_sched[day], "water": daily_water_inj_sched[day]}

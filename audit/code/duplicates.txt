@@ -1,0 +1,34 @@
+CO2 EOR OPTIMIZER - DUPLICATE IMPLEMENTATION AUDIT
+================================================================================
+
+Subsystem: Simulation Scenario Evaluation
+  Implementation A: core/engine_surrogate/surrogate_engine.py (SurrogateEngine)
+  Implementation B: core/simulation/profile_generator.py (ProfileGenerator)
+  Implementation C: core/unified_engine/engines/detailed_engine.py
+  Active Source of Truth: core/engine_surrogate/surrogate_engine.py
+  Status / Evaluation: SurrogateEngine is active source of truth; others are orphaned or legacy wrappers
+
+Subsystem: Rate Profile Synthesis
+  Implementation A: core/engine_surrogate/profile_generator_fast.py (FastProfileGenerator)
+  Implementation B: core/simulation/injection_schemes.py (InjectionScheme)
+  Active Source of Truth: core/engine_surrogate/profile_generator_fast.py
+  Status / Evaluation: FastProfileGenerator is active source of truth (vectorized NumPy)
+
+Subsystem: Ultimate Recovery Factor
+  Implementation A: core/engine_surrogate/analytical_models.py (PhDHybridRecoveryModel)
+  Implementation B: core/simulation/recovery_models.py (RecoveryModelCalculator)
+  Active Source of Truth: core/engine_surrogate/analytical_models.py
+  Status / Evaluation: PhDHybridRecoveryModel in surrogate is active source of truth
+
+Subsystem: Equation of State (EOS)
+  Implementation A: core/unified_engine/physics/eos/ (Peng-Robinson EOS)
+  Implementation B: analysis/data_validation.py (Standing PVT Correlations)
+  Active Source of Truth: core/unified_engine/physics/eos/ & Standing correlation fallbacks
+  Status / Evaluation: PR EOS used for compositional flash; Standing used when API is estimated
+
+Subsystem: MMP Estimation
+  Implementation A: evaluation/mmp.py (calculate_mmp)
+  Implementation B: core/engine_surrogate/analytical_models.py (estimate_mmp)
+  Active Source of Truth: evaluation/mmp.py
+  Status / Evaluation: evaluation/mmp.py is active authoritative correlation module
+

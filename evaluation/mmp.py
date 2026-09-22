@@ -16,9 +16,6 @@ except ImportError as e:
     ) from e
 
 
-
-
-
 @dataclass
 class MMPParameters:
     """
@@ -42,6 +39,7 @@ class MMPParameters:
             from the 'core' module. This is used if API gravity needs to be
             estimated.
     """
+
     temperature: float
     oil_gravity: float
     c7_plus_mw: Optional[float] = None
@@ -94,6 +92,7 @@ class MMPParameters:
                     "but must be 1.0. Please normalize the fractions."
                 )
 
+
 def _calculate_mmp_cronquist(params: MMPParameters) -> float:
     """
     Calculates MMP using the Cronquist correlation (1978).
@@ -109,9 +108,10 @@ def _calculate_mmp_cronquist(params: MMPParameters) -> float:
     """
     # Use (55 - API) to ensure lighter oils have lower MMP
     # This maintains the mathematical form while fixing the physical inconsistency
-    gravity_term = (55.0 - params.oil_gravity)
-    mmp = 15.988 * (params.temperature ** 0.744206) * (gravity_term ** 0.279033)
+    gravity_term = 55.0 - params.oil_gravity
+    mmp = 15.988 * (params.temperature**0.744206) * (gravity_term**0.279033)
     return mmp
+
 
 def _calculate_mmp_hybrid_gh(params: MMPParameters) -> float:
     """
@@ -138,18 +138,18 @@ def _calculate_mmp_hybrid_gh(params: MMPParameters) -> float:
 
     # 3. Adjust for gas composition (Yellig & Metcalfe, 1980)
     if params.injection_gas_composition:
-        co2_fraction = params.injection_gas_composition.get('CO2', 0.0)
+        co2_fraction = params.injection_gas_composition.get("CO2", 0.0)
 
         # Impurity adjustment factor based on literature
         # Reference: Yellig & Metcalfe (1980) SPE Journal
         # The sensitivity factor depends on impurity type (CH4, N2, H2S, etc.)
         # Using a weighted factor based on common impurity compositions
         impurity_sensitivities = {
-            'CH4': 0.35,  # Methane has strong MMP-increasing effect
-            'N2': 0.45,   # Nitrogen has strongest MMP-increasing effect
-            'H2S': 0.15,  # H2S can decrease MMP slightly
-            'C2': 0.20,   # Ethane
-            'C3': 0.15,   # Propane
+            "CH4": 0.35,  # Methane has strong MMP-increasing effect
+            "N2": 0.45,  # Nitrogen has strongest MMP-increasing effect
+            "H2S": 0.15,  # H2S can decrease MMP slightly
+            "C2": 0.20,  # Ethane
+            "C3": 0.15,  # Propane
         }
 
         # Calculate weighted sensitivity factor
@@ -169,12 +169,15 @@ def _calculate_mmp_hybrid_gh(params: MMPParameters) -> float:
         # Default sensitivity for unaccounted impurities
         IMPURITY_SENSITIVITY_FACTOR = max(0.15, min(0.45, IMPURITY_SENSITIVITY_FACTOR))
 
-        logger.debug(f"MMP impurity adjustment: CO2 fraction={co2_fraction:.2f}, "
-                    f"sensitivity factor={IMPURITY_SENSITIVITY_FACTOR:.3f}")
+        logger.debug(
+            f"MMP impurity adjustment: CO2 fraction={co2_fraction:.2f}, "
+            f"sensitivity factor={IMPURITY_SENSITIVITY_FACTOR:.3f}"
+        )
 
         return mmp_adj_c7 / (1.0 - IMPURITY_SENSITIVITY_FACTOR * (1.0 - co2_fraction))
 
     return mmp_adj_c7
+
 
 def _calculate_mmp_yuan(params: MMPParameters) -> float:
     """
@@ -186,22 +189,23 @@ def _calculate_mmp_yuan(params: MMPParameters) -> float:
     if not params.injection_gas_composition:
         raise ValueError("Gas composition is required for the 'yuan' correlation.")
 
-    co2_fraction = params.injection_gas_composition.get('CO2', 0.0)
-    ch4_fraction = params.injection_gas_composition.get('CH4', 0.0)
+    co2_fraction = params.injection_gas_composition.get("CO2", 0.0)
+    ch4_fraction = params.injection_gas_composition.get("CH4", 0.0)
 
     # Yuan correlation coefficients
     # A: Temperature dependency term (Corrected constant from 3.356 to 1.356)
-    a = 10**(1.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
+    a = 10 ** (1.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
     # B: Oil composition term (C5+ Mol weight is approximated from API, corrected formula)
     m_c5_plus = 630 - 10.3 * params.oil_gravity
     b = (m_c5_plus**0.36) / (0.641 * params.temperature**0.21)
     # C: Purity term (accounts for non-CO2 components)
     x_co2 = co2_fraction
-    c = 0.993 - 0.778 * (1 - x_co2)**0.11
-    
+    c = 0.993 - 0.778 * (1 - x_co2) ** 0.11
+
     # Final MMP calculation in MPa, then converted to psi
     mmp_mpa = a * (b**x_co2) * c
     return mmp_mpa * 145.038  # Convert MPa to psi
+
 
 def _calculate_mmp_alston(params: MMPParameters) -> float:
     """
@@ -219,34 +223,44 @@ def _calculate_mmp_alston(params: MMPParameters) -> float:
         raise ValueError("Gas composition is required for the 'alston' correlation.")
 
     # Critical temperatures of common components in Kelvin
-    CRITICAL_TEMPS_K = {'CO2': 304.1, 'CH4': 190.6, 'N2': 126.2}
-    
-    y_co2 = params.injection_gas_composition.get('CO2', 0.0)
-    y_ch4 = params.injection_gas_composition.get('CH4', 0.0)
-    y_n2 = params.injection_gas_composition.get('N2', 0.0)
+    CRITICAL_TEMPS_K = {"CO2": 304.1, "CH4": 190.6, "N2": 126.2}
+
+    y_co2 = params.injection_gas_composition.get("CO2", 0.0)
+    y_ch4 = params.injection_gas_composition.get("CH4", 0.0)
+    y_n2 = params.injection_gas_composition.get("N2", 0.0)
 
     # 1. Calculate pseudo-critical temperature (Tpc) of the gas mixture
-    tpc_k = y_co2 * CRITICAL_TEMPS_K['CO2'] + \
-            y_ch4 * CRITICAL_TEMPS_K['CH4'] + \
-            y_n2 * CRITICAL_TEMPS_K['N2']
+    tpc_k = (
+        y_co2 * CRITICAL_TEMPS_K["CO2"]
+        + y_ch4 * CRITICAL_TEMPS_K["CH4"]
+        + y_n2 * CRITICAL_TEMPS_K["N2"]
+    )
 
     # 2. Calculate MMP for pure CO2 using Yellig & Metcalfe (1980) as a base
     T_F = params.temperature
-    mmp_pure_co2 = 1016 + 4.773*T_F - 0.00946*(T_F**2) + 0.000021*(T_F**3)
+    mmp_pure_co2 = 1016 + 4.773 * T_F - 0.00946 * (T_F**2) + 0.000021 * (T_F**3)
 
     # 3. Calculate the Alston exponent 'A'
     exponent_A = 2.41 - 0.00284 * params.c7_plus_mw
 
     # 4. Calculate the final MMP for the impure gas
-    mmp_impure = mmp_pure_co2 * (tpc_k / CRITICAL_TEMPS_K['CO2'])**exponent_A
+    mmp_impure = mmp_pure_co2 * (tpc_k / CRITICAL_TEMPS_K["CO2"]) ** exponent_A
     return mmp_impure
 
+
 # --- [UPDATED] Dictionary mapping method names to functions for UI and internal use ---
+def _calculate_mmp_yellig_metcalfe(params: MMPParameters) -> float:
+    """Yellig & Metcalfe (1980) correlation for pure CO2. Formula: MMP = 1016 + 4.773·T - 0.00946·T² + 0.000021·T³"""
+    T = params.temperature
+    return float(1016.0 + 4.773 * T - 0.00946 * (T**2) + 0.000021 * (T**3))
+
+
 MMP_METHODS: Dict[str, Callable[[MMPParameters], float]] = {
-    'cronquist': _calculate_mmp_cronquist,
-    'hybrid_gh': _calculate_mmp_hybrid_gh,
-    'yuan': _calculate_mmp_yuan,
-    'alston': _calculate_mmp_alston,
+    "cronquist": _calculate_mmp_cronquist,
+    "yellig_metcalfe": _calculate_mmp_yellig_metcalfe,
+    "hybrid_gh": _calculate_mmp_hybrid_gh,
+    "yuan": _calculate_mmp_yuan,
+    "alston": _calculate_mmp_alston,
 }
 
 
@@ -272,14 +286,14 @@ def estimate_api_from_pvt(pvt: PVTProperties) -> float:
       Practice.
     - McCain, W.D. (1990). "The Properties of Petroleum Fluids."
     """
-    required_attrs = ['rs', 'gas_specific_gravity', 'temperature']
+    required_attrs = ["rs", "gas_specific_gravity", "temperature"]
     if not all(hasattr(pvt, attr) and getattr(pvt, attr) is not None for attr in required_attrs):
         raise ValueError(
             "PVTProperties must contain 'rs', 'gas_specific_gravity', and "
             "'temperature' data to estimate API gravity."
         )
     if pvt.rs.size == 0:
-         raise ValueError("'rs' (solution GOR) in PVTProperties cannot be empty.")
+        raise ValueError("'rs' (solution GOR) in PVTProperties cannot be empty.")
 
     # Use properties from the PVT object at the first data point (e.g., bubble point)
     R_s = pvt.rs[0]
@@ -290,7 +304,7 @@ def estimate_api_from_pvt(pvt: PVTProperties) -> float:
     gamma_o = 0.85  # Initial guess for a typical crude oil
     converged = False
     for i in range(20):  # Max 20 iterations for convergence
-        F = R_s * (gamma_g / gamma_o)**0.5 + 1.25 * T
+        F = R_s * (gamma_g / gamma_o) ** 0.5 + 1.25 * T
         gamma_o_new = 0.972 + 0.000147 * F**1.175
 
         if abs(gamma_o_new - gamma_o) < 1e-5:
@@ -310,10 +324,7 @@ def estimate_api_from_pvt(pvt: PVTProperties) -> float:
     return max(15.0, min(50.0, api))
 
 
-def calculate_mmp(
-    params: Union[MMPParameters, PVTProperties],
-    method: str = 'auto'
-) -> float:
+def calculate_mmp(params: Union[MMPParameters, PVTProperties], method: str = "auto") -> float:
     """
     Unified MMP calculation interface.
 
@@ -336,22 +347,24 @@ def calculate_mmp(
     # Debug logging to understand the type issue
     logging.info(f"calculate_mmp called with params type: {type(params)}")
     logging.info(f"params module: {type(params).__module__}")
-    
+
     # Robustly check for PVTProperties type by checking class name
     # This handles cases where the class is imported from different paths (core.data_models vs co2eor_optimizer.core.data_models)
     is_pvt_properties = False
-    if type(params).__name__ == 'PVTProperties':
+    if type(params).__name__ == "PVTProperties":
         is_pvt_properties = True
     elif isinstance(params, PVTProperties):
         is_pvt_properties = True
-        
+
     if is_pvt_properties:
         api_gravity = None
-        if hasattr(params, 'api_gravity') and params.api_gravity is not None:
+        if hasattr(params, "api_gravity") and params.api_gravity is not None:
             api_gravity = params.api_gravity
             logging.info(f"Using provided API gravity: {api_gravity:.2f}°API")
         else:
-            logging.info("PVTProperties object provided without API gravity. Estimating API gravity from PVT data.")
+            logging.info(
+                "PVTProperties object provided without API gravity. Estimating API gravity from PVT data."
+            )
             try:
                 api_gravity = estimate_api_from_pvt(params)
                 logging.critical(
@@ -365,14 +378,14 @@ def calculate_mmp(
                     "Failed to estimate API gravity from PVTProperties. "
                     f"Please provide a measured oil gravity. Original error: {e}"
                 )
-        
+
         # Create MMPParameters with estimated gravity and other available PVT data
         mmp_params = MMPParameters(
             temperature=params.temperature,
             oil_gravity=api_gravity,
-            injection_gas_composition=getattr(params, 'injection_gas_composition', None),
-            c7_plus_mw=getattr(params, 'c7_plus_mw', None),
-            pvt_data=params
+            injection_gas_composition=getattr(params, "injection_gas_composition", None),
+            c7_plus_mw=getattr(params, "c7_plus_mw", None),
+            pvt_data=params,
         )
     elif isinstance(params, MMPParameters):
         mmp_params = params
@@ -384,13 +397,19 @@ def calculate_mmp(
 
     # --- [REFACTORED] Method Selection and Calculation ---
     logging.info(f"Calculating MMP with method: '{method}'.")
-    if method == 'auto':
+    if method == "auto":
         # Intelligent selection based on data richness
-        if mmp_params.c7_plus_mw and mmp_params.injection_gas_composition and \
-           mmp_params.injection_gas_composition.get('CO2', 0.0) < 0.98:
+        if (
+            mmp_params.c7_plus_mw
+            and mmp_params.injection_gas_composition
+            and mmp_params.injection_gas_composition.get("CO2", 0.0) < 0.98
+        ):
             logging.info("Auto-selecting 'alston' correlation for impure gas with known C7+ MW.")
             return _calculate_mmp_alston(mmp_params)
-        elif mmp_params.injection_gas_composition and mmp_params.injection_gas_composition.get('CO2', 0.0) < 0.95:
+        elif (
+            mmp_params.injection_gas_composition
+            and mmp_params.injection_gas_composition.get("CO2", 0.0) < 0.95
+        ):
             logging.info("Auto-selecting 'yuan' correlation for impure CO2 stream.")
             return _calculate_mmp_yuan(mmp_params)
         elif mmp_params.c7_plus_mw:

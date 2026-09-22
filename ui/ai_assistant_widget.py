@@ -3,7 +3,7 @@ from typing import Optional, Any, Dict
 
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox, QLabel, QLineEdit,
-    QComboBox, QTextEdit, QPushButton, QMessageBox, QScrollArea, QApplication, QInputDialog
+    QComboBox, QTextEdit, QPushButton, QMessageBox, QScrollArea, QApplication
 )
 from PyQt6.QtGui import QIcon, QTextCursor
 from PyQt6.QtCore import Qt, QSettings, pyqtSignal, QEvent
@@ -14,7 +14,7 @@ from ui.widgets.chat_bubble import ChatBubble
 from ui.widgets.context_bubble import ContextBubble
 from ui.dialogs.task_editor_dialog import TaskEditorDialog
 from utils.preferences_manager import PreferencesManager
-from config_manager import ConfigManager
+from utils.config_manager import ConfigManager
 
 logger = logging.getLogger(__name__)
 

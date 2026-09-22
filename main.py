@@ -1,11 +1,14 @@
 import sys
 import logging
+import warnings
 from pathlib import Path
 from typing import Optional
 import time
 
-from path_utils import get_app_root, get_config_dir, get_logs_dir, get_translations_dir
-from config_manager import ConfigManager, ConfigNotLoadedError
+warnings.filterwarnings("ignore", category=UserWarning, message=".*pkg_resources is deprecated as an API.*")
+
+from utils.path_utils import get_app_root, get_config_dir, get_logs_dir, get_translations_dir
+from utils.config_manager import ConfigManager, ConfigNotLoadedError
 from utils.preferences_manager import initialize_preferences_manager
 from utils.i18n_manager import I18nManager
 from utils.multiprocess_logging import setup_queue_logging, shutdown_queue_logging
@@ -116,7 +119,18 @@ def timed_import_main_window():
         from plotly.io import to_image
 
         logger.debug("Importing plotly.graph_objects")
-        import plotly.graph_objects as go
+        try:
+            import importlib
+            importlib.import_module("plotly.graph_objects")
+            importlib.import_module("matplotlib")
+        except ImportError as e:
+            logger.critical(
+                "Mandatory visualization dependency missing: %s. Simulation QA/QC requires visualization tools.",
+                e,
+            )
+            raise RuntimeError(
+                f"Missing mandatory visualization dependency: {e}. Install via 'pip install plotly matplotlib'."
+            ) from e
 
         logger.debug("Importing qtawesome")
         import qtawesome as qta
@@ -167,9 +181,8 @@ def timed_import_main_window():
             logging.warning("GPUtil library not found. GPU monitoring will be disabled.")
 
         logger.info("Importing project modules")
-        from config_manager import ConfigManager
+        from utils.config_manager import ConfigManager
         from utils.project_file_handler import save_project_to_tphd, load_project_from_tphd
-        from utils.units_manager import units_manager
         from utils.report_generator import ReportGenerator
         from ui.overview_page import OverviewPageWidget
         from ui.data_management_widget import DataManagementWidget
@@ -178,8 +191,6 @@ def timed_import_main_window():
         from ui.analysis_widget import AnalysisWidget
         from ui.ai_assistant_widget import AIAssistantWidget
         from ui.dialogs.report_config_dialog import ReportConfigDialog
-        from help_manager import HelpManager
-        from ui.dialogs.parameter_help_dialog import HelpPanel
         from core.data_models import (
             WellData,
             ReservoirData,
@@ -195,7 +206,6 @@ def timed_import_main_window():
         from analysis.sensitivity_analyzer import SensitivityAnalyzer
         from analysis.uq_engine import UncertaintyQuantificationEngine
         from analysis.well_analysis import WellAnalysis
-        from utils.file_association import FileAssociationManager
         from utils.preferences_manager import get_preferences_manager
         from ui.dialogs.preferences_dialog import PreferencesDialog
         from ui.workers.ai_query_worker import AIQueryWorker
@@ -214,8 +224,39 @@ def timed_import_main_window():
 
 
 def main() -> None:
+    import os
+
+    os.environ["QT_QPA_PLATFORM"] = "windows:darkmode=0"
+
+    from PyQt6.QtGui import QPalette, QColor
+
     QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
     app = CO2EORApplication(sys.argv)
+
+    app.setStyle("Fusion")
+
+    light_palette = QPalette()
+    light_palette.setColor(QPalette.ColorRole.Window, QColor(255, 255, 255))
+    light_palette.setColor(QPalette.ColorRole.WindowText, QColor(0, 0, 0))
+    light_palette.setColor(QPalette.ColorRole.Base, QColor(255, 255, 255))
+    light_palette.setColor(QPalette.ColorRole.AlternateBase, QColor(245, 245, 245))
+    light_palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(255, 255, 255))
+    light_palette.setColor(QPalette.ColorRole.ToolTipText, QColor(0, 0, 0))
+    light_palette.setColor(QPalette.ColorRole.Text, QColor(0, 0, 0))
+    light_palette.setColor(QPalette.ColorRole.Button, QColor(240, 240, 240))
+    light_palette.setColor(QPalette.ColorRole.ButtonText, QColor(0, 0, 0))
+    light_palette.setColor(QPalette.ColorRole.BrightText, QColor(255, 255, 255))
+    light_palette.setColor(QPalette.ColorRole.Link, QColor(0, 0, 255))
+    light_palette.setColor(QPalette.ColorRole.Highlight, QColor(0, 120, 215))
+    light_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(255, 255, 255))
+    light_palette.setColor(QPalette.ColorRole.PlaceholderText, QColor(150, 150, 150))
+    light_palette.setColor(QPalette.ColorRole.Light, QColor(255, 255, 255))
+    light_palette.setColor(QPalette.ColorRole.Midlight, QColor(230, 230, 230))
+    light_palette.setColor(QPalette.ColorRole.Dark, QColor(200, 200, 200))
+    light_palette.setColor(QPalette.ColorRole.Mid, QColor(180, 180, 180))
+    light_palette.setColor(QPalette.ColorRole.Shadow, QColor(100, 100, 100))
+    app.setPalette(light_palette)
+
     session_id = str(uuid.uuid4())[:10]
     app.setProperty("session_id", session_id)
     try:
@@ -266,21 +307,23 @@ def main() -> None:
     try:
         # Capture the intended logging level before imports might mess it up
         intended_log_level = logging.getLogger().level
-        
+
         MainWindow = timed_import_main_window()
-        
+
         # Restore the intended logging level if it was changed during imports
         current_level = logging.getLogger().level
         if current_level != intended_log_level:
             logging.getLogger().setLevel(intended_log_level)
-            logger.warning(f"Logging level was reset to {logging.getLevelName(current_level)} during imports. Restored to {logging.getLevelName(intended_log_level)}.")
-        
+            logger.warning(
+                f"Logging level was reset to {logging.getLevelName(current_level)} during imports. Restored to {logging.getLevelName(intended_log_level)}."
+            )
+
         # Enforce that all application modules inherit the root logger's level
         # This fixes the issue where some modules (or 3rd party libs) might have explicitly set their logger level to INFO
         for logger_name in logging.root.manager.loggerDict:
             if logger_name.startswith(("core", "ui", "analysis", "utils")):
                 logging.getLogger(logger_name).setLevel(logging.NOTSET)
-            
+
         logger.info("MainWindow imported successfully.")
     except Exception as e:
         logger.critical(

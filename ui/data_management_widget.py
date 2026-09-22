@@ -16,7 +16,6 @@ from PyQt6.QtCore import pyqtSignal, Qt, QLocale, QEvent
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from mpl_toolkits.mplot3d import Axes3D
 
 import plotly.graph_objects as go
 from PyQt6.QtWebEngineWidgets import QWebEngineView
@@ -47,18 +46,14 @@ except ImportError as e:
     logging.critical(f"DataManagementWidget: Failed to import critical UI components: {e}")
 
 from core.data_models import WellData, ReservoirData, EOSModelParameters, PVTProperties, GeostatisticalParams, LayerDefinition
-from parsers.las_parser import parse_las, MissingWellNameError
 
-# Data integration and engine factory for engine compatibility
+# Data integration for engine compatibility
 try:
     from core.data_integration_engine import DataIntegrationEngine
-    from core.engine_factory import EngineFactory
     DATA_INTEGRATION_AVAILABLE = True
-    ENGINE_FACTORY_AVAILABLE = True
 except ImportError:
     DATA_INTEGRATION_AVAILABLE = False
-    ENGINE_FACTORY_AVAILABLE = False
-    logging.warning("DataIntegrationEngine or EngineFactory not available. Engine integration will be limited.")
+    logging.warning("DataIntegrationEngine not available. Engine integration will be limited.")
 
 
 logger = logging.getLogger(__name__)
@@ -174,6 +169,21 @@ class DataManagementWidget(QWidget):
         self.config_manager = config_manager
         if self.preferences_manager is None and parent is not None:
             self.preferences_manager = getattr(parent, 'preferences_manager', None)
+        if self.preferences_manager is None:
+            try:
+                from utils.preferences_manager import get_preferences_manager
+                self.preferences_manager = get_preferences_manager()
+            except Exception:
+                pass
+
+        if self.config_manager is None and parent is not None:
+            self.config_manager = getattr(parent, 'config_manager', None)
+        if self.config_manager is None:
+            try:
+                from config_manager import ConfigManager
+                self.config_manager = ConfigManager()
+            except Exception:
+                pass
 
         # Initialize data integration engine for engine compatibility
         self.data_integration_engine = DataIntegrationEngine() if DATA_INTEGRATION_AVAILABLE else None
@@ -199,8 +209,6 @@ class DataManagementWidget(QWidget):
         if self.preferences_manager:
             self.preferences_manager.display_preferences_changed.connect(self._on_preferences_changed)
             self.preferences_manager.units_preferences_changed.connect(self._on_preferences_changed)
-
-        self.setStyleSheet("...")
 
     def changeEvent(self, event: QEvent):
         if event.type() == QEvent.Type.LanguageChange:
@@ -481,6 +489,14 @@ class DataManagementWidget(QWidget):
 
         self.use_detailed_pvt_checkbox = QCheckBox("Use Detailed PVT Model")
         pvt_main_layout.addWidget(self.use_detailed_pvt_checkbox)
+
+        self.enforce_step_flash_checkbox = QCheckBox("Enforce Per-Step Flash Calculations (Default: Project PVT Baseline Propagation)")
+        self.enforce_step_flash_checkbox.setToolTip(
+            "When unchecked (default), uses analytical table propagation from project PVT baseline (fast).\n"
+            "When checked, enforces rigorous Peng-Robinson EOS flash calculations on every simulation step."
+        )
+        self.enforce_step_flash_checkbox.setChecked(False)
+        pvt_main_layout.addWidget(self.enforce_step_flash_checkbox)
         
         pvt_props_group = QGroupBox("PVT Properties")
         pvt_props_layout = QGridLayout(pvt_props_group)
@@ -885,26 +901,8 @@ class DataManagementWidget(QWidget):
                     expected_shape = (len(component_names), 5)
 
                     if component_properties.shape != expected_shape:
-                        from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
                         error_msg = f"EOS component_properties shape {component_properties.shape} != expected {expected_shape}"
                         logger.error(error_msg)
-
-                        # Report to centralized error manager
-                        report_caught_error(
-                            operation="validate EOS component properties shape",
-                            exception=ValueError(error_msg),
-                            context={
-                                "component_names": component_names,
-                                "expected_shape": expected_shape,
-                                "actual_shape": component_properties.shape,
-                                "config_source": "EORParameters" if hasattr(self, 'current_eor_params') else "unknown"
-                            },
-                            user_action_suggested="Check EOS configuration file for correct component properties matrix dimensions",
-                            show_dialog=True,
-                            severity=ErrorSeverity.WARNING,
-                            category=ErrorCategory.CONFIGURATION
-                        )
-
                         QMessageBox.warning(self, "EOS Configuration Error",
                                           f"Invalid EOS component properties shape.\n"
                                           f"Expected: {expected_shape}, Got: {component_properties.shape}\n"
@@ -912,25 +910,8 @@ class DataManagementWidget(QWidget):
                         component_properties = self._create_default_eos_properties(component_names)
                         logger.warning(f"USING DEFAULT EOS PROPERTIES: {component_properties.shape}")
                 else:
-                    from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
                     error_msg = "EOS component_properties not found in configuration"
                     logger.error(error_msg)
-
-                    # Report to centralized error manager
-                    report_caught_error(
-                        operation="load EOS component properties from configuration",
-                        exception=KeyError(error_msg),
-                        context={
-                            "component_names": component_names,
-                            "config_keys": list(self.eor_params.keys()) if hasattr(self, 'eor_params') else [],
-                            "config_source": "EORParameters" if hasattr(self, 'current_eor_params') else "unknown"
-                        },
-                        user_action_suggested="Add EOS component properties to configuration file or use configuration manager to generate proper EOS data",
-                        show_dialog=True,
-                        severity=ErrorSeverity.WARNING,
-                        category=ErrorCategory.CONFIGURATION
-                    )
-
                     QMessageBox.warning(self, "EOS Configuration Error",
                                       f"{error_msg}.\n"
                                       f"Using default EOS component properties instead.")
@@ -943,26 +924,8 @@ class DataManagementWidget(QWidget):
                     expected_shape = (len(component_names), len(component_names))
 
                     if binary_interaction_coeffs.shape != expected_shape:
-                        from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
                         error_msg = f"EOS binary_interaction_coeffs shape {binary_interaction_coeffs.shape} != expected {expected_shape}"
                         logger.error(error_msg)
-
-                        # Report to centralized error manager
-                        report_caught_error(
-                            operation="validate EOS binary interaction coefficients shape",
-                            exception=ValueError(error_msg),
-                            context={
-                                "component_names": component_names,
-                                "expected_shape": expected_shape,
-                                "actual_shape": binary_interaction_coeffs.shape,
-                                "config_source": "EORParameters" if hasattr(self, 'current_eor_params') else "unknown"
-                            },
-                            user_action_suggested="Check EOS configuration file for correct binary interaction coefficients matrix dimensions (should be square matrix NxN where N is number of components)",
-                            show_dialog=True,
-                            severity=ErrorSeverity.WARNING,
-                            category=ErrorCategory.CONFIGURATION
-                        )
-
                         QMessageBox.warning(self, "EOS Configuration Error",
                                           f"Invalid EOS binary interaction coefficients shape.\n"
                                           f"Expected: {expected_shape}, Got: {binary_interaction_coeffs.shape}\n"
@@ -970,25 +933,8 @@ class DataManagementWidget(QWidget):
                         binary_interaction_coeffs = np.eye(len(component_names))
                         logger.warning(f"USING DEFAULT EOS BINARY COEFFICIENTS: {binary_interaction_coeffs.shape}")
                 else:
-                    from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
                     error_msg = "EOS binary_interaction_coeffs not found in configuration"
                     logger.error(error_msg)
-
-                    # Report to centralized error manager
-                    report_caught_error(
-                        operation="load EOS binary interaction coefficients from configuration",
-                        exception=KeyError(error_msg),
-                        context={
-                            "component_names": component_names,
-                            "config_keys": list(self.eor_params.keys()) if hasattr(self, 'eor_params') else [],
-                            "config_source": "EORParameters" if hasattr(self, 'current_eor_params') else "unknown"
-                        },
-                        user_action_suggested="Add EOS binary interaction coefficients to configuration file or use configuration manager to generate proper EOS data",
-                        show_dialog=True,
-                        severity=ErrorSeverity.WARNING,
-                        category=ErrorCategory.CONFIGURATION
-                    )
-
                     QMessageBox.warning(self, "EOS Configuration Error",
                                       f"{error_msg}.\n"
                                       f"Using default identity matrix instead.")
@@ -1220,7 +1166,12 @@ class DataManagementWidget(QWidget):
             else:
                 # Check for injector/producer requirements based on scheme
                 injection_scheme = self.config_manager.get_section("eor_parameters").get("injection_scheme", "continuous").lower()
-                has_injector = any(w.metadata.get('type') == 'injector' or w.metadata.get('status', '').lower() == 'injector' for w in self.well_data_list)
+                has_injector = any(
+                    w.metadata.get('type') == 'injector' or
+                    'injector' in str(w.metadata.get('status', '')).lower() or
+                    'inj' in w.name.lower()
+                    for w in self.well_data_list
+                )
                 
                 if injection_scheme != "huff_n_puff" and not has_injector:
                     # Continuous/WAG usually need an explicit injector.
@@ -1328,6 +1279,9 @@ class DataManagementWidget(QWidget):
                         "reservoir_parameters": {
                             "grid_dimensions": {"nx": nx, "ny": ny, "nz": nz},
                             "block_sizes": {"dx": dx, "dy": dy, "dz": dz},
+                            "thickness_ft": thickness_ft,
+                            "area_acres": area_acres,
+                            "length_ft": length_ft,
                             "initial_pressure": self.manual_inputs_values.get('initial_pressure', 4000.0),
                             "temperature": self.manual_inputs_values.get('temperature', 150.0),
                             "rock_compressibility": self.manual_inputs_values.get('rock_compressibility', 3e-6),
@@ -1355,10 +1309,12 @@ class DataManagementWidget(QWidget):
                             "injection_rate": 5000.0,  # Default injection rate - will be set by optimization widget
                             "target_pressure_psi": 3000.0,  # Default target pressure
                             "mobility_ratio": mobility_ratio,  # Use calculated value
-                            "WAG_ratio": 1.0,  # Default WAG ratio
+                            "wag_ratio": 1.0,  # Default WAG ratio
+                            "WAG_ratio": 1.0,  # Backwards compatibility
                             "default_mmp_fallback": 2500.0,  # Default MMP fallback
                             "default_oil_viscosity_cp": self.manual_inputs_values.get('oil_viscosity_cp', 1.0),
                             "default_co2_viscosity_cp": self.manual_inputs_values.get('gas_viscosity_cp', 0.02),
+                            "enforce_step_flash": bool(getattr(self, 'enforce_step_flash_checkbox', None) and self.enforce_step_flash_checkbox.isChecked()),
                         },
                         "operational_parameters": {
                             "project_lifetime_years": 15,  # Default project lifetime - will be set by optimization widget
@@ -1393,7 +1349,13 @@ class DataManagementWidget(QWidget):
                         "well_data": [
                             {
                                 "name": w.name,
-                                "type": w.metadata.get('type', 'producer'),
+                                "type": (
+                                    "injector" if (
+                                        str(w.metadata.get('type', '')).lower() == 'injector' or
+                                        'injector' in str(w.metadata.get('status', '')).lower() or
+                                        'inj' in w.name.lower()
+                                    ) else "producer"
+                                ),
                                 "x": w.well_path[0][0] if w.well_path is not None and len(w.well_path) > 0 else 0,
                                 "y": w.well_path[0][1] if w.well_path is not None and len(w.well_path) > 0 else 0,
                                 "z": w.well_path[0][2] if w.well_path is not None and len(w.well_path) > 0 and len(w.well_path[0]) > 2 else 0,
@@ -1435,10 +1397,20 @@ class DataManagementWidget(QWidget):
              QMessageBox.critical(self, self.tr("Generation Error"), self.tr("An error occurred while processing manual data:\n\n{e}").format(e=e))
              logger.error(f"Error processing manual data: {e}", exc_info=True)
 
+    def _get_item_well_name(self, item: QListWidgetItem) -> str:
+        name = item.data(Qt.ItemDataRole.UserRole)
+        if name:
+            return str(name)
+        text = item.text()
+        for prefix in ["[INJ] ", "[PROD] "]:
+            if text.startswith(prefix):
+                return text[len(prefix):]
+        return text
+
     def _update_well_table_tooltips(self):
         for i in range(self.well_list_widget.count()):
             item = self.well_list_widget.item(i)
-            well_name = item.text()
+            well_name = self._get_item_well_name(item)
             well_data = next((w for w in self.well_data_list if w.name == well_name), None)
             if well_data:
                 tooltip = f"""<b>Well:</b> {well_data.name}<br>
@@ -1449,7 +1421,14 @@ class DataManagementWidget(QWidget):
                 item.setToolTip(tooltip)
 
     def _add_well_to_ui(self, well_data: WellData):
-        item = QListWidgetItem(QIcon.fromTheme("document"), well_data.name)
+        is_inj = (
+            str(well_data.metadata.get("type", "")).lower() == "injector" or
+            "injector" in str(well_data.metadata.get("status", "")).lower() or
+            "inj" in well_data.name.lower()
+        )
+        badge = "[INJ]" if is_inj else "[PROD]"
+        item = QListWidgetItem(QIcon.fromTheme("document"), f"{badge} {well_data.name}")
+        item.setData(Qt.ItemDataRole.UserRole, well_data.name)
         self.well_list_widget.addItem(item)
         self._update_well_table_tooltips()
         self._update_calculated_eor_params()
@@ -1463,7 +1442,7 @@ class DataManagementWidget(QWidget):
             return
 
         for item in selected_items:
-            well_name = item.text()
+            well_name = self._get_item_well_name(item)
             # Remove from internal list
             self.well_data_list = [w for w in self.well_data_list if w.name != well_name]
             # Remove from UI
@@ -1495,12 +1474,14 @@ class DataManagementWidget(QWidget):
             else:
                 self.well_info_label.setText(self.tr("Huff-n-Puff: Please add at least one well."))
         else:
-            if well_count == 1:
-                self.well_info_label.setText(self.tr("Single well detected: Surrogate engine will use field-wide injection rates. For detailed simulation, both injector and producer are recommended."))
-            elif well_count == 0:
+            n_inj = sum(1 for w in self.well_data_list if w.metadata.get('type') == 'injector' or 'injector' in str(w.metadata.get('status', '')).lower() or 'inj' in w.name.lower())
+            n_prod = well_count - n_inj
+            if well_count == 0:
                 self.well_info_label.setText(self.tr("Please add at least one well for CO2-EOR optimization."))
+            elif n_inj == 0 and scheme != "primary_depletion":
+                self.well_info_label.setText(self.tr(f"{well_count} producer(s) detected with 0 injectors: Surrogate engine will use field-wide injection. Add an injector well for pattern simulation."))
             else:
-                self.well_info_label.setText("")
+                self.well_info_label.setText(self.tr(f"Configuration: {n_prod} producer(s), {n_inj} injector(s)."))
 
 
 
@@ -1740,13 +1721,16 @@ class DataManagementWidget(QWidget):
     def _get_or_create_well(self, well_name: str) -> WellData:
         well_data = next((w for w in self.well_data_list if w.name == well_name), None)
         if not well_data:
+            is_inj = "inj" in well_name.lower()
+            w_type = "injector" if is_inj else "producer"
+            w_status = "Injector" if is_inj else "Producer"
             # Create a default WellData matching the dataclass in core/data_models.py
             well_data = WellData(
                 name=well_name,
                 depths=np.array([0.0, 1000.0]),
                 properties={},
                 units={},
-                metadata={"status": "Producer", "type": "producer"},
+                metadata={"status": w_status, "type": w_type},
                 well_path=np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 1000.0]])
             )
             self.well_data_list.append(well_data)
@@ -1759,7 +1743,7 @@ class DataManagementWidget(QWidget):
             QMessageBox.warning(self, "No Well Selected", "Please select a well to view.")
             return
         
-        well_name = selected_items[0].text()
+        well_name = self._get_item_well_name(selected_items[0])
         well_data = next((w for w in self.well_data_list if w.name == well_name), None)
 
         if well_data:

@@ -18,13 +18,6 @@ logger = logging.getLogger(__name__)
 
 # Use centralized constants
 EPSILON = _PERM_CONSTANTS.NUMERICAL_EPSILON_DEFAULT
-GRAVITY_ACCEL_CM_S2 = 981.0
-PERM_MD_TO_M2 = _PERM_CONSTANTS.MD_TO_M2  # 9.869233e-16 mD to m^2
-PERM_MD_TO_CM2 = _PERM_CONSTANTS.MD_TO_CM2  # 9.869233e-13 mD to cm^2
-VISC_CP_TO_POISE = 0.01
-VISC_CP_TO_PA_S = _PERM_CONSTANTS.VISC_CP_TO_PA_S  # 0.001 cP to Pa·s
-GRAVITY_FT_S2 = _PERM_CONSTANTS.GRAVITY_FT_S2  # 32.174 ft/s^2
-SECONDS_PER_DAY = _PERM_CONSTANTS.SECONDS_PER_DAY  # 86400.0
 
 
 @dataclass
@@ -130,10 +123,7 @@ class CO2BreakthroughPhysics:
         self.params = params or BreakthroughParameters()
 
     def calculate_breakthrough_time(
-        self, 
-        reservoir_params: Dict, 
-        eor_params: Dict, 
-        eos_model: Optional[Any] = None
+        self, reservoir_params: Dict, eor_params: Dict, eos_model: Optional[Any] = None
     ) -> float:
         """
         Calculate CO₂ breakthrough time using physics-based dimensionless analysis.
@@ -152,34 +142,53 @@ class CO2BreakthroughPhysics:
             Estimated breakthrough time in years.
         """
 
-        # 1. Dynamic Fluid Property Retrieval (Scientific Integrity Check)        
+        # 1. Dynamic Fluid Property Retrieval (Scientific Integrity Check)
         pressure = _to_float(reservoir_params.get("pressure", 2000.0))
         temp_f = _to_float(reservoir_params.get("temperature", 150.0))
-        
+
         if eos_model is not None:
+            if not hasattr(eos_model, "get_properties_si"):
+                try:
+                    from deprecated.core.unified_engine.physics.eos import PengRobinsonEOS
+                    eos_model = PengRobinsonEOS(eos_model)
+                except (ImportError, TypeError, ValueError, RuntimeError) as e:
+                    logger.warning(
+                        "Failed to initialize PengRobinsonEOS for breakthrough physics at P=%.1f psi, T=%.1f °F: %s",
+                        pressure,
+                        temp_f,
+                        e,
+                    )
+                    eos_model = None
+
+        if eos_model is not None and hasattr(eos_model, "get_properties_si"):
             # Use dynamic EOS properties
-            temp_k = (temp_f - 32) * 5/9 + 273.15
+            temp_k = (temp_f - 32) * 5 / 9 + 273.15
             pres_pa = pressure * 6894.76
             props = eos_model.get_properties_si(temp_k, pres_pa)
-            
+
             # Extract densities (kg/m3 -> lb/ft3)
             rho_co2 = props.get("vapor_properties", {}).get("density", 44.0 * 16.0185) / 16.0185
             rho_oil = props.get("liquid_properties", {}).get("density", 50.0 * 16.0185) / 16.0185
-            
+
             # Extract viscosities (Pa.s -> cP)
             mu_co2 = props.get("vapor_properties", {}).get("viscosity", 0.08 / 1000.0) * 1000.0
             mu_oil = props.get("liquid_properties", {}).get("viscosity", 2.0 / 1000.0) * 1000.0
-            
+
             # Dynamic Bg (rb/Mscf)
-            bg = eos_model.get_bgas_rb_per_mscf(temp_k, pres_pa)
+            if hasattr(eos_model, "get_bgas_rb_per_mscf"):
+                bg = eos_model.get_bgas_rb_per_mscf(temp_k, pres_pa)
+            else:
+                bg = 0.00503 * 0.85 * (temp_f + 460.0) / max(pressure, 14.7)
         else:
             # Fallback to eor_params with logging warning
-            logger.warning("No EOS model provided to breakthrough physics. Using fallback empirical parameters.")
+            logger.warning(
+                "No EOS model provided to breakthrough physics. Using fallback empirical parameters."
+            )
             rho_co2 = _to_float(eor_params.get("co2_density", 44.0))
             rho_oil = _to_float(eor_params.get("oil_density", 50.0))
             mu_co2 = _to_float(eor_params.get("co2_viscosity", 0.08))
             mu_oil = _to_float(eor_params.get("oil_viscosity_cp", 2.0))
-            bg = 0.5 # Default fallback
+            bg = 0.5  # Default fallback
 
         # Updated parameters dictionary for internal calls
         dynamic_fluid_data = {
@@ -187,7 +196,7 @@ class CO2BreakthroughPhysics:
             "rho_oil": rho_oil,
             "mu_co2": mu_co2,
             "mu_oil": mu_oil,
-            "bg": bg
+            "bg": bg,
         }
 
         vdp = _to_float(reservoir_params.get("v_dp_coefficient", 0.5))
@@ -208,9 +217,15 @@ class CO2BreakthroughPhysics:
             reservoir_params, eor_params, dynamic_fluid_data
         )
 
-        breakthrough_time = (
-            weights["koval"] * bt_time_koval +
-            weights["gravity"] * bt_time_gravity
+        breakthrough_time = weights["koval"] * bt_time_koval + weights["gravity"] * bt_time_gravity
+        breakthrough_time = float(
+            np.clip(breakthrough_time, self.params.min_bt_time_clip, self.params.max_bt_time_clip)
+        )
+
+        logger.debug(
+            f"Breakthrough calculation: koval={bt_time_koval:.3f}yr, gravity={bt_time_gravity:.3f}yr, "
+            f"weights={{koval={weights['koval']:.3f}, gravity={weights['gravity']:.3f}}}, "
+            f"final={breakthrough_time:.3f}yr"
         )
 
         return float(breakthrough_time)
@@ -221,7 +236,7 @@ class CO2BreakthroughPhysics:
         mobility_ratio: float,
         reservoir_params: Dict,
         eor_params: Dict,
-        fluid_data: Dict
+        fluid_data: Dict,
     ) -> float:
         """
         Calculate breakthrough time using the Koval Method (Koval, 1963).
@@ -235,8 +250,8 @@ class CO2BreakthroughPhysics:
 
         # Effective Viscosity Ratio E (Koval 1/4 power rule)
         # E = (0.22 + 0.78 * M^0.25)^4
-        m_eff = (0.22 + 0.78 * (mobility_ratio ** 0.25)) ** 4
-        
+        m_eff = (0.22 + 0.78 * (mobility_ratio**0.25)) ** 4
+
         koval_factor = m_eff * hk
         bt_pore_volumes = 1.0 / max(koval_factor, EPSILON)
 
@@ -245,26 +260,28 @@ class CO2BreakthroughPhysics:
         width_ft = _to_float(reservoir_params.get("width_ft", 1000.0))
         thickness_ft = _to_float(reservoir_params.get("thickness_ft", 50.0))
         porosity = np.clip(_to_float(reservoir_params.get("porosity", 0.15)), 0.01, 0.4)
-        
+
         pore_volume_ft3 = length_ft * width_ft * thickness_ft * porosity
-        
+
         # Injection rate conversion
         inj_mscfd = _to_float(eor_params.get("injection_rate", 5000.0))
         bg = fluid_data["bg"]
         q_res_ft3_day = inj_mscfd * bg * 5.61458
-        
+
         bt_years = (bt_pore_volumes * pore_volume_ft3) / (q_res_ft3_day * 365.25 + EPSILON)
-        
+
+        logger.debug(
+            f"Koval BT: Hk={hk:.3f}, E={m_eff:.3f}, K={koval_factor:.3f}, PV={bt_pore_volumes:.4f}, "
+            f"L={length_ft}, W={width_ft}, H={thickness_ft}, phi={porosity}, inj={inj_mscfd}mscfd"
+        )
+
         return float(bt_years)
 
     def _gravity_override_breakthrough(
-        self, 
-        reservoir_params: Dict, 
-        eor_params: Dict,
-        fluid_data: Dict
+        self, reservoir_params: Dict, eor_params: Dict, fluid_data: Dict
     ) -> float:
         """
-        Calculate breakthrough time for gravity override using the 
+        Calculate breakthrough time for gravity override using the
         Viscous-Gravity Ratio (R v/g).
         R v/g = (v * mu_o * L) / (k * delta_rho * g * H)
         """
@@ -273,45 +290,49 @@ class CO2BreakthroughPhysics:
         width_ft = _to_float(reservoir_params.get("width_ft", 1000.0))
         perm_md = _to_float(reservoir_params.get("permeability", 100.0))
         porosity = _to_float(reservoir_params.get("porosity", 0.15))
-        
+
         mu_o_cp = fluid_data["mu_oil"]
         delta_rho_lb_ft3 = abs(fluid_data["rho_oil"] - fluid_data["rho_co2"])
-        
+
         # Velocity u (ft/day)
         inj_mscfd = _to_float(eor_params.get("injection_rate", 5000.0))
         bg = fluid_data["bg"]
         q_res_ft3_day = inj_mscfd * bg * 5.61458
         u_ft_day = q_res_ft3_day / (width_ft * height_ft + EPSILON)
-        
+
         # Convert MD to ft2 (1 mD = 1.0623e-14 ft2)
         k_ft2 = perm_md * 1.0623e-14
-        
+
         # mu_o in lb-day/ft2 (1 cP = 2.0885e-5 lb-s/ft2 = 2.417e-10 lb-day/ft2)
         mu_o_lb_day_ft2 = mu_o_cp * 2.417e-10
-        
+
         # g in ft/day2 (32.17 ft/s2 = 2.4e11 ft/day2)
         g_ft_day2 = 2.4e11
-        
+
         # Viscous-Gravity Ratio (R v/g)
         # Note: Higher R v/g means viscous forces dominate (late override)
-        rvg = (u_ft_day * mu_o_lb_day_ft2 * length_ft) / (k_ft2 * delta_rho_lb_ft3 * g_ft_day2 * height_ft + EPSILON)
-        
+        rvg = (u_ft_day * mu_o_lb_day_ft2 * length_ft) / (
+            k_ft2 * delta_rho_lb_ft3 * g_ft_day2 * height_ft + EPSILON
+        )
+
         # Empirical breakthrough PV for gravity override (Dietz-based proxy)
         # As Rvg -> 0, override is immediate (bt_pv -> 0)
         # As Rvg -> inf, override is absent (bt_pv -> 1/M)
         m_ratio = mu_o_cp / max(fluid_data["mu_co2"], EPSILON)
         bt_pv = (1.0 / m_ratio) * (1.0 - np.exp(-max(rvg, 0.01)))
-        
+
         pore_volume_ft3 = length_ft * width_ft * height_ft * porosity
         bt_years = (bt_pv * pore_volume_ft3) / (q_res_ft3_day * 365.25 + EPSILON)
-        
+
+        logger.debug(
+            f"Gravity BT: Rvg={rvg:.3f}, m_ratio={m_ratio:.3f}, bt_pv={bt_pv:.4f}, "
+            f"perm={perm_md}md, delta_rho={delta_rho_lb_ft3:.2f}"
+        )
+
         return float(bt_years)
 
     def _calculate_dimensionless_weights(
-        self, 
-        reservoir_params: Dict, 
-        eor_params: Dict,
-        fluid_data: Dict
+        self, reservoir_params: Dict, eor_params: Dict, fluid_data: Dict
     ) -> Dict[str, float]:
         """
         Calculate mechanism weights based on the Gravity Number (Ng).
@@ -321,7 +342,7 @@ class CO2BreakthroughPhysics:
         perm_md = _to_float(reservoir_params.get("permeability", 100.0))
         mu_g_cp = fluid_data["mu_co2"]
         delta_rho_lb_ft3 = abs(fluid_data["rho_oil"] - fluid_data["rho_co2"])
-        
+
         # Velocity u (ft/day)
         inj_mscfd = _to_float(eor_params.get("injection_rate", 5000.0))
         bg = fluid_data["bg"]
@@ -329,15 +350,17 @@ class CO2BreakthroughPhysics:
         height_ft = _to_float(reservoir_params.get("thickness_ft", 50.0))
         q_res_ft3_day = inj_mscfd * bg * 5.61458
         u_ft_day = q_res_ft3_day / (width_ft * height_ft + EPSILON)
-        
+
         # Gravity Number (Ng)
         k_ft2 = perm_md * 1.0623e-14
         mu_g_lb_day_ft2 = mu_g_cp * 2.417e-10
         g_ft_day2 = 2.4e11
         sin_theta = np.sin(np.radians(dip_angle))
-        
-        ng = (k_ft2 * delta_rho_lb_ft3 * g_ft_day2 * abs(sin_theta)) / (mu_g_lb_day_ft2 * u_ft_day + EPSILON)
-        
+
+        ng = (k_ft2 * delta_rho_lb_ft3 * g_ft_day2 * abs(sin_theta)) / (
+            mu_g_lb_day_ft2 * u_ft_day + EPSILON
+        )
+
         # Weighting logic (Coupled regime):
         # Instead of linear blending, we use the nonlinear dimensionless interaction function.
         # \Phi(N_g, M) = 1.0 / (1.0 + sqrt(N_g * M))
@@ -345,15 +368,12 @@ class CO2BreakthroughPhysics:
         mu_o_cp = fluid_data["mu_oil"]
         m_ratio = mu_o_cp / max(mu_g_cp, EPSILON)
         phi_ng_m = 1.0 / (1.0 + np.sqrt(ng * max(m_ratio, EPSILON)))
-        
+
         # We output this as "gravity" and "koval" blending parameters that
         # produce the effect `t_bt = t_bt,v * \Phi(Ng, M)`
         # To do this cleanly, we can set w_gravity -> 0 and koval -> \Phi
-        
-        return {
-            "gravity": 0.0,
-            "koval": float(phi_ng_m)
-        }
+
+        return {"gravity": 0.0, "koval": float(phi_ng_m)}
 
     def calculate_post_breakthrough_gor(
         self, eor_params: Dict, time_since_breakthrough: float
@@ -424,13 +444,15 @@ class CO2BreakthroughPhysics:
         """
         # CRITICAL: Ensure breakthrough_time is a scalar before any array operations
         # This prevents "ambiguous truth value" errors from NumPy
-        if hasattr(breakthrough_time, 'item'):
+        if hasattr(breakthrough_time, "item"):
             breakthrough_time = breakthrough_time.item()
         breakthrough_time = float(breakthrough_time)
 
         # Validate breakthrough_time is reasonable
         if not (0 < breakthrough_time <= project_lifetime * 2):
-            logger.warning(f"Breakthrough time {breakthrough_time} outside expected range, using fallback")
+            logger.warning(
+                f"Breakthrough time {breakthrough_time} outside expected range, using fallback"
+            )
             breakthrough_time = project_lifetime / 2  # Use midpoint as fallback
 
         years = np.arange(1, project_lifetime + 1)
@@ -458,9 +480,11 @@ class CO2BreakthroughPhysics:
         return {
             "years": years,
             "breakthrough_occurred": breakthrough_occurred.tolist(),  # Convert to list for JSON serialization
-            "breakthrough_occurred_array": breakthrough_occurred,     # Keep array for numerical operations
+            "breakthrough_occurred_array": breakthrough_occurred,  # Keep array for numerical operations
             "any_breakthrough_occurred": bool(breakthrough_occurred.any()),  # Scalar summary
-            "first_breakthrough_year": int(years[breakthrough_occurred][0]) if breakthrough_occurred.any() else None,
+            "first_breakthrough_year": int(years[breakthrough_occurred][0])
+            if breakthrough_occurred.any()
+            else None,
             "time_since_breakthrough": time_since_breakthrough,
             "gor_profile": gor_profile,
             "recycling_efficiency": recycling_efficiency_profile,
@@ -563,9 +587,11 @@ class CO2BreakthroughPhysics:
             "recycling_efficiency": recycling_efficiency,
             "breakthrough_time_sim": breakthrough_time_sim,
             "breakthrough_occurred": breakthrough_occurred.tolist(),  # Convert to list for JSON serialization
-            "breakthrough_occurred_array": breakthrough_occurred,     # Keep array for numerical operations
+            "breakthrough_occurred_array": breakthrough_occurred,  # Keep array for numerical operations
             "any_breakthrough_occurred": bool(breakthrough_occurred.any()),  # Scalar summary
-            "first_breakthrough_index": int(np.where(breakthrough_occurred)[0][0]) if breakthrough_occurred.any() else None,
+            "first_breakthrough_index": int(np.where(breakthrough_occurred)[0][0])
+            if breakthrough_occurred.any()
+            else None,
         }
 
 

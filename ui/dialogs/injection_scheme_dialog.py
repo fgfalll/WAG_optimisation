@@ -93,7 +93,7 @@ class SchemePreviewWidget(QWidget):
 
     def _draw_wag_scheme(self, painter, x, y, width, height, params):
         """Draw WAG scheme."""
-        wag_ratio = params.get("WAG_ratio", 1.0)
+        wag_ratio = params.get("wag_ratio", 1.0)
         min_cycle = params.get("min_cycle_length_days", 30)
         max_cycle = params.get("max_cycle_length_days", 180)
 
@@ -182,9 +182,10 @@ class SchemePreviewWidget(QWidget):
         """Draw SWAG scheme."""
         water_gas_ratio = params.get("swag_water_gas_ratio", 1.0)
         simultaneous = params.get("swag_simultaneous_injection", True)
+        cycle_length = params.get("swag_cycle_length_days", 30)
 
         painter.setPen(QColor(0, 0, 0))
-        mode = "Simultaneous" if simultaneous else "Alternating"
+        mode = "Simultaneous" if simultaneous else f"Alternating ({cycle_length}d)"
         painter.drawText(x, y - 5, f"SWAG: {mode}, WGR: {water_gas_ratio:.1f}")
 
         if simultaneous:
@@ -195,15 +196,21 @@ class SchemePreviewWidget(QWidget):
             painter.setBrush(QColor(0, 200, 200, 180))  # Water with transparency
             painter.drawRect(x, y + height // 2, width, height // 6)
         else:
-            # Draw alternating injection
-            co2_width = int(width * 0.6)
-            water_width = int(width * 0.4)
+            # Draw alternating injection based on cycle length and water-gas ratio
+            # Total "cycle" = CO2 period + Water period
+            # Ratio of periods based on water_gas_ratio (water volume / gas volume)
+            water_fraction = water_gas_ratio / (1.0 + water_gas_ratio)
+            co2_fraction = 1.0 - water_fraction
+
+            co2_width = int(width * co2_fraction * 0.9)
+            water_width = int(width * water_fraction * 0.9)
+            gap = width - co2_width - water_width
 
             painter.setBrush(QColor(0, 100, 200))
             painter.drawRect(x, y + height // 2, co2_width, height // 4)
 
             painter.setBrush(QColor(0, 200, 200))
-            painter.drawRect(x + co2_width, y + height // 2, water_width, height // 4)
+            painter.drawRect(x + co2_width + gap, y + height // 2, water_width, height // 4)
 
     def _draw_tapered_scheme(self, painter, x, y, width, height, params):
         """Draw tapered injection scheme."""
@@ -365,7 +372,7 @@ class InjectionSchemeDialog(QDialog):
         wag_layout = QFormLayout(wag_widget)
         self.wag_ratio_spin = QDoubleSpinBox()
         self.wag_ratio_spin.setRange(0.1, 5.0)
-        self.wag_ratio_spin.setValue(self.eor_parameters.WAG_ratio or 1.0)
+        self.wag_ratio_spin.setValue(self.eor_parameters.wag_ratio or 1.0)
         self.wag_ratio_spin.valueChanged.connect(self._update_preview)
         wag_layout.addRow("WAG Ratio:", self.wag_ratio_spin)
 
@@ -438,7 +445,22 @@ class InjectionSchemeDialog(QDialog):
         self.swag_efficiency_spin.setValue(self.eor_parameters.swag_mixing_efficiency)
         self.swag_efficiency_spin.valueChanged.connect(self._update_preview)
         swag_layout.addRow("Mixing Efficiency:", self.swag_efficiency_spin)
+
+        self.swag_cycle_length_spin = QSpinBox()
+        self.swag_cycle_length_spin.setRange(1, 180)
+        self.swag_cycle_length_spin.setValue(
+            getattr(self.eor_parameters, "swag_cycle_length_days", 30)
+        )
+        self.swag_cycle_length_spin.valueChanged.connect(self._update_preview)
+        swag_layout.addRow("Alternating Cycle Length (days):", self.swag_cycle_length_spin)
+
+        self.swag_simultaneous_cb.toggled.connect(
+            lambda checked: self._on_swag_simultaneous_toggled(checked)
+        )
+
         self.scheme_stack.addWidget(swag_widget)
+
+        self._on_swag_simultaneous_toggled(self.swag_simultaneous_cb.isChecked())
 
         # Tapered scheme
         tapered_widget = QWidget()
@@ -504,7 +526,7 @@ class InjectionSchemeDialog(QDialog):
         # Update preview with current parameters
         self._update_preview()
 
-    def _on_scheme_selected(self, current, previous):
+    def _on_scheme_selected(self, current, _previous):
         """Handle scheme selection change."""
         if current is None:
             return
@@ -528,6 +550,16 @@ class InjectionSchemeDialog(QDialog):
         # Update preview
         self._update_preview()
 
+    def _on_swag_simultaneous_toggled(self, checked: bool):
+        """Show/hide cycle length based on simultaneous mode selection."""
+        if hasattr(self, "swag_cycle_length_spin"):
+            self.swag_cycle_length_spin.setEnabled(not checked)
+            self.swag_cycle_length_spin.setToolTip(
+                "Days per CO2/water phase when alternating mode is selected"
+                if not checked
+                else "Only used in alternating mode"
+            )
+
     def _update_preview(self):
         """Update the scheme preview widget."""
         params = self._get_current_parameters()
@@ -540,7 +572,7 @@ class InjectionSchemeDialog(QDialog):
         if self.current_scheme == "wag":
             params.update(
                 {
-                    "WAG_ratio": self.wag_ratio_spin.value(),
+                    "wag_ratio": self.wag_ratio_spin.value(),
                     "min_cycle_length_days": self.min_cycle_spin.value(),
                     "max_cycle_length_days": self.max_cycle_spin.value(),
                 }
@@ -561,6 +593,7 @@ class InjectionSchemeDialog(QDialog):
                     "swag_water_gas_ratio": self.swag_ratio_spin.value(),
                     "swag_simultaneous_injection": self.swag_simultaneous_cb.isChecked(),
                     "swag_mixing_efficiency": self.swag_efficiency_spin.value(),
+                    "swag_cycle_length_days": self.swag_cycle_length_spin.value(),
                 }
             )
         elif self.current_scheme == "tapered":
@@ -614,7 +647,7 @@ class InjectionSchemeDialog(QDialog):
         default_params = asdict(default_eor)
 
         # Update UI with default values
-        self.wag_ratio_spin.setValue(default_params.get("WAG_ratio", 1.0))
+        self.wag_ratio_spin.setValue(default_params.get("wag_ratio", 1.0))
         self.min_cycle_spin.setValue(default_params.get("min_cycle_length_days", 30))
         self.max_cycle_spin.setValue(default_params.get("max_cycle_length_days", 180))
 

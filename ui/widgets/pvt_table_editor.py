@@ -257,27 +257,8 @@ class PVTTableEditorWidget(QWidget):
                     try:
                         data[r, c] = dtype(item.text().strip().replace(',', '.'))
                     except (ValueError, TypeError) as e:
-                        # Import the centralized error manager
-                        import sys
-                        import os
-                        sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-                        from error_handler import handle_caught_exception, ErrorSeverity, ErrorCategory
-
-                        # Handle the conversion error properly instead of silently ignoring it
-                        handle_caught_exception(
-                            operation=f"convert table cell value at position ({r}, {c})",
-                            exception=e,
-                            context={
-                                "row": r,
-                                "column": c,
-                                "input_value": item.text().strip(),
-                                "target_type": str(dtype),
-                                "table_name": self.table_name
-                            },
-                            user_action_suggested=f"Check value format at cell ({r+1}, {c+1}). Expected {dtype.__name__} type.",
-                            show_dialog=False,  # Don't interrupt user for individual cell errors
-                            severity=ErrorSeverity.WARNING,
-                            category=ErrorCategory.DATA
+                        logger.warning(
+                            f"Invalid value '{item.text().strip()}' at ({r+1}, {c+1}) in table '{self.table_name}': {e}"
                         )
                         # Set to None to indicate invalid data instead of silently ignoring
                         data[r, c] = None

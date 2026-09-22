@@ -8,8 +8,6 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import pyqtSignal, QTimer, Qt, QEvent
 from PyQt6.QtGui import QCursor
 
-from validation_manager import ValidationManager 
-
 logger = logging.getLogger(__name__)
 
 class ParameterInputGroup(QWidget):
@@ -26,8 +24,9 @@ class ParameterInputGroup(QWidget):
         self.input_type = input_type.lower()
         self.tooltip_text = kwargs.get("help_text", "")
         
-        # Instantiate the manager
-        self.validator = ValidationManager()
+        # Store validation constraints
+        self.min_val = kwargs.get("min_val")
+        self.max_val = kwargs.get("max_val")
 
         self._debounce_timer = QTimer(self)
         self._debounce_timer.setSingleShot(True)
@@ -124,24 +123,29 @@ class ParameterInputGroup(QWidget):
         self.help_requested.emit(self.param_name)
 
     def validate(self):
-        """Checks the input value using the central ValidationManager."""
+        """Validates the input value against configured min/max constraints."""
         if not self.is_checked():
             self.clear_error()
             return
             
         value = self.get_value()
-        if isinstance(value, str) and not value.strip():
+        if value is None or (isinstance(value, str) and not value.strip()):
             self.clear_error()
             return
 
-        validation_result = self.validator.validate(self.param_name, value)
+        if self.min_val is not None or self.max_val is not None:
+            try:
+                num_val = float(value)
+                if self.min_val is not None and num_val < self.min_val:
+                    self.show_error(f"Value must be ≥ {self.min_val}")
+                    return
+                if self.max_val is not None and num_val > self.max_val:
+                    self.show_error(f"Value must be ≤ {self.max_val}")
+                    return
+            except (ValueError, TypeError):
+                pass
 
-        if validation_result:
-            level, message = validation_result
-            if level == 'error': self.show_error(message)
-            elif level == 'warn': self.show_warning(message)
-        else:
-            self.clear_error()
+        self.clear_error()
 
     def _set_feedback(self, message: str, level: Optional[str]):
         if not level:

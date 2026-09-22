@@ -1,0 +1,174 @@
+site_name: CO₂ EOR Optimizer — Technical Documentation
+site_description: Physics-informed surrogate reservoir simulator for CO₂ EOR optimization. Architecture, physics models, development guide, and verification suite.
+site_url: https://fgfalll.github.io/WAG_optimisation/
+repo_url: https://github.com/fgfalll/WAG_optimisation
+repo_name: fgfalll/WAG_optimisation
+edit_uri: edit/main/agent_wiki/
+
+# MkDocs reads docs from agent_wiki/ — single source of truth, no duplication
+docs_dir: agent_wiki
+site_dir: site
+
+theme:
+  name: material
+  language: en
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/molecule-co2
+    admonition:
+      note: fontawesome/solid/note-sticky
+      warning: fontawesome/solid/triangle-exclamation
+      danger: fontawesome/solid/skull-crossbones
+
+plugins:
+  - search:
+      lang: en
+  - tags
+
+markdown_extensions:
+  # Math support (LaTeX via MathJax)
+  - pymdownx.arithmatex:
+      generic: true
+  # Syntax highlighting
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  # Mermaid diagrams and code blocks
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  # Admonitions (Note, Warning, Caution, etc.)
+  - admonition
+  - pymdownx.details
+  # Tables, task lists, etc.
+  - tables
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  # Table of contents
+  - toc:
+      permalink: true
+      title: On this page
+  # Formatting
+  - pymdownx.mark
+  - pymdownx.critic
+  - pymdownx.keys
+  - attr_list
+  - md_in_html
+  - def_list
+  - footnotes
+  - abbr
+
+extra_javascript:
+  # MathJax for LaTeX equation rendering
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/fgfalll/WAG_optimisation
+  generator: false
+
+nav:
+  - Home: README.md
+  - Architecture:
+      - Overview: architecture/overview.md
+      - Module Map: architecture/module_map.md
+      - Execution Flow: architecture/execution_flow.md
+      - Dependency Graph: architecture/dependency_graph.md
+      - Source of Truth: architecture/source_of_truth_map.md
+  - Physics Models:
+      - Reservoir Model: physics/reservoir_model.md
+      - Fluid Model: physics/fluid_model.md
+      - PVT Model: physics/pvt_model.md
+      - CO₂ Properties: physics/co2_model.md
+      - Displacement Model: physics/displacement_model.md
+      - Relative Permeability: physics/relative_permeability.md
+      - Recovery Model: physics/recovery_model.md
+      - CO₂ Storage: physics/co2_storage.md
+  - Data & Parameters:
+      - Inputs: data/inputs.md
+      - Outputs: data/outputs.md
+      - Parameter Registry: data/parameters.md
+      - Units & Conversions: data/units.md
+  - Development Guide:
+      - Common Pitfalls: development/common_pitfalls.md
+      - Change Safety Matrix: development/change_safety_matrix.md
+      - Safe Modification Rules: development/safe_modification_rules.md
+      - Coding Rules: development/coding_rules.md
+      - Extension Points: development/extension_points.md
+      - Agent Skills: development/agent_skills.md
+  - Audit Reports:
+      - Technical Debt: audit/technical_debt.md
+      - Dead Code: audit/dead_code.md
+      - Hardcoded Values: audit/hardcoded_values.md
+      - Fallbacks: audit/fallbacks.md
+      - Suspicious Logic: audit/suspicious_logic.md
+      - Hidden Calibration: audit/hidden_calibration.md
+      - Duplicate Logic: audit/duplicate_logic.md
+      - Parameter Provenance: audit/parameter_provenance.md
+      - Verification Gaps: audit/verification_gaps.md
+  - Verification:
+      - Strategy: verification/verification_strategy.md
+      - Mathematical: verification/mathematical_verification.md
+      - Physical: verification/physical_verification.md
+      - Numerical: verification/numerical_verification.md
+      - Conservation Tests: verification/conservation_tests.md
+      - Reference Solutions: verification/reference_solutions.md
+      - Convergence Studies: verification/convergence_studies.md
+      - Limiting Cases: verification/limiting_cases.md
+      - Test Matrix: verification/test_matrix.md
+  - Validation:
+      - Status: validation/validation_status.md
+      - Benchmarks: validation/benchmarks.md
+      - CMG GEM Reference: validation/cmg_reference_validation.md
+      - Conservation: validation/conservation.md
+      - Test Suite: validation/test_suite_audit.md
+      - Known Limitations: validation/known_limitations.md
+  - Decisions:
+      - Architecture Decisions: decisions/architecture_decisions.md
+      - Scientific Decisions: decisions/scientific_decisions.md

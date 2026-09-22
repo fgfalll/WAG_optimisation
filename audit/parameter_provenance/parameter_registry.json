@@ -1,0 +1,101 @@
+[
+  {
+    "name": "COREY_N_OIL",
+    "value": 2.0,
+    "unit": "dimensionless",
+    "provenance": "Literature (Corey 1954)",
+    "equation": "kro = kro0 * (1 - Sw*)^n_o",
+    "module": "core/engine_surrogate/surrogate_models.py:29",
+    "status": "VERIFIED"
+  },
+  {
+    "name": "COREY_N_GAS",
+    "value": 2.0,
+    "unit": "dimensionless",
+    "provenance": "Literature (Corey 1954)",
+    "equation": "krg = krg0 * Sg*^n_g",
+    "module": "core/engine_surrogate/surrogate_models.py:30",
+    "status": "VERIFIED"
+  },
+  {
+    "name": "S_GC_CRITICAL",
+    "value": 0.05,
+    "unit": "fraction",
+    "provenance": "Empirical Default",
+    "equation": "Critical gas saturation",
+    "module": "core/engine_surrogate/surrogate_models.py:31",
+    "status": "EMPIRICAL"
+  },
+  {
+    "name": "S_OR_BASE",
+    "value": 0.25,
+    "unit": "fraction",
+    "provenance": "Empirical Default",
+    "equation": "Residual oil saturation",
+    "module": "core/engine_surrogate/surrogate_models.py:32",
+    "status": "EMPIRICAL"
+  },
+  {
+    "name": "CO2_DENSITY_TONNE_PER_MSCF",
+    "value": 0.053,
+    "unit": "tonne/MSCF",
+    "provenance": "Fundamental Constant (MW=44.01)",
+    "equation": "rho = MW / V_std",
+    "module": "core/engine_surrogate/surrogate_models.py:26",
+    "status": "VERIFIED"
+  },
+  {
+    "name": "TODD_LONGSTAFF_OMEGA",
+    "value": 0.6,
+    "unit": "fraction",
+    "provenance": "Literature (Todd & Longstaff 1972)",
+    "equation": "mu_oe = mu_m^omega * mu_o^(1-omega)",
+    "module": "core/engine_surrogate/analytical_models.py:38",
+    "status": "VERIFIED"
+  },
+  {
+    "name": "HETEROGENEITY_CALIBRATION_C_TRANS",
+    "value": 0.8,
+    "unit": "dimensionless",
+    "provenance": "Calibrated / Tuning",
+    "equation": "H = 1 / (1 - 0.80*V_DP)^2",
+    "module": "core/engine_surrogate/surrogate_engine.py:195",
+    "status": "CALIBRATED"
+  },
+  {
+    "name": "NOMINAL_DRAWDOWN",
+    "value": 500.0,
+    "unit": "psi",
+    "provenance": "Arbitrary Fallback",
+    "equation": "J = q / nominal_drawdown",
+    "module": "core/engine_surrogate/surrogate_engine.py:348",
+    "status": "ARBITRARY"
+  },
+  {
+    "name": "PRESSURE_INCREMENT_CLAMP",
+    "value": 450.0,
+    "unit": "psi/step",
+    "provenance": "Numerical Safeguard",
+    "equation": "dp = clip(dp, -450, 450)",
+    "module": "core/engine_surrogate/surrogate_engine.py:379",
+    "status": "NUMERICAL_STABILIZER"
+  },
+  {
+    "name": "EPA_CLASS_VI_SAFETY_FACTOR",
+    "value": 0.9,
+    "unit": "fraction",
+    "provenance": "Regulatory Standard (EPA Class VI)",
+    "equation": "P_safe = 0.90 * P_frac",
+    "module": "core/engine_surrogate/surrogate_engine.py:343",
+    "status": "REGULATORY_VERIFIED"
+  },
+  {
+    "name": "B_GAS_OPTIMISATION",
+    "value": 5.0,
+    "unit": "RB/MSCF",
+    "provenance": "Unknown / Erroneous",
+    "equation": "Gas conversion",
+    "module": "core/optimisation_engine.py:98",
+    "status": "CONTRADICTED_BY_TEST"
+  }
+]

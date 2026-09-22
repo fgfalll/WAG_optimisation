@@ -7,7 +7,7 @@ import traceback
 from dataclasses import asdict
 import numpy as np
 
-from path_utils import get_config_dir, get_ui_assets_dir
+from utils.path_utils import get_config_dir, get_ui_assets_dir
 
 import pandas as pd
 import base64
@@ -64,9 +64,8 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 try:
-    from config_manager import ConfigManager
+    from utils.config_manager import ConfigManager
     from utils.project_file_handler import save_project_to_tphd, load_project_from_tphd
-    from utils.units_manager import units_manager
     from utils.report_generator import ReportGenerator
     from ui.overview_page import OverviewPageWidget
     from ui.data_management_widget import DataManagementWidget
@@ -75,9 +74,6 @@ try:
     from ui.analysis_widget import AnalysisWidget
     from ui.ai_assistant_widget import AIAssistantWidget
     from ui.dialogs.report_config_dialog import ReportConfigDialog
-    from ui.dialogs.scientific_justification_dialog import ScientificJustificationWidget
-    from help_manager import HelpManager
-    from ui.dialogs.parameter_help_dialog import HelpPanel
     from core.data_models import (
         WellData,
         ReservoirData,
@@ -89,12 +85,12 @@ try:
         GeneticAlgorithmParams,
         BayesianOptimizationParams,
         AdvancedEngineParams,
+        CO2StorageParameters,
     )
     from core.optimisation_engine import OptimizationEngine
     from analysis.sensitivity_analyzer import SensitivityAnalyzer
     from analysis.uq_engine import UncertaintyQuantificationEngine
     from analysis.well_analysis import WellAnalysis
-    from utils.file_association import FileAssociationManager
     from utils.preferences_manager import get_preferences_manager
     from ui.dialogs.preferences_dialog import PreferencesDialog
     from ui.workers.ai_query_worker import AIQueryWorker
@@ -137,6 +133,7 @@ class MainWindow(QMainWindow):
     current_profile_params: ProfileParameters
     current_ga_params: GeneticAlgorithmParams
     current_bo_params: BayesianOptimizationParams
+    current_co2_storage_params: CO2StorageParameters
 
     optimisation_engine_instance: Optional[OptimizationEngine] = None
     sensitivity_analyzer_instance: Optional[SensitivityAnalyzer] = None
@@ -170,14 +167,13 @@ class MainWindow(QMainWindow):
             )
 
         self._initialize_project_data_and_configs()
-        self.report_generator = ReportGenerator(units_manager)
+        self.report_generator = ReportGenerator()
 
         self._setup_ui_structure()
         self._create_actions()
         self._create_menu_bar()
         self._create_status_bar()
         self._create_tool_bar()
-        self._create_help_system_connections()
         self.progress_updated.connect(self._update_report_progress)
         self.show_message.connect(self._show_message_box)
 
@@ -298,6 +294,9 @@ class MainWindow(QMainWindow):
                 self.current_advanced_engine_params = AdvancedEngineParams.from_config_dict(
                     self.default_config_loader.get_section("AdvancedEngineParamsDefaults") or {}
                 )
+                self.current_co2_storage_params = CO2StorageParameters.from_config_dict(
+                    self.default_config_loader.get_section("CO2StorageParametersDefaults") or {}
+                )
                 logger.info("Initialized PVT properties with default viscosities from config.")
 
             except Exception as e:
@@ -358,22 +357,8 @@ class MainWindow(QMainWindow):
         main_app_widget = QWidget()
         main_app_layout = QHBoxLayout(main_app_widget)
         main_app_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.help_panel = HelpPanel(self)
-        self.help_panel.setMinimumWidth(250)
-        self.help_panel.setMaximumWidth(500)
-        self.main_splitter = QSplitter(self)
-        main_app_layout.addWidget(self.main_splitter)
-
         self._setup_main_app_tabs_container()
-
-        self.main_splitter.addWidget(self.main_tab_widget)
-        self.main_splitter.addWidget(self.help_panel)
-        self.main_splitter.setCollapsible(0, False)
-        self.main_splitter.setCollapsible(1, True)
-        self.main_splitter.setStretchFactor(0, 1)
-        self.main_splitter.setStretchFactor(1, 0)
-        self.help_panel.hide()
+        main_app_layout.addWidget(self.main_tab_widget)
 
         self.stacked_layout.addWidget(self.overview_page)
         self.stacked_layout.addWidget(main_app_widget)
@@ -490,13 +475,6 @@ class MainWindow(QMainWindow):
             f"Min: {min_size.width()}x{min_size.height()}"
         )
 
-        # Calculate splitter sizes that respect screen constraints
-        available_width = min(self.width(), screen_geometry.width())
-        help_panel_width = min(350, available_width - 400)  # Ensure minimum 400px for main content
-        main_content_width = available_width - help_panel_width
-
-        self.main_splitter.setSizes([main_content_width, help_panel_width])
-
         self.main_tab_widget.setCurrentIndex(focus_tab_index)
         self.save_project_action.setEnabled(True)
         self.save_project_as_action.setEnabled(True)
@@ -537,28 +515,6 @@ class MainWindow(QMainWindow):
         self.about_qt_action = QAction("", self)
         self.about_qt_action.triggered.connect(QApplication.aboutQt)
 
-        self.associate_phd_action = QAction(qta.icon("fa5s.link", color=icon_color), "", self)
-        self.associate_phd_action.triggered.connect(self._handle_associate_phd_files)
-        self.remove_association_action = QAction(
-            qta.icon("fa5s.unlink", color=icon_color), "", self
-        )
-        self.remove_association_action.triggered.connect(self._handle_remove_association)
-
-        self.scientific_justification_action = QAction(
-            qta.icon("fa5s.flask", color=icon_color), "", self
-        )
-        self.scientific_justification_action.triggered.connect(
-            self._show_scientific_justification_dialog
-        )
-
-    def _show_scientific_justification_dialog(self):
-        dialog = QDialog(self)
-        dialog.setWindowTitle(self.tr("Scientific Justification"))
-        layout = QVBoxLayout(dialog)
-        content = ScientificJustificationWidget(dialog)
-        layout.addWidget(content)
-        dialog.show()
-
     def _create_menu_bar(self):
         self.menu_bar = self.menuBar()
         self.file_menu = self.menu_bar.addMenu("")
@@ -577,33 +533,10 @@ class MainWindow(QMainWindow):
 
         self.tools_menu = self.menu_bar.addMenu("")
         self.tools_menu.addAction(self.generate_report_action)
-        self.tools_menu.addAction(self.associate_phd_action)
-        self.tools_menu.addAction(self.remove_association_action)
 
         self.help_menu = self.menu_bar.addMenu("")
-
-        icon_color = "#000000"
-
-        self.show_help_action = QAction(
-            qta.icon("fa5s.question-circle", color=icon_color), "", self
-        )
-        self.show_help_action.setCheckable(True)
-        self.show_help_action.triggered.connect(self._toggle_help_panel)
-        self.help_menu.addAction(self.show_help_action)
-        self.help_menu.addSeparator()
-        self.scientific_justification_action = QAction(
-            qta.icon("fa5s.flask", color=icon_color), "", self
-        )
-        self.scientific_justification_action.triggered.connect(
-            self._show_scientific_justification_dialog
-        )
-        self.help_menu.addAction(self.scientific_justification_action)
-        self.help_menu.addSeparator()
         self.help_menu.addAction(self.about_action)
         self.help_menu.addAction(self.about_qt_action)
-
-    def _toggle_help_panel(self):
-        self.help_panel.setVisible(not self.help_panel.isVisible())
 
     def _create_status_bar(self):
         self.status_bar = QStatusBar(self)
@@ -655,10 +588,6 @@ class MainWindow(QMainWindow):
         self.generate_report_action.setText(self.tr("&Generate Report..."))
         self.about_action.setText(self.tr("&About ") + QApplication.applicationName())
         self.about_qt_action.setText(self.tr("About &Qt"))
-        self.associate_phd_action.setText(self.tr("Associate .phd Files"))
-        self.remove_association_action.setText(self.tr("Remove .phd Association"))
-        self.show_help_action.setText(self.tr("Show Help Panel"))
-        self.scientific_justification_action.setText(self.tr("Scientific Justification"))
 
         # Menus
         self.file_menu.setTitle(self.tr("&File"))
@@ -717,21 +646,9 @@ class MainWindow(QMainWindow):
                 self.move(new_x, new_y)
                 logger.debug(f"Corrected window position during resize: {new_x}, {new_y}")
 
-    def _create_help_system_connections(self):
-        self.help_requested.connect(self.help_panel.show_help_for)
-        self.help_panel.closed.connect(self._on_help_panel_closed)
-
     @pyqtSlot(str)
     def request_help(self, key: str):
-        if self.main_splitter.sizes()[1] == 0:
-            self.main_splitter.setSizes([self.width() - 350, 350])
-        self.help_requested.emit(key)
-
-    @pyqtSlot()
-    def _on_help_panel_closed(self):
-        sizes = self.main_splitter.sizes()
-        if sizes[1] > 0:
-            self.main_splitter.setSizes([sum(sizes), 0])
+        pass
 
     def _update_resource_monitors(self):
         if PSUTIL_AVAILABLE:
@@ -987,17 +904,7 @@ class MainWindow(QMainWindow):
         try:
             ui_state = data["ui_state"]
             if ui_state:
-                current_tab_index = ui_state.get("current_tab_index", 0)
-                splitter_sizes = ui_state.get("splitter_sizes", [self.width(), 0])
-                help_panel_visible = ui_state.get("help_panel_visible", False)
-                stacked_layout_index = ui_state.get("stacked_layout_index", 1)
-
                 self.main_tab_widget.setCurrentIndex(current_tab_index)
-                self.main_splitter.setSizes(splitter_sizes)
-                if help_panel_visible:
-                    self.help_panel.show()
-                else:
-                    self.help_panel.hide()
                 self.stacked_layout.setCurrentIndex(stacked_layout_index)
         except Exception as e:
             logger.error(f"Error restoring UI state: {e}", exc_info=True)
@@ -1138,8 +1045,6 @@ class MainWindow(QMainWindow):
                 "uq_parameters": self.analysis_tab.get_uq_parameters(),
                 "ui_state": {
                     "current_tab_index": self.main_tab_widget.currentIndex(),
-                    "splitter_sizes": self.main_splitter.sizes(),
-                    "help_panel_visible": self.help_panel.isVisible(),
                     "stacked_layout_index": self.stacked_layout.currentIndex(),
                 },
                 "recent_projects": self.overview_page.get_recent_projects(),
@@ -1713,12 +1618,15 @@ class MainWindow(QMainWindow):
         self.current_bo_params = new_configs.get(
             BayesianOptimizationParams.__name__, self.current_bo_params
         )
+        self.current_co2_storage_params = new_configs.get(
+            CO2StorageParameters.__name__, self.current_co2_storage_params
+        )
         # DEBUG: Log the received EOR parameters
         eor_params = new_configs.get(EORParameters.__name__)
         if eor_params:
             logger.info(
                 f"MainWindow - Received EOR Parameters - Injection Scheme: '{eor_params.injection_scheme}', "
-                f"WAG Ratio: {eor_params.WAG_ratio}"
+                f"WAG Ratio: {eor_params.wag_ratio}"
             )
 
         self._reinitialize_engines_and_analysis_tabs()
@@ -1864,6 +1772,7 @@ class MainWindow(QMainWindow):
                     operational_params_instance=deepcopy(self.current_operational_params),
                     profile_params_instance=deepcopy(self.current_profile_params),
                     advanced_engine_params_instance=deepcopy(self.current_advanced_engine_params),
+                    co2_storage_params_instance=deepcopy(self.current_co2_storage_params),
                     well_data_list=self.current_well_data,
                     mmp_init_override=self.current_mmp_value,
                 )
@@ -1872,7 +1781,7 @@ class MainWindow(QMainWindow):
                 if self.current_eor_params:
                     logger.info(
                         f"MainWindow - Engine Initialized with EOR Parameters - Injection Scheme: '{self.current_eor_params.injection_scheme}', "
-                        f"WAG Ratio: {self.current_eor_params.WAG_ratio}"
+                        f"WAG Ratio: {self.current_eor_params.wag_ratio}"
                     )
 
                 logger.info("OptimizationEngine instance created.")
@@ -1968,7 +1877,7 @@ class MainWindow(QMainWindow):
 
                         field_well_data = WellData(
                             name="Field (Optimized)",
-                            depths=np.array([]),
+                            depths=np.array([0.0]),
                             properties={"time": time_years, "rate": rate_stb_per_year},
                             units={"time": "years", "rate": "STB/year"},
                             metadata={"source": "Optimization"},
@@ -2020,7 +1929,6 @@ class MainWindow(QMainWindow):
     def save_window_settings(self):
         self.app_settings.setValue("MainWindow/geometry", self.saveGeometry())
         self.app_settings.setValue("MainWindow/state", self.saveState())
-        self.app_settings.setValue("MainWindow/splitterSizes", self.main_splitter.saveState())
         logger.debug("Window settings saved.")
 
     def load_window_settings(self):
@@ -2069,20 +1977,6 @@ class MainWindow(QMainWindow):
         if state := self.app_settings.value("MainWindow/state"):
             self.restoreState(state)
 
-        if splitter_state := self.app_settings.value("MainWindow/splitterSizes"):
-            self.main_splitter.restoreState(splitter_state)
-        else:
-            # Set reasonable default splitter sizes
-            screen_width = QApplication.primaryScreen().availableGeometry().width()
-            main_content_width = max(
-                800, screen_width - 350
-            )  # Ensure minimum 800px for main content
-            help_panel_width = min(350, screen_width - 800)
-            self.main_splitter.setSizes([main_content_width, help_panel_width])
-
-        if self.stacked_layout.currentIndex() == 0:
-            self.help_panel.hide()
-
         logger.debug("Window settings loaded with enhanced geometry validation.")
 
     def closeEvent(self, event: QCloseEvent):
@@ -2092,66 +1986,3 @@ class MainWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
-
-    def _handle_associate_phd_files(self) -> None:
-        try:
-            executable_path = Path(sys.executable)
-            icon_path = get_ui_assets_dir() / "main_ico.ico"
-
-            manager = FileAssociationManager()
-            success = manager.associate_phd_files(executable_path, icon_path)
-
-            if success:
-                QMessageBox.information(
-                    self,
-                    self.tr("File Association"),
-                    self.tr("Successfully associated .phd files with this application."),
-                )
-            else:
-                QMessageBox.warning(
-                    self,
-                    self.tr("File Association"),
-                    self.tr(
-                        "Failed to associate .phd files. This feature is only available on Windows."
-                    ),
-                )
-
-        except Exception as e:
-            logger.error(f"Error associating .phd files: {e}")
-            QMessageBox.critical(
-                self,
-                self.tr("File Association Error"),
-                self.tr("An error occurred while trying to associate .phd files:\n\n{e}").format(
-                    e=e
-                ),
-            )
-
-    def _handle_remove_association(self) -> None:
-        try:
-            manager = FileAssociationManager()
-            success = manager.remove_association()
-
-            if success:
-                QMessageBox.information(
-                    self,
-                    self.tr("File Association"),
-                    self.tr("Successfully removed .phd file association."),
-                )
-            else:
-                QMessageBox.warning(
-                    self,
-                    self.tr("File Association"),
-                    self.tr(
-                        "Failed to remove .phd file association. This feature is only available on Windows."
-                    ),
-                )
-
-        except Exception as e:
-            logger.error(f"Error removing .phd file association: {e}")
-            QMessageBox.critical(
-                self,
-                self.tr("File Association Error"),
-                self.tr(
-                    "An error occurred while trying to remove .phd file association:\n\n{e}"
-                ).format(e=e),
-            )

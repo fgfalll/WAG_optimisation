@@ -119,11 +119,11 @@ class BaseSurrogateModel(ABC):
             return False
 
         # Physical saturation constraints
-        s_gc = params.get("s_gc", S_GC_CRITICAL)
-        s_or = params.get("sor", S_OR_BASE)
-        s_wi = params.get("s_wi", 0.25)
+        s_gc = params.get("s_gc") if params.get("s_gc") is not None else S_GC_CRITICAL
+        s_or = params.get("sor") if params.get("sor") is not None else S_OR_BASE
+        s_wi = params.get("s_wi") if params.get("s_wi") is not None else 0.25
 
-        if s_gc + s_or + s_wi >= 1.0:
+        if (s_gc or 0.05) + (s_or or 0.25) + (s_wi or 0.25) >= 1.0:
             logger.warning("Saturation constraints violated: S_gc + S_or + S_wi >= 1")
             return False
 
@@ -146,8 +146,7 @@ class BaseSurrogateModel(ABC):
 
 
 def calculate_areal_sweep_efficiency(
-    mobility_ratio: float,
-    pattern_type: str = "five_spot"
+    mobility_ratio: float, pattern_type: str = "five_spot"
 ) -> float:
     """
     Calculate areal sweep efficiency using Craig (1971) correlations.
@@ -197,7 +196,7 @@ def calculate_vertical_sweep_efficiency(v_dp: float) -> float:
         Vertical sweep efficiency E_V (0-1)
     """
     # Johnson (1956) asymptotic: E_V ≈ 1 - V_DP^0.7
-    vertical_eff = 1.0 - (v_dp ** 0.7)
+    vertical_eff = 1.0 - (v_dp**0.7)
     return float(np.clip(vertical_eff, 0.1, 1.0))
 
 
@@ -244,6 +243,131 @@ def calculate_trapping_efficiency(
     return float(np.clip(trapping_eff, 0.1, 1.0))
 
 
+def calculate_co2_stored_breakthrough_aware(
+    injection_rate: float,
+    project_life_years: float,
+    co2_density_tonne: float,
+    trapping_eff: float,
+    recycle_growth_rate: float,
+    breakthrough_time_years: float,
+    mscf_per_res_bbl: float,
+    initial_gor: float,
+    recovery_factor: float,
+    ooip: float,
+    solution_gas_co2_fraction: float = 0.20,
+) -> Tuple[float, float]:
+    """
+    Calculate CO2 stored using breakthrough-aware mass balance.
+
+    Physics basis:
+    - CO2 mass balance: net_stored = cumulative_injected - cumulative_produced
+    - Cumulative produced = recycled_CO2 + solution_gas_CO2
+    - Pre-breakthrough: recycled_CO2 = 0
+    - Post-breakthrough: recycled fraction grows exponentially toward (1 - trapping_eff)
+    - Solution gas CO2 fraction is a small fraction (~15%) of total solution gas
+      (CO2 dissolves in oil; majority of solution gas is CH4/natural gas)
+
+    Hydrocarbon Gas Handling:
+    - Solution gas (pre-BT): Mostly CH4/hydrocarbons, small fraction (~5-20%) is dissolved CO2
+    - Post-BT produced gas: Mix of recycled CO2 (~50%) and CH4/hydrocarbons (~50%)
+    - Reference: OSTI-1204577; Azzolina et al. 2015; DOE NETL CO2 EOR Primer
+
+    References:
+    - OSTI-1204577 (Peck et al. 2017): ~50% of injected CO2 produced, >95% of
+      purchased CO2 retained. Storage efficiency (dimensionless) ranges 8-61%.
+    - Mathiassen 2003 (Stanford): Koval-based fractional flow for CO2 EOR.
+    - DOE CO2 EOR Primer (NETL): CO2 solubility in oil depends on pressure, temperature,
+      and API gravity. Typical light oil at 2000 psi: ~200-400 scf CO2/STB oil.
+
+    Args:
+        injection_rate: CO2 injection rate (MSCFD)
+        project_life_years: Project lifetime (years)
+        co2_density_tonne: CO2 density (tonne/MSCF)
+        trapping_eff: Fraction of injected CO2 retained in reservoir (0-1)
+        recycle_growth_rate: Exponential growth rate of recycle fraction (yr^-1)
+        breakthrough_time_years: Time to CO2 breakthrough (years)
+        mscf_per_res_bbl: Gas formation volume factor conversion (MSCF/res-bbl)
+        initial_gor: Initial solution gas-oil ratio (scf/STB)
+        recovery_factor: Fraction of OOIP recovered (0-1)
+        ooip: Original oil in place (STB)
+        solution_gas_co2_fraction: Fraction of solution gas that is CO2 (default 0.20)
+            - This is configurable via CO2StorageParameters.solution_gas_co2_fraction
+            - Pre-BT dissolution losses: ~5% of total gas production
+            - Solution gas composition: ~20% CO2, ~80% CH4/hydrocarbons (typical)
+
+    Returns:
+        Tuple of (co2_stored_tonne, storage_efficiency)
+    """
+    EPSILON = 1e-10
+
+    # Total CO2 injected over project life (tonne)
+    co2_injected_total = injection_rate * 365.25 * project_life_years * co2_density_tonne
+
+    # Breakthrough-aware cumulative recycle fraction
+    # After breakthrough, the asymptotic fraction of injected CO2 that returns as recycle
+    # is (1 - trapping_eff). The return grows exponentially from 0 toward this asymptote.
+    # The cumulative recycled CO2 as a fraction of total injected:
+    # f_recycle(t) = max_recycle_frac * (1 - exp(-r * (t - t_bt))) for t >= t_bt
+    # Total recycled fraction = (1/t_proj) * integral from t_bt to t_proj of f_recycle(t) dt
+    #                         = max_recycle_frac * (t_proj - t_bt) / t_proj
+    #                           - max_recycle_frac / (r * t_proj) * (1 - exp(-r*(t_proj-t_bt)))
+    max_recycle_frac = 1.0 - trapping_eff
+    t_bt = breakthrough_time_years
+    t_proj = project_life_years
+    r = recycle_growth_rate
+
+    if t_bt >= t_proj:
+        cumulative_recycle_frac = 0.0
+    elif t_bt <= 0.0:
+        cumulative_recycle_frac = max_recycle_frac
+    else:
+        dt = t_proj - t_bt
+        if r > 0:
+            cumulative_recycle_frac = max_recycle_frac * (
+                dt / t_proj - (1.0 / (r * t_proj)) * (1.0 - np.exp(-r * dt))
+            )
+        else:
+            cumulative_recycle_frac = max_recycle_frac * max(0.0, dt / t_proj)
+
+    # Clamp to physically valid range [0, max_recycle_frac]
+    cumulative_recycle_frac = float(np.clip(cumulative_recycle_frac, 0.0, max_recycle_frac))
+
+    # CO2 produced from recycle (tonne)
+    co2_produced_recycle_tonne = co2_injected_total * cumulative_recycle_frac
+
+    # Cumulative oil produced (STB)
+    cum_oil_produced = recovery_factor * ooip
+
+    # Total solution gas produced (MSCF)
+    total_solution_gas_mscf = cum_oil_produced * initial_gor * 1e-3
+
+    # CO2 dissolved in solution gas (tonne)
+    co2_in_solution_gas_tonne = (
+        total_solution_gas_mscf * solution_gas_co2_fraction * co2_density_tonne
+    )
+
+    # Net CO2 stored (tonne)
+    # = Injected - Recycled CO2 produced - Solution gas CO2
+    # Note: solution gas CO2 was originally dissolved in oil before CO2 injection,
+    # so counting it as "produced CO2" slightly overestimates losses.
+    # The true net storage is slightly better than this calculation.
+    net_stored_tonne = co2_injected_total - co2_produced_recycle_tonne - co2_in_solution_gas_tonne
+
+    # Defensive clamp: storage cannot be negative
+    net_stored_tonne = max(net_stored_tonne, 0.0)
+
+    # Storage efficiency (net stored / total injected), clamped to [0, 1]
+    # Clamp individual terms to prevent negative intermediate values
+    co2_produced_recycle_tonne = max(co2_produced_recycle_tonne, 0.0)
+    co2_in_solution_gas_tonne = max(co2_in_solution_gas_tonne, 0.0)
+    net_stored_tonne = max(net_stored_tonne, 0.0)
+    storage_efficiency = float(
+        np.clip(net_stored_tonne / max(co2_injected_total, EPSILON), 0.0, 1.0)
+    )
+
+    return net_stored_tonne, storage_efficiency
+
+
 def calculate_storage_efficiency(
     mobility_ratio: float,
     v_dp: float,
@@ -281,7 +405,9 @@ def calculate_storage_efficiency(
     # Overall efficiency: product of components
     overall_eff = areal_eff * vertical_eff * trapping_eff
 
-    return float(overall_eff)
+    # Clamp to physically valid range [0.0, 1.0]
+    # Defensive: geometric efficiency can theoretically exceed 1.0 if parameters are extreme
+    return float(np.clip(overall_eff, 0.0, 1.0))
 
 
 class AnalyticalSurrogate(BaseSurrogateModel):
@@ -308,76 +434,75 @@ class AnalyticalSurrogate(BaseSurrogateModel):
 
         # Initialize the recovery model
         from .analytical_models import get_analytical_model
+
         self.recovery_model = get_analytical_model(recovery_model_type)
 
     def predict(self, params: Dict[str, float]) -> Dict[str, Any]:
         """
         Predict using analytical recovery model with physics-based breakthrough.
         """
+        required_fields = [
+            "injection_rate",
+            "mobility_ratio",
+            "breakthrough_time",
+            "ooip_stb",
+            "target_pressure_psi",
+            "project_lifetime_years",
+        ]
+        missing = [f for f in required_fields if f not in params or params[f] is None]
+        if missing:
+            raise ValueError(
+                f"AnalyticalSurrogate.predict failed: required parameters missing/None: {missing}"
+            )
+
         if not self.validate_inputs(params):
-            return {
-                "recovery_factor": 0.0,
-                "npv": 0.0,
-                "cumulative_oil": 0.0,
-                "co2_stored": 0.0,
-                "confidence": 0.0,
-                "error": "Invalid input parameters",
-            }
+            raise ValueError(
+                f"AnalyticalSurrogate.predict failed: input validation rejected params"
+            )
 
         try:
             # 1. Calculate recovery factor
             recovery_factor = self.recovery_model.calculate_recovery(**params)
 
-            # 2. Calculate simple analytical breakthrough time (PhD Verified)
-            # Ref: Koval (1963) dimensionless breakthrough time t_D = 1/K
-            # We estimate K from mobility and heterogeneity
-            v_dp = params.get("v_dp", 0.5)
-            m_eff = params.get("mobility_ratio", 5.0)
-            h_factor = 1.0 / (1.0 - v_dp)**2 if v_dp < 1.0 else 100.0
-            e_eff = (0.78 + 0.22 * (m_eff ** 0.25)) ** 4
-            koval_k = h_factor * e_eff
-            
-            # Dimensionless breakthrough time
-            t_d_bt = 1.0 / max(koval_k, 1e-6)
-            
-            # Convert to years: t = t_D * PV / q_inj
-            # PV = area * thickness * porosity
-            area_m2 = params.get("area_acres", 160.0) * 4046.86
-            thickness_m = params.get("thickness_ft", 50.0) * 0.3048
-            porosity = params.get("porosity", 0.15)
-            pv_m3 = area_m2 * thickness_m * porosity
-            
-            # q_inj in MSCF/day -> m3/day
-            q_inj_m3_day = params.get("injection_rate", 5000.0) * 28.3168
-            
-            if q_inj_m3_day > 0:
-                bt_time = (t_d_bt * pv_m3 / q_inj_m3_day) / 365.25
-            else:
-                bt_time = project_life_years = params.get("project_lifetime_years", 15)
-
-            bt_time = np.clip(bt_time, 0.1, params.get("project_lifetime_years", 15))
+            # 2. Get breakthrough time from surrogate_engine (Koval 1963 physics)
+            # breakthrough_time is calculated in _build_params_dict and flows through params
+            bt_time = params.get("breakthrough_time", 5.0)
 
             # 3. Calculate derived quantities
             ooip = params.get("ooip_stb", 1_000_000.0)
             cumulative_oil = recovery_factor * ooip
 
-            # 4. Calculate CO2 stored with literature-based storage efficiency
+            # 4. Calculate CO2 stored with breakthrough-aware mass balance
+            #    (replaces naive co2_injected_total * storage_efficiency)
+            # Physics:
+            #   - Pre-breakthrough: no CO2 is produced (all retained via trapping)
+            #   - Post-breakthrough: produced CO2 = recycled fraction grows exponentially
+            #     toward (1 - trapping_eff) with time constant 1/recycle_growth_rate
+            #   - Solution gas CO2 fraction (~20% of solution gas) is dissolved CO2
+            #     that was in the reservoir before CO2 injection - counts as produced CO2
+            # References: OSTI-1204577 (Peck 2017), Mathiassen 2003 (Koval), DOE/NETL CO2 EOR Primer
             injection_rate = params.get("injection_rate", 5000.0)
             project_life_years = params.get("project_lifetime_years", 15)
             co2_density_tonne = params.get("co2_density_tonne_per_mscf", CO2_DENSITY_TONNE_PER_MSCF)
+            trapping_eff = params.get("trapping_efficiency", 0.5)
+            recycle_growth_rate = params.get("recycle_growth_rate", 1.5)
+            breakthrough_time_years = params.get("breakthrough_time", 5.0)
+            mscf_per_res_bbl = params.get("mscf_per_res_bbl", 483.0)
+            initial_gor = params.get("initial_gor", 500.0)
 
-            co2_injected_total = injection_rate * 365.25 * project_life_years * co2_density_tonne
-
-            storage_efficiency = calculate_storage_efficiency(
-                params.get("mobility_ratio", 5.0),
-                params.get("v_dp", 0.5),
-                params.get("pattern_type", "five_spot"),
-                params.get("s_wi", 0.25),
-                params.get("sor", S_OR_BASE),
-                params.get("s_gc", S_GC_CRITICAL)
+            co2_stored, storage_efficiency = calculate_co2_stored_breakthrough_aware(
+                injection_rate=injection_rate,
+                project_life_years=project_life_years,
+                co2_density_tonne=co2_density_tonne,
+                trapping_eff=trapping_eff,
+                recycle_growth_rate=recycle_growth_rate,
+                breakthrough_time_years=breakthrough_time_years,
+                mscf_per_res_bbl=mscf_per_res_bbl,
+                initial_gor=initial_gor,
+                recovery_factor=recovery_factor,
+                ooip=ooip,
+                solution_gas_co2_fraction=params.get("solution_gas_co2_fraction", 0.20),
             )
-
-            co2_stored = co2_injected_total * storage_efficiency
 
             # 5. NPV Calculation
             oil_price = params.get("oil_price_usd_per_bbl", 70.0)
@@ -404,12 +529,24 @@ class AnalyticalSurrogate(BaseSurrogateModel):
             discount_factors = 1.0 / ((1.0 + discount_rate) ** years)
             npv = np.sum(cashflow * discount_factors)
 
+            omega_val = None
+            if hasattr(self.recovery_model, "get_last_miscibility_weight"):
+                omega_val = self.recovery_model.get_last_miscibility_weight()
+            elif hasattr(self.recovery_model, "get_miscibility_weight"):
+                omega_val = self.recovery_model.get_miscibility_weight(
+                    params.get("pressure", params.get("target_pressure_psi", 3000.0)),
+                    params.get("mmp", 2500.0),
+                    params.get("c7_plus_fraction", 0.3),
+                )
+
             return {
                 "recovery_factor": float(np.clip(recovery_factor, 0.0, 1.0)),
                 "npv": float(npv),
                 "cumulative_oil": float(cumulative_oil),
                 "co2_stored": float(co2_stored),
+                "storage_efficiency": float(storage_efficiency),
                 "breakthrough_time": float(bt_time),
+                "miscibility_weight": float(omega_val) if omega_val is not None else 1.0,
                 "confidence": float(self._calculate_confidence(params)),
             }
 
@@ -574,9 +711,11 @@ class ResponseSurfaceSurrogate(BaseSurrogateModel):
             # For RBF, we train one model per target
             self.model = []
             for target_idx in range(n_targets):
-                rbf_model = self.Rbf(*[X_scaled[:, i] for i in range(n_features)],
-                                     y_scaled[:, target_idx],
-                                     function=self.rbf_function)
+                rbf_model = self.Rbf(
+                    *[X_scaled[:, i] for i in range(n_features)],
+                    y_scaled[:, target_idx],
+                    function=self.rbf_function,
+                )
                 self.model.append(rbf_model)
 
         self.is_trained = True
@@ -584,8 +723,10 @@ class ResponseSurfaceSurrogate(BaseSurrogateModel):
         self.n_features = n_features
         self.n_targets = n_targets
 
-        logger.info(f"Trained {self.surface_type} response surface with "
-                   f"{n_samples} samples, {n_features} features, {n_targets} targets")
+        logger.info(
+            f"Trained {self.surface_type} response surface with "
+            f"{n_samples} samples, {n_features} features, {n_targets} targets"
+        )
 
     def predict(self, params: Dict[str, float]) -> Dict[str, Any]:
         """
@@ -679,10 +820,7 @@ class ResponseSurfaceSurrogate(BaseSurrogateModel):
         return X
 
 
-def create_surrogate_model(
-    model_type: str = "analytical",
-    **kwargs
-) -> BaseSurrogateModel:
+def create_surrogate_model(model_type: str = "analytical", **kwargs) -> BaseSurrogateModel:
     """
     Factory function to create surrogate models.
 
