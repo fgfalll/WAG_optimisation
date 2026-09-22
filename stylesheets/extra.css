@@ -1,0 +1,41 @@
+/* ── CO₂ EOR Optimizer — MkDocs custom styles ── */
+
+/* Monospace font for inline code in tables */
+:root {
+  --md-code-font: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* Physics equation blocks — subtle background */
+.arithmatex {
+  overflow-x: auto;
+  padding: 0.5em 1em;
+  border-left: 3px solid var(--md-accent-fg-color);
+  background: var(--md-code-bg-color);
+  border-radius: 0 4px 4px 0;
+  margin: 1em 0;
+}
+
+/* Make admonition icons slightly larger */
+.md-typeset .admonition-title {
+  font-size: 0.85rem;
+}
+
+/* Wider content area for tables */
+.md-grid {
+  max-width: 1400px;
+}
+
+/* Table improvements */
+.md-typeset table:not([class]) {
+  font-size: 0.8rem;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}
+
+/* Nav tabs */
+.md-tabs__link--active {
+  font-weight: 700;
+}

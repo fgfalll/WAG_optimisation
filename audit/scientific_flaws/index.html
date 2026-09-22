@@ -1,0 +1,2803 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Physics-informed surrogate reservoir simulator for CO₂ EOR optimization. Architecture, physics models, development guide, and verification suite.">
+      
+      
+      
+        <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/audit/scientific_flaws/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>Scientific Flaw Register - CO₂ EOR Optimizer — Technical Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+  
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+  
+  <style>:root{--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 32C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h224V368c0-26.5 21.5-48 48-48h112V96c0-35.3-28.7-64-64-64zm384 320H336c-8.8 0-16 7.2-16 16v112l32-32 64-64z"/></svg>');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7.2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8.2-40.1l216-368C228.7 39.5 241.8 32 256 32m0 128c-13.3 0-24 10.7-24 24v112c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24m32 224a32 32 0 1 0-64 0 32 32 0 1 0 64 0"/></svg>');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M368 128c0 44.4-25.4 83.5-64 106.4V256c0 17.7-14.3 32-32 32h-96c-17.7 0-32-14.3-32-32v-21.6c-38.6-23-64-62.1-64-106.4C80 57.3 144.5 0 224 0s144 57.3 144 128m-200 48a32 32 0 1 0 0-64 32 32 0 1 0 0 64m144-32a32 32 0 1 0-64 0 32 32 0 1 0 64 0M3.4 273.7c7.9-15.8 27.1-22.2 42.9-14.3L224 348.2l177.7-88.8c15.8-7.9 35-1.5 42.9 14.3s1.5 35-14.3 42.9L295.6 384l134.8 67.4c15.8 7.9 22.2 27.1 14.3 42.9s-27.1 22.2-42.9 14.3L224 419.8 46.3 508.6c-15.8 7.9-35 1.5-42.9-14.3s-1.5-35 14.3-42.9L152.4 384 17.7 316.6c-15.8-7.9-22.2-27.1-14.3-42.9"/></svg>');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#scientific-flaw-register" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="CO₂ EOR Optimizer — Technical Documentation" class="md-header__button md-logo" aria-label="CO₂ EOR Optimizer — Technical Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3v-2H5V9h3V7zm6 0a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm0 2h2v6h-2zm5 1.5V12h3v1.5h-1.5A1.5 1.5 0 0 0 16 15v3h4.5v-1.5h-3V15H19a1.5 1.5 0 0 0 1.5-1.5V12a1.5 1.5 0 0 0-1.5-1.5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CO₂ EOR Optimizer — Technical Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Scientific Flaw Register
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/fgfalll/WAG_optimisation" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fgfalll/WAG_optimisation
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/overview/" class="md-tabs__link">
+          
+  
+    
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../physics/reservoir_model/" class="md-tabs__link">
+          
+  
+    
+  
+  Physics Models
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../data/inputs/" class="md-tabs__link">
+          
+  
+    
+  
+  Data & Parameters
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../development/common_pitfalls/" class="md-tabs__link">
+          
+  
+    
+  
+  Development Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../technical_debt/" class="md-tabs__link">
+          
+  
+    
+  
+  Audit Reports
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../verification/verification_strategy/" class="md-tabs__link">
+          
+  
+    
+  
+  Verification
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../validation/validation_status/" class="md-tabs__link">
+          
+  
+    
+  
+  Validation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../decisions/architecture_decisions/" class="md-tabs__link">
+          
+  
+    
+  
+  Decisions
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="CO₂ EOR Optimizer — Technical Documentation" class="md-nav__button md-logo" aria-label="CO₂ EOR Optimizer — Technical Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3v-2H5V9h3V7zm6 0a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm0 2h2v6h-2zm5 1.5V12h3v1.5h-1.5A1.5 1.5 0 0 0 16 15v3h4.5v-1.5h-3V15H19a1.5 1.5 0 0 0 1.5-1.5V12a1.5 1.5 0 0 0-1.5-1.5z"/></svg>
+
+    </a>
+    CO₂ EOR Optimizer — Technical Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/fgfalll/WAG_optimisation" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fgfalll/WAG_optimisation
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Architecture
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Architecture
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/module_map/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module Map
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/execution_flow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Execution Flow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dependency_graph/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dependency Graph
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/source_of_truth_map/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Source of Truth
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Physics Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Physics Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/reservoir_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reservoir Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/fluid_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fluid Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/pvt_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PVT Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/co2_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CO₂ Properties
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/displacement_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Displacement Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/relative_permeability/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Relative Permeability
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/recovery_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recovery Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/co2_storage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CO₂ Storage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Data & Parameters
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Data & Parameters
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/inputs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inputs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/outputs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Outputs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/parameters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameter Registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/units/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Units & Conversions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Development Guide
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Development Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/common_pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Common Pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/change_safety_matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Change Safety Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/safe_modification_rules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Safe Modification Rules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/coding_rules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Coding Rules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/extension_points/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Extension Points
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/agent_skills/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Agent Skills
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Audit Reports
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Audit Reports
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../technical_debt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Technical Debt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dead_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dead Code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardcoded_values/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardcoded Values
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fallbacks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fallbacks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../suspicious_logic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Suspicious Logic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hidden_calibration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hidden Calibration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../duplicate_logic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Duplicate Logic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../parameter_provenance/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameter Provenance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../verification_gaps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Verification Gaps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Verification
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Verification
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/verification_strategy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Strategy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/mathematical_verification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mathematical
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/physical_verification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Physical
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/numerical_verification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Numerical
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/conservation_tests/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conservation Tests
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/reference_solutions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reference Solutions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/convergence_studies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Convergence Studies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/limiting_cases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Limiting Cases
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/test_matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Test Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Validation
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Validation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/validation_status/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Status
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/benchmarks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchmarks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/cmg_reference_validation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CMG GEM Reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/conservation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conservation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/test_suite_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Test Suite
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/known_limitations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Known Limitations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Decisions
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/architecture_decisions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture Decisions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/scientific_decisions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Scientific Decisions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#master-scientific-flaw-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Master Scientific Flaw Summary
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-scientific-flaw-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detailed Scientific Flaw Records
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed Scientific Flaw Records">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-01-inverted-co2-fractional-flow-in-profile-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-01: Inverted CO₂ Fractional Flow in Profile Generator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-03-inverted-pressure-viscosity-dependence" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-03: Inverted Pressure-Viscosity Dependence
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-05-single-well-point-drainage-anomaly" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-05: Single-Well Point Drainage Anomaly
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-06-decoupled-decision-variable-pressure-vs-tank-ode-pressure" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-06: Decoupled Decision Variable Pressure vs Tank ODE Pressure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-07-unphysical-co2-net-utilization-factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-07: Unphysical CO₂ Net Utilization Factor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-08-inverted-phase-state-classification-in-cubic-eos" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-08: Inverted Phase State Classification in Cubic EOS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-09-interfacial-tension-constant-at-maximum-immiscible-value-at-mmp" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-09: Interfacial Tension Constant at Maximum Immiscible Value at MMP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-10-immiscible-recovery-model-vanishes-without-capillary-desaturation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-10: Immiscible Recovery Model Vanishes Without Capillary Desaturation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-11-arbitrary-recovery-factor-cap-of-080" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-11: Arbitrary Recovery Factor Cap of 0.80
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-12-supercritical-b_g-discrepancy-across-active-vs-legacy-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-12: Supercritical \(B_g\) Discrepancy Across Active vs Legacy Modules
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-13-non-standard-cronquist-55-api-correlation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-13: Non-Standard Cronquist \((55 - API)\) Correlation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-14-heuristic-vapor-fraction-in-material-balance" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-14: Heuristic Vapor Fraction in Material Balance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-15-instantaneous-co2-production-decoupled-from-in-situ-mobile-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-15: Instantaneous CO₂ Production Decoupled from In-Situ Mobile Storage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-16-discontinuous-cliff-in-craig-areal-sweep-at-unit-mobility" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-16: Discontinuous Cliff in Craig Areal Sweep at Unit Mobility
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-17-inverted-critical-gas-saturation-trapping-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-17: Inverted Critical Gas Saturation Trapping Formulation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-18-corrupted-peng-robinson-mixture-fugacity-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-18: Corrupted Peng-Robinson Mixture Fugacity Formulation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="scientific-flaw-register">Scientific Flaw Register<a class="headerlink" href="#scientific-flaw-register" title="Permanent link">&para;</a></h1>
+<p>This document catalogs confirmed scientific flaws, unphysical equations, and thermodynamic contradictions in the CO₂ EOR Optimizer codebase.</p>
+<hr />
+<h2 id="master-scientific-flaw-summary">Master Scientific Flaw Summary<a class="headerlink" href="#master-scientific-flaw-summary" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Severity</th>
+<th style="text-align: left;">Model / Location</th>
+<th style="text-align: left;">Physical Principle Violated</th>
+<th style="text-align: left;">Scientific Impact</th>
+<th style="text-align: left;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-01</strong></td>
+<td style="text-align: left;"><strong>CRITICAL</strong></td>
+<td style="text-align: left;"><code>profile_generator_fast.py:895-901</code></td>
+<td style="text-align: left;">Buckley-Leverett / Koval Fractional Flow</td>
+<td style="text-align: left;">Inverts gas breakthrough: unfavorable mobility yields 10% gas, favorable yields 70%</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-02</strong></td>
+<td style="text-align: left;"><strong>CRITICAL</strong></td>
+<td style="text-align: left;"><code>data_integration_engine.py:370, 456</code></td>
+<td style="text-align: left;">Fluid Thermodynamics (Compressibility)</td>
+<td style="text-align: left;">Oil expands under pressure (<span class="arithmatex">\(\partial B_o / \partial P &gt; 0\)</span>, negative compressibility)</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-03</strong></td>
+<td style="text-align: left;"><strong>HIGH</strong></td>
+<td style="text-align: left;"><code>data_integration_engine.py:372, 375</code></td>
+<td style="text-align: left;">Viscosity-Pressure Dependence</td>
+<td style="text-align: left;">Oil and supercritical CO₂ viscosities decrease exponentially with pressure</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-04</strong></td>
+<td style="text-align: left;"><strong>HIGH</strong></td>
+<td style="text-align: left;"><code>unified_engine/co2_properties.py:140</code></td>
+<td style="text-align: left;">Isobaric Thermal Expansion</td>
+<td style="text-align: left;">Supercritical CO₂ density increases with temperature (<span class="arithmatex">\(\partial\rho/\partial T &gt; 0\)</span>)</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-05</strong></td>
+<td style="text-align: left;"><strong>CRITICAL</strong></td>
+<td style="text-align: left;"><code>optimisation_engine.py:1410</code>, <code>profile_generator_fast.py:501</code></td>
+<td style="text-align: left;">Darcy Inflow &amp; Pattern Interference</td>
+<td style="text-align: left;">Single producer drains 1,354 acres at 7,270 BOPD flat plateau for 6.4 years</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-06</strong></td>
+<td style="text-align: left;"><strong>CRITICAL</strong></td>
+<td style="text-align: left;"><code>optimisation_engine.py:3215</code>, <code>surrogate_engine.py:948</code></td>
+<td style="text-align: left;">Thermodynamic State Consistency</td>
+<td style="text-align: left;">Optimizer surrogate evaluated at 4,450 psia, while reservoir tank ODE is at 3,100 psia</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-07</strong></td>
+<td style="text-align: left;"><strong>HIGH</strong></td>
+<td style="text-align: left;"><code>core/objectives/wrapper.py:212</code>, <code>surrogate_models.py:465</code></td>
+<td style="text-align: left;">EOR Fluid Displacement Accounting</td>
+<td style="text-align: left;">Net CO₂ utilization reported as 0.665 MSCF/STB (deflated by 10× vs DOE benchmark)</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-08</strong></td>
+<td style="text-align: left;"><strong>CRITICAL</strong></td>
+<td style="text-align: left;"><code>unified_engine/physics/eos/__init__.py:195</code></td>
+<td style="text-align: left;">Cubic EOS Phase Identification</td>
+<td style="text-align: left;">Inverted phase label: <span class="arithmatex">\(Z &lt; 0.8\)</span> labeled Vapor, <span class="arithmatex">\(Z \ge 0.8\)</span> labeled Liquid</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-09</strong></td>
+<td style="text-align: left;"><strong>HIGH</strong></td>
+<td style="text-align: left;"><code>simulation/recovery_models.py:197-202</code></td>
+<td style="text-align: left;">Miscibility Thermodynamics (<span class="arithmatex">\(\sigma \to 0\)</span>)</td>
+<td style="text-align: left;">IFT at MMP remains at maximum immiscible value (<span class="arithmatex">\(20\text{ mN/m}\)</span>)</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-10</strong></td>
+<td style="text-align: left;"><strong>HIGH</strong></td>
+<td style="text-align: left;"><code>simulation/recovery_models.py:498-501</code></td>
+<td style="text-align: left;">Fractional Flow Displacement</td>
+<td style="text-align: left;">Immiscible recovery models only capillary desaturation <span class="arithmatex">\(\Delta S_{or}\)</span>, predicting 1-2% RF</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-11</strong></td>
+<td style="text-align: left;"><strong>MEDIUM</strong></td>
+<td style="text-align: left;"><code>analytical_models.py:205</code></td>
+<td style="text-align: left;">Conservation &amp; Ultimate Recovery</td>
+<td style="text-align: left;">Silent 80% recovery factor ceiling erases optimization gradients</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-12</strong></td>
+<td style="text-align: left;"><strong>HIGH</strong></td>
+<td style="text-align: left;"><code>optimisation_engine.py:98</code>, <code>surrogate_engine.py:201</code></td>
+<td style="text-align: left;">Gas Volumetric Factor (<span class="arithmatex">\(B_g\)</span>)</td>
+<td style="text-align: left;">10× discrepancy in <span class="arithmatex">\(B_g\)</span> (<span class="arithmatex">\(0.50\)</span> vs <span class="arithmatex">\(5.0\text{ RB/MSCF}\)</span>) between engine and optimizer</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-13</strong></td>
+<td style="text-align: left;"><strong>MEDIUM</strong></td>
+<td style="text-align: left;"><code>evaluation/mmp.py:111</code></td>
+<td style="text-align: left;">MMP Correlation Validity</td>
+<td style="text-align: left;">Non-standard Cronquist <span class="arithmatex">\((55 - API)\)</span> crashes on light oils (<span class="arithmatex">\(API &gt; 55^\circ\)</span>)</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-14</strong></td>
+<td style="text-align: left;"><strong>HIGH</strong></td>
+<td style="text-align: left;"><code>analysis/material_balance.py:85-108</code></td>
+<td style="text-align: left;">Thermodynamic Vapor-Liquid Equilibrium</td>
+<td style="text-align: left;">Heuristic vapor fraction formula <span class="arithmatex">\(V = 1 - Z + 0.2\)</span> has zero physical basis</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-15</strong></td>
+<td style="text-align: left;"><strong>MEDIUM</strong></td>
+<td style="text-align: left;"><code>profile_generator_fast.py:983-986</code></td>
+<td style="text-align: left;">Reservoir Material Balance</td>
+<td style="text-align: left;">Produced CO₂ tied directly to instantaneous injection; shut-in zeroes production</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-16</strong></td>
+<td style="text-align: left;"><strong>HIGH</strong></td>
+<td style="text-align: left;"><code>core/engine_surrogate/surrogate_models.py:164-182</code></td>
+<td style="text-align: left;">Areal Sweep Continuity</td>
+<td style="text-align: left;">Discontinuous 48% cliff in Craig areal sweep correlation at <span class="arithmatex">\(M = 1.0\)</span></td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-17</strong></td>
+<td style="text-align: left;"><strong>HIGH</strong></td>
+<td style="text-align: left;"><code>core/engine_surrogate/surrogate_models.py:238-241</code></td>
+<td style="text-align: left;">Capillary Trapping Inversion</td>
+<td style="text-align: left;">Trapping calculated as <span class="arithmatex">\(1.0 - S_{gc}\)</span>; higher critical gas reduces trapping</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-18</strong></td>
+<td style="text-align: left;"><strong>CRITICAL</strong></td>
+<td style="text-align: left;"><code>core/unified_engine/physics/eos/__init__.py:206, 257-270</code></td>
+<td style="text-align: left;">Peng-Robinson Fugacity Formulation</td>
+<td style="text-align: left;">Corrupted PR fugacity equation omits <span class="arithmatex">\(2\sqrt{2}B\)</span> denominator and partial derivatives</td>
+<td style="text-align: left;">OPEN</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="detailed-scientific-flaw-records">Detailed Scientific Flaw Records<a class="headerlink" href="#detailed-scientific-flaw-records" title="Permanent link">&para;</a></h2>
+<h3 id="sci-flaw-01-inverted-co2-fractional-flow-in-profile-generator">SCI-FLAW-01: Inverted CO₂ Fractional Flow in Profile Generator<a class="headerlink" href="#sci-flaw-01-inverted-co2-fractional-flow-in-profile-generator" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-01</code></li>
+<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py#L895-L901"><code>core/engine_surrogate/profile_generator_fast.py:895-901</code></a></li>
+<li><strong>Model</strong>: Koval (1963) / Buckley-Leverett Gas Fractional Flow</li>
+<li><strong>Observation</strong>: In calculating post-breakthrough CO₂ fractional flow, the effective viscosity ratio <span class="arithmatex">\(E\)</span> is divided by the mobility ratio <span class="arithmatex">\(M\)</span>, and <span class="arithmatex">\((M - 1) \times 0.5\)</span> is added to the denominator.</li>
+<li><strong>Equation</strong>:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">E</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.78</span> <span class="o">+</span> <span class="mf">0.22</span> <span class="o">*</span> <span class="p">(</span><span class="n">mobility_ratio</span> <span class="o">**</span> <span class="mf">0.25</span><span class="p">))</span> <span class="o">**</span> <span class="mi">4</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">koval_factor</span> <span class="o">=</span> <span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">mobility_ratio</span><span class="p">)</span> <span class="o">*</span> <span class="n">koval_mult</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">koval_factor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">koval_factor</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">frac_flow_co2</span> <span class="o">=</span> <span class="n">koval_factor</span> <span class="o">/</span> <span class="p">(</span><span class="n">koval_factor</span> <span class="o">+</span> <span class="p">(</span><span class="n">mobility_ratio</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">frac_flow_co2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">frac_flow_co2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">))</span>
+</span></code></pre></div></li>
+<li><strong>Expected Behavior</strong>: As mobility ratio worsens (<span class="arithmatex">\(M = \mu_o / \mu_g \gg 1\)</span>), viscous fingering intensifies, causing higher gas fractional flow (<span class="arithmatex">\(F_{\text{CO2}} \to 1.0\)</span>).</li>
+<li><strong>Actual Behavior</strong>:</li>
+<li>At <span class="arithmatex">\(M = 1.0\)</span> (favorable piston displacement): <code>frac_flow_co2 = 0.70</code> (maximum gas breakthrough).</li>
+<li>At <span class="arithmatex">\(M = 10.0\)</span> (severe viscous fingering): <code>frac_flow_co2 = 0.10</code> (minimum gas breakthrough).</li>
+<li><strong>Evidence</strong>: Mathematical limits of the code expression above.</li>
+<li><strong>Scientific Consequence</strong>: Inverts the core physics of gas breakthrough and GOR development. Heavy oils with severe fingering produce negligible gas, while light oils with stable displacement produce maximum gas.</li>
+<li><strong>Numerical Consequence</strong>: Distorts objective function scoring, misdirects WAG ratio optimization, and reverses genetic algorithm selection pressure.</li>
+<li><strong>Affected Outputs</strong>: <code>gas_profile</code>, <code>co2_gas_profile</code>, <code>annual_co2_produced_mscf</code>, <code>annual_co2_recycled_mscf</code>, <code>co2_utilization</code>.</li>
+<li><strong>Confidence</strong>: 100% (Direct analytical proof).</li>
+<li><strong>Recommended Investigation</strong>: Replace with authentic Koval (1963) fractional flow: <span class="arithmatex">\(K = H_k \cdot E \ge 1.0\)</span>, and <span class="arithmatex">\(F_{\text{CO2}}(S) = \frac{K S}{1 + S(K - 1)}\)</span>.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt">SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT<a class="headerlink" href="#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-02</code></li>
+<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py#L370"><code>core/data_integration_engine.py:370, 456</code></a></li>
+<li><strong>Model</strong>: Black-Oil PVT Table Synthesis</li>
+<li><strong>Observation</strong>: Formation volume factor <span class="arithmatex">\(B_o\)</span> is modeled with a positive pressure coefficient above 4,000 psia.</li>
+<li><strong>Equation</strong>:
+  $<span class="arithmatex">\(B_o(P) = 1.2 + 0.0001 \cdot (P - 4000)\)</span>$</li>
+<li><strong>Expected Behavior</strong>: In undersaturated reservoir oil, compression reduces volume: <span class="arithmatex">\(\frac{\partial B_o}{\partial P} = -c_o B_o &lt; 0\)</span>.</li>
+<li><strong>Actual Behavior</strong>: <span class="arithmatex">\(\frac{\partial B_o}{\partial P} = +0.0001 &gt; 0\)</span>. As reservoir pressure increases, the oil expands.</li>
+<li><strong>Evidence</strong>: Line 370 of <code>data_integration_engine.py</code>.</li>
+<li><strong>Scientific Consequence</strong>: Violates the second law of thermodynamics (isothermal compressibility must be positive: <span class="arithmatex">\(c = -\frac{1}{V}\frac{\partial V}{\partial P} &gt; 0\)</span>).</li>
+<li><strong>Numerical Consequence</strong>: Reservoir voidage increases as pressure rises, causing artificial pressure runaways in material balance solvers.</li>
+<li><strong>Affected Outputs</strong>: <code>pvt_tables["OIL_FVF"]</code>, <code>ReservoirData.oil_fvf</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Recommended Investigation</strong>: Invert sign: <span class="arithmatex">\(B_o(P) = 1.2 \cdot \exp(-c_o (P - P_b))\)</span> with <span class="arithmatex">\(c_o \approx 1.5 \times 10^{-5}\text{ psi}^{-1}\)</span>.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-03-inverted-pressure-viscosity-dependence">SCI-FLAW-03: Inverted Pressure-Viscosity Dependence<a class="headerlink" href="#sci-flaw-03-inverted-pressure-viscosity-dependence" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-03</code></li>
+<li><strong>Severity</strong>: <strong>HIGH</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py#L372"><code>core/data_integration_engine.py:372, 375, 459, 465</code></a></li>
+<li><strong>Model</strong>: Black-Oil PVT Viscosity Generation</li>
+<li><strong>Observation</strong>: Oil and CO₂ viscosities are synthesized with negative exponential pressure terms:
+  $<span class="arithmatex">\(\mu_o(P) = \mu_{o,ref} \cdot \exp(-0.0003 \cdot (P - 4000))\)</span>$
+  $<span class="arithmatex">\(\mu_{\text{CO2}}(P) = \mu_{g,ref} \cdot \exp(-0.0002 \cdot (P - 4000))\)</span>$</li>
+<li><strong>Expected Behavior</strong>: Undersaturated liquid and supercritical fluid viscosities increase with pressure (<span class="arithmatex">\(\frac{\partial\mu}{\partial P} &gt; 0\)</span>).</li>
+<li><strong>Actual Behavior</strong>: Viscosities decrease exponentially with pressure. At <span class="arithmatex">\(P = 6,000\text{ psia}\)</span>, oil viscosity drops to <span class="arithmatex">\(55\%\)</span> of its value at <span class="arithmatex">\(4,000\text{ psia}\)</span>.</li>
+<li><strong>Scientific Consequence</strong>: Higher injection pressures create artificially favorable mobility ratios, giving unphysical economic incentives for over-pressurization.</li>
+<li><strong>Affected Outputs</strong>: <code>pvt_tables["OIL_VISC"]</code>, <code>pvt_tables["CO2_VISC"]</code>, <code>mobility_ratio</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density">SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density<a class="headerlink" href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-04</code></li>
+<li><strong>Severity</strong>: <strong>HIGH</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/unified_engine/physics/co2_properties.py#L140"><code>core/unified_engine/physics/co2_properties.py:140</code></a></li>
+<li><strong>Model</strong>: Empirical CO₂ Density Correlation</li>
+<li><strong>Equation</strong>:
+  $<span class="arithmatex">\(\rho[\text{g/cm}^3] = 1.01 + 0.0109 \cdot P_{\text{MPa}} - 1.25\times 10^{-5} \cdot P_{\text{MPa}}^2 + 0.0023 \cdot T_{^\circ\text{C}}\)</span>$</li>
+<li><strong>Expected Behavior</strong>: Thermal expansion causes density to decrease as temperature rises: <span class="arithmatex">\(\frac{\partial\rho}{\partial T} &lt; 0\)</span>.</li>
+<li><strong>Actual Behavior</strong>: The temperature coefficient is <span class="arithmatex">\(+0.0023 &gt; 0\)</span>, causing hot CO₂ to be denser than cold CO₂. Furthermore, at <span class="arithmatex">\(10\text{ MPa}\)</span> (<span class="arithmatex">\(1,450\text{ psi}\)</span>) and <span class="arithmatex">\(50^\circ\text{C}\)</span>, the formula yields <span class="arithmatex">\(1,232\text{ kg/m}^3\)</span> (NIST reference is <span class="arithmatex">\(384\text{ kg/m}^3\)</span>, an error of <span class="arithmatex">\(+220\%\)</span>).</li>
+<li><strong>Scientific Consequence</strong>: Massive overestimation of downhole CO₂ density; fluid is modeled as denser than water.</li>
+<li><strong>Affected Outputs</strong>: <code>CO2Properties.density(method="empirical")</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-05-single-well-point-drainage-anomaly">SCI-FLAW-05: Single-Well Point Drainage Anomaly<a class="headerlink" href="#sci-flaw-05-single-well-point-drainage-anomaly" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-05</code></li>
+<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1410-L1425"><code>core/optimisation_engine.py:1410-1425</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py#L501-L516"><code>core/engine_surrogate/profile_generator_fast.py:501-516</code></a></li>
+<li><strong>Model</strong>: Well Schedule and Field Rate Synthesis</li>
+<li><strong>Observation</strong>: When optimization scenarios do not define explicit pattern wells, the system assigns the entire recovery of a multi-million-barrel field (<span class="arithmatex">\(48.5\text{ MMSTB}\)</span> OOIP, <span class="arithmatex">\(1,354\text{ acres}\)</span>) to a single producer (<code>Well-Producer-1</code>).</li>
+<li><strong>Equation / Implementation</strong>: <code>peak_rate_estimate = ultimate_recovery / plateau_time / 365.25</code>, resulting in <span class="arithmatex">\(q_o = 7,270\text{ STB/day}\)</span> sustained for 6.4 years from one vertical wellbore.</li>
+<li><strong>Expected Behavior</strong>: Single-well inflow is constrained by Darcy drawdown (<span class="arithmatex">\(q = J \cdot (P_{res} - P_{wf}) \le 300 - 800\text{ BOPD}\)</span>). Draining <span class="arithmatex">\(1,354\text{ acres}\)</span> requires 30–35 pattern wells.</li>
+<li><strong>Scientific Consequence</strong>: Complete circumvention of well spacing physics, pattern interference, and capital expenditure scaling. Optimizers harvest field-scale reserves with single-well CAPEX/OPEX.</li>
+<li><strong>Affected Outputs</strong>: Well schedules, field cash flows, capital expenditure, NPV.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-06-decoupled-decision-variable-pressure-vs-tank-ode-pressure">SCI-FLAW-06: Decoupled Decision Variable Pressure vs Tank ODE Pressure<a class="headerlink" href="#sci-flaw-06-decoupled-decision-variable-pressure-vs-tank-ode-pressure" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-06</code></li>
+<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L3215-L3222"><code>core/optimisation_engine.py:3215-3222</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L948-L965"><code>core/engine_surrogate/surrogate_engine.py:948-965</code></a></li>
+<li><strong>Model</strong>: Surrogate Evaluation vs Dynamic Tank Material Balance</li>
+<li><strong>Observation</strong>: The optimizer treats <code>pressure</code> as an unconstrained decision variable, pegging it to the upper search bound (<span class="arithmatex">\(4,450\text{ psia}\)</span>). This phantom pressure is passed directly to <code>AnalyticalSurrogate.predict()</code>, maximizing ultimate recovery (<span class="arithmatex">\(RF = 41.5\%\)</span>) and driving miscibility weight <span class="arithmatex">\(\omega \to 1.0\)</span>.</li>
+<li><strong>Actual Behavior</strong>: The coupled 0D material balance tank ODE (<code>_solve_pressure_ode_stiff</code>) calculates in-situ reservoir pressure independently, simulating dynamic pressures between <span class="arithmatex">\(3,080\text{ psia}\)</span> and <span class="arithmatex">\(3,335\text{ psia}\)</span> across the 15-year life. At no point does the reservoir reach <span class="arithmatex">\(4,450\text{ psia}\)</span>.</li>
+<li><strong>Scientific Consequence</strong>: Simulation outputs and recovery factors are calculated under a fictitious high-pressure thermodynamic regime that is physically disconnected by <span class="arithmatex">\(\sim 1,350\text{ psi}\)</span> from the reservoir depletion state.</li>
+<li><strong>Affected Outputs</strong>: <code>recovery_factor</code>, <code>npv</code>, <code>miscibility_degree</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-07-unphysical-co2-net-utilization-factor">SCI-FLAW-07: Unphysical CO₂ Net Utilization Factor<a class="headerlink" href="#sci-flaw-07-unphysical-co2-net-utilization-factor" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-07</code></li>
+<li><strong>Severity</strong>: <strong>HIGH</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py#L212"><code>core/objectives/wrapper.py:212</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_models.py#L465-L495"><code>core/engine_surrogate/surrogate_models.py:465-495</code></a></li>
+<li><strong>Model</strong>: EOR Project Carbon Utilization Metric</li>
+<li><strong>Equation</strong>:
+  $<span class="arithmatex">\(\text{Utilization} = \frac{\sum M_{\text{CO2,purchased}}}{\sum N_{p,\text{total}}}\)</span>$</li>
+<li><strong>Expected Behavior</strong>: Net utilization in petroleum engineering is defined relative to <em>incremental EOR oil</em> attributable to CO₂ injection (<span class="arithmatex">\(N_{p,\text{EOR}} = N_{p,\text{total}} - N_{p,\text{primary}}\)</span>), with typical field values of <span class="arithmatex">\(5.0 - 12.0\text{ MSCF/STB}\)</span> (<span class="arithmatex">\(0.25 - 0.60\text{ tonne/STB}\)</span>).</li>
+<li><strong>Actual Behavior</strong>: Total field cumulative oil (including primary depletion and secondary waterflood) is placed in the denominator. This deflates reported utilization to <span class="arithmatex">\(0.665\text{ MSCF/STB}\)</span> (<span class="arithmatex">\(0.0352\text{ tonne/STB}\)</span>).</li>
+<li><strong>Scientific Consequence</strong>: A net utilization of <span class="arithmatex">\(0.665\text{ MSCF/STB}\)</span> implies that injecting only <span class="arithmatex">\(1.38\text{ RB}\)</span> of CO₂ produces <span class="arithmatex">\(1.0\text{ STB}\)</span> (<span class="arithmatex">\(1.30\text{ RB}\)</span>) of oil, which is physically impossible given connate water, residual oil, and phase dissolution. The optimizer exploits this by driving injection rates to the lower boundary to minimize gas purchase costs while harvesting full field recovery.</li>
+<li><strong>Affected Outputs</strong>: <code>co2_utilization</code>, <code>net_utilization_mscf_per_stb</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-08-inverted-phase-state-classification-in-cubic-eos">SCI-FLAW-08: Inverted Phase State Classification in Cubic EOS<a class="headerlink" href="#sci-flaw-08-inverted-phase-state-classification-in-cubic-eos" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-08</code></li>
+<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/unified_engine/physics/eos/__init__.py#L195"><code>core/unified_engine/physics/eos/__init__.py:195</code></a></li>
+<li><strong>Model</strong>: Cubic Equation of State Phase Identification</li>
+<li><strong>Equation</strong>:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="s2">"phase"</span><span class="p">:</span> <span class="s2">"V"</span> <span class="k">if</span> <span class="n">Z</span> <span class="o">&lt;</span> <span class="mf">0.8</span> <span class="k">else</span> <span class="s2">"L"</span>
+</span></code></pre></div></li>
+<li><strong>Expected Behavior</strong>: Liquid compressibility factor <span class="arithmatex">\(Z_L\)</span> is small (<span class="arithmatex">\(Z_L \approx 0.05 - 0.30\)</span>). Vapor compressibility factor <span class="arithmatex">\(Z_V\)</span> is near unity (<span class="arithmatex">\(Z_V \approx 0.80 - 1.05\)</span>). Therefore, <span class="arithmatex">\(Z &lt; 0.8\)</span> represents Liquid and <span class="arithmatex">\(Z \ge 0.8\)</span> represents Vapor.</li>
+<li><strong>Actual Behavior</strong>: The code inverts the logic: <span class="arithmatex">\(Z &lt; 0.8\)</span> is classified as Vapor ('V'), and <span class="arithmatex">\(Z \ge 0.8\)</span> is classified as Liquid ('L').</li>
+<li><strong>Scientific Consequence</strong>: Dense liquid oil/condensate is labeled as gas vapor, while low-pressure gas is labeled as liquid. Flash calculations and phase routing across the compositional engine are completely compromised.</li>
+<li><strong>Affected Outputs</strong>: <code>get_properties_si()["phase"]</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-09-interfacial-tension-constant-at-maximum-immiscible-value-at-mmp">SCI-FLAW-09: Interfacial Tension Constant at Maximum Immiscible Value at MMP<a class="headerlink" href="#sci-flaw-09-interfacial-tension-constant-at-maximum-immiscible-value-at-mmp" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-09</code></li>
+<li><strong>Severity</strong>: <strong>HIGH</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/simulation/recovery_models.py#L197-L202"><code>core/simulation/recovery_models.py:197-202</code></a></li>
+<li><strong>Model</strong>: IFT vs Pressure Model</li>
+<li><strong>Equation</strong>:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">if</span> <span class="n">pressure_psi</span> <span class="o">&gt;=</span> <span class="n">mmp_psi</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma_0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lambda_ift</span> <span class="o">*</span> <span class="p">(</span><span class="n">pressure_psi</span> <span class="o">-</span> <span class="n">mmp_psi</span><span class="p">))</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">else</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma_0</span>
+</span></code></pre></div></li>
+<li><strong>Expected Behavior</strong>: In CO₂-oil systems, interfacial tension approaches zero as pressure approaches MMP (<span class="arithmatex">\(\lim_{P \to MMP} \sigma(P) = 0\)</span>).</li>
+<li><strong>Actual Behavior</strong>: For all <span class="arithmatex">\(P &lt; MMP\)</span>, <span class="arithmatex">\(\sigma = \sigma_0 = 20\text{ mN/m}\)</span>. At <span class="arithmatex">\(P = MMP\)</span>, <span class="arithmatex">\(\sigma\)</span> is still <span class="arithmatex">\(20\text{ mN/m}\)</span> (maximum immiscible value), only decaying exponentially at pressures <em>above</em> MMP.</li>
+<li><strong>Scientific Consequence</strong>: Near-miscible fluids are treated as fully immiscible with high IFT, suppressing capillary desaturation.</li>
+<li><strong>Affected Outputs</strong>: <code>interfacial_tension</code>, <code>capillary_number</code>, <code>residual_oil_saturation</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-10-immiscible-recovery-model-vanishes-without-capillary-desaturation">SCI-FLAW-10: Immiscible Recovery Model Vanishes Without Capillary Desaturation<a class="headerlink" href="#sci-flaw-10-immiscible-recovery-model-vanishes-without-capillary-desaturation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-10</code></li>
+<li><strong>Severity</strong>: <strong>HIGH</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/simulation/recovery_models.py#L498-L501"><code>core/simulation/recovery_models.py:498-501</code></a></li>
+<li><strong>Model</strong>: Immiscible CO₂ Recovery Factor</li>
+<li><strong>Equation</strong>:
+  $<span class="arithmatex">\(E_d = \frac{S_{or,\text{base}} - S_{or}^*}{1 - S_{wi}}\)</span>$
+  $<span class="arithmatex">\(RF_{\text{im}} = E_d \cdot E_A \cdot E_V\)</span>$</li>
+<li><strong>Expected Behavior</strong>: An immiscible gas drive recovers mobile oil by viscous displacement (<span class="arithmatex">\(S_{oi} \to S_{or}\)</span>). A typical immiscible water/gas flood yields <span class="arithmatex">\(20\% - 45\%\)</span> recovery.</li>
+<li><strong>Actual Behavior</strong>: The code defines displacement efficiency solely as the capillary-induced reduction from <span class="arithmatex">\(S_{or,\text{base}}\)</span> to <span class="arithmatex">\(S_{or}^*\)</span>. In the absence of extreme capillary numbers (<span class="arithmatex">\(N_c \le 10^{-5}\)</span>), <span class="arithmatex">\(S_{or}^* \approx S_{or,\text{base}}\)</span>, resulting in <span class="arithmatex">\(E_d \approx 0.03 - 0.05\)</span> and <span class="arithmatex">\(RF_{\text{im}} \approx 1\% - 2\%\)</span>.</li>
+<li><strong>Scientific Consequence</strong>: Massive discrepancy between <code>simulation/recovery_models.py</code> (<span class="arithmatex">\(RF_{\text{im}} \approx 2\%\)</span>) and <code>analytical_models.py</code> (<span class="arithmatex">\(RF_{\text{im}} \approx 35\%\)</span>).</li>
+<li><strong>Affected Outputs</strong>: <code>ImmiscibleRecoveryModel.calculate()</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-11-arbitrary-recovery-factor-cap-of-080">SCI-FLAW-11: Arbitrary Recovery Factor Cap of 0.80<a class="headerlink" href="#sci-flaw-11-arbitrary-recovery-factor-cap-of-080" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-11</code></li>
+<li><strong>Severity</strong>: <strong>MEDIUM</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py#L205"><code>core/engine_surrogate/analytical_models.py:205</code></a></li>
+<li><strong>Model</strong>: Miscible Displacement Surrogate</li>
+<li><strong>Equation</strong>: <code>return float(np.clip(rf, 0.05, 0.80))</code></li>
+<li><strong>Expected Behavior</strong>: The upper physical bound on recovery is determined by connate water and minimum residual oil: <span class="arithmatex">\(RF_{\max} = 1 - S_{wi} - S_{or,\min}\)</span>. In clean homogeneous sands, recovery can exceed 85%.</li>
+<li><strong>Actual Behavior</strong>: Recovery is hard-capped at 80% with no warning or logger notification.</li>
+<li><strong>Scientific Consequence</strong>: Artificially flattens objective fitness landscapes and destroys gradient information when <span class="arithmatex">\(RF \ge 0.80\)</span>.</li>
+<li><strong>Affected Outputs</strong>: <code>recovery_factor</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-12-supercritical-b_g-discrepancy-across-active-vs-legacy-modules">SCI-FLAW-12: Supercritical <span class="arithmatex">\(B_g\)</span> Discrepancy Across Active vs Legacy Modules<a class="headerlink" href="#sci-flaw-12-supercritical-b_g-discrepancy-across-active-vs-legacy-modules" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-12</code></li>
+<li><strong>Severity</strong>: <strong>HIGH</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L98"><code>core/optimisation_engine.py:98</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L201"><code>core/engine_surrogate/surrogate_engine.py:201</code></a></li>
+<li><strong>Model</strong>: PVT Formation Volume Factor Conversion</li>
+<li><strong>Observation</strong>:</li>
+<li><code>surrogate_engine.py:201</code>: <span class="arithmatex">\(B_g \approx 0.50\text{ RB/MSCF}\)</span> (<span class="arithmatex">\(0.0005\text{ RB/SCF}\)</span>).</li>
+<li><code>optimisation_engine.py:98</code>: <code>B_GAS_RB_PER_MSCF = 5.0</code> (<span class="arithmatex">\(0.005\text{ RB/SCF}\)</span>).</li>
+<li><strong>Scientific Consequence</strong>: A factor of <span class="arithmatex">\(10\times\)</span> discrepancy exists between modules regarding the reservoir volume occupied by injected gas.</li>
+<li><strong>Affected Outputs</strong>: Downhole voidage replacement, reservoir pressure calculations, rate conversions.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-13-non-standard-cronquist-55-api-correlation">SCI-FLAW-13: Non-Standard Cronquist <span class="arithmatex">\((55 - API)\)</span> Correlation<a class="headerlink" href="#sci-flaw-13-non-standard-cronquist-55-api-correlation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-13</code></li>
+<li><strong>Severity</strong>: <strong>MEDIUM</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/evaluation/mmp.py#L111-L112"><code>evaluation/mmp.py:111-112</code></a></li>
+<li><strong>Model</strong>: Analytical MMP Correlation</li>
+<li><strong>Equation</strong>:
+  $<span class="arithmatex">\(MMP = 15.988 \cdot T^{0.744206} \cdot (55 - API)^{0.279033}\)</span>$</li>
+<li><strong>Observation</strong>: Published Cronquist (1978) correlation uses volatile oil mole fraction and C7+ molecular weight. The term <span class="arithmatex">\((55 - API)\)</span> is an undocumented modification that crashes with <code>ValueError</code> (fractional power of negative number) whenever oil gravity exceeds <span class="arithmatex">\(55^\circ\text{API}\)</span>.</li>
+<li><strong>Scientific Consequence</strong>: Unphysical correlation crashes on volatile oils and light condensates.</li>
+<li><strong>Affected Outputs</strong>: <code>calculate_mmp(method="cronquist")</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-14-heuristic-vapor-fraction-in-material-balance">SCI-FLAW-14: Heuristic Vapor Fraction in Material Balance<a class="headerlink" href="#sci-flaw-14-heuristic-vapor-fraction-in-material-balance" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-14</code></li>
+<li><strong>Severity</strong>: <strong>HIGH</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L85-L108"><code>analysis/material_balance.py:85-108</code></a></li>
+<li><strong>Model</strong>: Material Balance Reservoir CO₂ Partitioning</li>
+<li><strong>Equation</strong>:
+  $<span class="arithmatex">\(V = \min(1.0, \max(0.0, 1.0 - Z_{\text{avg}} + 0.2))\)</span>$
+  $<span class="arithmatex">\(y_{\text{CO2}} = x_{\text{CO2}} \cdot V + x_{\text{CO2}} \cdot (1 - V) \cdot (1 - V)\)</span>$</li>
+<li><strong>Expected Behavior</strong>: Vapor fraction <span class="arithmatex">\(V\)</span> and phase compositions <span class="arithmatex">\(x, y\)</span> are governed by thermodynamic equilibrium: <span class="arithmatex">\(f_{i}^L = f_{i}^V\)</span> (Rachford-Rice equation).</li>
+<li><strong>Actual Behavior</strong>: Vapor fraction is estimated from compressibility factor <span class="arithmatex">\(Z\)</span> via an arbitrary linear expression (<span class="arithmatex">\(1 - Z + 0.2\)</span>), and phase concentration is multiplied by <span class="arithmatex">\((1 - V)^2\)</span>.</li>
+<li><strong>Scientific Consequence</strong>: Fabricated pseudo-thermodynamics with zero theoretical foundation.</li>
+<li><strong>Affected Outputs</strong>: <code>_get_co2_fraction_at_reservoir()</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-15-instantaneous-co2-production-decoupled-from-in-situ-mobile-storage">SCI-FLAW-15: Instantaneous CO₂ Production Decoupled from In-Situ Mobile Storage<a class="headerlink" href="#sci-flaw-15-instantaneous-co2-production-decoupled-from-in-situ-mobile-storage" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-15</code></li>
+<li><strong>Severity</strong>: <strong>MEDIUM</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py#L983-L986"><code>core/engine_surrogate/profile_generator_fast.py:983-986</code></a></li>
+<li><strong>Model</strong>: Gas Production Profile Synthesis</li>
+<li><strong>Equation</strong>:
+  $<span class="arithmatex">\(q_{\text{CO2,prod}}(t) = q_{\text{inj}}(t) \cdot (1 - \text{trapping}) \cdot F_{\text{CO2}} \cdot (1 - e^{-c(t - t_{bt})})\)</span>$</li>
+<li><strong>Expected Behavior</strong>: Produced gas rate post-breakthrough is driven by in-situ free gas mobility and reservoir pressure gradient. If injection is shut in, gas continues to produce as the reservoir depressurizes.</li>
+<li><strong>Actual Behavior</strong>: Produced CO₂ rate is computed as a direct product of instantaneous injection rate <span class="arithmatex">\(q_{\text{inj}}(t)\)</span>. If <span class="arithmatex">\(q_{\text{inj}}(t) = 0\)</span>, produced CO₂ immediately collapses to zero.</li>
+<li><strong>Scientific Consequence</strong>: Shutting in injection immediately halts gas production, violating mass transfer and pressure dissipation physics.</li>
+<li><strong>Affected Outputs</strong>: <code>co2_gas_profile</code>, <code>gas_profile</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-16-discontinuous-cliff-in-craig-areal-sweep-at-unit-mobility">SCI-FLAW-16: Discontinuous Cliff in Craig Areal Sweep at Unit Mobility<a class="headerlink" href="#sci-flaw-16-discontinuous-cliff-in-craig-areal-sweep-at-unit-mobility" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-16</code></li>
+<li><strong>Severity</strong>: <strong>HIGH</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_models.py#L164-L182"><code>core/engine_surrogate/surrogate_models.py:164-182</code></a></li>
+<li><strong>Model</strong>: Craig-Geffen-Morse Areal Sweep Efficiency Correlation</li>
+<li><strong>Observation</strong>: Areal sweep efficiency <span class="arithmatex">\(E_A\)</span> jumps discontinuously by 48% across <span class="arithmatex">\(M = 1.0\)</span>.</li>
+<li><strong>Equation</strong>:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">if</span> <span class="n">mobility_ratio</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">return</span> <span class="mf">1.0</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">else</span><span class="p">:</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="k">return</span> <span class="mf">0.5460</span> <span class="o">-</span> <span class="mf">0.0195</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">mobility_ratio</span><span class="p">)</span> <span class="o">+</span> <span class="o">...</span>
+</span></code></pre></div></li>
+<li><strong>Expected Behavior</strong>: Areal sweep efficiency is a continuous, smooth function of mobility ratio (<span class="arithmatex">\(\lim_{M \to 1^+} E_A(M) = E_A(1.0)\)</span>).</li>
+<li><strong>Actual Behavior</strong>:</li>
+<li>For <span class="arithmatex">\(M \le 1.0\)</span>: <span class="arithmatex">\(E_A = 1.000\)</span> (100% sweep).</li>
+<li>For <span class="arithmatex">\(M = 1.0001\)</span>: <span class="arithmatex">\(E_A = 0.517\)</span> (51.7% sweep).</li>
+<li>A step discontinuity of <span class="arithmatex">\(\Delta E_A = 0.483\)</span> (48.3%) occurs at <span class="arithmatex">\(M = 1.0\)</span>.</li>
+<li><strong>Scientific Consequence</strong>: Severe non-physical step change causes gradient-based optimizers to fail and causes genetic algorithms to falsely lock into <span class="arithmatex">\(M \le 1.0\)</span>.</li>
+<li><strong>Affected Outputs</strong>: <code>areal_sweep_efficiency</code>, <code>recovery_factor</code>, <code>cumulative_oil</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-17-inverted-critical-gas-saturation-trapping-formulation">SCI-FLAW-17: Inverted Critical Gas Saturation Trapping Formulation<a class="headerlink" href="#sci-flaw-17-inverted-critical-gas-saturation-trapping-formulation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-17</code></li>
+<li><strong>Severity</strong>: <strong>HIGH</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_models.py#L238-L241"><code>core/engine_surrogate/surrogate_models.py:238-241</code></a></li>
+<li><strong>Model</strong>: Residual / Capillary Gas Trapping Model</li>
+<li><strong>Observation</strong>: Trapping efficiency is computed as <span class="arithmatex">\(1.0 - S_{gc}\)</span>.</li>
+<li><strong>Equation</strong>:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">trapping_efficiency</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">critical_gas_saturation</span>
+</span></code></pre></div></li>
+<li><strong>Expected Behavior</strong>: Critical gas saturation <span class="arithmatex">\(S_{gc}\)</span> represents the minimum saturation required for the gas phase to become mobile. Higher <span class="arithmatex">\(S_{gc}\)</span> means more gas is trapped in pore throats by capillary forces, so trapping efficiency must increase monotonically with <span class="arithmatex">\(S_{gc}\)</span> (<span class="arithmatex">\(\frac{\partial \eta_{\text{trap}}}{\partial S_{gc}} &gt; 0\)</span>).</li>
+<li><strong>Actual Behavior</strong>: Because trapping is defined as <span class="arithmatex">\(1.0 - S_{gc}\)</span>, increasing <span class="arithmatex">\(S_{gc}\)</span> from <span class="arithmatex">\(0.05\)</span> to <span class="arithmatex">\(0.25\)</span> causes calculated trapping efficiency to <em>decrease</em> from <span class="arithmatex">\(95\%\)</span> to <span class="arithmatex">\(75\%\)</span>.</li>
+<li><strong>Scientific Consequence</strong>: Inverts the fundamental physical relationship between capillary snap-off/hysteresis and residual gas retention.</li>
+<li><strong>Affected Outputs</strong>: <code>trapping_efficiency</code>, <code>co2_stored</code>, <code>storage_efficiency</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+<hr />
+<h3 id="sci-flaw-18-corrupted-peng-robinson-mixture-fugacity-formulation">SCI-FLAW-18: Corrupted Peng-Robinson Mixture Fugacity Formulation<a class="headerlink" href="#sci-flaw-18-corrupted-peng-robinson-mixture-fugacity-formulation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SCI-FLAW-18</code></li>
+<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/unified_engine/physics/eos/__init__.py#L206"><code>core/unified_engine/physics/eos/__init__.py:206, 257-270</code></a></li>
+<li><strong>Model</strong>: Peng-Robinson (1978) Mixture Phase Equilibrium</li>
+<li><strong>Observation</strong>: The analytical expression for component fugacity coefficient <span class="arithmatex">\(\ln \phi_i\)</span> omits the critical <span class="arithmatex">\(2\sqrt{2}B\)</span> denominator in the logarithmic term, and omits the cross-interaction partial derivative summation <span class="arithmatex">\(\sum_j x_j a_{ij}\)</span>.</li>
+<li><strong>Expected Equation</strong> (Standard Peng-Robinson):
+  $<span class="arithmatex">\(\ln\phi_i = \frac{B_i}{B}(Z - 1) - \ln(Z - B) - \frac{A}{2\sqrt{2}B}\left[\frac{2\sum_j z_j A_{ij}}{A} - \frac{B_i}{B}\right]\ln\left(\frac{Z + (1+\sqrt{2})B}{Z + (1-\sqrt{2})B}\right)\)</span>$</li>
+<li><strong>Actual Behavior in Code</strong>:
+  Omits the <span class="arithmatex">\(2\sqrt{2}B\)</span> scaling and substitutes <span class="arithmatex">\(A/B\)</span>, distorting the chemical potential balance by <span class="arithmatex">\(\approx 2.83\times\)</span>.</li>
+<li><strong>Scientific Consequence</strong>: Equilibrium K-values (<span class="arithmatex">\(K_i = y_i / x_i = \phi_i^L / \phi_i^V\)</span>) computed from this formulation do not satisfy Gibbs phase rule or thermodynamic equilibrium, corrupting compositional phase boundaries.</li>
+<li><strong>Affected Outputs</strong>: <code>calculate_fugacity()</code>, <code>flash_calculation()</code>, <code>compositional_solver</code>.</li>
+<li><strong>Confidence</strong>: 100%.</li>
+<li><strong>Status</strong>: OPEN.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/fgfalll/WAG_optimisation" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "navigation.indexes", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "toc.follow"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
