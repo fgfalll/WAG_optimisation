@@ -1,0 +1,171 @@
+# Help Content Manifest for the Configuration Widget
+# Maps UI components in the ConfigWidget to help content and anchors.
+
+ConfigWidget:
+  # A general help file for the entire configuration screen, explaining the overall purpose,
+  # how to save, load, reset, and apply/discard changes.
+  _file: "config/overview.md"
+
+  # --------------------------------------------------------------------
+  # Economic Parameters Tab
+  # --------------------------------------------------------------------
+  Economic:
+    _file: "config/economic.md"
+    EconomicParameters.interest_rate:
+      short: "The annual discount rate used for Net Present Value (NPV) calculations."
+      anchor: "interest-rate"
+    EconomicParameters.oil_price:
+      short: "The constant price of oil ($/bbl) throughout the project's lifetime."
+      anchor: "oil-price"
+    EconomicParameters.co2_purchase_price:
+      short: "The cost to purchase CO2 ($/tonne) from an external source."
+      anchor: "co2-purchase-price"
+    EconomicParameters.co2_transport_cost:
+      short: "The cost to transport purchased CO2 ($/tonne) to the project site."
+      anchor: "co2-transport-cost"
+
+  # --------------------------------------------------------------------
+  # EOR (Enhanced Oil Recovery) Parameters Tab
+  # --------------------------------------------------------------------
+  EOR:
+    _file: "config/eor.md"
+    EORParameters.min_miscibility_pressure:
+      short: "The minimum reservoir pressure required for CO2 to become miscible with the oil."
+      anchor: "min-miscibility-pressure"
+    EORParameters.wag_co2_slug_size_pv:
+      short: "For WAG injection, the size of the CO2 injection 'slug' as a fraction of pore volume."
+      anchor: "wag-co2-slug-size"
+    EORParameters.first_co2_injection_phase_duration_years:
+      short: "The duration in years of the initial CO2 injection phase."
+      anchor: "first-co2-injection-phase"
+    EORParameters.subsequent_co2_injection_phase_duration_years:
+      short: "For WAG injection, the duration of subsequent CO2 injection cycles."
+      anchor: "subsequent-co2-injection-phase"
+    EORParameters.subsequent_water_injection_phase_duration_years:
+      short: "For WAG injection, the duration of subsequent water injection cycles."
+      anchor: "subsequent-water-injection-phase"
+
+  # --------------------------------------------------------------------
+  # Operational Parameters Tab (Custom Layout)
+  # --------------------------------------------------------------------
+  Operational:
+    _file: "config/operational.md"
+    # --- General Group ---
+    OperationalParameters.project_lifetime_years:
+      short: "The total duration of the EOR project in years."
+      anchor: "project-lifetime"
+    OperationalParameters.max_injection_rate_per_well:
+      short: "The maximum physical injection rate (bpd) for a single injection well."
+      anchor: "max-injection-rate"
+    OperationalParameters.injection_scheme:
+      short: "The overall strategy for injection: continuous CO2 or Water-Alternating-Gas (WAG)."
+      anchor: "injection-scheme"
+    OperationalParameters.target_seeking_sharpness:
+      short: "A factor controlling how aggressively the optimizer seeks a specific target value."
+      anchor: "target-seeking-sharpness"
+    # --- Target Seeking Group ---
+    enable_target_seeking:
+      short: "Enables the optimizer to aim for a specific target value for a chosen objective."
+      anchor: "enable-target-seeking"
+    target_objective:
+      short: "The performance metric (e.g., NPV, Recovery Factor) to target."
+      anchor: "target-objective"
+    target_value:
+      short: "The specific numerical value the optimizer will attempt to achieve."
+      anchor: "target-value"
+
+  # --------------------------------------------------------------------
+  # Production Profile Parameters Tab
+  # --------------------------------------------------------------------
+  Profile:
+    _file: "config/profile.md"
+    ProfileParameters.oil_profile_type:
+      short: "The analytical model used to describe the oil production rate over time."
+      anchor: "oil-profile-type"
+    ProfileParameters.injection_profile_type:
+      short: "The model used to describe the CO2 injection rate over time."
+      anchor: "injection-profile-type"
+    ProfileParameters.oil_annual_fraction_of_total:
+      short: "Defines a custom production profile as a list of annual production fractions."
+      anchor: "oil-annual-fraction"
+    ProfileParameters.plateau_duration_fraction_of_life:
+      short: "The duration of the peak (plateau) production period as a fraction of project life."
+      anchor: "plateau-duration"
+    ProfileParameters.initial_decline_rate_annual_fraction:
+      short: "The initial rate of production decline after the plateau period ends."
+      anchor: "initial-decline-rate"
+    ProfileParameters.hyperbolic_b_factor:
+      short: "The 'b' exponent for the hyperbolic decline curve model (typically between 0 and 1)."
+      anchor: "hyperbolic-b-factor"
+    ProfileParameters.min_economic_rate_fraction_of_peak:
+      short: "The production rate at which the project becomes uneconomical, as a fraction of the peak rate."
+      anchor: "min-economic-rate"
+    ProfileParameters.co2_breakthrough_year_fraction:
+      short: "The time at which injected CO2 begins to be produced, as a fraction of project life."
+      anchor: "co2-breakthrough"
+    ProfileParameters.co2_production_ratio_after_breakthrough:
+      short: "The ratio of produced CO2 to injected CO2 after breakthrough occurs."
+      anchor: "co2-production-ratio"
+    ProfileParameters.co2_recycling_efficiency_fraction:
+      short: "The fraction of produced CO2 that can be successfully captured and re-injected."
+      anchor: "co2-recycling-efficiency"
+    ProfileParameters.warn_if_defaults_used:
+      short: "Log a warning if the default production profile is used without user modification."
+      anchor: "warn-if-defaults-used"
+
+  # --------------------------------------------------------------------
+  # Genetic Algorithm Parameters Tab
+  # --------------------------------------------------------------------
+  GeneticAlgorithm:
+    _file: "config/genetic_algorithm.md"
+    GeneticAlgorithmParams.population_size:
+      short: "The number of individuals (solutions) in each generation of the algorithm."
+      anchor: "population-size"
+    GeneticAlgorithmParams.crossover_rate:
+      short: "The probability (0 to 1) that two individuals will 'mate' to create offspring."
+      anchor: "crossover-rate"
+    GeneticAlgorithmParams.mutation_rate:
+      short: "The probability (0 to 1) of random changes occurring in an individual's genes."
+      anchor: "mutation-rate"
+    GeneticAlgorithmParams.number_of_generations:
+      short: "The total number of generations the algorithm will run before stopping."
+      anchor: "number-of-generations"
+
+  # --------------------------------------------------------------------
+  # Bayesian Optimization Parameters Tab
+  # --------------------------------------------------------------------
+  BayesianOptimization:
+    _file: "config/bayesian_optimization.md"
+    BayesianOptimizationParams.bo_iterations:
+      short: "The total number of iterations for the Bayesian Optimization process."
+      anchor: "bo-iterations"
+    BayesianOptimizationParams.acquisition_function:
+      short: "The strategy used to select the next point to evaluate (e.g., 'ei' for Expected Improvement)."
+      anchor: "acquisition-function"
+
+  # --------------------------------------------------------------------
+  # Recovery Models Parameters Tab
+  # --------------------------------------------------------------------
+  RecoveryModels:
+    _file: "config/recovery_models.md"
+    # --- Koval Model ---
+    Koval.v_dp_coefficient:
+      short: "Koval model parameter representing viscous-to-gravity force ratio."
+      anchor: "koval-vdp-coefficient"
+    Koval.mobility_ratio:
+      short: "The ratio of the mobility of the displacing fluid (CO2) to the displaced fluid (oil)."
+      anchor: "koval-mobility-ratio"
+    # --- Miscible Model ---
+    Miscible.kv_factor:
+      short: "Vertical to horizontal permeability ratio, affecting gravity override in miscible floods."
+      anchor: "miscible-kv-factor"
+    Miscible.gravity_factor:
+      short: "A factor accounting for the effects of gravity on fluid segregation."
+      anchor: "miscible-gravity-factor"
+    # --- Immiscible Model ---
+    Immiscible.sor:
+      short: "Residual oil saturation; the fraction of oil left behind in swept zones."
+      anchor: "immiscible-sor"
+    Immiscible.krw_max:
+      short: "The maximum relative permeability to water, affecting fluid flow."
+      anchor: "immiscible-krw-max"
