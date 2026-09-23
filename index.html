@@ -2981,6 +2981,17 @@
 <p><strong>Test Suite Health &amp; Zero Silent Swallowing</strong>:
     Zero silent exception swallowing across core scientific modules. All physical states are logged contextually. Unphysical or violating candidates receive explicit mathematical penalties (<code>FAILURE_PENALTY = -10^{12}</code>) to kill off unviable chromosomes.</p>
 </li>
+<li>
+<p><strong>Project Save/Load &amp; State Persistence Integrity</strong>:
+    User projects (<code>.tphd</code> JSON format via <code>utils/project_file_handler.py</code>) must cleanly round-trip all reservoir geometries, PVT parameters, well patterns, tuning overrides, and optimization results:</p>
+<ul>
+<li><strong>Shallow Dataclass Encoding</strong>: <code>ProjectEncoder</code> serializes fields shallowly so nested dataclasses (<code>EOSModelParameters</code>, <code>LayerDefinition</code>, <code>GeostatisticalParams</code>) preserve <code>_dataclass</code> type annotations. Never invoke recursive <code>dataclasses.asdict()</code>.</li>
+<li><strong>Backwards Compatibility</strong>: <code>project_decoder</code> must dynamically reconstitute untyped dictionary representations from legacy projects into typed dataclasses.</li>
+<li><strong>Robust Grid Ingestion</strong>: Grid permeability deserialization in <code>DataManagementWidget</code> must support scalar, 1D flattened, and multi-dimensional grid arrays (e.g. <code>PERMX.flat[0]</code>), never assuming 3D shapes.</li>
+<li><strong>Engine Results Restoration</strong>: <code>OptimizationEngine.results</code> must provide <code>@results.setter</code> to ensure saved runs can be restored into engines and GUI summary plots.</li>
+<li><strong>Verification Requirement</strong>: Whenever data models or UI widgets are modified, agents must run <code>pytest tests/test_project_save_load.py -v</code>.</li>
+</ul>
+</li>
 </ol>
 <hr />
 <h2 id="recommended-reading-order">📖 Recommended Reading Order<a class="headerlink" href="#recommended-reading-order" title="Permanent link">&para;</a></h2>

@@ -1931,6 +1931,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sft-09-application-entry-point-mainpy-modernization-multiprocess-logging-decoupling" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-09] Application Entry Point (main.py) Modernization &amp; Multiprocess Logging Decoupling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-10-data-models-coredata_modelspy-type-safety-hardening-faultfluid-separation" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-10] Data Models (core/data_models.py) Type Safety Hardening &amp; Fault/Fluid Separation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-11-project-saveload-failure-state-serialization-breakdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-11] Project Save/Load Failure &amp; State Serialization Breakdown
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3732,6 +3759,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sft-09-application-entry-point-mainpy-modernization-multiprocess-logging-decoupling" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-09] Application Entry Point (main.py) Modernization &amp; Multiprocess Logging Decoupling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-10-data-models-coredata_modelspy-type-safety-hardening-faultfluid-separation" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-10] Data Models (core/data_models.py) Type Safety Hardening &amp; Fault/Fluid Separation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-11-project-saveload-failure-state-serialization-breakdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-11] Project Save/Load Failure &amp; State Serialization Breakdown
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4089,6 +4143,46 @@
 <td style="text-align: left;">Software Defect</td>
 <td style="text-align: left;"><code>technical_debt.md</code></td>
 <td style="text-align: left;">2026-09-23</td>
+<td style="text-align: left;"><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SFT-07</strong></td>
+<td style="text-align: left;">Parsers Directory Elimination &amp; LAS Parser Consolidation</td>
+<td style="text-align: left;">Architectural Refactoring</td>
+<td style="text-align: left;"><code>module_map.md</code></td>
+<td style="text-align: left;">2026-09-23</td>
+<td style="text-align: left;"><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SFT-08</strong></td>
+<td style="text-align: left;">Core Directory Architecture Audit &amp; Prototyping Artifacts Elimination</td>
+<td style="text-align: left;">Architectural Refactoring</td>
+<td style="text-align: left;"><code>source_of_truth_map.md</code></td>
+<td style="text-align: left;">2026-09-23</td>
+<td style="text-align: left;"><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SFT-09</strong></td>
+<td style="text-align: left;">Application Entry Point (<code>main.py</code>) Modernization &amp; Multiprocess Logging Decoupling</td>
+<td style="text-align: left;">Architectural Refactoring</td>
+<td style="text-align: left;"><code>technical_debt.md</code></td>
+<td style="text-align: left;">2026-09-23</td>
+<td style="text-align: left;"><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SFT-10</strong></td>
+<td style="text-align: left;">Data Models (<code>core/data_models.py</code>) Type Safety Hardening &amp; Fault/Fluid Separation</td>
+<td style="text-align: left;">Software Defect</td>
+<td style="text-align: left;"><code>technical_debt.md</code></td>
+<td style="text-align: left;">2026-09-23</td>
+<td style="text-align: left;"><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SFT-11</strong></td>
+<td style="text-align: left;">Project Save/Load Failure &amp; State Serialization Breakdown</td>
+<td style="text-align: left;">Software Defect</td>
+<td style="text-align: left;"><code>technical_debt.md</code></td>
+<td style="text-align: left;">2026-09-24</td>
 <td style="text-align: left;"><strong>VERIFIED</strong></td>
 </tr>
 </tbody>
@@ -4830,6 +4924,80 @@
 </li>
 <li><strong>Startup Smoke Test</strong>: Added <code>tests/test_app_startup.py</code> which executes <code>timed_import_main_window()</code>, <code>SensitivityAnalyzer</code>, and <code>ProductionProfiler</code> under <code>QApplication</code>, permanently guarding against startup import regressions.</li>
 <li><strong>Verification</strong>: All 310 tests pass (307 existing + 3 startup smoke tests); application boots and exits cleanly with code 0.</li>
+</ul>
+<hr />
+<h3 id="sft-09-application-entry-point-mainpy-modernization-multiprocess-logging-decoupling">[SFT-09] Application Entry Point (<code>main.py</code>) Modernization &amp; Multiprocess Logging Decoupling<a class="headerlink" href="#sft-09-application-entry-point-mainpy-modernization-multiprocess-logging-decoupling" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SFT-09</code></li>
+<li><strong>Category</strong>: Architectural Refactoring / Code Quality</li>
+<li><strong>Original Document</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md"><code>agent_wiki/audit/technical_debt.md</code></a></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/main.py"><code>main.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/main_window.py"><code>ui/main_window.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/utils/multiprocess_logging.py"><code>utils/multiprocess_logging.py</code></a></li>
+<li><strong>Severity</strong>: MEDIUM</li>
+<li><strong>Status</strong>: RESOLVED</li>
+<li><strong>Date Resolved</strong>: 2026-09-23</li>
+<li><strong>Previous Defect</strong>:</li>
+<li><code>main.py</code> had accumulated 390 lines with excessive debugging scaffolding, a 140-line import wall with 40+ unused imports inside <code>timed_import_main_window</code>, platform-specific workarounds (<code>windows:darkmode=0</code>), a hardcoded 21-line palette override, and inlined logging setup/teardown functions.</li>
+<li>Screen geometry initialization was handled by an external helper function in <code>main.py</code> rather than being encapsulated within <code>MainWindow</code>.</li>
+<li>Pyright/Pylance emitted false-positive keyword argument errors for <code>MainWindow</code> because PyQt6's underlying C++ bindings lack rich type hints for subclassed constructors.</li>
+<li><strong>Resolution Details</strong>:</li>
+<li>Reduced <code>main.py</code> from 390 lines to 163 clean, modular lines.</li>
+<li>Decoupled application logging into <code>init_application_logging(...)</code> inside <code>utils/multiprocess_logging.py</code> and called <code>shutdown_queue_logging()</code> on exit.</li>
+<li>Replaced the 140-line import block with a clean 13-line timing wrapper around <code>from ui.main_window import MainWindow</code>.</li>
+<li>Retained <code>QCoreApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)</code> before creating <code>CO2EORApplication(sys.argv)</code>, strictly preserving PyQt6 QtWebEngine context requirements.</li>
+<li>Encapsulated default first-launch centering and 80% screen geometry fallback directly in <code>MainWindow.load_window_settings()</code>.</li>
+<li>Added <code>from __future__ import annotations</code>, typed <code>timed_import_main_window() -&gt; type[MainWindow]</code>, and added <code># type: ignore[call-arg]</code> on <code>main_window = MainWindow(...)</code>.</li>
+<li><strong>Verification</strong>: Application boots cleanly with exit code 0; <code>tests/test_app_startup.py</code> passes 3/3 smoke tests.</li>
+</ul>
+<hr />
+<h3 id="sft-10-data-models-coredata_modelspy-type-safety-hardening-faultfluid-separation">[SFT-10] Data Models (<code>core/data_models.py</code>) Type Safety Hardening &amp; Fault/Fluid Separation<a class="headerlink" href="#sft-10-data-models-coredata_modelspy-type-safety-hardening-faultfluid-separation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SFT-10</code></li>
+<li><strong>Category</strong>: Software Defect / Type Safety</li>
+<li><strong>Original Document</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md"><code>agent_wiki/audit/technical_debt.md</code></a></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_models.py"><code>core/data_models.py</code></a></li>
+<li><strong>Severity</strong>: MEDIUM</li>
+<li><strong>Status</strong>: RESOLVED</li>
+<li><strong>Date Resolved</strong>: 2026-09-23</li>
+<li><strong>Previous Defect</strong>:</li>
+<li>In <code>calculate_ooip_from_physics</code>, using <code>if None in [...]</code> failed to narrow <code>Optional[float]</code> fields, causing 8 operand type mismatch errors (<code>*</code> and <code>/</code> not supported between <code>float</code> and <code>None</code>).</li>
+<li>In <code>pore_volume</code>, <code>self.length_ft</code> and <code>self.cross_sectional_area_acres</code> were multiplied without non-None guards.</li>
+<li>In <code>FaultProperties</code>, an old fragment of fluid properties (including 6 density/viscosity methods and a duplicate <code>__post_init__</code>) was accidentally pasted inside the class definition, overriding the fault validator and triggering 16 <code>AttributeError</code> warnings.</li>
+<li><code>CCUSState.fluxes</code> was declared as <code>fluxes: np.ndarray = None</code>, which Pyright rejected as invalid assignment to non-optional type.</li>
+<li><code>from_dict_to_dataclass</code> was un-typed, causing <code>from_config_dict</code> to return implicit <code>Any</code>.</li>
+<li><strong>Resolution Details</strong>:</li>
+<li>Converted <code>calculate_ooip_from_physics</code> to explicit <code>is None</code> checks, guaranteeing safe float narrowing.</li>
+<li>Added fallback defaults to <code>pore_volume</code> calculation for <code>length_ft</code> and <code>cross_sectional_area_acres</code>.</li>
+<li>Completely cleaned <code>FaultProperties</code>, removing the duplicate <code>__post_init__</code> and misplaced fluid methods.</li>
+<li>Enhanced the standalone <code>FluidProperties</code> dataclass with all reference properties (<code>water_density_ref</code>, <code>oil_viscosity_ref</code>, compressibilities, FVF) and temperature/pressure calculations with explicit float casts.</li>
+<li>Declared <code>fluxes: Optional[np.ndarray] = None</code> in <code>CCUSState</code>.</li>
+<li>Added generic type parameter <code>TypeVar("T")</code> to <code>from_dict_to_dataclass(cls: Type[T], data: Dict[str, Any]) -&gt; T</code>.</li>
+<li><strong>Verification</strong>: <code>tests/test_reservoir_outputs_streams.py</code> and <code>tests/test_app_startup.py</code> pass 6/6 tests.</li>
+</ul>
+<hr />
+<h3 id="sft-11-project-saveload-failure-state-serialization-breakdown">[SFT-11] Project Save/Load Failure &amp; State Serialization Breakdown<a class="headerlink" href="#sft-11-project-saveload-failure-state-serialization-breakdown" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SFT-11</code></li>
+<li><strong>Category</strong>: Software Defect / Data Persistence</li>
+<li><strong>Original Document</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md"><code>agent_wiki/audit/technical_debt.md</code></a></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/utils/project_file_handler.py"><code>utils/project_file_handler.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py"><code>ui/data_management_widget.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py"><code>core/optimisation_engine.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/main_window.py"><code>ui/main_window.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/optimization_widget.py"><code>ui/optimization_widget.py</code></a></li>
+<li><strong>Severity</strong>: HIGH</li>
+<li><strong>Status</strong>: RESOLVED</li>
+<li><strong>Date Resolved</strong>: 2026-09-24</li>
+<li><strong>Previous Defect</strong>:</li>
+<li><code>ProjectEncoder.default</code> used recursive <code>dataclasses.asdict(o)</code>. This stripped <code>_dataclass</code> type metadata from nested dataclasses (<code>eos_model</code>, <code>layer_definitions</code>, <code>geostatistical_params</code>), corrupting their types upon deserialization.</li>
+<li><code>DataManagementWidget.load_project_data()</code> indexed <code>grid['PERMX'][0,0,0]</code>. When loading grids flattened to 1D (<code>shape: (25000,)</code>) by <code>DataIntegrationEngine</code>, Python threw an unhandled <code>IndexError: too many indices for array</code>, which terminated the loading routine and left all input widgets empty.</li>
+<li><code>OptimizationEngine.results</code> was a <code>@property</code> without a <code>@results.setter</code>, causing <code>self.optimisation_engine_instance.results = optimization_results</code> in <code>MainWindow._update_engines_and_tabs</code> to throw <code>AttributeError: can't set attribute 'results'</code>.</li>
+<li>Multiple reservoir and fluid parameters were omitted from UI widget restoration: <code>area</code>, <code>thickness</code>, <code>length</code>, <code>dip_angle</code>, <code>density_contrast</code>, <code>interfacial_tension</code>, <code>rock_type</code>, <code>depositional_environment</code>, <code>structural_complexity</code>, <code>gas_viscosity_cp</code>, <code>c7_plus_fraction</code>, and <code>co2_solubility_scm_per_bbl</code>. In addition, <code>dip_angle</code>, <code>density_contrast</code>, and <code>interfacial_tension</code> lacked UI controls in the Reservoir tab.</li>
+<li><code>MainWindow._perform_project_load</code> evaluated <code>locals().get("stacked_layout_index", 0)</code>, leaving the user stranded on the welcome view (index 0).</li>
+<li>Saving did not query <code>DataManagementWidget</code> or <code>ConfigTab</code> for active user edits, and omitted saving <code>manual_inputs</code> and <code>uq_results</code>.</li>
+<li><strong>Resolution Details</strong>:</li>
+<li><code>utils/project_file_handler.py</code>: Replaced recursive <code>asdict</code> with shallow dataclass field serialization to preserve <code>_dataclass</code> tags on nested objects. Enhanced <code>project_decoder</code> with backwards-compatibility logic to convert untyped dictionaries into typed <code>EOSModelParameters</code>, <code>LayerDefinition</code>, and <code>GeostatisticalParams</code>.</li>
+<li><code>ui/data_management_widget.py</code>: Replaced <code>[0,0,0]</code> with <code>.flat[0]</code> to safely extract permeability across scalar, 1D flattened, and 3D arrays. Restored all missing volumetric, geological, and PVT parameters into UI widgets on load. Added UI controls for <code>dip_angle</code>, <code>density_contrast</code>, and <code>interfacial_tension</code> in <code>uniform_props_group</code>. Implemented <code>get_current_project_data()</code> to flush active edits before saving.</li>
+<li><code>core/optimisation_engine.py</code>: Added <code>@results.setter</code> to the <code>results</code> property.</li>
+<li><code>ui/optimization_widget.py</code>: Enabled <code>export_button</code> when results exist, auto-selected the default plot in <code>plot_list</code>, switched to the Summary tab on load, and accepted optional results in <code>update_graphs()</code>.</li>
+<li><code>ui/main_window.py</code>: Unconditionally transitioned to the main app view via <code>_transition_to_main_app_view()</code>. Flushed UI state before saving and persisted <code>manual_inputs</code> and <code>uq_results</code>.</li>
+<li><code>tests/test_project_save_load.py</code>: Created a comprehensive test suite asserting roundtrip serialization, legacy compatibility with <code>test.tphd</code>, UI flush &amp; restoration with 1D arrays, and results adoption.</li>
+<li><strong>Verification</strong>: <code>tests/test_project_save_load.py</code> passed 5/5 tests; full regression suite passed 31/31 tests.</li>
 </ul>
 
 

@@ -2956,6 +2956,12 @@
 <td style="text-align: left;">Iterative solver stagnation or unphysical negative densities.</td>
 </tr>
 <tr>
+<td style="text-align: left;"><code>utils/project_file_handler.py</code> &amp; save/load in <code>ui/</code></td>
+<td style="text-align: center;"><strong>HIGH</strong></td>
+<td style="text-align: left;">Project file (<code>.tphd</code>) JSON serialization, type preservation, UI state sync</td>
+<td style="text-align: left;">Strips nested dataclass types, causes <code>IndexError</code> on 1D grids, breaks project loading, and loses user data/results. Run <code>pytest tests/test_project_save_load.py -v</code>.</td>
+</tr>
+<tr>
 <td style="text-align: left;"><code>analysis/material_balance.py</code></td>
 <td style="text-align: center;"><strong>MEDIUM</strong></td>
 <td style="text-align: left;">Post-simulation CO₂ accounting and reporting</td>

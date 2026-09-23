@@ -1354,6 +1354,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#13-project-saveload-serialization-state-preservation-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      13. Project Save/Load Serialization &amp; State Preservation Integrity
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3017,6 +3026,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#13-project-saveload-serialization-state-preservation-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      13. Project Save/Load Serialization &amp; State Preservation Integrity
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3115,6 +3133,17 @@
 <ul>
 <li><strong>The Rule</strong>: Arps decline models (<span class="arithmatex">\(q(t) = q_i / (1 + b D_i t)^{1/b}\)</span>) are physically valid only in boundary-dominated decline (<span class="arithmatex">\(dq/dt &lt; 0\)</span>).</li>
 <li><strong>Protocol</strong>: In <code>analysis/decline_curve_analysis.py</code>, always detect plateau onset (<span class="arithmatex">\(q(t) &lt; 0.95 \times q_{\text{peak}}\)</span>). If a multi-year plateau exists, preserve historical plateau rates and fit Arps parameters strictly to the declining segment <span class="arithmatex">\((t - t_{\text{onset}})\)</span>. Never regress Arps equations across a plateau.</li>
+</ul>
+<h2 id="13-project-saveload-serialization-state-preservation-integrity">13. Project Save/Load Serialization &amp; State Preservation Integrity<a class="headerlink" href="#13-project-saveload-serialization-state-preservation-integrity" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>The Rule</strong>: Any changes to data models in <code>core/data_models.py</code>, serialization logic in <code>utils/project_file_handler.py</code>, or GUI tabs (<code>ui/data_management_widget.py</code>, <code>ui/config_widget.py</code>, <code>ui/main_window.py</code>) must guarantee that saving to <code>.tphd</code> and loading from <code>.tphd</code> round-trips without data loss, type stripping, or unhandled exceptions.</li>
+<li><strong>Protocol</strong>:</li>
+<li><strong>Shallow Dataclass Serialization</strong>: In <code>ProjectEncoder</code>, never use recursive <code>dataclasses.asdict(o)</code>, which strips <code>_dataclass</code> tags from nested dataclasses (<code>EOSModelParameters</code>, <code>LayerDefinition</code>, <code>GeostatisticalParams</code>). Instead, serialize fields shallowly.</li>
+<li><strong>Backwards Compatibility</strong>: In <code>project_decoder</code>, convert untyped nested dicts into typed dataclasses to ensure legacy <code>.tphd</code> project files load seamlessly.</li>
+<li><strong>Array Shape Agnostic Ingestion</strong>: In <code>DataManagementWidget.load_project_data()</code>, handle scalar, 1D flattened, and multi-dimensional grid arrays (e.g. <code>grid['PERMX'].flat[0]</code>), never assuming 3D indexing <code>[0,0,0]</code>.</li>
+<li><strong>Engine Results Accessor</strong>: <code>OptimizationEngine.results</code> must retain <code>@results.setter</code> so that restored optimization runs populate engine state and GUI graphs.</li>
+<li><strong>UI State Flush Before Save</strong>: In <code>MainWindow._perform_project_save()</code>, always query <code>data_management_tab.get_current_project_data()</code> and <code>config_tab.get_all_configurations()</code> to synchronize active widget inputs before writing to disk.</li>
+<li><strong>Mandatory Test</strong>: Run <code>pytest tests/test_project_save_load.py -v</code> whenever touching data models, serialization, or UI state.</li>
 </ul>
 
 

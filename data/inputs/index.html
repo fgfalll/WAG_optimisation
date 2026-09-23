@@ -1114,6 +1114,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#4-project-file-schema-tphd-state-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Project File Schema (.tphd) &amp; State Persistence
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Project File Schema (.tphd) & State Persistence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#top-level-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Top-Level Schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serialization-ingestion-protocols" class="md-nav__link">
+    <span class="md-ellipsis">
+      Serialization &amp; Ingestion Protocols
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2915,6 +2948,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#4-project-file-schema-tphd-state-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Project File Schema (.tphd) &amp; State Persistence
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Project File Schema (.tphd) & State Persistence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#top-level-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Top-Level Schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serialization-ingestion-protocols" class="md-nav__link">
+    <span class="md-ellipsis">
+      Serialization &amp; Ingestion Protocols
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2939,7 +3005,7 @@
 1. <strong>JSON Configuration Files</strong>: Base parameters in <code>config/base_config.json</code>, demo cases in <code>config/demo_data.json</code>.
 2. <strong>PyQt6 GUI Data Management Widget</strong>: Direct user entry via <code>ui/data_management_widget.py</code>.
 3. <strong>LAS Well Log Files</strong>: Parsed by <code>utils/las_parser.py</code> to extract depth, porosity, and permeability tracks.
-4. <strong>Project Files (<code>.co2eor</code>)</strong>: Serialized JSON/zipped project archives loaded via <code>utils/project_file_handler.py</code>.</p>
+4. <strong>Project Files (<code>.tphd</code>)</strong>: Serialized JSON project archives loaded and saved via <code>utils/project_file_handler.py</code>.</p>
 <hr />
 <h2 id="2-configuration-file-schemas">2. Configuration File Schemas<a class="headerlink" href="#2-configuration-file-schemas" title="Permanent link">&para;</a></h2>
 <h3 id="configbase_configjson"><code>config/base_config.json</code><a class="headerlink" href="#configbase_configjson" title="Permanent link">&para;</a></h3>
@@ -2988,6 +3054,39 @@
 - If <code>n_injectors == 0</code> and <code>n_producers &gt; 0</code> <span class="arithmatex">\(\implies\)</span> <code>"primary_production"</code>.
 - If <code>n_injectors &gt; 0</code> and <code>n_producers == 0</code> <span class="arithmatex">\(\implies\)</span> <code>"injection_storage"</code>.
 - If <code>n_injectors == 0</code> and <code>n_producers == 0</code> <span class="arithmatex">\(\implies\)</span> Raises <code>OptimizationError("No wells configured")</code>.</p>
+<hr />
+<h2 id="4-project-file-schema-tphd-state-persistence">4. Project File Schema (<code>.tphd</code>) &amp; State Persistence<a class="headerlink" href="#4-project-file-schema-tphd-state-persistence" title="Permanent link">&para;</a></h2>
+<p>The primary format for saving and exchanging full application state is the <code>.tphd</code> file (JSON serialized via <code>utils/project_file_handler.py</code>).</p>
+<h3 id="top-level-schema">Top-Level Schema<a class="headerlink" href="#top-level-schema" title="Permanent link">&para;</a></h3>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">"schema_version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.1"</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">"application_version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.8.5-alpha"</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">"project_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Project-Name"</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">"reservoir_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">"pvt_properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">"well_data_list"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">],</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="nt">"mmp_value"</span><span class="p">:</span><span class="w"> </span><span class="mf">2053.65</span><span class="p">,</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="nt">"economic_parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="nt">"eor_parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="nt">"operational_parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="nt">"profile_parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="nt">"ga_parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="nt">"bo_parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="nt">"manual_inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="nt">"uq_parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">],</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="nt">"uq_results"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">  </span><span class="nt">"optimization_results"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">  </span><span class="nt">"ui_state"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="serialization-ingestion-protocols">Serialization &amp; Ingestion Protocols<a class="headerlink" href="#serialization-ingestion-protocols" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Shallow Dataclass Fields</strong>: <code>ProjectEncoder</code> iterates over <code>dataclasses.fields(o)</code> and extracts fields without recursively calling <code>asdict()</code>, ensuring nested dataclasses retain their <code>_dataclass</code> type tag.</li>
+<li><strong>Backwards-Compatible Decoding</strong>: <code>project_decoder</code> automatically detects legacy untyped dictionary forms of nested structures (<code>EOSModelParameters</code>, <code>LayerDefinition</code>, <code>GeostatisticalParams</code>) in older projects and converts them into proper dataclass instances.</li>
+<li><strong>Resilient Grid Loading</strong>: <code>DataManagementWidget.load_project_data()</code> accommodates 1D flattened grids from <code>DataIntegrationEngine</code> as well as scalar and 3D arrays using <code>.flat[0]</code>.</li>
+<li><strong>Active UI Flush</strong>: <code>MainWindow._perform_project_save()</code> queries <code>DataManagementWidget.get_current_project_data()</code> to ensure manual overrides and newly configured inputs are flushed from UI widgets into serialized models.</li>
+<li><strong>Validation Test Suite</strong>: Full roundtrip serialization and backwards compatibility are verified by <code>tests/test_project_save_load.py</code>.</li>
+</ol>
 
 
 
