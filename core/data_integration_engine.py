@@ -46,8 +46,6 @@ class DataIntegrationEngine:
 
     def __init__(self):
         self.surrogate_engine = SurrogateEngineWrapper()
-        self.data_validator = DataValidator()
-        self.unit_converter = UnitConverter()
         self.preprocessor = DataPreprocessor()
 
         # Cache for processed data
@@ -845,84 +843,8 @@ class DataIntegrationEngine:
         ]
 
 
-class DataValidator:
-    """Strict data validation for all parameters"""
-
-    @staticmethod
-    def validate_range(value: float, min_val: float, max_val: float, name: str) -> Tuple[bool, str]:
-        """Validate numeric range"""
-        if not (min_val <= value <= max_val):
-            return False, f"{name} must be between {min_val} and {max_val}"
-        return True, ""
-
-    @staticmethod
-    def validate_positive(value: float, name: str) -> Tuple[bool, str]:
-        """Validate positive value"""
-        if value <= 0:
-            return False, f"{name} must be positive"
-        return True, ""
-
-    @staticmethod
-    def validate_array(array: np.ndarray, name: str, min_length: int = 1) -> Tuple[bool, str]:
-        """Validate numpy array"""
-        if not isinstance(array, np.ndarray):
-            return False, f"{name} must be a numpy array"
-
-        if len(array) < min_length:
-            return False, f"{name} must have at least {min_length} elements"
-
-        return True, ""
-
-
-class UnitConverter:
-    """Handle unit conversions for different parameter types"""
-
-    @staticmethod
-    def feet_to_meters(feet: float) -> float:
-        """Convert feet to meters using PhysicalConstants"""
-        return feet * _PHYS_CONSTANTS.FT_TO_M
-
-    @staticmethod
-    def meters_to_feet(meters: float) -> float:
-        """Convert meters to feet using PhysicalConstants"""
-        return meters / _PHYS_CONSTANTS.FT_TO_M
-
-    @staticmethod
-    def acres_to_m2(acres: float) -> float:
-        """Convert acres to square meters"""
-        return acres * 4046.86  # Fixed value for area conversion
-
-    @staticmethod
-    def m2_to_acres(m2: float) -> float:
-        """Convert square meters to acres"""
-        return m2 / 4046.86  # Fixed value for area conversion
-
-    @staticmethod
-    def psi_to_pa(psi: float) -> float:
-        """Convert psi to Pascal using PhysicalConstants"""
-        return psi * _PHYS_CONSTANTS.PSI_TO_PA
-
-    @staticmethod
-    def pa_to_psi(pa: float) -> float:
-        """Convert Pascal to psi using PhysicalConstants"""
-        return pa * _PHYS_CONSTANTS.PA_TO_PSI
-
-    @staticmethod
-    def bbl_to_m3(bbl: float) -> float:
-        """Convert barrels to cubic meters using PhysicalConstants"""
-        return bbl * _PHYS_CONSTANTS.BBLS_TO_M3
-
-    @staticmethod
-    def m3_to_bbl(m3: float) -> float:
-        """Convert cubic meters to barrels using PhysicalConstants"""
-        return m3 * _PHYS_CONSTANTS.M3_TO_BBL
-
-
 class DataPreprocessor:
     """Preprocess data before engine integration"""
-
-    def __init__(self):
-        self.unit_converter = UnitConverter()
 
     def preprocess_all(self, categorized_data: Dict[str, Any]) -> Dict[str, Any]:
         """Preprocess all data categories"""
@@ -949,9 +871,9 @@ class DataPreprocessor:
         if "block_sizes" in processed:
             block_sizes = processed["block_sizes"]
             processed["block_sizes_m"] = {
-                "dx": self.unit_converter.feet_to_meters(block_sizes.get("dx", 100)),
-                "dy": self.unit_converter.feet_to_meters(block_sizes.get("dy", 100)),
-                "dz": self.unit_converter.feet_to_meters(block_sizes.get("dz", 20)),
+                "dx": float(block_sizes.get("dx", 100)) * _PHYS_CONSTANTS.FT_TO_M,
+                "dy": float(block_sizes.get("dy", 100)) * _PHYS_CONSTANTS.FT_TO_M,
+                "dz": float(block_sizes.get("dz", 20)) * _PHYS_CONSTANTS.FT_TO_M,
             }
 
         return processed

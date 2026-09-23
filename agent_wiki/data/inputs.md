@@ -5,7 +5,7 @@
 The application accepts simulation and optimization inputs through four primary channels:
 1. **JSON Configuration Files**: Base parameters in `config/base_config.json`, demo cases in `config/demo_data.json`.
 2. **PyQt6 GUI Data Management Widget**: Direct user entry via `ui/data_management_widget.py`.
-3. **LAS Well Log Files**: Parsed by `parsers/las_parser.py` to extract depth, porosity, and permeability tracks.
+3. **LAS Well Log Files**: Parsed by `utils/las_parser.py` to extract depth, porosity, and permeability tracks.
 4. **Project Files (`.co2eor`)**: Serialized JSON/zipped project archives loaded via `utils/project_file_handler.py`.
 
 ---

@@ -7,11 +7,12 @@ The `ui/` directory houses the PyQt6 desktop interface, data visualization widge
 ### Module Inventory
 | Module | LOC | Primary Classes | Function | Status / Issues |
 | :--- | :---: | :--- | :--- | :--- |
-| `ui/main_window.py` | 1,620 | `MainWindow` | Main application shell, menus, status bars, report export. | Contains software bug: undefined `charts` variable in `_generate_report_data` (line 1528). |
-| `ui/optimization_widget.py` | 1,840 | `OptimizationWidget` | Setup tab for algorithms, parameters, well counts, objective weights. | Contains bare `except:` at line 994; references undefined `UnlockParametersDialog` at line 1774. |
-| `ui/sensitivity_widget.py` | 560 | `SensitivityWidget` | Interactive sensitivity analysis charts (tornado, re-optimization). | Contains software bugs: missing imports for `pd`, `np`, `go`, `make_subplots` (lines 450-525). |
-| `ui/uq_widget.py` | 380 | `UQWidget` | Uncertainty quantification interface (Monte Carlo & PCE). | Contains software bugs: missing PyQt6 imports `QSpinBox`, `QTextBrowser` (lines 172, 176, 267). |
-| `ui/data_management_widget.py` | 740 | `DataManagementWidget` | Petrophysical data loading, PVT properties, and LAS well log inspector. | Active and stable. |
+| `ui/main_window.py` | 1,990 | `MainWindow` | Main application shell, menus, status bars, tab wiring, report export. | Active and stable; report generation and engine signals guarded. |
+| `ui/config_widget.py` | 1,310 | `ConfigWidget` | Visual configuration editor for application dataclasses and engine constraints. | Active and stable; single surrogate engine badge, `engine_selection_changed` signal. |
+| `ui/optimization_widget.py` | 2,050 | `OptimizationWidget` | Setup tab for algorithms, parameters, well counts, objective weights. | Active and stable; `UnlockParametersDialog` and typed bounds integrated. |
+| `ui/sensitivity_widget.py` | 560 | `SensitivityWidget` | Interactive sensitivity analysis charts (tornado, re-optimization). | Active and stable; Plotly subplots and pandas/numpy imports verified. |
+| `ui/uq_widget.py` | 380 | `UQWidget` | Uncertainty quantification interface (Monte Carlo & PCE). | Active and stable; Qt widgets verified. |
+| `ui/data_management_widget.py` | 1,980 | `DataManagementWidget` | Petrophysical data loading, PVT properties, and LAS well log inspector. | Active and stable; `utils.config_manager` imports and `set_engine_type` integrated. |
 | `ui/workers/optimization_worker.py` | 240 | `OptimizationWorker` | `QThread` background runner executing optimization without blocking GUI. | Stable worker pattern. |
 
 ---

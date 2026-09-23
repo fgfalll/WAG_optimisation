@@ -337,17 +337,19 @@ class ReservoirData:
         """
         Calculate and return pore volume in barrels.
 
-        Uses the ProfilerUtils.calculate_pore_volume method which handles
-        both geostatistical grids and standard grid PORO data.
+        Handles both geostatistical grids and standard grid PORO data.
 
         Returns
         -------
         float
             Pore volume in barrels (bbl)
         """
-        from .utils.profiler_utils import ProfilerUtils
-
-        return ProfilerUtils.calculate_pore_volume(self)
+        porosity = (
+            float(np.mean(self.geostatistical_grid))
+            if self.geostatistical_grid is not None
+            else float(np.mean(self.grid.get("PORO", 0.2)))
+        )
+        return float((self.length_ft * self.cross_sectional_area_acres * 43560.0 * porosity) / 5.61458)
 
 
 class FaultType(Enum):
@@ -447,64 +449,6 @@ class FaultProperties:
     def calculate_friction_angle(self) -> float:
         return np.degrees(np.arctan(self.friction_coefficient))
 
-
-@dataclasses.dataclass
-class RockProperties:
-    """
-    Rock properties for reservoir simulation.
-
-    This dataclass provides standardized rock property definitions used
-    across both engine_simple and phys_engine_full.
-    """
-
-    porosity: np.ndarray  # Porosity (fraction, 0-1)
-    permeability_x: np.ndarray  # Permeability in x-direction (mD)
-    permeability_y: np.ndarray  # Permeability in y-direction (mD)
-    permeability_z: np.ndarray  # Permeability in z-direction (mD)
-    compressibility: float = 1e-5  # Rock compressibility (1/Pa)
-
-    def __post_init__(self):
-        """Validate rock properties"""
-        if np.any(self.porosity <= 0) or np.any(self.porosity >= 1):
-            raise ValueError("Porosity must be between 0 and 1")
-        if np.any(self.permeability_x <= 0):
-            raise ValueError("Permeability must be positive")
-        if np.any(self.permeability_y <= 0):
-            raise ValueError("Permeability must be positive")
-        if np.any(self.permeability_z <= 0):
-            raise ValueError("Permeability must be positive")
-
-    @property
-    def permeability(self) -> np.ndarray:
-        """Average permeability (mD) - geometric mean of directional permeabilities"""
-        return (self.permeability_x * self.permeability_y * self.permeability_z) ** (1 / 3)
-
-
-@dataclasses.dataclass
-class FluidProperties:
-    """
-    Fluid properties for reservoir simulation.
-
-    This dataclass provides standardized fluid property definitions used
-    across both engine_simple and phys_engine_full.
-    """
-
-    # Water properties
-    water_density_ref: float = 1000.0  # Reference water density (kg/m³)
-    water_viscosity_ref: float = 0.001  # Reference water viscosity (Pa·s)
-    water_compressibility: float = 4.5e-10  # Water compressibility (1/Pa)
-
-    # Oil properties
-    oil_density_ref: float = 850.0  # Reference oil density (kg/m³)
-    oil_viscosity_ref: float = 0.002  # Reference oil viscosity (Pa·s)
-    oil_compressibility: float = 1e-9  # Oil compressibility (1/Pa)
-    bubble_point_pressure: float = 200e5  # Bubble point pressure (Pa)
-    solution_gor: float = 50.0  # Solution gas-oil ratio (sm³/sm³)
-
-    # Gas properties
-    gas_density_ref: float = 1.0  # Reference gas density (kg/m³)
-    gas_viscosity_ref: float = 2e-5  # Reference gas viscosity (Pa·s)
-    gas_compressibility: float = 1e-8  # Gas compressibility (1/Pa)
 
     # Formation volume factors
     water_fvf_ref: float = 1.0  # Water formation volume factor
@@ -1193,6 +1137,18 @@ class PVTProperties:
         config = config_dict.copy()
         config.update(kwargs)
         return from_dict_to_dataclass(cls, config)
+
+
+@dataclasses.dataclass
+class FluidProperties:
+    """Properties for reservoir fluids (density, viscosity, FVF)."""
+
+    oil_density_ref: float = 850.0
+    oil_viscosity_ref: float = 0.0035
+    water_density_ref: float = 1000.0
+    water_viscosity_ref: float = 0.0006
+    oil_fvf_ref: float = 1.25
+    oil_fvf: float = 1.25
 
 
 @dataclasses.dataclass
@@ -2008,271 +1964,6 @@ class CoreyParameters:
         """Calculate gas relative permeability using Corey model."""
         sg_normalized = np.clip((sg - self.sgr) / (1 - self.swi - self.sor - self.sgr), 0, 1)
         return self.krg0 * sg_normalized**self.ng
-
-
-# =============================================================================
-# CORE REPAIR: Grid Representations (Phase 2)
-# =============================================================================
-
-
-class GridType(Enum):
-    """Enum for grid types."""
-
-    SIMPLE = "simple"
-    FULL_PHYSICS = "full_physics"
-
-
-@dataclasses.dataclass(slots=True)
-class GridBase:
-    """
-    Base class for all grid representations.
-    """
-
-    n_cells: int
-    dimensions: Tuple[int, int, int]
-    cell_volumes: np.ndarray
-    grid_type: GridType = GridType.SIMPLE
-
-    def __post_init__(self):
-        """Validate grid base parameters."""
-        if self.n_cells <= 0:
-            raise ValueError(f"n_cells must be positive, got {self.n_cells}")
-        if len(self.dimensions) != 3:
-            raise ValueError("dimensions must be a tuple of 3 integers")
-        if any(d <= 0 for d in self.dimensions):
-            raise ValueError("all dimensions must be positive")
-
-
-@dataclasses.dataclass
-class SimpleGrid:
-    """
-    Simple 3D Cartesian grid for basic simulations.
-    """
-
-    nx: int
-    ny: int
-    nz: int
-    dx: float
-    dy: float
-    dz: float
-    n_cells: int = field(init=False)
-    dimensions: Tuple[int, int, int] = field(init=False)
-    cell_volumes: np.ndarray = field(init=False)
-    grid_type: GridType = GridType.SIMPLE
-
-    def __init__(self, nx: int, ny: int, nz: int, dx: float, dy: float, dz: float):
-        self.nx = nx
-        self.ny = ny
-        self.nz = nz
-        self.dx = dx
-        self.dy = dy
-        self.dz = dz
-        self.n_cells = nx * ny * nz
-        self.dimensions = (nx, ny, nz)
-        self.cell_volumes = np.full(self.n_cells, dx * dy * dz)
-
-    def __post_init__(self):
-        """Validate grid parameters."""
-        if self.nx <= 0 or self.ny <= 0 or self.nz <= 0:
-            raise ValueError("Grid dimensions must be positive")
-        if self.dx <= 0 or self.dy <= 0 or self.dz <= 0:
-            raise ValueError("Cell sizes must be positive")
-
-    @property
-    def total_cells(self) -> int:
-        """Total number of cells in the grid."""
-        return self.n_cells
-
-    @property
-    def total_volume(self) -> float:
-        """Total grid volume in m^3."""
-        return self.n_cells * self.dx * self.dy * self.dz
-
-    @property
-    def physical_dimensions(self) -> Tuple[float, float, float]:
-        """
-        Physical dimensions of the grid in meters (length_x, length_y, length_z).
-
-        Returns the actual physical size of the reservoir, computed as:
-        - length_x = nx * dx
-        - length_y = ny * dy
-        - length_z = nz * dz
-        """
-        return (self.nx * self.dx, self.ny * self.dy, self.nz * self.dz)
-
-    @property
-    def area(self) -> float:
-        """Surface area of the grid in m² (length_x * length_y)."""
-        return self.nx * self.dx * self.ny * self.dy
-
-
-@dataclasses.dataclass
-class FullPhysicsGrid:
-    """
-    Full physics grid with fault support.
-    """
-
-    dimensions: Tuple[int, int, int]
-    cell_volumes: np.ndarray
-    dx_array: np.ndarray
-    dy_array: np.ndarray
-    dz_array: np.ndarray
-    depth: np.ndarray
-    tops: np.ndarray
-    fault_cells: List[List[int]] = field(default_factory=list)
-    fault_orientations: List[str] = field(default_factory=list)
-    n_cells: int = field(init=False)
-    grid_type: GridType = GridType.FULL_PHYSICS
-
-    def __init__(
-        self,
-        dimensions: Tuple[int, int, int],
-        cell_volumes: np.ndarray,
-        dx_array: np.ndarray,
-        dy_array: np.ndarray,
-        dz_array: np.ndarray,
-        depth: np.ndarray,
-        tops: np.ndarray,
-        fault_cells: List[List[int]] = None,
-        fault_orientations: List[str] = None,
-    ):
-        self.dimensions = dimensions
-        self.cell_volumes = cell_volumes
-        self.dx_array = dx_array
-        self.dy_array = dy_array
-        self.dz_array = dz_array
-        self.depth = depth
-        self.tops = tops
-        if fault_cells is None:
-            raise ValueError("fault_cells cannot be None in StructuralGrid")
-        self.fault_cells = fault_cells
-        if fault_orientations is None:
-            raise ValueError("fault_orientations cannot be None in StructuralGrid")
-        self.fault_orientations = fault_orientations
-        self.n_cells = dimensions[0] * dimensions[1] * dimensions[2]
-
-    @property
-    def has_faults(self) -> bool:
-        """Check if grid has fault definitions."""
-        return len(self.fault_cells) > 0
-
-
-# =============================================================================
-# CORE REPAIR: ReservoirState Legacy Adapter (Phase 3)
-# =============================================================================
-
-
-@dataclasses.dataclass
-class ReservoirState:
-    """
-    Legacy state class for backward compatibility with simple engine.
-
-    DEPRECATED: Use CCUSState from data_models.py instead.
-    This class is maintained for backward compatibility.
-    """
-
-    pressure: np.ndarray
-    water_saturation: np.ndarray
-    oil_saturation: np.ndarray
-    gas_saturation: np.ndarray
-    temperature: float = 353.15  # Kelvin
-    time: float = 0.0
-
-    def __post_init__(self):
-        """Validate state."""
-        n_cells = len(self.pressure)
-
-        if len(self.water_saturation) != n_cells:
-            raise ValueError("water_saturation length must match pressure")
-        if len(self.oil_saturation) != n_cells:
-            raise ValueError("oil_saturation length must match pressure")
-        if len(self.gas_saturation) != n_cells:
-            raise ValueError("gas_saturation length must match pressure")
-
-        total_sat = self.water_saturation + self.oil_saturation + self.gas_saturation
-        if not np.allclose(total_sat, 1.0, atol=1e-6):
-            raise ValueError("Saturation sum must equal 1.0")
-
-    @classmethod
-    def create_initial_state(
-        cls, grid, initial_pressure: float, initial_water_sat: float, temperature: float = 353.15
-    ) -> "ReservoirState":
-        """
-        Create initial reservoir state.
-
-        Parameters:
-        -----------
-        grid : SimpleGrid
-            Grid object
-        initial_pressure : float
-            Initial pressure (Pa)
-        initial_water_sat : float
-            Initial water saturation (fraction)
-        temperature : float
-            Reservoir temperature (K)
-
-        Returns:
-        --------
-        ReservoirState : Initial reservoir state
-
-        Note:
-        ------
-        Arrays are created with shape (nz, ny, nx) to match the indexing
-        convention used in reservoir_engine.py where arrays are accessed as [k, j, i].
-        """
-        # Create 3D arrays with shape (nz, ny, nx) for [k, j, i] indexing
-        # This matches the indexing convention in reservoir_engine.py
-        water_saturation = np.full((grid.nz, grid.ny, grid.nx), initial_water_sat)
-        oil_saturation = np.full((grid.nz, grid.ny, grid.nx), 1.0 - initial_water_sat)
-        gas_saturation = np.zeros((grid.nz, grid.ny, grid.nx))
-        pressure = np.full((grid.nz, grid.ny, grid.nx), initial_pressure)
-
-        return cls(
-            pressure=pressure,
-            water_saturation=water_saturation,
-            oil_saturation=oil_saturation,
-            gas_saturation=gas_saturation,
-            temperature=temperature,
-            time=0.0,
-        )
-
-    @classmethod
-    def from_ccus_state(cls, ccus_state: CCUSState) -> "ReservoirState":
-        """Convert from CCUSState to legacy ReservoirState."""
-        return cls(
-            pressure=ccus_state.pressure,
-            water_saturation=ccus_state.saturations[:, 0],
-            oil_saturation=ccus_state.saturations[:, 1],
-            gas_saturation=ccus_state.saturations[:, 2],
-            temperature=353.15,
-            time=ccus_state.current_time,
-        )
-
-    def to_ccus_state(self) -> CCUSState:
-        """Convert legacy ReservoirState to CCUSState."""
-        n_cells = len(self.pressure)
-        saturations = np.column_stack(
-            [self.water_saturation, self.oil_saturation, self.gas_saturation]
-        )
-
-        return CCUSState(
-            pressure=self.pressure,
-            saturations=saturations,
-            compositions=np.zeros((n_cells, 3)),
-            current_time=self.time,
-            timestep=0.0,
-            porosity=np.full(n_cells, _PHYS_CONSTANTS.DEFAULT_POROSITY),
-            permeability=np.full(n_cells, _PHYS_CONSTANTS.DEFAULT_PERMEABILITY_MD),
-            stress=np.zeros((n_cells, 6)),
-            fault_transmissibility=np.ones(1),
-            dissolved_co2=np.zeros(n_cells),
-            mineral_precipitate=np.zeros(n_cells),
-        )
-
-    @property
-    def n_cells(self) -> int:
-        """Number of cells."""
-        return len(self.pressure)
 
 
 @dataclasses.dataclass

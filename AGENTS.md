@@ -225,9 +225,8 @@ project_root/
 │   ├── widgets/
 │   ├── dialogs/
 │   └── workers/            # Background workers
-├── utils/                  # Utility functions
+├── utils/                  # Utility functions & parsers (las_parser.py)
 ├── analysis/               # Analysis modules
-├── parsers/                # File parsers
 ├── tests/                  # Test suite
 ├── config_manager.py       # Configuration management
 ├── error_handler.py        # Centralized error handling

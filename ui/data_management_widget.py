@@ -22,11 +22,11 @@ from PyQt6.QtWebEngineWidgets import QWebEngineView
 
 try:
     from utils.preferences_manager import PreferencesManager
-    from config_manager import ConfigManager
-except ImportError:
+    from utils.config_manager import ConfigManager
+except ImportError as e:
     PreferencesManager = None
     ConfigManager = None
-    logging.critical("DataManagementWidget: PreferencesManager or ConfigManager not found. Unit system preferences will not work.")
+    logging.critical(f"DataManagementWidget: PreferencesManager or ConfigManager not found ({e}). Unit system preferences will not work.")
 
 try:
     from .widgets.parameter_input_group import ParameterInputGroup
@@ -180,7 +180,7 @@ class DataManagementWidget(QWidget):
             self.config_manager = getattr(parent, 'config_manager', None)
         if self.config_manager is None:
             try:
-                from config_manager import ConfigManager
+                from utils.config_manager import ConfigManager
                 self.config_manager = ConfigManager()
             except Exception:
                 pass
@@ -210,6 +210,10 @@ class DataManagementWidget(QWidget):
             self.preferences_manager.display_preferences_changed.connect(self._on_preferences_changed)
             self.preferences_manager.units_preferences_changed.connect(self._on_preferences_changed)
 
+    def set_engine_type(self, engine_type: str) -> None:
+        """Compatibility method for engine type selection."""
+        logger.debug(f"DataManagementWidget: engine_type set to '{engine_type}'")
+
     def changeEvent(self, event: QEvent):
         if event.type() == QEvent.Type.LanguageChange:
             self.retranslateUi()
@@ -230,6 +234,7 @@ class DataManagementWidget(QWidget):
         self.detailed_pvt_btn.clicked.connect(self._open_pvt_editor)
 
         self.add_well_btn.clicked.connect(self._add_well_manually)
+        self.import_las_btn.clicked.connect(self._import_las_file)
         self.remove_well_btn.clicked.connect(self._remove_selected_well)
         self.view_well_btn.clicked.connect(self._view_selected_well)
 
@@ -532,10 +537,12 @@ class DataManagementWidget(QWidget):
         wells_layout.addWidget(self.well_list_widget)
         
         buttons_layout = QHBoxLayout()
-        self.add_well_btn = QPushButton(QIcon.fromTheme("list-add"), "Add Well")
-        self.remove_well_btn = QPushButton(QIcon.fromTheme("list-remove"), "Remove Well")
-        self.view_well_btn = QPushButton(QIcon.fromTheme("document-open"), "View Well")
+        self.add_well_btn = QPushButton(QIcon.fromTheme("list-add"), self.tr("Add Well"))
+        self.import_las_btn = QPushButton(QIcon.fromTheme("document-open"), self.tr("Import LAS..."))
+        self.remove_well_btn = QPushButton(QIcon.fromTheme("list-remove"), self.tr("Remove Well"))
+        self.view_well_btn = QPushButton(QIcon.fromTheme("document-open"), self.tr("View Well"))
         buttons_layout.addWidget(self.add_well_btn)
+        buttons_layout.addWidget(self.import_las_btn)
         buttons_layout.addWidget(self.remove_well_btn)
         buttons_layout.addWidget(self.view_well_btn)
         buttons_layout.addStretch()
@@ -1717,6 +1724,34 @@ class DataManagementWidget(QWidget):
             if well_data:
                 self.well_data_list.append(well_data)
                 self._add_well_to_ui(well_data)
+
+    def _import_las_file(self):
+        filepath, _ = QFileDialog.getOpenFileName(
+            self, self.tr("Select LAS Well Log File"), "", self.tr("LAS Files (*.las);;All Files (*)")
+        )
+        if not filepath:
+            return
+        try:
+            from utils.las_parser import parse_las
+            well_data = parse_las(filepath)
+            if well_data:
+                existing_names = [w.name for w in self.well_data_list]
+                if well_data.name in existing_names:
+                    QMessageBox.warning(
+                        self, self.tr("Duplicate Well"), self.tr(f"Well '{well_data.name}' is already loaded.")
+                    )
+                    return
+                self.well_data_list.append(well_data)
+                self._add_well_to_ui(well_data)
+                self.status_message_updated.emit(self.tr(f"Loaded LAS well '{well_data.name}'."), 3000)
+            else:
+                QMessageBox.warning(
+                    self, self.tr("Empty Well Data"), self.tr("No valid log curves found in LAS file.")
+                )
+        except Exception as e:
+            logger.error(f"Error parsing LAS file '{filepath}': {e}", exc_info=True)
+            QMessageBox.critical(self, self.tr("LAS Parse Error"), self.tr(f"Could not load LAS file:\n\n{e}"))
+
 
     def _get_or_create_well(self, well_name: str) -> WellData:
         well_data = next((w for w in self.well_data_list if w.name == well_name), None)

@@ -77,6 +77,7 @@ class ConfigWidget(QWidget):
     configurations_updated = pyqtSignal(dict)
     save_configuration_to_file_requested = pyqtSignal(dict)
     help_requested = pyqtSignal(str)
+    engine_selection_changed = pyqtSignal(str)
 
     def __init__(self, config_manager: "ConfigManager", parent: Optional[QWidget] = None):
         super().__init__(parent)

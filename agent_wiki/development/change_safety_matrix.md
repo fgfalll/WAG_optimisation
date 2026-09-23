@@ -28,7 +28,7 @@ Before modifying any file in this repository, AI agents and developers must cons
 | `core/objectives/wrapper.py` | **HIGH** | Multi-objective scoring and metric aggregation | Reintroducing Class E synthetic modifiers (e.g. storage from RF) or magic fallbacks (`1e6`) falsifies results. Missing or unphysical profiles must strictly evaluate to `NaN` to trigger full pruning. |
 | `core/unified_engine/physics/eos/` | **HIGH** | Cubic EOS root finding and thermodynamic properties | Iterative solver stagnation or unphysical negative densities. |
 | `analysis/material_balance.py` | **MEDIUM** | Post-simulation CO₂ accounting and reporting | Produces misleading verification graphs if mass balance equations are distorted. |
-| `parsers/las_parser.py` | **MEDIUM** | Petrophysical well log parsing | Ingestion errors or corrupt permeability tracks. |
+| `utils/las_parser.py` | **MEDIUM** | Petrophysical well log parsing | Ingestion errors or corrupt permeability tracks. |
 | `ui/workers/optimization_worker.py` | **MEDIUM** | Multiprocessing/threading for optimization | Thread deadlocks, GUI freezing, unhandled Qt exceptions. |
 | `ui/main_window.py`, `ui/widgets/` | **LOW** | Desktop graphical interface presentation | Visual layout glitches, disabled buttons, signal-slot disconnections. |
 | `utils/preferences_manager.py` | **LOW** | User settings persistence | Corrupt JSON preferences file (handled gracefully by defaults). |

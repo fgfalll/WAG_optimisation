@@ -1585,3 +1585,164 @@ class PlottingManager:
             height=650,
         )
         return fig
+
+    def plot_ga_objective_distribution(
+        self, results_to_use: Optional[Dict[str, Any]] = None
+    ) -> go.Figure:
+        source = results_to_use or getattr(self.engine, "_results", None)
+        if not (source and "pygad_instance" in source):
+            return go.Figure().update_layout(title_text="No GA results to plot.")
+
+        ga_instance = source["pygad_instance"]
+        objectives = ga_instance.last_generation_fitness
+
+        avg_obj = np.mean(objectives)
+        std_obj = np.std(objectives)
+
+        fig = go.Figure(data=[go.Histogram(x=objectives, nbinsx=20)])
+        fig.update_layout(
+            title_text="GA Population Objective Value Distribution",
+            xaxis_title="Objective Value",
+            yaxis_title="Frequency",
+            annotations=[
+                dict(
+                    x=0.95,
+                    y=0.95,
+                    xref="paper",
+                    yref="paper",
+                    text=f"Avg: {avg_obj:.3f}<br>Std: {std_obj:.3f}",
+                    showarrow=False,
+                    align="left",
+                    bordercolor="black",
+                    borderwidth=1,
+                )
+            ],
+        )
+        return fig
+
+    def plot_hybrid_model_analysis(self) -> go.Figure:
+        """Generates a plot showing the interplay of miscible, immiscible, and hybrid recovery models."""
+        try:
+            from deprecated.core.simulation.recovery_models import (
+                MiscibleRecoveryModel,
+                ImmiscibleRecoveryModel,
+                SigmoidTransition,
+            )
+        except ImportError:
+            return go.Figure().update_layout(title_text="Recovery models not available")
+
+        import dataclasses
+        mmp = getattr(self.engine, "mmp", None) or getattr(self.engine.eor_params, "default_mmp_fallback", 2500.0)
+        pressure_ratios = np.linspace(0.5, 2.0, 50)
+        pressures = pressure_ratios * mmp
+
+        miscible_rf = []
+        immiscible_rf = []
+        weights = []
+
+        miscible_model = MiscibleRecoveryModel()
+        immiscible_model = ImmiscibleRecoveryModel()
+        transition = SigmoidTransition()
+
+        base_params = dataclasses.asdict(self.engine.eor_params) if hasattr(self.engine, "eor_params") else {}
+
+        for p in pressures:
+            params = base_params.copy()
+            params["pressure"] = p
+            params["mmp"] = mmp
+            miscible_rf.append(miscible_model.calculate(**params))
+            immiscible_rf.append(immiscible_model.calculate(**params))
+            weights.append(transition.evaluate(p / mmp, getattr(self.engine.pvt, "c7_plus_fraction", 0.3)))
+
+        hybrid_rf = np.array(weights) * np.array(miscible_rf) + (1 - np.array(weights)) * np.array(
+            immiscible_rf
+        )
+
+        fig = go.Figure()
+        fig.add_trace(
+            go.Scatter(x=pressure_ratios, y=immiscible_rf, mode="lines", name="Immiscible RF")
+        )
+        fig.add_trace(
+            go.Scatter(x=pressure_ratios, y=miscible_rf, mode="lines", name="Miscible RF")
+        )
+        fig.add_trace(
+            go.Scatter(
+                x=pressure_ratios,
+                y=hybrid_rf,
+                mode="lines",
+                name="Hybrid RF",
+                line=dict(color="black", width=4),
+            )
+        )
+        fig.add_trace(
+            go.Scatter(
+                x=pressure_ratios,
+                y=weights,
+                mode="lines",
+                name="Miscible Weight",
+                line=dict(dash="dot"),
+                yaxis="y2",
+            )
+        )
+
+        fig.update_layout(
+            title_text="Hybrid Recovery Model Analysis",
+            xaxis_title="Pressure / MMP Ratio",
+            yaxis_title="Recovery Factor",
+            yaxis=dict(range=[0, 1]),
+            yaxis2=dict(
+                title="Miscible Weight", overlaying="y", side="right", range=[0, 1], showgrid=False
+            ),
+            legend=dict(x=0.01, y=0.99),
+        )
+        return fig
+
+    def plot_breakthrough_mechanism_analysis(self) -> go.Figure:
+        """Generates a bar chart comparing breakthrough times from different models using Surrogate Physics."""
+        try:
+            from analysis.breakthrough_physics import CO2BreakthroughPhysics
+            bt_physics = CO2BreakthroughPhysics()
+
+            import dataclasses
+            reservoir = getattr(self.engine, "reservoir", None)
+            eor_params = getattr(self.engine, "eor_params", None)
+
+            reservoir_params = {
+                "v_dp_coefficient": getattr(eor_params, "v_dp_coefficient", 0.5) if eor_params else 0.5,
+                "area_acres": reservoir.area_acres if reservoir else 100.0,
+                "porosity": getattr(self.engine, "avg_porosity", 0.2),
+                "thickness_ft": reservoir.thickness_ft if reservoir else 50.0,
+                "permeability": np.mean(reservoir.grid.get("PERMX", [100.0]))
+                if reservoir and getattr(reservoir, "grid", None)
+                else 100.0,
+            }
+            eor_params_for_bt = dataclasses.asdict(eor_params) if eor_params else {}
+
+            eos_model = getattr(self.engine, "eos_model_instance", None) or (
+                getattr(reservoir, "eos_model", None) if reservoir else None
+            )
+            bt_koval = bt_physics.calculate_breakthrough_time(
+                reservoir_params, eor_params_for_bt, eos_model=eos_model
+            )
+
+            rho_oil = getattr(eor_params, "oil_density", 50.0) if eor_params else 50.0
+            rho_co2 = getattr(eor_params, "co2_density", 44.0) if eor_params else 44.0
+            gravity_mult = 1.0 / (1.0 + 0.1 * abs(rho_oil - rho_co2))
+            bt_gravity = bt_koval * gravity_mult
+            bt_final = bt_koval
+
+            mechanisms = ["Analytical (Koval)", "Gravity Scaling", "Final Surrogate"]
+            times = [bt_koval, bt_gravity, bt_final]
+
+            fig = go.Figure(
+                [go.Bar(x=mechanisms, y=times, text=[f"{t:.2f} y" for t in times], textposition="auto")]
+            )
+            fig.update_layout(
+                title_text="PhD Verification: Breakthrough Analysis by Mechanism (Surrogate)",
+                yaxis_title="Breakthrough Time (years)",
+                template="plotly_white",
+            )
+            return fig
+        except Exception as e:
+            logger.warning(f"Failed to generate breakthrough mechanism analysis plot: {e}")
+            return go.Figure()

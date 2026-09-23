@@ -14,6 +14,7 @@ from utils.path_utils import (
 from utils.config_manager import ConfigManager, ConfigNotLoadedError
 from utils.preferences_manager import PreferencesManager, get_preferences_manager
 from utils.run_exporter import RunDataExporter
+from utils.las_parser import parse_las, MissingWellNameError
 
 # Convenience alias
 RunExporter = RunDataExporter
@@ -32,4 +33,6 @@ __all__ = [
     "get_preferences_manager",
     "RunDataExporter",
     "RunExporter",
+    "parse_las",
+    "MissingWellNameError",
 ]

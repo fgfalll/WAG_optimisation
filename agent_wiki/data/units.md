@@ -25,7 +25,7 @@ The primary engineering calculations in this repository utilize **Oilfield Petro
 
 ## 3. Critical Unit Conversion Pitfalls Identified in Codebase
 
-### Pitfall 1: MSCFD Treated Directly as Reservoir Barrels/Day in Tank ODE (RESOLVED)
+### Pitfall 1: MSCFD Treated Directly as Reservoir Barrels/Day in Tank ODE [RESOLVED]
 - **Location**: [core/engine_surrogate/surrogate_engine.py line 919](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L919).
 - **Historical Error**: `profile_result["injection_profile"]` was generated in **MSCFD** (surface thousand standard cubic feet per day) by `FastProfileGenerator`, but subtracted directly from production in reservoir barrels.
 - **Physical Reality**: At surface conditions, 1 MSCF is 1,000 SCF. In the reservoir, gas occupies a volume $V_{res} = \text{MSCF} \times 1000 \times B_g$ (where $B_g$ is in RB/SCF), or $V_{res} = \text{MSCF} / \text{mscf\_per\_res\_bbl}$.
@@ -40,7 +40,7 @@ The primary engineering calculations in this repository utilize **Oilfield Petro
 - **Location**: `PhysicalConstants.CO2_DENSITY_TONNE_PER_MSCF` ($0.05254$) vs. `0.053` hardcoded in `analytical_models.py`, `surrogate_models.py`, and `surrogate_engine.py`.
 - **Impact**: Accumulates a ~0.87% mass accounting discrepancy between theoretical PVT calculations and profile integration.
 
-### Pitfall 4: Grid Block Dimension Unit Confusion in `_create_reservoir_data` (RESOLVED)
+### Pitfall 4: Grid Block Dimension Unit Confusion in `_create_reservoir_data` [RESOLVED]
 - **Location**: [core/data_integration_engine.py line 350](file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py#L350) & [ui/data_management_widget.py](file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py).
 - **Historical Error**: `DataManagementWidget` block sizes `dx, dy, dz` are input in **feet** (field units). The data integration engine previously assumed inputs were in meters, dividing by metric constants: `thickness_ft = nz * dz / 0.3048` and `area_acres = (nx * dx * ny * dy) / 4046.86`.
 - **Physical Impact**: Because dimensions were already in feet, dividing by $0.3048\text{ m/ft}$ and $4046.86\text{ m}^2/\text{acre}$ (instead of $43,560\text{ ft}^2/\text{acre}$) caused a $(1 / 0.3048) \times (43560 / 4046.86) \approx 3.2808 \times 10.764 \approx 35.314\times$ artificial volume inflation.

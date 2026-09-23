@@ -26,7 +26,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from core.data_models import WellData
-from parsers.las_parser import parse_las
+from utils.las_parser import parse_las
 
 logging.basicConfig(
     level=logging.INFO,

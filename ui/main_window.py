@@ -412,7 +412,8 @@ class MainWindow(QMainWindow):
         )
         self.config_tab.help_requested.connect(self.request_help)
         # Connect engine selection signal from Config Widget (single source of truth)
-        self.config_tab.engine_selection_changed.connect(self._on_config_engine_changed)
+        if hasattr(self.config_tab, "engine_selection_changed"):
+            self.config_tab.engine_selection_changed.connect(self._on_config_engine_changed)
         self.main_tab_widget.addTab(self.config_tab, qta.icon("fa5s.cogs"), "")
 
         self.data_management_tab = DataManagementWidget(
@@ -1713,7 +1714,7 @@ class MainWindow(QMainWindow):
             self.current_advanced_engine_params.engine_type = engine_type
 
             # Update data management widget (disable/enable fields based on engine)
-            if hasattr(self, "data_management_tab"):
+            if hasattr(self, "data_management_tab") and hasattr(self.data_management_tab, "set_engine_type"):
                 self.data_management_tab.set_engine_type(engine_type)
 
             # Update optimization widget - notify of engine change

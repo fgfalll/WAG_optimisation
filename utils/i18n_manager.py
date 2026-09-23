@@ -95,6 +95,13 @@ class I18nManager:
         translation_file_name = f"app_{locale_code}.qm"
         translation_path = self.translations_dir / translation_file_name
 
+        if not translation_path.is_file():
+            logger.debug(
+                f"Translation file not found for locale '{locale_code}': {translation_path}. "
+                "Using default application text."
+            )
+            return False
+
         if translator.load(str(translation_path)):
             self._app_instance.installTranslator(translator)
             setattr(self._app_instance, '_active_translator', translator) # Store it for removal later
@@ -109,20 +116,18 @@ class I18nManager:
             
             return True
         else:
-            logger.warning(f"Could not load translation file for locale '{locale_code}': {translation_path}")
+            logger.debug(f"Could not load translation file for locale '{locale_code}': {translation_path}")
             # Try to load English as a fallback if the requested locale failed and wasn't English
             if locale_code != 'en':
-                logger.info("Attempting to load fallback English translation 'app_en.qm'.")
-                en_translator = QTranslator(self._app_instance)
                 en_translation_path = self.translations_dir / "app_en.qm"
-                if en_translator.load(str(en_translation_path)):
-                    self._app_instance.installTranslator(en_translator)
-                    setattr(self._app_instance, '_active_translator', en_translator)
-                    self._app_instance.setProperty("current_locale_short", "en")
-                    logger.info("Successfully loaded and installed fallback English translation.")
-                    return True # Indicate success even if it's fallback
-                else:
-                    logger.warning("Fallback English translation 'app_en.qm' also not found.")
+                if en_translation_path.is_file():
+                    en_translator = QTranslator(self._app_instance)
+                    if en_translator.load(str(en_translation_path)):
+                        self._app_instance.installTranslator(en_translator)
+                        setattr(self._app_instance, '_active_translator', en_translator)
+                        self._app_instance.setProperty("current_locale_short", "en")
+                        logger.info("Successfully loaded and installed fallback English translation.")
+                        return True
             return False
 
 # --- Example Usage (Conceptual, as it interacts with QApplication) ---

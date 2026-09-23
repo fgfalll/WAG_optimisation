@@ -59,42 +59,11 @@ This document catalogs confirmed scientific flaws, unphysical equations, and the
 
 ---
 
-### SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT
-- **ID**: `SCI-FLAW-02`
-- **Severity**: **CRITICAL**
-- **Location**: [`core/data_integration_engine.py:370, 456`](file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py#L370)
-- **Model**: Black-Oil PVT Table Synthesis
-- **Observation**: Formation volume factor $B_o$ is modeled with a positive pressure coefficient above 4,000 psia.
-- **Equation**:
-  $$B_o(P) = 1.2 + 0.0001 \cdot (P - 4000)$$
-- **Expected Behavior**: In undersaturated reservoir oil, compression reduces volume: $\frac{\partial B_o}{\partial P} = -c_o B_o < 0$.
-- **Actual Behavior**: $\frac{\partial B_o}{\partial P} = +0.0001 > 0$. As reservoir pressure increases, the oil expands.
-- **Evidence**: Line 370 of `data_integration_engine.py`.
-- **Scientific Consequence**: Violates the second law of thermodynamics (isothermal compressibility must be positive: $c = -\frac{1}{V}\frac{\partial V}{\partial P} > 0$).
-- **Numerical Consequence**: Reservoir voidage increases as pressure rises, causing artificial pressure runaways in material balance solvers.
-- **Affected Outputs**: `pvt_tables["OIL_FVF"]`, `ReservoirData.oil_fvf`.
-- **Confidence**: 100%.
-- **Recommended Investigation**: Invert sign: $B_o(P) = 1.2 \cdot \exp(-c_o (P - P_b))$ with $c_o \approx 1.5 \times 10^{-5}\text{ psi}^{-1}$.
-- **Status**: [**RESOLVED**](resolved_issues.md#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt) (2026-09-23).
+> [!NOTE]
+> **SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT** has been resolved and archived to [`resolved_issues.md`](resolved_issues.md#sci-flaw-02).
 
----
-
-### SCI-FLAW-03: Inverted Pressure-Viscosity Dependence
-- **ID**: `SCI-FLAW-03`
-- **Severity**: **HIGH**
-- **Location**: [`core/data_integration_engine.py:372, 375, 459, 465`](file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py#L372)
-- **Model**: Black-Oil PVT Viscosity Generation
-- **Observation**: Oil and CO₂ viscosities are synthesized with negative exponential pressure terms:
-  $$\mu_o(P) = \mu_{o,ref} \cdot \exp(-0.0003 \cdot (P - 4000))$$
-  $$\mu_{\text{CO2}}(P) = \mu_{g,ref} \cdot \exp(-0.0002 \cdot (P - 4000))$$
-- **Expected Behavior**: Undersaturated liquid and supercritical fluid viscosities increase with pressure ($\frac{\partial\mu}{\partial P} > 0$).
-- **Actual Behavior**: Viscosities decrease exponentially with pressure. At $P = 6,000\text{ psia}$, oil viscosity drops to $55\%$ of its value at $4,000\text{ psia}$.
-- **Scientific Consequence**: Higher injection pressures create artificially favorable mobility ratios, giving unphysical economic incentives for over-pressurization.
-- **Affected Outputs**: `pvt_tables["OIL_VISC"]`, `pvt_tables["CO2_VISC"]`, `mobility_ratio`.
-- **Confidence**: 100%.
-- **Status**: [**RESOLVED**](resolved_issues.md#sci-flaw-03-inverted-pressure-viscosity-dependence) (2026-09-23).
-
----
+> [!NOTE]
+> **SCI-FLAW-03: Inverted Pressure-Viscosity Dependence** has been resolved and archived to [`resolved_issues.md`](resolved_issues.md#sci-flaw-03).
 
 ### SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density
 - **ID**: `SCI-FLAW-04`

@@ -621,205 +621,6 @@ class AnalyticalSurrogate(BaseSurrogateModel):
         return float(np.clip(confidence, 0.0, 1.0))
 
 
-class ResponseSurfaceSurrogate(BaseSurrogateModel):
-    """
-    Response surface surrogate model using polynomial or RBF interpolation.
-
-    This model requires training on data from a numerical simulator
-    but provides very fast predictions once trained.
-
-    Performance: ~0.5ms per evaluation after training.
-    """
-
-    def __init__(
-        self,
-        surface_type: str = "polynomial",
-        degree: int = 2,
-        rbf_function: str = "multiquadric",
-    ):
-        """
-        Initialize response surface surrogate model.
-
-        Args:
-            surface_type: Type of response surface ("polynomial" or "rbf")
-            degree: Polynomial degree (for polynomial surfaces)
-            rbf_function: RBF function type ("multiquadric", "inverse", "gaussian")
-        """
-        super().__init__(model_name=f"response_surface_{surface_type}")
-        self.surface_type = surface_type
-        self.degree = degree
-        self.rbf_function = rbf_function
-
-        self.model = None
-        self.feature_scaler = None
-        self.target_scaler = None
-
-        # Import scipy here to avoid dependency issues
-        try:
-            from scipy.interpolate import Rbf
-            from sklearn.preprocessing import StandardScaler, PolynomialFeatures
-            from sklearn.linear_model import LinearRegression
-
-            self.Rbf = Rbf
-            self.StandardScaler = StandardScaler
-            self.PolynomialFeatures = PolynomialFeatures
-            self.LinearRegression = LinearRegression
-            self._sklearn_available = True
-        except ImportError:
-            logger.warning("scipy or sklearn not available, response surface models disabled")
-            self._sklearn_available = False
-
-    def train(self, X: np.ndarray, y: np.ndarray) -> None:
-        """
-        Train the response surface model.
-
-        Args:
-            X: Training feature matrix (n_samples, n_features)
-            y: Training target values (n_samples,) or (n_samples, n_targets)
-        """
-        if not self._sklearn_available:
-            logger.error("Cannot train response surface: scipy/sklearn not available")
-            return
-
-        n_samples, n_features = X.shape
-
-        # Handle multi-target y
-        if y.ndim == 1:
-            y = y.reshape(-1, 1)
-
-        n_targets = y.shape[1]
-
-        # Initialize scalers
-        self.feature_scaler = self.StandardScaler()
-        self.target_scaler = self.StandardScaler()
-
-        # Scale features and targets
-        X_scaled = self.feature_scaler.fit_transform(X)
-        y_scaled = self.target_scaler.fit_transform(y)
-
-        # Create response surface
-        if self.surface_type == "polynomial":
-            self.model = []
-            for target_idx in range(n_targets):
-                poly = self.PolynomialFeatures(degree=self.degree)
-                X_poly = poly.fit_transform(X_scaled)
-                linear_model = self.LinearRegression()
-                linear_model.fit(X_poly, y_scaled[:, target_idx])
-                self.model.append((poly, linear_model))
-
-        elif self.surface_type == "rbf":
-            # For RBF, we train one model per target
-            self.model = []
-            for target_idx in range(n_targets):
-                rbf_model = self.Rbf(
-                    *[X_scaled[:, i] for i in range(n_features)],
-                    y_scaled[:, target_idx],
-                    function=self.rbf_function,
-                )
-                self.model.append(rbf_model)
-
-        self.is_trained = True
-        self.training_samples = n_samples
-        self.n_features = n_features
-        self.n_targets = n_targets
-
-        logger.info(
-            f"Trained {self.surface_type} response surface with "
-            f"{n_samples} samples, {n_features} features, {n_targets} targets"
-        )
-
-    def predict(self, params: Dict[str, float]) -> Dict[str, Any]:
-        """
-        Predict using trained response surface.
-
-        Args:
-            params: Dictionary of input parameters
-
-        Returns:
-            Dictionary with prediction results
-        """
-        if not self.is_trained:
-            return {
-                "recovery_factor": 0.0,
-                "npv": 0.0,
-                "cumulative_oil": 0.0,
-                "co2_stored": 0.0,
-                "confidence": 0.0,
-                "error": "Model not trained",
-            }
-
-        if not self._sklearn_available:
-            return {
-                "recovery_factor": 0.0,
-                "npv": 0.0,
-                "cumulative_oil": 0.0,
-                "co2_stored": 0.0,
-                "confidence": 0.0,
-                "error": "scipy/sklearn not available",
-            }
-
-        try:
-            # Convert params dict to feature vector
-            X = self._params_to_feature_vector(params)
-
-            # Scale features
-            X_scaled = self.feature_scaler.transform(X.reshape(1, -1))
-
-            # Predict using the response surface
-            y_scaled = np.zeros(self.n_targets)
-
-            if self.surface_type == "polynomial":
-                for target_idx, (poly, linear_model) in enumerate(self.model):
-                    X_poly = poly.transform(X_scaled)
-                    y_scaled[target_idx] = linear_model.predict(X_poly)[0]
-
-            elif self.surface_type == "rbf":
-                for target_idx, rbf_model in enumerate(self.model):
-                    # RBF prediction
-                    y_scaled[target_idx] = rbf_model(*X_scaled[0])
-
-            # Inverse transform targets
-            y = self.target_scaler.inverse_transform(y_scaled.reshape(1, -1))[0]
-
-            return {
-                "recovery_factor": float(np.clip(y[0], 0.0, 1.0)),
-                "npv": float(y[1] if len(y) > 1 else 0.0),
-                "cumulative_oil": float(y[2] if len(y) > 2 else 0.0),
-                "co2_stored": float(y[3] if len(y) > 3 else 0.0),
-                "confidence": 0.9,  # Default confidence for response surface
-            }
-
-        except Exception as e:
-            logger.error(f"Response surface prediction error: {e}")
-            return {
-                "recovery_factor": 0.0,
-                "npv": 0.0,
-                "cumulative_oil": 0.0,
-                "co2_stored": 0.0,
-                "confidence": 0.0,
-                "error": str(e),
-            }
-
-    def _params_to_feature_vector(self, params: Dict[str, float]) -> np.ndarray:
-        """
-        Convert parameter dictionary to feature vector.
-
-        This assumes the feature order used during training.
-        """
-        # Default feature order (should match training data)
-        feature_order = [
-            "injection_rate",
-            "target_pressure_psi",
-            "mobility_ratio",
-            "porosity",
-            "permeability",
-            "mmp",
-        ]
-
-        X = np.array([params.get(f, 0.0) for f in feature_order])
-        return X
-
-
 def create_surrogate_model(model_type: str = "analytical", **kwargs) -> BaseSurrogateModel:
     """
     Factory function to create surrogate models.
@@ -827,8 +628,7 @@ def create_surrogate_model(model_type: str = "analytical", **kwargs) -> BaseSurr
     All models use literature-based equations with no calibration.
 
     Args:
-        model_type: Type of surrogate model
-            ("analytical", "response_surface")
+        model_type: Type of surrogate model ("analytical")
         **kwargs: Additional arguments passed to model constructor
 
     Returns:
@@ -837,19 +637,8 @@ def create_surrogate_model(model_type: str = "analytical", **kwargs) -> BaseSurr
     if model_type == "analytical":
         recovery_model_type = kwargs.get("recovery_model_type", "hybrid")
         return AnalyticalSurrogate(recovery_model_type=recovery_model_type)
-
-    elif model_type == "response_surface":
-        surface_type = kwargs.get("surface_type", "polynomial")
-        degree = kwargs.get("degree", 2)
-        rbf_function = kwargs.get("rbf_function", "multiquadric")
-        return ResponseSurfaceSurrogate(
-            surface_type=surface_type,
-            degree=degree,
-            rbf_function=rbf_function,
-        )
-
     else:
-        raise ValueError(f"Unknown surrogate model type: {model_type}")
+        raise ValueError(f"Surrogate model '{model_type}' is deprecated or unknown. Use 'analytical'.")
 
 
 def get_available_surrogate_models() -> Dict[str, Dict[str, Any]]:
@@ -875,11 +664,5 @@ def get_available_surrogate_models() -> Dict[str, Dict[str, Any]]:
                 "Johnson (1956)",
             ],
         },
-        "response_surface": {
-            "name": "Response Surface",
-            "description": "Polynomial/RBF interpolation",
-            "speed": "0.5ms",
-            "accuracy": "Good with good training data (~5% error)",
-            "requires_training": True,
-        },
+
     }

@@ -25,23 +25,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Import from existing recovery models (already literature-based)
-try:
-    from core.simulation.recovery_models import (
-        MiscibleRecoveryModel,
-        ImmiscibleRecoveryModel,
-        HybridRecoveryModel,
-        KovalRecoveryModel,
-        BuckleyLeverettModel,
-        RecoveryModel,
-        EPSILON,
-    )
-
-    RECOVERY_MODELS_AVAILABLE = True
-except ImportError:
-    logger.warning("Could not import from core.simulation.recovery_models")
-    RECOVERY_MODELS_AVAILABLE = False
-    EPSILON = 1e-10
+# Numerical stability constant
+EPSILON = 1e-10
+RECOVERY_MODELS_AVAILABLE = False
 
 # Physical constants
 # 1 MSCF (thousand standard cubic feet) of CO2 at standard conditions
@@ -302,7 +288,7 @@ class ImmiscibleSurrogate(AnalyticalRecoveryModel):
             k_ro = (1.0 - s_star) ** n_o
             k_rg = s_star**n_g
             return 1.0 / (
-                1.0 + (k_ro / max(k_rg, EPSILON)) * (viscosity_inj / max(viscosity_oil, EPSILON))
+                1.0 + (k_ro / np.maximum(k_rg, EPSILON)) * (viscosity_inj / max(viscosity_oil, EPSILON))
             )
 
         f_g = fractional_flow(s_range)
@@ -413,7 +399,7 @@ class BuckleyLeverettSurrogate(AnalyticalRecoveryModel):
             s_star = np.clip((s_g - s_gc) / max(1.0 - sor - s_gc, EPSILON), 0.0, 1.0)
             k_ro = (1.0 - s_star) ** n_o
             k_rg = s_star**n_g
-            return 1.0 / (1.0 + (k_ro / max(k_rg, EPSILON)) / mobility_ratio)
+            return 1.0 / (1.0 + (k_ro / np.maximum(k_rg, EPSILON)) / mobility_ratio)
 
         s_g_range = np.linspace(s_gc, 1.0 - sor, 500)
         f_g = fractional_flow(s_g_range)
@@ -571,62 +557,6 @@ class KovalSurrogate(AnalyticalRecoveryModel):
 
         # Koval model for heterogeneous reservoirs
         return float(np.clip(sweep, 0.0, 0.75))
-
-
-class LiteratureBasedMMP:
-    """
-    MMP calculations using established correlations.
-
-    References:
-        - Cronquist (1978): Pure CO2
-        - Yellig & Metcalfe (1980): Pure CO2
-        - Yuan et al. (2005): Impure CO2
-        - Alston et al. (1985): Impure CO2 with pseudo-critical T
-    """
-
-    @staticmethod
-    def calculate_mmp_cronquist(temperature_f: float, api_gravity: float) -> float:
-        """
-        Calculate MMP using published Cronquist (1978) correlation.
-        Delegates to evaluation.mmp for single source of truth.
-        """
-        from evaluation.mmp import calculate_mmp, MMPParameters
-        params = MMPParameters(temperature=temperature_f, oil_gravity=api_gravity)
-        return float(calculate_mmp(params, method="cronquist"))
-
-    @staticmethod
-    def calculate_mmp_yellig_metcalfe(temperature_f: float) -> float:
-        """
-        Calculate MMP using Yellig & Metcalfe (1980) for pure CO2.
-        Delegates to evaluation.mmp for single source of truth.
-        """
-        from evaluation.mmp import calculate_mmp, MMPParameters
-        params = MMPParameters(temperature=temperature_f, oil_gravity=35.0)
-        return float(calculate_mmp(params, method="yellig_metcalfe"))
-
-    @staticmethod
-    def miscibility_factor(pressure_psi: float, mmp_psi: float) -> float:
-        """
-        Calculate miscibility factor based on pressure/MMP ratio.
-
-        Based on miscibility theory: when P > MMP, miscibility develops.
-        Uses a smooth sigmoidal transition near MMP.
-
-        Returns:
-            Factor between 0 (fully immiscible) and 1 (fully miscible)
-        """
-        p_ratio = pressure_psi / max(mmp_psi, EPSILON)
-
-        # Sigmoidal transition near P/MMP = 1.0
-        # This represents the gradual development of miscibility near MMP
-        beta = 20.0  # Sharpness of transition
-        alpha = 1.0  # Transition point
-
-        arg = -beta * (p_ratio - alpha)
-        arg = np.clip(arg, -700, 700)
-        miscibility_weight = 1.0 / (1.0 + np.exp(arg))
-
-        return float(miscibility_weight)
 
 
 def get_analytical_model(model_type: str) -> AnalyticalRecoveryModel:
@@ -1027,4 +957,9 @@ class PhDHybridSurrogate(AnalyticalRecoveryModel):
         arg = 2.0 * omega_clipped - 1.0
         p_ratio = alpha_eff + (2.0 / beta_transition) * np.arctanh(arg)
         return float(max(0.0, p_ratio * mmp))
+
+
+# Backward compatibility alias for tests and external scripts
+KovalRecoveryModel = KovalSurrogate
+
 

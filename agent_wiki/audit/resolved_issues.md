@@ -65,6 +65,9 @@ All issue entries across the wiki follow this machine-readable section schema to
 | **SFT-02** | Economic Objective MagicMock Array Broadcasting ValueError | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
 | **SFT-03** | Missing `set_engine` Method on OptimizationWidget | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
 | **SFT-F821** | Eradication of All 36 Ruff F821 Undefined Names | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
+| **SFT-04** | AttributeError on ConfigWidget.engine_selection_changed | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
+| **SFT-05** | Root Import Mismatch on ConfigManager in DataManagementWidget | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
+| **SFT-06** | Missing Qt Translation Files Suppressed Gracefully | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
 
 ---
 
@@ -693,4 +696,114 @@ All issue entries across the wiki follow this machine-readable section schema to
   - Added fallback safe definition of `EPSILON = 1e-10` in `core/optimisation_engine.py`.
   - `ruff check --select F821` returns **0 errors** across the entire codebase.
 - **Verification**: `ruff check --select F821` returns empty; test suite passes 100% (299 passed, 0 failed).
+
+---
+
+### [SFT-04] AttributeError on ConfigWidget.engine_selection_changed
+- **ID**: `SFT-04`
+- **Category**: Software Defect
+- **Original Document**: [`agent_wiki/audit/technical_debt.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md)
+- **Location**: [`ui/config_widget.py:80`](file:///d:/rep/4.6/co2eor_optimizer/ui/config_widget.py#L80), [`ui/main_window.py:414-416`](file:///d:/rep/4.6/co2eor_optimizer/ui/main_window.py#L414-L416)
+- **Severity**: CRITICAL
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-23
+- **Previous Defect**:
+  - When `ConfigWidget` was refactored to remove unused/legacy engine dropdowns (since `core/engine_surrogate` is the single active engine), the signal `engine_selection_changed = pyqtSignal(str)` was removed from `ConfigWidget`.
+  - When `MainWindow._setup_main_app_tabs_container()` ran, it called `self.config_tab.engine_selection_changed.connect(...)`, which crashed immediately with `AttributeError: 'ConfigWidget' object has no attribute 'engine_selection_changed'`, preventing application startup.
+- **Resolution Details**:
+  - Re-added `engine_selection_changed = pyqtSignal(str)` to `ConfigWidget` in `ui/config_widget.py` for backward compatibility.
+  - Added defensive guard `if hasattr(self.config_tab, "engine_selection_changed"):` in `ui/main_window.py`.
+- **Verification**: Headless `MainWindow` startup and event loop execution verified with exit code 0.
+
+---
+
+### [SFT-05] Root Import Mismatch on ConfigManager in DataManagementWidget
+- **ID**: `SFT-05`
+- **Category**: Software Defect
+- **Original Document**: [`agent_wiki/audit/technical_debt.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md)
+- **Location**: [`ui/data_management_widget.py:25, 183`](file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py#L25)
+- **Severity**: HIGH
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-23
+- **Previous Defect**:
+  - Following root-level module reorganization where `config_manager.py` moved to `utils/config_manager.py`, `ui/data_management_widget.py` still contained `from config_manager import ConfigManager`.
+  - The import failed with `ModuleNotFoundError: No module named 'config_manager'`, setting both `PreferencesManager` and `ConfigManager` to `None` and logging `CRITICAL: DataManagementWidget: PreferencesManager or ConfigManager not found. Unit system preferences will not work.`
+- **Resolution Details**:
+  - Corrected imports at module level and fallback scope to `from utils.config_manager import ConfigManager`.
+  - Added compatibility method `set_engine_type(self, engine_type: str)` to `DataManagementWidget` to handle engine notifications from `MainWindow`.
+- **Verification**: `DataManagementWidget` and `MainWindow` unit tests pass; critical error eliminated.
+
+---
+
+### [SFT-06] Missing Qt Translation Files Suppressed Gracefully
+- **ID**: `SFT-06`
+- **Category**: Software Defect
+- **Original Document**: [`agent_wiki/audit/technical_debt.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md)
+- **Location**: [`utils/i18n_manager.py:98-126`](file:///d:/rep/4.6/co2eor_optimizer/utils/i18n_manager.py#L98-L126)
+- **Severity**: LOW
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-23
+- **Previous Defect**:
+  - `translations/` contained only empty placeholder `.ts` files and no compiled `.qm` binaries.
+  - On startup on non-English systems (e.g. Ukrainian `uk`), `I18nManager.load_and_install_translator('uk')` attempted to load `app_uk.qm` and `app_en.qm`, emitting repeated `WARNING` logs:
+    `WARNING - Could not load translation file for locale 'uk': ... app_uk.qm`
+    `WARNING - Fallback English translation 'app_en.qm' also not found.`
+- **Resolution Details**:
+  - The application source strings are natively defined in English.
+  - Added explicit `translation_path.is_file()` existence check. If translation files are absent, it logs at `DEBUG` level and quietly falls back to default English UI text without emitting warnings.
+- **Verification**: Verified clean startup without translation warnings.
+
+---
+
+### [SFT-07] Parsers Directory Elimination & LAS Parser Consolidation
+- **ID**: `SFT-07`
+- **Category**: Architectural Refactoring / Dead Code Deprecation
+- **Original Document**: [`agent_wiki/architecture/module_map.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/architecture/module_map.md)
+- **Location**: `parsers/` $\rightarrow$ `deprecated/parsers/` and [`utils/las_parser.py`](file:///d:/rep/4.6/co2eor_optimizer/utils/las_parser.py)
+- **Severity**: LOW
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-23
+- **Previous Defect**:
+  - The `parsers/` directory contained 3 files: `base_parser.py` (abstract OOP interface for dead ECLIPSE parser), `validation.py` (obsolete 3D ECLIPSE grid checks and orphaned well checks), and `las_parser.py` (functional LAS log parser).
+  - Having a standalone top-level package `parsers/` for a single active file was unnecessary overhead.
+- **Resolution Details**:
+  - Archived `base_parser.py`, `validation.py`, and legacy `eclipse_parser.py` into `deprecated/parsers/`.
+  - Relocated `las_parser.py` into `utils/las_parser.py` and exported `parse_las` and `MissingWellNameError` in `utils/__init__.py`.
+  - Removed top-level `parsers/` directory completely.
+  - Wired up `Import LAS...` button in `ui/data_management_widget.py` Wells tab to enable interactive loading of `.las` logs into `WellData`.
+  - Fixed `lasio.exceptions.LASHeaderError` import and file existence checks in `utils/las_parser.py`.
+- **Verification**: `tests/test_las_parser.py` (6 unit tests, 100% passing); full pytest suite passes with 0 errors.
+
+---
+
+### [SFT-08] Core Directory Architecture Audit & Prototyping Artifacts Elimination
+- **ID**: `SFT-08`
+- **Category**: Architectural Refactoring / Dead Code Elimination
+- **Original Document**: [`agent_wiki/architecture/source_of_truth_map.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/architecture/source_of_truth_map.md), [`agent_wiki/audit/dead_code.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/dead_code.md)
+- **Location**: `core/`
+- **Severity**: MEDIUM
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-23
+- **Previous Defect**:
+  - The `core/` package accumulated prototyping artifacts, unused grid abstractions, dormant validation subdirectories, duplicate plotting routines, and abandoned response surface ML models.
+  - `core/simulation/recovery_models.py` contained numerical solvers superseded by `core/engine_surrogate/analytical_models.py`.
+  - `core/geology/__init__.py` exported `GeologyEngine`, an uncalibrated module using arbitrary depth multipliers (1.1, 0.9, 0.7).
+  - `core/optimisation_engine.py` held dead fallback imports (`npv`, breakthrough classes), unphysical constants (`ACRES_TO_CM2 = 40468564.224`, `B_GAS_RB_PER_MSCF = 5.0`), and duplicated 165 lines of Plotly charts implemented in `PlottingManager`.
+  - Welge tangent construction in Buckley-Leverett and literature fractional flow in `analytical_models.py` evaluated `max(k_rg, EPSILON)` on array `k_rg`, triggering `ValueError: The truth value of an array with more than one element is ambiguous`.
+- **Resolution Details**:
+  - **Dead Code Elimination**: Completely removed `core/validation/` (1,290 lines), `core/optimization_analysis.py` (886 lines), `core/objectives/base.py` & `production.py` (136 lines), `core/exceptions.py` (32 lines), and `core/utils/` (36 lines).
+  - **Subsystem Deprecations & Shims**:
+    - Relocated `core/simulation/recovery_models.py` and `profile_generator.py` to `deprecated/core/simulation/`, adding transparent backward-compatible deprecation shims in `core/simulation/`.
+    - Relocated uncalibrated `GeologyEngine` to `deprecated/core/geology/geology_engine.py` and added a lazy deprecation import shim in `core/geology/__init__.py`.
+    - Relocated ML response surface files (`response_surfaces.py`, `feature_transformer.py`, `training_data.py`, `model_factory.py`) to `deprecated/core/engine_surrogate/`.
+    - Relocated deck export logic to `utils/cmg_exporter.py` with backward-compatible deprecation shim in `core/simulation/simulator_exporter.py`.
+  - **In-File Prototyping Cleanups**:
+    - `core/data_models.py`: Removed dead grid classes (`GridType`, `GridBase`, `SimpleGrid`, `FullPhysicsGrid`), `ReservoirState`, and `RockProperties`. Inlined pore volume calculation. Added `FluidProperties` compatibility dataclass.
+    - `core/data_integration_engine.py`: Removed duplicate `DataValidator` and `UnitConverter`, refactored to use `PhysicalConstants`.
+    - `core/objectives/storage.py`: Removed dead prototype functions; retained verified active containment and storage efficiency models.
+    - `core/engine_surrogate/analytical_models.py`: Replaced `max(k_rg, EPSILON)` with `np.maximum(k_rg, EPSILON)` for vectorized Welge shock front construction; added `KovalRecoveryModel = KovalSurrogate` alias.
+    - `core/optimisation_engine.py`: Removed dead imports (`npv`, breakthrough classes); cleaned constants (`B_GAS_RB_PER_MSCF = 1.0` fallback); delegated GA, hybrid model, and breakthrough mechanism plotting directly to `PlottingManager`.
+  - **Startup Smoke Test**: Added `tests/test_app_startup.py` which executes `timed_import_main_window()`, `SensitivityAnalyzer`, and `ProductionProfiler` under `QApplication`, permanently guarding against startup import regressions.
+- **Verification**: All 310 tests pass (307 existing + 3 startup smoke tests); application boots and exits cleanly with code 0.
+
 

@@ -30,7 +30,6 @@ from core.data_models import (
 from .surrogate_models import (
     BaseSurrogateModel,
     AnalyticalSurrogate,
-    ResponseSurfaceSurrogate,
     create_surrogate_model,
 )
 from .analytical_models import get_analytical_model
@@ -80,10 +79,8 @@ class SurrogateEngine:
             self.surrogate_model = AnalyticalSurrogate(
                 recovery_model_type=recovery_model_type
             )
-        elif model_type == "response_surface":
-            self.surrogate_model = ResponseSurfaceSurrogate()
         else:
-            raise ValueError(f"Unknown model type: {model_type}")
+            raise ValueError(f"Unknown model type: {model_type}. Deprecated non-analytical models removed; use 'analytical'.")
 
         # Baseline trapping parameters for profile generator
         default_trapping = {

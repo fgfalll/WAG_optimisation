@@ -2,7 +2,8 @@ from typing import Dict, Any, Optional
 import logging
 import numpy as np
 from core.data_models import EconomicParameters
-from core.exceptions import OptimizationError
+# Standard exception for optimization objective errors
+OptimizationError = RuntimeError
 
 logger = logging.getLogger(__name__)
 from core.objectives.storage import (

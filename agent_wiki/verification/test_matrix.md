@@ -16,8 +16,8 @@ The dedicated scientific verification test suite is located in `tests/scientific
 | | `test_v_dp_near_unity_singularity` | $H_k = 10^{V_{DP}/(1-V_{DP})^2}$ as $V_{DP} \to 0.999$ | `surrogate_models.py:125` | **VERIFIED** |
 | | `test_cronquist_mmp_singularity_at_55_api` | Published Cronquist (1978) $P_{MMP} = 15.988 \cdot T_F^Y$ with $MW_{C5+} = 4247.986 \cdot \text{API}^{-0.87}$ at $\text{API} \ge 55^\circ$ | `evaluation/mmp.py:115` | **VERIFIED** |
 | | `test_mobility_ratio_unit_limit_singularity` | $M \to 1.0$ limit in Craig sweep | `surrogate_models.py:175` | **CONTRADICTED BY TEST (SCI-FLAW-16)** |
-| **`physics/`** | `test_oil_compressibility_positivity` | $c_o = -\frac{1}{B_o}\frac{\partial B_o}{\partial P} > 0$ | `data_integration_engine.py:347, 433` | **VERIFIED (RESOLVED SCI-FLAW-02)** |
-| | `test_liquid_viscosity_pressure_derivative` | $\frac{\partial\mu_o}{\partial P} > 0$ and $\frac{\partial\mu_g}{\partial P} > 0$ | `data_integration_engine.py:349, 352, 437, 443` | **VERIFIED (RESOLVED SCI-FLAW-03)** |
+| **`physics/`** | `test_oil_compressibility_positivity` | $c_o = -\frac{1}{B_o}\frac{\partial B_o}{\partial P} > 0$ | `data_integration_engine.py:347, 433` | **VERIFIED [RESOLVED: SCI-FLAW-02]** |
+| | `test_liquid_viscosity_pressure_derivative` | $\frac{\partial\mu_o}{\partial P} > 0$ and $\frac{\partial\mu_g}{\partial P} > 0$ | `data_integration_engine.py:349, 352, 437, 443` | **VERIFIED [RESOLVED: SCI-FLAW-03]** |
 | | `test_co2_density_thermal_expansion` | $\frac{\partial\rho}{\partial T} < 0$ (Isobaric expansion) | `unified_engine/co2_properties.py:140` | **CONTRADICTED BY TEST (SCI-FLAW-04)** |
 | | `test_cubic_eos_z_factor_bounds` | $Z_L \in [0.01, 0.40]$, $Z_V \in [0.70, 1.20]$ | `unified_engine/eos/__init__.py:180` | **VERIFIED** |
 | | `test_phase_label_assignment` | $Z < 0.8 \implies \text{Liquid}$, $Z \ge 0.8 \implies \text{Vapor}$ | `unified_engine/eos/__init__.py:195` | **CONTRADICTED BY TEST (SCI-FLAW-08)** |
@@ -50,3 +50,14 @@ The dedicated scientific verification test suite is located in `tests/scientific
 | | `test_analytical_vs_trapezoidal_arps_eur` | Analytical Arps EUR benchmark error $< 0.1\%$ | `reference_solutions/` | **VERIFIED** |
 | **`manufactured_solutions/`**| `test_mms_pressure_diffusion_convergence` | MMS observed order of accuracy $p \ge 1.95$ | `manufactured_solutions/` | **VERIFIED** |
 | **`regression/`** | `test_hypothesis_recovery_factor_physical_invariants` | $RF \in [0, 1]$, $N_p \le \text{OOIP}$ across 1,000 cases | `regression/` | **VERIFIED** |
+
+---
+
+## 3. Application Startup & Integration Test Suite
+
+| Test File | Test Function Name | Principle Tested | Code Location Tested | Verdict |
+|:---|:---|:---|:---|:---|
+| **`tests/test_app_startup.py`** | `test_main_window_timed_import` | Full application startup import integrity under `QApplication` | `main.py:timed_import_main_window` | **VERIFIED** |
+| | `test_sensitivity_analyzer_import` | Analytical dependency resolution and sub-widget imports | `analysis/sensitivity_analyzer.py` | **VERIFIED** |
+| | `test_production_profiler_import` | Profiler and rate synthesis imports | `analysis/profiler_refactored.py` | **VERIFIED** |
+

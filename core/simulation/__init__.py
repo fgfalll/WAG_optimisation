@@ -1,16 +1,9 @@
 """
-Simulation tools for CO2 EOR
+Simulation tools for CO2 EOR (Active engine is core.engine_surrogate).
 """
 
-from .profile_generator import ProfileGenerator
-
-try:
-    from core.engine_surrogate.profile_generator_fast import FastProfileGenerator
-except ImportError:
-    FastProfileGenerator = None
+from core.engine_surrogate.profile_generator_fast import FastProfileGenerator
 
 __all__ = [
-    'ProfileGenerator',
-    'FastProfileGenerator',
+    "FastProfileGenerator",
 ]
-

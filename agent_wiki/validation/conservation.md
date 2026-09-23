@@ -31,7 +31,7 @@ In a rigorous reservoir simulation of Carbon Capture, Utilization, and Storage (
 
 ---
 
-### B. Double-Subtraction Defect in `analysis/material_balance.py` (RESOLVED)
+### B. Double-Subtraction Defect in `analysis/material_balance.py` [RESOLVED]
 - **Status**: **RESOLVED / VERIFIED EXACT**.
 - **Location**: [analysis/material_balance.py:213-234](file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L213-L234).
 - **Historical Error**: Code computed `net_injection_tonne = purchased_tonne - recycled_tonne_raw` and then subtracted produced CO₂ again, double-subtracting recycled CO₂ and driving calculated net storage artificially negative.
@@ -44,7 +44,7 @@ In a rigorous reservoir simulation of Carbon Capture, Utilization, and Storage (
 
 ---
 
-### C. Reservoir Tank ODE Rate Balance Unit Mismatch (RESOLVED)
+### C. Reservoir Tank ODE Rate Balance Unit Mismatch [RESOLVED]
 - **Status**: **RESOLVED / VERIFIED CONSISTENT**.
 - **Location**: [core/engine_surrogate/surrogate_engine.py:918-925](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L918-L925).
 - **Historical Error**: `q_inj_rb` was set directly to `profile_result["injection_profile"]` (in MSCFD) while `q_prod_rb` was computed in reservoir barrels per day (RB/d), violating dimensional homogeneity in $dP/dt$.

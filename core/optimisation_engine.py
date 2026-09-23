@@ -36,30 +36,16 @@ except ImportError:
 
 
 try:
-    from numpy_financial import npv
-except ImportError:
-    logging.warning("numpy_financial not found. Using a manual NPV calculation.")
-
-    def npv(rate, values):
-        values = np.atleast_1d(values)
-        return np.sum(values / (1 + rate) ** np.arange(len(values)))
-
-
-try:
     from analysis.well_analysis import WellAnalysis
     from analysis.profiler_refactored import ProductionProfiler
     from analysis.decline_curve_analysis import DeclineCurveAnalyzer
     from analysis.data_validation import DataValidator
-    from analysis.breakthrough_physics import CO2BreakthroughPhysics
-    SurrogateBreakthrough = CO2BreakthroughPhysics
 except ImportError:
     # Fallback if analysis modules aren't available
     WellAnalysis = None
     ProductionProfiler = None
     DeclineCurveAnalyzer = None
     DataValidator = None
-    CO2BreakthroughPhysics = None
-    SurrogateBreakthrough = None
 from core.data_models import (
     ReservoirData,
     EORParameters,
@@ -77,20 +63,26 @@ from core.data_models import (
 )
 from core.engine_surrogate.surrogate_engine import SurrogateEngineWrapper
 from core.engine_surrogate.pvt_state import SolventExtendedPVTEngine
-from core.exceptions import (
-    OptimizationError,
-    SimulationEngineError,
-)
+class OptimizationError(RuntimeError):
+    """Raised when optimization evaluation fails."""
+
+    pass
+
+
+class SimulationEngineError(RuntimeError):
+    """Raised when simulation engine evaluation fails."""
+
+    pass
 from evaluation.mmp import calculate_mmp, MMPParameters
 
 calculate_mmp_external = calculate_mmp
 PHYSICS_ENGINE_AVAILABLE = True
 
-# Physical constants for CO2-EOR calculations (previously imported from core.optimisation)
+# Physical constants for CO2-EOR calculations
 _PHYS_CONSTANTS = PhysicalConstants()
 DAYS_PER_YEAR = _PHYS_CONSTANTS.DAYS_PER_YEAR
-ACRES_TO_CM2 = 40468564.224
-B_GAS_RB_PER_MSCF = 5.0  # Reservoir barrels per thousand standard cubic feet
+ACRES_TO_CM2 = _PHYS_CONSTANTS.ACRES_TO_M2 * 10000.0  # 1 acre = 4046.8564224 m² = 40,468,564.224 cm²
+B_GAS_RB_PER_MSCF = 1.0  # Fallback formation volume factor (RB/MSCF) when dynamic PVT unavailable
 EPSILON = 1e-10
 
 logger = logging.getLogger(__name__)
@@ -98,7 +90,7 @@ logger = logging.getLogger(__name__)
 from core.plotting_manager import PlottingManager
 from core.objectives import ObjectiveFunctions
 from core.objectives.storage import calculate_geomechanical_containment_score
-from core.simulation.simulator_exporter import SimulatorExporter
+from utils.cmg_exporter import SimulatorExporter
 
 
 INJECTION_SCHEMES = ["continuous", "wag", "tapered", "huff_n_puff", "swag"]
@@ -4254,164 +4246,12 @@ class OptimizationEngine:
     def plot_ga_objective_distribution(
         self, results_to_use: Optional[Dict[str, Any]] = None
     ) -> go.Figure:
-        source = results_to_use or self._results
-        if not (source and "pygad_instance" in source):
-            return go.Figure().update_layout(title_text="No GA results to plot.")
-
-        ga_instance = source["pygad_instance"]
-        objectives = ga_instance.last_generation_fitness
-
-        avg_obj = np.mean(objectives)
-        std_obj = np.std(objectives)
-
-        fig = go.Figure(data=[go.Histogram(x=objectives, nbinsx=20)])
-        fig.update_layout(
-            title_text="GA Population Objective Value Distribution",
-            xaxis_title="Objective Value",
-            yaxis_title="Frequency",
-            annotations=[
-                dict(
-                    x=0.95,
-                    y=0.95,
-                    xref="paper",
-                    yref="paper",
-                    text=f"Avg: {avg_obj:.3f}<br>Std: {std_obj:.3f}",
-                    showarrow=False,
-                    align="left",
-                    bordercolor="black",
-                    borderwidth=1,
-                )
-            ],
-        )
-        return fig
+        return self.plotting_manager.plot_ga_objective_distribution(results_to_use or self._results)
 
     def plot_hybrid_model_analysis(self) -> go.Figure:
         """Generates a plot showing the interplay of miscible, immiscible, and hybrid recovery models."""
-        from core.simulation.recovery_models import (
-            MiscibleRecoveryModel,
-            ImmiscibleRecoveryModel,
-            SigmoidTransition,
-        )
-
-        mmp = self.mmp or self.eor_params.default_mmp_fallback
-        pressure_ratios = np.linspace(0.5, 2.0, 50)
-        pressures = pressure_ratios * mmp
-
-        miscible_rf = []
-        immiscible_rf = []
-        weights = []
-
-        miscible_model = MiscibleRecoveryModel()
-        immiscible_model = ImmiscibleRecoveryModel()
-        transition = SigmoidTransition()
-
-        base_params = dataclasses.asdict(self.eor_params)
-
-        for p in pressures:
-            params = base_params.copy()
-            params["pressure"] = p
-            params["mmp"] = mmp
-            miscible_rf.append(miscible_model.calculate(**params))
-            immiscible_rf.append(immiscible_model.calculate(**params))
-            weights.append(transition.evaluate(p / mmp, self.pvt.c7_plus_fraction))
-
-        hybrid_rf = np.array(weights) * np.array(miscible_rf) + (1 - np.array(weights)) * np.array(
-            immiscible_rf
-        )
-
-        fig = go.Figure()
-        fig.add_trace(
-            go.Scatter(x=pressure_ratios, y=immiscible_rf, mode="lines", name="Immiscible RF")
-        )
-        fig.add_trace(
-            go.Scatter(x=pressure_ratios, y=miscible_rf, mode="lines", name="Miscible RF")
-        )
-        fig.add_trace(
-            go.Scatter(
-                x=pressure_ratios,
-                y=hybrid_rf,
-                mode="lines",
-                name="Hybrid RF",
-                line=dict(color="black", width=4),
-            )
-        )
-        fig.add_trace(
-            go.Scatter(
-                x=pressure_ratios,
-                y=weights,
-                mode="lines",
-                name="Miscible Weight",
-                line=dict(dash="dot"),
-                yaxis="y2",
-            )
-        )
-
-        fig.update_layout(
-            title_text="Hybrid Recovery Model Analysis",
-            xaxis_title="Pressure / MMP Ratio",
-            yaxis_title="Recovery Factor",
-            yaxis=dict(range=[0, 1]),
-            yaxis2=dict(
-                title="Miscible Weight", overlaying="y", side="right", range=[0, 1], showgrid=False
-            ),
-            legend=dict(x=0.01, y=0.99),
-        )
-        return fig
+        return self.plotting_manager.plot_hybrid_model_analysis()
 
     def plot_breakthrough_mechanism_analysis(self) -> go.Figure:
         """Generates a bar chart comparing breakthrough times from different models using Surrogate Physics."""
-        try:
-            if SurrogateBreakthrough is None:
-                return go.Figure()
-
-            # Use module-level SurrogateBreakthrough class (PhD Verified)
-            bt_physics = SurrogateBreakthrough()
-
-            # Prepare reservoir and fluid data for analytical calculation
-            reservoir_params = {
-                "v_dp_coefficient": getattr(self.eor_params, "v_dp_coefficient", 0.5),
-                "area_acres": self.reservoir.area_acres if self.reservoir else 100.0,
-                "porosity": self.avg_porosity,
-                "thickness_ft": self.reservoir.thickness_ft if self.reservoir else 50.0,
-                "permeability": np.mean(self.reservoir.grid.get("PERMX", [100.0]))
-                if self.reservoir and self.reservoir.grid
-                else 100.0,
-            }
-            eor_params_for_bt = (
-                dataclasses.asdict(self.eor_params) if self.eor_params else {}
-            )
-
-            # Calculate individual mechanism times (Surrogate equivalents)
-            eos_model = getattr(self, "eos_model_instance", None) or (
-                getattr(self.reservoir, "eos_model", None) if self.reservoir else None
-            )
-            # 1. Base Koval Breakthrough
-            bt_koval = bt_physics.calculate_breakthrough_time(
-                reservoir_params, eor_params_for_bt, eos_model=eos_model
-            )
-
-            # 2. Gravity Override Estimate (Simple analytical scaling)
-            # Higher density difference = earlier breakthrough
-            rho_oil = getattr(self.eor_params, "oil_density", 50.0)
-            rho_co2 = getattr(self.eor_params, "co2_density", 44.0)
-            gravity_mult = 1.0 / (1.0 + 0.1 * abs(rho_oil - rho_co2))
-            bt_gravity = bt_koval * gravity_mult
-
-            # 3. Final Weighted (Surrogate Engine already provides this)
-            bt_final = bt_koval  # For surrogate, koval is the verified mechanism
-
-            mechanisms = ["Analytical (Koval)", "Gravity Scaling", "Final Surrogate"]
-            times = [bt_koval, bt_gravity, bt_final]
-
-            fig = go.Figure(
-                [go.Bar(x=mechanisms, y=times, text=[f"{t:.2f} y" for t in times], textposition="auto")]
-            )
-            fig.update_layout(
-                title_text="PhD Verification: Breakthrough Analysis by Mechanism (Surrogate)",
-                yaxis_title="Breakthrough Time (years)",
-                template="plotly_white",
-            )
-            return fig
-        except Exception as e:
-            logger.warning(f"Failed to generate breakthrough mechanism analysis plot: {e}")
-            return go.Figure()
+        return self.plotting_manager.plot_breakthrough_mechanism_analysis()

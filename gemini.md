@@ -74,9 +74,6 @@ Core Engine Layer
     └─ engine_simple/          - [BENCHMARK ONLY] Simplified benchmark engine
 
 Data Processing Layer
-    ├─ parsers/                - Industry file format parsers
-    │   ├─ eclipse_parser.py   - Eclipse simulation data
-    │   └─ las_parser.py       - Well log (LAS) format
     ├─ data_processor.py       - Data transformation and validation
     └─ data_models.py          - Core data structures
 
@@ -86,6 +83,7 @@ Analysis Layer
     └─ decline_curve_analysis.py - DCA for production forecasting
 
 Utilities
+    ├─ las_parser.py          - Well log (LAS) format parser
     ├─ error_handler.py       - Centralized error reporting (CRITICAL: use this)
     ├─ config_manager.py      - Configuration loading/saving (JSON-based)
     ├─ validation_manager.py  - Data validation framework
