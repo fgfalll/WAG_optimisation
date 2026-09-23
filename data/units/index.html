@@ -1151,7 +1151,7 @@
           <li class="md-nav__item">
   <a href="#pitfall-1-mscfd-treated-directly-as-reservoir-barrelsday-in-tank-ode-resolved" class="md-nav__link">
     <span class="md-ellipsis">
-      Pitfall 1: MSCFD Treated Directly as Reservoir Barrels/Day in Tank ODE (RESOLVED)
+      Pitfall 1: MSCFD Treated Directly as Reservoir Barrels/Day in Tank ODE [RESOLVED]
     </span>
   </a>
   
@@ -1178,7 +1178,7 @@
           <li class="md-nav__item">
   <a href="#pitfall-4-grid-block-dimension-unit-confusion-in-_create_reservoir_data-resolved" class="md-nav__link">
     <span class="md-ellipsis">
-      Pitfall 4: Grid Block Dimension Unit Confusion in _create_reservoir_data (RESOLVED)
+      Pitfall 4: Grid Block Dimension Unit Confusion in _create_reservoir_data [RESOLVED]
     </span>
   </a>
   
@@ -2901,7 +2901,7 @@
           <li class="md-nav__item">
   <a href="#pitfall-1-mscfd-treated-directly-as-reservoir-barrelsday-in-tank-ode-resolved" class="md-nav__link">
     <span class="md-ellipsis">
-      Pitfall 1: MSCFD Treated Directly as Reservoir Barrels/Day in Tank ODE (RESOLVED)
+      Pitfall 1: MSCFD Treated Directly as Reservoir Barrels/Day in Tank ODE [RESOLVED]
     </span>
   </a>
   
@@ -2928,7 +2928,7 @@
           <li class="md-nav__item">
   <a href="#pitfall-4-grid-block-dimension-unit-confusion-in-_create_reservoir_data-resolved" class="md-nav__link">
     <span class="md-ellipsis">
-      Pitfall 4: Grid Block Dimension Unit Confusion in _create_reservoir_data (RESOLVED)
+      Pitfall 4: Grid Block Dimension Unit Confusion in _create_reservoir_data [RESOLVED]
     </span>
   </a>
   
@@ -3036,7 +3036,7 @@
 </table>
 <hr />
 <h2 id="3-critical-unit-conversion-pitfalls-identified-in-codebase">3. Critical Unit Conversion Pitfalls Identified in Codebase<a class="headerlink" href="#3-critical-unit-conversion-pitfalls-identified-in-codebase" title="Permanent link">&para;</a></h2>
-<h3 id="pitfall-1-mscfd-treated-directly-as-reservoir-barrelsday-in-tank-ode-resolved">Pitfall 1: MSCFD Treated Directly as Reservoir Barrels/Day in Tank ODE (RESOLVED)<a class="headerlink" href="#pitfall-1-mscfd-treated-directly-as-reservoir-barrelsday-in-tank-ode-resolved" title="Permanent link">&para;</a></h3>
+<h3 id="pitfall-1-mscfd-treated-directly-as-reservoir-barrelsday-in-tank-ode-resolved">Pitfall 1: MSCFD Treated Directly as Reservoir Barrels/Day in Tank ODE [RESOLVED]<a class="headerlink" href="#pitfall-1-mscfd-treated-directly-as-reservoir-barrelsday-in-tank-ode-resolved" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L919">core/engine_surrogate/surrogate_engine.py line 919</a>.</li>
 <li><strong>Historical Error</strong>: <code>profile_result["injection_profile"]</code> was generated in <strong>MSCFD</strong> (surface thousand standard cubic feet per day) by <code>FastProfileGenerator</code>, but subtracted directly from production in reservoir barrels.</li>
@@ -3054,7 +3054,7 @@
 <li><strong>Location</strong>: <code>PhysicalConstants.CO2_DENSITY_TONNE_PER_MSCF</code> (<span class="arithmatex">\(0.05254\)</span>) vs. <code>0.053</code> hardcoded in <code>analytical_models.py</code>, <code>surrogate_models.py</code>, and <code>surrogate_engine.py</code>.</li>
 <li><strong>Impact</strong>: Accumulates a ~0.87% mass accounting discrepancy between theoretical PVT calculations and profile integration.</li>
 </ul>
-<h3 id="pitfall-4-grid-block-dimension-unit-confusion-in-_create_reservoir_data-resolved">Pitfall 4: Grid Block Dimension Unit Confusion in <code>_create_reservoir_data</code> (RESOLVED)<a class="headerlink" href="#pitfall-4-grid-block-dimension-unit-confusion-in-_create_reservoir_data-resolved" title="Permanent link">&para;</a></h3>
+<h3 id="pitfall-4-grid-block-dimension-unit-confusion-in-_create_reservoir_data-resolved">Pitfall 4: Grid Block Dimension Unit Confusion in <code>_create_reservoir_data</code> [RESOLVED]<a class="headerlink" href="#pitfall-4-grid-block-dimension-unit-confusion-in-_create_reservoir_data-resolved" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py#L350">core/data_integration_engine.py line 350</a> &amp; <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py">ui/data_management_widget.py</a>.</li>
 <li><strong>Historical Error</strong>: <code>DataManagementWidget</code> block sizes <code>dx, dy, dz</code> are input in <strong>feet</strong> (field units). The data integration engine previously assumed inputs were in meters, dividing by metric constants: <code>thickness_ft = nz * dz / 0.3048</code> and <code>area_acres = (nx * dx * ny * dy) / 4046.86</code>.</li>

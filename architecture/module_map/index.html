@@ -683,18 +683,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-compositional-engine-subsystem-corecompositional_engine-dormant" class="md-nav__link">
+  <a href="#3-geological-modeling-coregeology" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Compositional Engine Subsystem (core/compositional_engine/) - Dormant
+      3. Geological Modeling (core/geology/)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-unified-engine-subsystem-coreunified_engine-dormant-except-eos" class="md-nav__link">
+  <a href="#4-simulation-adapters-coresimulation" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Unified Engine Subsystem (core/unified_engine/) - Dormant (except EOS)
+      4. Simulation Adapters (core/simulation/)
     </span>
   </a>
   
@@ -704,6 +704,15 @@
   <a href="#5-data-objectives-infrastructure" class="md-nav__link">
     <span class="md-ellipsis">
       5. Data &amp; Objectives Infrastructure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-deprecated-subsystems-deprecatedcore" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Deprecated Subsystems (deprecated/core/)
     </span>
   </a>
   
@@ -2933,18 +2942,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-compositional-engine-subsystem-corecompositional_engine-dormant" class="md-nav__link">
+  <a href="#3-geological-modeling-coregeology" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Compositional Engine Subsystem (core/compositional_engine/) - Dormant
+      3. Geological Modeling (core/geology/)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-unified-engine-subsystem-coreunified_engine-dormant-except-eos" class="md-nav__link">
+  <a href="#4-simulation-adapters-coresimulation" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Unified Engine Subsystem (core/unified_engine/) - Dormant (except EOS)
+      4. Simulation Adapters (core/simulation/)
     </span>
   </a>
   
@@ -2954,6 +2963,15 @@
   <a href="#5-data-objectives-infrastructure" class="md-nav__link">
     <span class="md-ellipsis">
       5. Data &amp; Objectives Infrastructure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-deprecated-subsystems-deprecatedcore" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Deprecated Subsystems (deprecated/core/)
     </span>
   </a>
   
@@ -2989,7 +3007,7 @@
 
 <h1 id="codebase-module-map-inventory">Codebase Module Map &amp; Inventory<a class="headerlink" href="#codebase-module-map-inventory" title="Permanent link">&para;</a></h1>
 <h2 id="1-inventory-summary">1. Inventory Summary<a class="headerlink" href="#1-inventory-summary" title="Permanent link">&para;</a></h2>
-<p>The active codebase consists of <strong>204 Python modules</strong> comprising <strong>85,716 lines of code</strong> (excluding <code>.venv</code>, <code>.git</code>, <code>.idea</code>, and cache artifacts).</p>
+<p>The active codebase consists of <strong>202 Python modules</strong> comprising <strong>~85,530 lines of code</strong> (excluding <code>.venv</code>, <code>.git</code>, <code>.idea</code>, and cache artifacts).</p>
 <table>
 <thead>
 <tr>
@@ -3014,8 +3032,8 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>tests/</code></td>
-<td style="text-align: center;">18</td>
-<td style="text-align: center;">~7,400</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">~7,500</td>
 <td style="text-align: left;">Pytest test suite, hypothesis property tests, benchmark tests</td>
 </tr>
 <tr>
@@ -3026,9 +3044,9 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>utils/</code></td>
-<td style="text-align: center;">13</td>
-<td style="text-align: center;">~5,200</td>
-<td style="text-align: left;">Logging, preferences, configuration, error handling, run export</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">~5,380</td>
+<td style="text-align: left;">Logging, preferences, configuration, error handling, run export, LAS log parser</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>scripts/</code></td>
@@ -3043,12 +3061,6 @@
 <td style="text-align: left;">Minimum Miscibility Pressure (MMP) analytical correlations</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>parsers/</code></td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;">~380</td>
-<td style="text-align: left;">LAS well log parsers and input file validators</td>
-</tr>
-<tr>
 <td style="text-align: left;">Root files</td>
 <td style="text-align: center;">3</td>
 <td style="text-align: center;">~850</td>
@@ -3061,41 +3073,53 @@
 <h3 id="core-package-details"><code>core/</code> Package Details<a class="headerlink" href="#core-package-details" title="Permanent link">&para;</a></h3>
 <h4 id="1-optimization-orchestration">1. Optimization Orchestration<a class="headerlink" href="#1-optimization-orchestration" title="Permanent link">&para;</a></h4>
 <ul>
-<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py">core/optimisation_engine.py</a>: Main optimizer class <code>OptimizationEngine</code> (3,800+ lines). Integrates PyGAD, Bayesian Optimization, PySwarms, and Differential Evolution. Handles candidate vector discretization, constraint checks, and Pareto front generation.</li>
-<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_factory.py">core/engine_factory.py</a>: Factory interface <code>EngineFactory</code>. Routes 100% of simulation evaluations strictly to <code>SurrogateEngineWrapper</code>.</li>
-<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimization_analysis.py">core/optimization_analysis.py</a>: Convergence analytics, hypervolume metrics, and Pareto front analysis.</li>
-<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/plotting_manager.py">core/plotting_manager.py</a>: Centralized manager for well schedules, coverage (trend/min/max), Euclidean distance heatmaps, and Pareto fronts.</li>
+<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py">core/optimisation_engine.py</a>: Main optimizer class <code>OptimizationEngine</code> (~4,250 lines). Integrates PyGAD, Bayesian Optimization, PySwarms, and Differential Evolution. Handles candidate vector discretization, constraint checks, and Pareto front generation. Plotting delegations routed to <code>PlottingManager</code>.</li>
+<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/plotting_manager.py">core/plotting_manager.py</a>: Centralized manager for well schedules, coverage (trend/min/max), Euclidean distance heatmaps, GA distributions, hybrid recovery analysis, and Pareto fronts.</li>
 </ul>
 <h4 id="2-surrogate-engine-subsystem-coreengine_surrogate">2. Surrogate Engine Subsystem (<code>core/engine_surrogate/</code>)<a class="headerlink" href="#2-surrogate-engine-subsystem-coreengine_surrogate" title="Permanent link">&para;</a></h4>
 <ul>
-<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py">surrogate_engine.py</a>: Master wrapper for simulation evaluation. Runs analytical recovery prediction, generates dynamic rate profiles via <code>FastProfileGenerator</code>, solves deliverability-coupled implicit material balance for pressure, calculates economic NPV, and tracks CO₂ purchased vs recycled.</li>
+<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py">surrogate_engine.py</a>: Master wrapper for simulation evaluation (<code>SurrogateEngine</code> and <code>SurrogateEngineWrapper</code>). Runs analytical recovery prediction, generates dynamic rate profiles via <code>FastProfileGenerator</code>, solves deliverability-coupled implicit material balance for pressure, calculates economic NPV, and tracks CO₂ purchased vs recycled.</li>
 <li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py">analytical_models.py</a>: Core recovery calculations:</li>
 <li><code>MiscibleSurrogate</code>: Koval (1963) heterogeneity factor + Todd-Longstaff effective mobility ratio.</li>
 <li><code>ImmiscibleSurrogate</code>: Buckley-Leverett (1942) fractional flow + Craig areal sweep + Johnson vertical sweep.</li>
-<li><code>BuckleyLeverettSurrogate</code>: Standalone 1D fractional flow solver.</li>
+<li><code>BuckleyLeverettSurrogate</code>: Standalone 1D fractional flow solver with Welge shock construction.</li>
 <li><code>HybridSurrogate</code>: Sigmoidal pressure/MMP interpolation.</li>
-<li><code>PhDHybridRecoveryModel</code>: Primary research model with dynamic C7+ shifts, HCPVI mass balance, and numerical gradient finite-differencing.</li>
+<li><code>KovalSurrogate</code> (<code>KovalRecoveryModel</code> alias): Authentic Koval recovery model.</li>
+<li><code>PhDHybridSurrogate</code>: Primary research model with dynamic C7+ shifts, HCPVI mass balance, and numerical gradient finite-differencing.</li>
 <li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py">profile_generator_fast.py</a>: Single source of truth for rate profile synthesis (oil, water, gas, CO₂ injection) across continuous, WAG, SWAG, Huff-n-Puff, tapered, and pulsed injection schemes. Implements Composite Vogel-Darcy IPR single-well deliverability and mass-conserving WAG mobility buffering.</li>
+<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/pvt_state.py">pvt_state.py</a>: <code>SolventExtendedPVTEngine</code> evaluating Peng-Robinson EOS density, solvent swelling, and viscosity reduction.</li>
+<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/geomechanics_fault.py">geomechanics_fault.py</a>: Stress path, caprock seal integrity, and Mohr-Coulomb fault slip calculations.</li>
 <li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_models.py">surrogate_models.py</a>: Factory <code>AnalyticalSurrogate</code>, sweep efficiency calculations (Craig, Johnson), and Corey residual trapping metrics.</li>
 </ul>
-<h4 id="3-compositional-engine-subsystem-corecompositional_engine-dormant">3. Compositional Engine Subsystem (<code>core/compositional_engine/</code>) - Dormant<a class="headerlink" href="#3-compositional-engine-subsystem-corecompositional_engine-dormant" title="Permanent link">&para;</a></h4>
+<h4 id="3-geological-modeling-coregeology">3. Geological Modeling (<code>core/geology/</code>)<a class="headerlink" href="#3-geological-modeling-coregeology" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>compositional_engine.py</code>: 1D compositional numerical simulator engine.</li>
-<li><code>flow/compositional_solver.py</code>: Finite-volume flow solver.</li>
-<li><code>flow/transmissibility.py</code>: Inter-block harmonic transmissibility calculations.</li>
-<li><code>phase_behavior/flash_calculator.py</code>: Two-phase vapor-liquid equilibrium (VLE) flash solver using successive substitution and Newton-Raphson with Peng-Robinson EOS.</li>
+<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/geology/geostatistical_modeling.py">geostatistical_modeling.py</a>: Geostatistical grid generation (<code>create_geostatistical_grid</code>) with spatial correlation models (spherical, exponential, gaussian).</li>
+<li><code>__init__.py</code>: Cleanly exports <code>create_geostatistical_grid</code> with a lazy deprecated import shim for legacy <code>GeologyEngine</code> (relocated to <code>deprecated/core/geology/</code>).</li>
 </ul>
-<h4 id="4-unified-engine-subsystem-coreunified_engine-dormant-except-eos">4. Unified Engine Subsystem (<code>core/unified_engine/</code>) - Dormant (except EOS)<a class="headerlink" href="#4-unified-engine-subsystem-coreunified_engine-dormant-except-eos" title="Permanent link">&para;</a></h4>
+<h4 id="4-simulation-adapters-coresimulation">4. Simulation Adapters (<code>core/simulation/</code>)<a class="headerlink" href="#4-simulation-adapters-coresimulation" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>engines/detailed_engine.py</code>: 3D multi-phase numerical simulator.</li>
-<li><code>physics/eos/__init__.py</code>: <strong>ACTIVELY IMPORTED</strong>. Houses <code>CubicEOS</code>, <code>PengRobinsonEOS</code>, and <code>ReservoirFluid</code> utilized for fluid characterization.</li>
+<li><code>__init__.py</code>: Exports active <code>FastProfileGenerator</code>.</li>
+<li><code>recovery_models.py</code>: Backward-compatible deprecation shim redirecting to <code>deprecated.core.simulation.recovery_models</code>.</li>
+<li><code>profile_generator.py</code>: Backward-compatible deprecation shim redirecting to <code>deprecated.core.simulation.profile_generator</code>.</li>
+<li><code>simulator_exporter.py</code>: Backward-compatible deprecation shim redirecting to <code>utils.cmg_exporter</code>.</li>
 </ul>
 <h4 id="5-data-objectives-infrastructure">5. Data &amp; Objectives Infrastructure<a class="headerlink" href="#5-data-objectives-infrastructure" title="Permanent link">&para;</a></h4>
 <ul>
-<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_models.py">core/data_models.py</a>: Core typed dataclasses: <code>ReservoirData</code>, <code>EORParameters</code>, <code>OperationalParameters</code>, <code>EconomicParameters</code>, <code>PhysicalConstants</code>, <code>SimulationResults</code>.</li>
+<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_models.py">core/data_models.py</a>: Core typed dataclasses: <code>ReservoirData</code>, <code>EORParameters</code>, <code>OperationalParameters</code>, <code>EconomicParameters</code>, <code>PhysicalConstants</code>, <code>PVTProperties</code>, <code>FluidProperties</code>.</li>
+<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py">core/data_integration_engine.py</a>: Multi-source data ingestion, preprocessing, and quality metrics using <code>PhysicalConstants</code>.</li>
 <li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py">core/objectives/wrapper.py</a>: Evaluates multi-objective fitness, geomechanical containment limits (EPA Class VI 90% limit), and environmental leakage penalties.</li>
-<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/storage.py">core/objectives/storage.py</a>: CO₂ storage efficiency calculations.</li>
-<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/economic.py">core/objectives/economic.py</a>: Standalone cash flow models.</li>
+<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/storage.py">core/objectives/storage.py</a>: CO₂ storage efficiency and geomechanical containment scoring.</li>
+<li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/economic.py">core/objectives/economic.py</a>: Standalone cash flow and NPV utilities.</li>
+</ul>
+<h4 id="6-deprecated-subsystems-deprecatedcore">6. Deprecated Subsystems (<code>deprecated/core/</code>)<a class="headerlink" href="#6-deprecated-subsystems-deprecatedcore" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>deprecated/core/compositional_engine/</code>: 3D multi-block compositional simulator sandbox.</li>
+<li><code>deprecated/core/unified_engine/</code>: Legacy monolithic simulator and EOS sandbox.</li>
+<li><code>deprecated/core/engine_simple/</code>: 0D material balance prototype.</li>
+<li><code>deprecated/core/engine_factory.py</code>: Legacy multi-engine router.</li>
+<li><code>deprecated/core/engine_surrogate/</code>: Response surface ML prototypes (<code>response_surfaces.py</code>, <code>feature_transformer.py</code>, <code>training_data.py</code>, <code>model_factory.py</code>).</li>
+<li><code>deprecated/core/geology/geology_engine.py</code>: Uncalibrated <code>GeologyEngine</code>.</li>
+<li><code>deprecated/core/simulation/</code>: Legacy <code>recovery_models.py</code> and <code>profile_generator.py</code>.</li>
 </ul>
 
 

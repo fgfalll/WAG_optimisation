@@ -2976,13 +2976,13 @@
 <td style="text-align: left;"><strong>Synthetic PVT Thermodynamics</strong></td>
 <td style="text-align: left;"><em>"Positive compressibility and monotonically increasing fluid viscosity with pressure"</em></td>
 <td style="text-align: left;">Enforced <span class="arithmatex">\(c_o &gt; 0\)</span> (<span class="arithmatex">\(\partial B_o / \partial P &lt; 0\)</span>) and <span class="arithmatex">\(\partial\mu/\partial P &gt; 0\)</span> in <code>data_integration_engine.py</code>. Verified by <code>test_thermodynamic_positivity.py</code>.</td>
-<td style="text-align: left;"><strong>VERIFIED PHYSICAL (RESOLVED SCI-FLAW-02, 03)</strong>. Second law thermodynamic consistency restored.</td>
+<td style="text-align: left;"><strong>VERIFIED PHYSICAL [RESOLVED: SCI-FLAW-02, 03]</strong>. Second law thermodynamic consistency restored.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Dynamic CO₂ FVF (<span class="arithmatex">\(B_g\)</span>)</strong></td>
 <td style="text-align: left;"><em>"Accurate supercritical CO₂ formation volume factor evaluated via PR-EOS"</em></td>
 <td style="text-align: left;">Method signature aligned in <code>pvt_state.py</code> and <code>optimisation_engine.py</code>. Eliminated silent 10× fallback (<span class="arithmatex">\(B_g = 5.0\)</span>).</td>
-<td style="text-align: left;"><strong>VERIFIED ACCURATE (RESOLVED SFT-01)</strong>. Evaluates true dense-phase volume <span class="arithmatex">\(B_g \approx 0.50\text{ RB/MSCF}\)</span>.</td>
+<td style="text-align: left;"><strong>VERIFIED ACCURATE [RESOLVED: SFT-01]</strong>. Evaluates true dense-phase volume <span class="arithmatex">\(B_g \approx 0.50\text{ RB/MSCF}\)</span>.</td>
 </tr>
 </tbody>
 </table>

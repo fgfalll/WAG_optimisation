@@ -1434,24 +1434,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-03-inverted-pressure-viscosity-dependence" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-03: Inverted Pressure-Viscosity Dependence
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" class="md-nav__link">
     <span class="md-ellipsis">
       SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density
@@ -3016,24 +2998,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-03-inverted-pressure-viscosity-dependence" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-03: Inverted Pressure-Viscosity Dependence
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" class="md-nav__link">
     <span class="md-ellipsis">
       SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density
@@ -3382,43 +3346,12 @@
 <li><strong>Status</strong>: OPEN.</li>
 </ul>
 <hr />
-<h3 id="sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt">SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT<a class="headerlink" href="#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-02</code></li>
-<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py#L370"><code>core/data_integration_engine.py:370, 456</code></a></li>
-<li><strong>Model</strong>: Black-Oil PVT Table Synthesis</li>
-<li><strong>Observation</strong>: Formation volume factor <span class="arithmatex">\(B_o\)</span> is modeled with a positive pressure coefficient above 4,000 psia.</li>
-<li><strong>Equation</strong>:
-  $<span class="arithmatex">\(B_o(P) = 1.2 + 0.0001 \cdot (P - 4000)\)</span>$</li>
-<li><strong>Expected Behavior</strong>: In undersaturated reservoir oil, compression reduces volume: <span class="arithmatex">\(\frac{\partial B_o}{\partial P} = -c_o B_o &lt; 0\)</span>.</li>
-<li><strong>Actual Behavior</strong>: <span class="arithmatex">\(\frac{\partial B_o}{\partial P} = +0.0001 &gt; 0\)</span>. As reservoir pressure increases, the oil expands.</li>
-<li><strong>Evidence</strong>: Line 370 of <code>data_integration_engine.py</code>.</li>
-<li><strong>Scientific Consequence</strong>: Violates the second law of thermodynamics (isothermal compressibility must be positive: <span class="arithmatex">\(c = -\frac{1}{V}\frac{\partial V}{\partial P} &gt; 0\)</span>).</li>
-<li><strong>Numerical Consequence</strong>: Reservoir voidage increases as pressure rises, causing artificial pressure runaways in material balance solvers.</li>
-<li><strong>Affected Outputs</strong>: <code>pvt_tables["OIL_FVF"]</code>, <code>ReservoirData.oil_fvf</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Recommended Investigation</strong>: Invert sign: <span class="arithmatex">\(B_o(P) = 1.2 \cdot \exp(-c_o (P - P_b))\)</span> with <span class="arithmatex">\(c_o \approx 1.5 \times 10^{-5}\text{ psi}^{-1}\)</span>.</li>
-<li><strong>Status</strong>: <a href="../resolved_issues/#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt"><strong>RESOLVED</strong></a> (2026-09-23).</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-03-inverted-pressure-viscosity-dependence">SCI-FLAW-03: Inverted Pressure-Viscosity Dependence<a class="headerlink" href="#sci-flaw-03-inverted-pressure-viscosity-dependence" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-03</code></li>
-<li><strong>Severity</strong>: <strong>HIGH</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py#L372"><code>core/data_integration_engine.py:372, 375, 459, 465</code></a></li>
-<li><strong>Model</strong>: Black-Oil PVT Viscosity Generation</li>
-<li><strong>Observation</strong>: Oil and CO₂ viscosities are synthesized with negative exponential pressure terms:
-  $<span class="arithmatex">\(\mu_o(P) = \mu_{o,ref} \cdot \exp(-0.0003 \cdot (P - 4000))\)</span>$
-  $<span class="arithmatex">\(\mu_{\text{CO2}}(P) = \mu_{g,ref} \cdot \exp(-0.0002 \cdot (P - 4000))\)</span>$</li>
-<li><strong>Expected Behavior</strong>: Undersaturated liquid and supercritical fluid viscosities increase with pressure (<span class="arithmatex">\(\frac{\partial\mu}{\partial P} &gt; 0\)</span>).</li>
-<li><strong>Actual Behavior</strong>: Viscosities decrease exponentially with pressure. At <span class="arithmatex">\(P = 6,000\text{ psia}\)</span>, oil viscosity drops to <span class="arithmatex">\(55\%\)</span> of its value at <span class="arithmatex">\(4,000\text{ psia}\)</span>.</li>
-<li><strong>Scientific Consequence</strong>: Higher injection pressures create artificially favorable mobility ratios, giving unphysical economic incentives for over-pressurization.</li>
-<li><strong>Affected Outputs</strong>: <code>pvt_tables["OIL_VISC"]</code>, <code>pvt_tables["CO2_VISC"]</code>, <code>mobility_ratio</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: <a href="../resolved_issues/#sci-flaw-03-inverted-pressure-viscosity-dependence"><strong>RESOLVED</strong></a> (2026-09-23).</li>
-</ul>
-<hr />
+<blockquote>
+<p>[!NOTE]
+<strong>SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT</strong> has been resolved and archived to <a href="../resolved_issues/#sci-flaw-02"><code>resolved_issues.md</code></a>.</p>
+<p>[!NOTE]
+<strong>SCI-FLAW-03: Inverted Pressure-Viscosity Dependence</strong> has been resolved and archived to <a href="../resolved_issues/#sci-flaw-03"><code>resolved_issues.md</code></a>.</p>
+</blockquote>
 <h3 id="sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density">SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density<a class="headerlink" href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>ID</strong>: <code>SCI-FLAW-04</code></li>

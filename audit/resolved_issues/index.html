@@ -1886,6 +1886,51 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sft-04-attributeerror-on-configwidgetengine_selection_changed" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-04] AttributeError on ConfigWidget.engine_selection_changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-05-root-import-mismatch-on-configmanager-in-datamanagementwidget" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-05] Root Import Mismatch on ConfigManager in DataManagementWidget
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-06-missing-qt-translation-files-suppressed-gracefully" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-06] Missing Qt Translation Files Suppressed Gracefully
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-07-parsers-directory-elimination-las-parser-consolidation" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-07] Parsers Directory Elimination &amp; LAS Parser Consolidation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-08-core-directory-architecture-audit-prototyping-artifacts-elimination" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-08] Core Directory Architecture Audit &amp; Prototyping Artifacts Elimination
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3642,6 +3687,51 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sft-04-attributeerror-on-configwidgetengine_selection_changed" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-04] AttributeError on ConfigWidget.engine_selection_changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-05-root-import-mismatch-on-configmanager-in-datamanagementwidget" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-05] Root Import Mismatch on ConfigManager in DataManagementWidget
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-06-missing-qt-translation-files-suppressed-gracefully" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-06] Missing Qt Translation Files Suppressed Gracefully
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-07-parsers-directory-elimination-las-parser-consolidation" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-07] Parsers Directory Elimination &amp; LAS Parser Consolidation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sft-08-core-directory-architecture-audit-prototyping-artifacts-elimination" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-08] Core Directory Architecture Audit &amp; Prototyping Artifacts Elimination
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3972,6 +4062,30 @@
 <tr>
 <td style="text-align: left;"><strong>SFT-F821</strong></td>
 <td style="text-align: left;">Eradication of All 36 Ruff F821 Undefined Names</td>
+<td style="text-align: left;">Software Defect</td>
+<td style="text-align: left;"><code>technical_debt.md</code></td>
+<td style="text-align: left;">2026-09-23</td>
+<td style="text-align: left;"><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SFT-04</strong></td>
+<td style="text-align: left;">AttributeError on ConfigWidget.engine_selection_changed</td>
+<td style="text-align: left;">Software Defect</td>
+<td style="text-align: left;"><code>technical_debt.md</code></td>
+<td style="text-align: left;">2026-09-23</td>
+<td style="text-align: left;"><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SFT-05</strong></td>
+<td style="text-align: left;">Root Import Mismatch on ConfigManager in DataManagementWidget</td>
+<td style="text-align: left;">Software Defect</td>
+<td style="text-align: left;"><code>technical_debt.md</code></td>
+<td style="text-align: left;">2026-09-23</td>
+<td style="text-align: left;"><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SFT-06</strong></td>
+<td style="text-align: left;">Missing Qt Translation Files Suppressed Gracefully</td>
 <td style="text-align: left;">Software Defect</td>
 <td style="text-align: left;"><code>technical_debt.md</code></td>
 <td style="text-align: left;">2026-09-23</td>
@@ -4603,6 +4717,119 @@
 <li>Added fallback safe definition of <code>EPSILON = 1e-10</code> in <code>core/optimisation_engine.py</code>.</li>
 <li><code>ruff check --select F821</code> returns <strong>0 errors</strong> across the entire codebase.</li>
 <li><strong>Verification</strong>: <code>ruff check --select F821</code> returns empty; test suite passes 100% (299 passed, 0 failed).</li>
+</ul>
+<hr />
+<h3 id="sft-04-attributeerror-on-configwidgetengine_selection_changed">[SFT-04] AttributeError on ConfigWidget.engine_selection_changed<a class="headerlink" href="#sft-04-attributeerror-on-configwidgetengine_selection_changed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SFT-04</code></li>
+<li><strong>Category</strong>: Software Defect</li>
+<li><strong>Original Document</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md"><code>agent_wiki/audit/technical_debt.md</code></a></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/config_widget.py#L80"><code>ui/config_widget.py:80</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/main_window.py#L414-L416"><code>ui/main_window.py:414-416</code></a></li>
+<li><strong>Severity</strong>: CRITICAL</li>
+<li><strong>Status</strong>: RESOLVED</li>
+<li><strong>Date Resolved</strong>: 2026-09-23</li>
+<li><strong>Previous Defect</strong>:</li>
+<li>When <code>ConfigWidget</code> was refactored to remove unused/legacy engine dropdowns (since <code>core/engine_surrogate</code> is the single active engine), the signal <code>engine_selection_changed = pyqtSignal(str)</code> was removed from <code>ConfigWidget</code>.</li>
+<li>When <code>MainWindow._setup_main_app_tabs_container()</code> ran, it called <code>self.config_tab.engine_selection_changed.connect(...)</code>, which crashed immediately with <code>AttributeError: 'ConfigWidget' object has no attribute 'engine_selection_changed'</code>, preventing application startup.</li>
+<li><strong>Resolution Details</strong>:</li>
+<li>Re-added <code>engine_selection_changed = pyqtSignal(str)</code> to <code>ConfigWidget</code> in <code>ui/config_widget.py</code> for backward compatibility.</li>
+<li>Added defensive guard <code>if hasattr(self.config_tab, "engine_selection_changed"):</code> in <code>ui/main_window.py</code>.</li>
+<li><strong>Verification</strong>: Headless <code>MainWindow</code> startup and event loop execution verified with exit code 0.</li>
+</ul>
+<hr />
+<h3 id="sft-05-root-import-mismatch-on-configmanager-in-datamanagementwidget">[SFT-05] Root Import Mismatch on ConfigManager in DataManagementWidget<a class="headerlink" href="#sft-05-root-import-mismatch-on-configmanager-in-datamanagementwidget" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SFT-05</code></li>
+<li><strong>Category</strong>: Software Defect</li>
+<li><strong>Original Document</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md"><code>agent_wiki/audit/technical_debt.md</code></a></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py#L25"><code>ui/data_management_widget.py:25, 183</code></a></li>
+<li><strong>Severity</strong>: HIGH</li>
+<li><strong>Status</strong>: RESOLVED</li>
+<li><strong>Date Resolved</strong>: 2026-09-23</li>
+<li><strong>Previous Defect</strong>:</li>
+<li>Following root-level module reorganization where <code>config_manager.py</code> moved to <code>utils/config_manager.py</code>, <code>ui/data_management_widget.py</code> still contained <code>from config_manager import ConfigManager</code>.</li>
+<li>The import failed with <code>ModuleNotFoundError: No module named 'config_manager'</code>, setting both <code>PreferencesManager</code> and <code>ConfigManager</code> to <code>None</code> and logging <code>CRITICAL: DataManagementWidget: PreferencesManager or ConfigManager not found. Unit system preferences will not work.</code></li>
+<li><strong>Resolution Details</strong>:</li>
+<li>Corrected imports at module level and fallback scope to <code>from utils.config_manager import ConfigManager</code>.</li>
+<li>Added compatibility method <code>set_engine_type(self, engine_type: str)</code> to <code>DataManagementWidget</code> to handle engine notifications from <code>MainWindow</code>.</li>
+<li><strong>Verification</strong>: <code>DataManagementWidget</code> and <code>MainWindow</code> unit tests pass; critical error eliminated.</li>
+</ul>
+<hr />
+<h3 id="sft-06-missing-qt-translation-files-suppressed-gracefully">[SFT-06] Missing Qt Translation Files Suppressed Gracefully<a class="headerlink" href="#sft-06-missing-qt-translation-files-suppressed-gracefully" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SFT-06</code></li>
+<li><strong>Category</strong>: Software Defect</li>
+<li><strong>Original Document</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md"><code>agent_wiki/audit/technical_debt.md</code></a></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/utils/i18n_manager.py#L98-L126"><code>utils/i18n_manager.py:98-126</code></a></li>
+<li><strong>Severity</strong>: LOW</li>
+<li><strong>Status</strong>: RESOLVED</li>
+<li><strong>Date Resolved</strong>: 2026-09-23</li>
+<li><strong>Previous Defect</strong>:</li>
+<li><code>translations/</code> contained only empty placeholder <code>.ts</code> files and no compiled <code>.qm</code> binaries.</li>
+<li>On startup on non-English systems (e.g. Ukrainian <code>uk</code>), <code>I18nManager.load_and_install_translator('uk')</code> attempted to load <code>app_uk.qm</code> and <code>app_en.qm</code>, emitting repeated <code>WARNING</code> logs:
+    <code>WARNING - Could not load translation file for locale 'uk': ... app_uk.qm</code>
+    <code>WARNING - Fallback English translation 'app_en.qm' also not found.</code></li>
+<li><strong>Resolution Details</strong>:</li>
+<li>The application source strings are natively defined in English.</li>
+<li>Added explicit <code>translation_path.is_file()</code> existence check. If translation files are absent, it logs at <code>DEBUG</code> level and quietly falls back to default English UI text without emitting warnings.</li>
+<li><strong>Verification</strong>: Verified clean startup without translation warnings.</li>
+</ul>
+<hr />
+<h3 id="sft-07-parsers-directory-elimination-las-parser-consolidation">[SFT-07] Parsers Directory Elimination &amp; LAS Parser Consolidation<a class="headerlink" href="#sft-07-parsers-directory-elimination-las-parser-consolidation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SFT-07</code></li>
+<li><strong>Category</strong>: Architectural Refactoring / Dead Code Deprecation</li>
+<li><strong>Original Document</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/architecture/module_map.md"><code>agent_wiki/architecture/module_map.md</code></a></li>
+<li><strong>Location</strong>: <code>parsers/</code> <span class="arithmatex">\(\rightarrow\)</span> <code>deprecated/parsers/</code> and <a href="file:///d:/rep/4.6/co2eor_optimizer/utils/las_parser.py"><code>utils/las_parser.py</code></a></li>
+<li><strong>Severity</strong>: LOW</li>
+<li><strong>Status</strong>: RESOLVED</li>
+<li><strong>Date Resolved</strong>: 2026-09-23</li>
+<li><strong>Previous Defect</strong>:</li>
+<li>The <code>parsers/</code> directory contained 3 files: <code>base_parser.py</code> (abstract OOP interface for dead ECLIPSE parser), <code>validation.py</code> (obsolete 3D ECLIPSE grid checks and orphaned well checks), and <code>las_parser.py</code> (functional LAS log parser).</li>
+<li>Having a standalone top-level package <code>parsers/</code> for a single active file was unnecessary overhead.</li>
+<li><strong>Resolution Details</strong>:</li>
+<li>Archived <code>base_parser.py</code>, <code>validation.py</code>, and legacy <code>eclipse_parser.py</code> into <code>deprecated/parsers/</code>.</li>
+<li>Relocated <code>las_parser.py</code> into <code>utils/las_parser.py</code> and exported <code>parse_las</code> and <code>MissingWellNameError</code> in <code>utils/__init__.py</code>.</li>
+<li>Removed top-level <code>parsers/</code> directory completely.</li>
+<li>Wired up <code>Import LAS...</code> button in <code>ui/data_management_widget.py</code> Wells tab to enable interactive loading of <code>.las</code> logs into <code>WellData</code>.</li>
+<li>Fixed <code>lasio.exceptions.LASHeaderError</code> import and file existence checks in <code>utils/las_parser.py</code>.</li>
+<li><strong>Verification</strong>: <code>tests/test_las_parser.py</code> (6 unit tests, 100% passing); full pytest suite passes with 0 errors.</li>
+</ul>
+<hr />
+<h3 id="sft-08-core-directory-architecture-audit-prototyping-artifacts-elimination">[SFT-08] Core Directory Architecture Audit &amp; Prototyping Artifacts Elimination<a class="headerlink" href="#sft-08-core-directory-architecture-audit-prototyping-artifacts-elimination" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SFT-08</code></li>
+<li><strong>Category</strong>: Architectural Refactoring / Dead Code Elimination</li>
+<li><strong>Original Document</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/architecture/source_of_truth_map.md"><code>agent_wiki/architecture/source_of_truth_map.md</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/dead_code.md"><code>agent_wiki/audit/dead_code.md</code></a></li>
+<li><strong>Location</strong>: <code>core/</code></li>
+<li><strong>Severity</strong>: MEDIUM</li>
+<li><strong>Status</strong>: RESOLVED</li>
+<li><strong>Date Resolved</strong>: 2026-09-23</li>
+<li><strong>Previous Defect</strong>:</li>
+<li>The <code>core/</code> package accumulated prototyping artifacts, unused grid abstractions, dormant validation subdirectories, duplicate plotting routines, and abandoned response surface ML models.</li>
+<li><code>core/simulation/recovery_models.py</code> contained numerical solvers superseded by <code>core/engine_surrogate/analytical_models.py</code>.</li>
+<li><code>core/geology/__init__.py</code> exported <code>GeologyEngine</code>, an uncalibrated module using arbitrary depth multipliers (1.1, 0.9, 0.7).</li>
+<li><code>core/optimisation_engine.py</code> held dead fallback imports (<code>npv</code>, breakthrough classes), unphysical constants (<code>ACRES_TO_CM2 = 40468564.224</code>, <code>B_GAS_RB_PER_MSCF = 5.0</code>), and duplicated 165 lines of Plotly charts implemented in <code>PlottingManager</code>.</li>
+<li>Welge tangent construction in Buckley-Leverett and literature fractional flow in <code>analytical_models.py</code> evaluated <code>max(k_rg, EPSILON)</code> on array <code>k_rg</code>, triggering <code>ValueError: The truth value of an array with more than one element is ambiguous</code>.</li>
+<li><strong>Resolution Details</strong>:</li>
+<li><strong>Dead Code Elimination</strong>: Completely removed <code>core/validation/</code> (1,290 lines), <code>core/optimization_analysis.py</code> (886 lines), <code>core/objectives/base.py</code> &amp; <code>production.py</code> (136 lines), <code>core/exceptions.py</code> (32 lines), and <code>core/utils/</code> (36 lines).</li>
+<li><strong>Subsystem Deprecations &amp; Shims</strong>:<ul>
+<li>Relocated <code>core/simulation/recovery_models.py</code> and <code>profile_generator.py</code> to <code>deprecated/core/simulation/</code>, adding transparent backward-compatible deprecation shims in <code>core/simulation/</code>.</li>
+<li>Relocated uncalibrated <code>GeologyEngine</code> to <code>deprecated/core/geology/geology_engine.py</code> and added a lazy deprecation import shim in <code>core/geology/__init__.py</code>.</li>
+<li>Relocated ML response surface files (<code>response_surfaces.py</code>, <code>feature_transformer.py</code>, <code>training_data.py</code>, <code>model_factory.py</code>) to <code>deprecated/core/engine_surrogate/</code>.</li>
+<li>Relocated deck export logic to <code>utils/cmg_exporter.py</code> with backward-compatible deprecation shim in <code>core/simulation/simulator_exporter.py</code>.</li>
+</ul>
+</li>
+<li><strong>In-File Prototyping Cleanups</strong>:<ul>
+<li><code>core/data_models.py</code>: Removed dead grid classes (<code>GridType</code>, <code>GridBase</code>, <code>SimpleGrid</code>, <code>FullPhysicsGrid</code>), <code>ReservoirState</code>, and <code>RockProperties</code>. Inlined pore volume calculation. Added <code>FluidProperties</code> compatibility dataclass.</li>
+<li><code>core/data_integration_engine.py</code>: Removed duplicate <code>DataValidator</code> and <code>UnitConverter</code>, refactored to use <code>PhysicalConstants</code>.</li>
+<li><code>core/objectives/storage.py</code>: Removed dead prototype functions; retained verified active containment and storage efficiency models.</li>
+<li><code>core/engine_surrogate/analytical_models.py</code>: Replaced <code>max(k_rg, EPSILON)</code> with <code>np.maximum(k_rg, EPSILON)</code> for vectorized Welge shock front construction; added <code>KovalRecoveryModel = KovalSurrogate</code> alias.</li>
+<li><code>core/optimisation_engine.py</code>: Removed dead imports (<code>npv</code>, breakthrough classes); cleaned constants (<code>B_GAS_RB_PER_MSCF = 1.0</code> fallback); delegated GA, hybrid model, and breakthrough mechanism plotting directly to <code>PlottingManager</code>.</li>
+</ul>
+</li>
+<li><strong>Startup Smoke Test</strong>: Added <code>tests/test_app_startup.py</code> which executes <code>timed_import_main_window()</code>, <code>SensitivityAnalyzer</code>, and <code>ProductionProfiler</code> under <code>QApplication</code>, permanently guarding against startup import regressions.</li>
+<li><strong>Verification</strong>: All 310 tests pass (307 existing + 3 startup smoke tests); application boots and exits cleanly with code 0.</li>
 </ul>
 
 

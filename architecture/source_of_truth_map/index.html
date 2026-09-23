@@ -2881,16 +2881,16 @@
 <tr>
 <td style="text-align: left;"><strong>Rate Profile Generation</strong></td>
 <td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py">core/engine_surrogate/profile_generator_fast.py</a> (<code>FastProfileGenerator</code>)</td>
-<td style="text-align: left;"><code>core/simulation/profile_generator.py</code>, <code>core/simulation/injection_schemes.py</code>, <code>analysis/profiler.py</code></td>
-<td style="text-align: left;"><code>core/simulation</code> modules emit deprecation warnings. <code>analysis/profiler.py</code> contains old heuristic clamps (e.g., 0.4–0.85 CO2 saturation near well).</td>
-<td style="text-align: left;"><strong>Never modify <code>analysis/profiler.py</code> or <code>core/simulation/profile_generator.py</code></strong>. All profiles are synthesized by <code>FastProfileGenerator</code>.</td>
+<td style="text-align: left;"><code>deprecated/core/simulation/profile_generator.py</code>, <code>analysis/profiler.py</code></td>
+<td style="text-align: left;">Legacy <code>core/simulation</code> modules relocated to <code>deprecated/</code>. <code>analysis/profiler.py</code> contains old heuristic clamps (e.g., 0.4–0.85 CO2 saturation near well).</td>
+<td style="text-align: left;"><strong>Never modify <code>analysis/profiler.py</code> or legacy profile generators</strong>. All profiles are synthesized by <code>FastProfileGenerator</code>.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Recovery Factor Calculation</strong></td>
 <td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py">core/engine_surrogate/analytical_models.py</a> (<code>PhDHybridSurrogate</code>)</td>
-<td style="text-align: left;"><code>core/simulation/recovery_models.py</code> (<code>MiscibleRecoveryModel</code>, <code>DykstraParsonsModel</code>, etc.)</td>
-<td style="text-align: left;"><code>recovery_models.py</code> has an <code>fsolve</code> numerical solver with fallback. <code>analytical_models.py</code> uses direct closed-form formulas and finite differencing.</td>
-<td style="text-align: left;"><strong>Modify <code>analytical_models.py</code></strong>. <code>recovery_models.py</code> is only used as an emergency fallback inside <code>analytical_models.py</code>.</td>
+<td style="text-align: left;"><code>deprecated/core/simulation/recovery_models.py</code> (<code>MiscibleRecoveryModel</code>, <code>DykstraParsonsModel</code>, etc.)</td>
+<td style="text-align: left;">Legacy models relocated to <code>deprecated/core/simulation/</code>. <code>analytical_models.py</code> uses direct closed-form formulas and finite differencing.</td>
+<td style="text-align: left;"><strong>Modify <code>analytical_models.py</code></strong>. Authoritative source for all analytical recovery models.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Net Present Value (NPV)</strong></td>
@@ -2912,6 +2912,20 @@
 <td style="text-align: left;"><code>core/objectives/economic.py</code>, <code>core/objectives/storage.py</code></td>
 <td style="text-align: left;">Calculates RF, NPV, storage efficiency, and CO₂ utilization from simulation profiles. Missing/unphysical data returns <code>NaN</code>.</td>
 <td style="text-align: left;"><strong><code>wrapper.py</code> is authoritative</strong> for GA/BO scoring. Class E synthetic modifiers and magic number fallbacks are completely eliminated.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Geological Modeling</strong></td>
+<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/geology/geostatistical_modeling.py">core/geology/geostatistical_modeling.py</a> (<code>create_geostatistical_grid</code>)</td>
+<td style="text-align: left;"><code>deprecated/core/geology/geology_engine.py</code> (<code>GeologyEngine</code>)</td>
+<td style="text-align: left;">Uncalibrated <code>GeologyEngine</code> moved to <code>deprecated/core/geology/</code>. Active grid generation routes through geostatistical modeling.</td>
+<td style="text-align: left;"><strong>Modify <code>geostatistical_modeling.py</code></strong>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Deck Export (CMG)</strong></td>
+<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/utils/cmg_exporter.py">utils/cmg_exporter.py</a> (<code>SimulatorExporter</code>)</td>
+<td style="text-align: left;"><code>core/simulation/simulator_exporter.py</code> (deprecated shim)</td>
+<td style="text-align: left;">Deck export is an output utility, not a simulation physics solver. Moved to <code>utils/cmg_exporter.py</code>.</td>
+<td style="text-align: left;"><strong>Modify <code>utils/cmg_exporter.py</code></strong>.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Minimum Miscibility Pressure (MMP)</strong></td>

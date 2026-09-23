@@ -2941,38 +2941,45 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>ui/main_window.py</code></td>
-<td style="text-align: center;">1,620</td>
+<td style="text-align: center;">1,990</td>
 <td style="text-align: left;"><code>MainWindow</code></td>
-<td style="text-align: left;">Main application shell, menus, status bars, report export.</td>
-<td style="text-align: left;">Contains software bug: undefined <code>charts</code> variable in <code>_generate_report_data</code> (line 1528).</td>
+<td style="text-align: left;">Main application shell, menus, status bars, tab wiring, report export.</td>
+<td style="text-align: left;">Active and stable; report generation and engine signals guarded.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/config_widget.py</code></td>
+<td style="text-align: center;">1,310</td>
+<td style="text-align: left;"><code>ConfigWidget</code></td>
+<td style="text-align: left;">Visual configuration editor for application dataclasses and engine constraints.</td>
+<td style="text-align: left;">Active and stable; single surrogate engine badge, <code>engine_selection_changed</code> signal.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ui/optimization_widget.py</code></td>
-<td style="text-align: center;">1,840</td>
+<td style="text-align: center;">2,050</td>
 <td style="text-align: left;"><code>OptimizationWidget</code></td>
 <td style="text-align: left;">Setup tab for algorithms, parameters, well counts, objective weights.</td>
-<td style="text-align: left;">Contains bare <code>except:</code> at line 994; references undefined <code>UnlockParametersDialog</code> at line 1774.</td>
+<td style="text-align: left;">Active and stable; <code>UnlockParametersDialog</code> and typed bounds integrated.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ui/sensitivity_widget.py</code></td>
 <td style="text-align: center;">560</td>
 <td style="text-align: left;"><code>SensitivityWidget</code></td>
 <td style="text-align: left;">Interactive sensitivity analysis charts (tornado, re-optimization).</td>
-<td style="text-align: left;">Contains software bugs: missing imports for <code>pd</code>, <code>np</code>, <code>go</code>, <code>make_subplots</code> (lines 450-525).</td>
+<td style="text-align: left;">Active and stable; Plotly subplots and pandas/numpy imports verified.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ui/uq_widget.py</code></td>
 <td style="text-align: center;">380</td>
 <td style="text-align: left;"><code>UQWidget</code></td>
 <td style="text-align: left;">Uncertainty quantification interface (Monte Carlo &amp; PCE).</td>
-<td style="text-align: left;">Contains software bugs: missing PyQt6 imports <code>QSpinBox</code>, <code>QTextBrowser</code> (lines 172, 176, 267).</td>
+<td style="text-align: left;">Active and stable; Qt widgets verified.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ui/data_management_widget.py</code></td>
-<td style="text-align: center;">740</td>
+<td style="text-align: center;">1,980</td>
 <td style="text-align: left;"><code>DataManagementWidget</code></td>
 <td style="text-align: left;">Petrophysical data loading, PVT properties, and LAS well log inspector.</td>
-<td style="text-align: left;">Active and stable.</td>
+<td style="text-align: left;">Active and stable; <code>utils.config_manager</code> imports and <code>set_engine_type</code> integrated.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ui/workers/optimization_worker.py</code></td>
