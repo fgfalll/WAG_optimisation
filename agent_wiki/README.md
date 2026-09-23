@@ -72,6 +72,14 @@ Before reading or modifying any file in this repository, keep the following **co
 12. **Test Suite Health & Zero Silent Swallowing**:
     Zero silent exception swallowing across core scientific modules. All physical states are logged contextually. Unphysical or violating candidates receive explicit mathematical penalties (`FAILURE_PENALTY = -10^{12}`) to kill off unviable chromosomes.
 
+13. **Project Save/Load & State Persistence Integrity**:
+    User projects (`.tphd` JSON format via `utils/project_file_handler.py`) must cleanly round-trip all reservoir geometries, PVT parameters, well patterns, tuning overrides, and optimization results:
+    - **Shallow Dataclass Encoding**: `ProjectEncoder` serializes fields shallowly so nested dataclasses (`EOSModelParameters`, `LayerDefinition`, `GeostatisticalParams`) preserve `_dataclass` type annotations. Never invoke recursive `dataclasses.asdict()`.
+    - **Backwards Compatibility**: `project_decoder` must dynamically reconstitute untyped dictionary representations from legacy projects into typed dataclasses.
+    - **Robust Grid Ingestion**: Grid permeability deserialization in `DataManagementWidget` must support scalar, 1D flattened, and multi-dimensional grid arrays (e.g. `PERMX.flat[0]`), never assuming 3D shapes.
+    - **Engine Results Restoration**: `OptimizationEngine.results` must provide `@results.setter` to ensure saved runs can be restored into engines and GUI summary plots.
+    - **Verification Requirement**: Whenever data models or UI widgets are modified, agents must run `pytest tests/test_project_save_load.py -v`.
+
 ---
 
 ## 📖 Recommended Reading Order

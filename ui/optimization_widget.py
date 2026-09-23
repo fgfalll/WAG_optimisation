@@ -782,6 +782,9 @@ class OptimizationWidget(QWidget):
         )
 
         if self.engine:
+            if hasattr(self.engine, "results") and self.engine.results and self.current_results is None:
+                self.current_results = self.engine.results
+                self.export_button.setEnabled(True)
             self._populate_dataclass_form(
                 self.engine.ga_params_default_config, self.ga_params_form, self.ga_param_inputs
             )
@@ -2536,14 +2539,34 @@ class OptimizationWidget(QWidget):
         )
         return fig
 
-    def update_graphs(self):
+    def update_graphs(self, results: Optional[Dict[str, Any]] = None):
         """Public method to be called after loading a project to refresh all graphs."""
+        if results is not None:
+            self.current_results = results
         logger.info("OptimizationWidget explicitly requested to update all graphs.")
         if self.current_results:
+            self.export_button.setEnabled(True)
             self._setup_analysis_options()
+            if self.plot_list.count() > 0:
+                is_single = (
+                    self.current_results.get("method") == "single_simulation"
+                    if self.current_results
+                    else False
+                )
+                target_plot = (
+                    self.tr("Final Production Profiles")
+                    if is_single
+                    else self.tr("Convergence")
+                )
+                matching = self.plot_list.findItems(target_plot, Qt.MatchFlag.MatchExactly)
+                if matching:
+                    self.plot_list.setCurrentItem(matching[0])
+                else:
+                    self.plot_list.setCurrentRow(0)
             self._generate_selected_plot()
             self._display_detailed_summary(self.current_results)
             self._display_summary(self.current_results)
             self._display_dynamic_table(self.current_results)
+            self.results_tabs.setCurrentIndex(2)  # Switch to Optimization Summary
         if self.mmp_worker and self.mmp_worker.result:
             self._on_mmp_result(self.mmp_worker.result)

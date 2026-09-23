@@ -72,6 +72,7 @@ All issue entries across the wiki follow this machine-readable section schema to
 | **SFT-08** | Core Directory Architecture Audit & Prototyping Artifacts Elimination | Architectural Refactoring | `source_of_truth_map.md` | 2026-09-23 | **VERIFIED** |
 | **SFT-09** | Application Entry Point (`main.py`) Modernization & Multiprocess Logging Decoupling | Architectural Refactoring | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
 | **SFT-10** | Data Models (`core/data_models.py`) Type Safety Hardening & Fault/Fluid Separation | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
+| **SFT-11** | Project Save/Load Failure & State Serialization Breakdown | Software Defect | `technical_debt.md` | 2026-09-24 | **VERIFIED** |
 
 ---
 
@@ -857,6 +858,33 @@ All issue entries across the wiki follow this machine-readable section schema to
   - Declared `fluxes: Optional[np.ndarray] = None` in `CCUSState`.
   - Added generic type parameter `TypeVar("T")` to `from_dict_to_dataclass(cls: Type[T], data: Dict[str, Any]) -> T`.
 - **Verification**: `tests/test_reservoir_outputs_streams.py` and `tests/test_app_startup.py` pass 6/6 tests.
+
+---
+
+### [SFT-11] Project Save/Load Failure & State Serialization Breakdown
+- **ID**: `SFT-11`
+- **Category**: Software Defect / Data Persistence
+- **Original Document**: [`agent_wiki/audit/technical_debt.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md)
+- **Location**: [`utils/project_file_handler.py`](file:///d:/rep/4.6/co2eor_optimizer/utils/project_file_handler.py), [`ui/data_management_widget.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py), [`core/optimisation_engine.py`](file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py), [`ui/main_window.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/main_window.py), [`ui/optimization_widget.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/optimization_widget.py)
+- **Severity**: HIGH
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-24
+- **Previous Defect**:
+  - `ProjectEncoder.default` used recursive `dataclasses.asdict(o)`. This stripped `_dataclass` type metadata from nested dataclasses (`eos_model`, `layer_definitions`, `geostatistical_params`), corrupting their types upon deserialization.
+  - `DataManagementWidget.load_project_data()` indexed `grid['PERMX'][0,0,0]`. When loading grids flattened to 1D (`shape: (25000,)`) by `DataIntegrationEngine`, Python threw an unhandled `IndexError: too many indices for array`, which terminated the loading routine and left all input widgets empty.
+  - `OptimizationEngine.results` was a `@property` without a `@results.setter`, causing `self.optimisation_engine_instance.results = optimization_results` in `MainWindow._update_engines_and_tabs` to throw `AttributeError: can't set attribute 'results'`.
+  - Multiple reservoir and fluid parameters were omitted from UI widget restoration: `area`, `thickness`, `length`, `dip_angle`, `density_contrast`, `interfacial_tension`, `rock_type`, `depositional_environment`, `structural_complexity`, `gas_viscosity_cp`, `c7_plus_fraction`, and `co2_solubility_scm_per_bbl`. In addition, `dip_angle`, `density_contrast`, and `interfacial_tension` lacked UI controls in the Reservoir tab.
+  - `MainWindow._perform_project_load` evaluated `locals().get("stacked_layout_index", 0)`, leaving the user stranded on the welcome view (index 0).
+  - Saving did not query `DataManagementWidget` or `ConfigTab` for active user edits, and omitted saving `manual_inputs` and `uq_results`.
+- **Resolution Details**:
+  - `utils/project_file_handler.py`: Replaced recursive `asdict` with shallow dataclass field serialization to preserve `_dataclass` tags on nested objects. Enhanced `project_decoder` with backwards-compatibility logic to convert untyped dictionaries into typed `EOSModelParameters`, `LayerDefinition`, and `GeostatisticalParams`.
+  - `ui/data_management_widget.py`: Replaced `[0,0,0]` with `.flat[0]` to safely extract permeability across scalar, 1D flattened, and 3D arrays. Restored all missing volumetric, geological, and PVT parameters into UI widgets on load. Added UI controls for `dip_angle`, `density_contrast`, and `interfacial_tension` in `uniform_props_group`. Implemented `get_current_project_data()` to flush active edits before saving.
+  - `core/optimisation_engine.py`: Added `@results.setter` to the `results` property.
+  - `ui/optimization_widget.py`: Enabled `export_button` when results exist, auto-selected the default plot in `plot_list`, switched to the Summary tab on load, and accepted optional results in `update_graphs()`.
+  - `ui/main_window.py`: Unconditionally transitioned to the main app view via `_transition_to_main_app_view()`. Flushed UI state before saving and persisted `manual_inputs` and `uq_results`.
+  - `tests/test_project_save_load.py`: Created a comprehensive test suite asserting roundtrip serialization, legacy compatibility with `test.tphd`, UI flush & restoration with 1D arrays, and results adoption.
+- **Verification**: `tests/test_project_save_load.py` passed 5/5 tests; full regression suite passed 31/31 tests.
+
 
 
 

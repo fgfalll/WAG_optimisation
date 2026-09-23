@@ -776,7 +776,9 @@ class MainWindow(QMainWindow):
                     GeneticAlgorithmParams.__name__: self.current_ga_params,
                     BayesianOptimizationParams.__name__: self.current_bo_params,
                 },
+                "manual_inputs": project_data_dict.get("manual_inputs", {}),
                 "uq_parameters": project_data_dict.get("uq_parameters", []),
+                "uq_results": project_data_dict.get("uq_results"),
                 "sensitivity_results": project_data_dict.get("sensitivity_results"),
                 "optimization_results": project_data_dict.get("optimization_results"),
                 "ui_state": project_data_dict.get("ui_state", {}),
@@ -797,14 +799,9 @@ class MainWindow(QMainWindow):
 
             QTimer.singleShot(0, self._update_ui_after_project_load)
 
-            if self.stacked_layout.currentIndex() == 1:
-                self._transition_to_main_app_view(
-                    focus_tab_index=locals().get("current_tab_index", 0)
-                )
-            else:
-                self.stacked_layout.setCurrentIndex(
-                    locals().get("stacked_layout_index", 0)
-                )
+            ui_state = project_data_dict.get("ui_state", {})
+            target_tab_index = ui_state.get("current_tab_index", 0) if isinstance(ui_state, dict) else 0
+            self._transition_to_main_app_view(focus_tab_index=target_tab_index)
 
             self.overview_page.add_recent_project(str(filepath))
             self.show_status_message(
@@ -848,6 +845,7 @@ class MainWindow(QMainWindow):
                     "reservoir_data": self.current_reservoir_data,
                     "pvt_properties": self.current_pvt_properties,
                     "well_data_list": self.current_well_data,
+                    "manual_inputs": data.get("manual_inputs", {}),
                 }
             )
             QApplication.processEvents()
@@ -873,7 +871,11 @@ class MainWindow(QMainWindow):
             self._update_graphs_after_load()
 
             if data.get("optimization_results"):
-                self._on_optimization_run_completed(data.get("optimization_results"))
+                self._on_optimization_run_completed(
+                    data.get("optimization_results"), from_project_load=True
+                )
+
+            self.set_project_modified(False)
 
         except Exception as e:
             logger.error(f"Error updating UI after project load: {e}", exc_info=True)
@@ -892,15 +894,17 @@ class MainWindow(QMainWindow):
             )
 
             optimization_results = data.get("optimization_results")
-            if optimization_results and self.optimisation_engine_instance:
-                self.optimisation_engine_instance.results = optimization_results
-                self.optimization_tab.current_results = optimization_results
-                logger.info("Manually set optimization results on engine and tab.")
+            if optimization_results:
+                if self.optimisation_engine_instance:
+                    self.optimisation_engine_instance.results = optimization_results
+                if hasattr(self, "optimization_tab") and self.optimization_tab:
+                    self.optimization_tab.current_results = optimization_results
+                logger.info("Set optimization results on engine and tab.")
 
             uq_results = data.get("uq_results")
-            if uq_results and self.analysis_tab.uq_engine:
+            if uq_results and hasattr(self, "analysis_tab") and self.analysis_tab.uq_engine:
                 self.analysis_tab.uq_engine.results = uq_results
-                logger.info("Manually set UQ results on UQEngine.")
+                logger.info("Set UQ results on UQEngine.")
 
         except Exception as e:
             logger.error(f"Error updating engines and tabs: {e}", exc_info=True)
@@ -908,10 +912,10 @@ class MainWindow(QMainWindow):
     def _restore_ui_state(self, data):
         """Restore UI state from loaded data."""
         try:
-            ui_state = data["ui_state"]
+            ui_state = data.get("ui_state", {})
             if ui_state:
                 current_tab_index = ui_state.get("current_tab_index", 0)
-                stacked_layout_index = ui_state.get("stacked_layout_index", 0)
+                stacked_layout_index = ui_state.get("stacked_layout_index", 1)
                 self.main_tab_widget.setCurrentIndex(current_tab_index)
                 self.stacked_layout.setCurrentIndex(stacked_layout_index)
         except Exception as e:
@@ -1027,11 +1031,58 @@ class MainWindow(QMainWindow):
         )
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
-            optimization_results_to_save = self._prepare_results_for_saving(
-                self.optimisation_engine_instance.results
-                if self.optimisation_engine_instance
-                else None
-            )
+            # Synchronize latest data from data_management_tab
+            manual_inputs = {}
+            if hasattr(self, "data_management_tab") and self.data_management_tab:
+                try:
+                    dm_data = self.data_management_tab.get_current_project_data()
+                    if dm_data.get("reservoir_data") is not None:
+                        self.current_reservoir_data = dm_data["reservoir_data"]
+                    if dm_data.get("pvt_properties") is not None:
+                        self.current_pvt_properties = dm_data["pvt_properties"]
+                    if dm_data.get("well_data_list"):
+                        self.current_well_data = dm_data["well_data_list"]
+                    manual_inputs = dm_data.get("manual_inputs", {})
+                except Exception as e:
+                    logger.warning(f"Could not synchronize data from data_management_tab: {e}")
+
+            # Synchronize latest configs from config_tab
+            if hasattr(self, "config_tab") and self.config_tab:
+                try:
+                    current_configs = self.config_tab.get_current_config_data_instances()
+                    self.current_economic_params = current_configs.get(
+                        EconomicParameters.__name__, self.current_economic_params
+                    )
+                    self.current_eor_params = current_configs.get(
+                        EORParameters.__name__, self.current_eor_params
+                    )
+                    self.current_operational_params = current_configs.get(
+                        OperationalParameters.__name__, self.current_operational_params
+                    )
+                    self.current_profile_params = current_configs.get(
+                        ProfileParameters.__name__, self.current_profile_params
+                    )
+                    self.current_ga_params = current_configs.get(
+                        GeneticAlgorithmParams.__name__, self.current_ga_params
+                    )
+                    self.current_bo_params = current_configs.get(
+                        BayesianOptimizationParams.__name__, self.current_bo_params
+                    )
+                except Exception as e:
+                    logger.warning(f"Could not retrieve latest configs from config_tab: {e}")
+
+            opt_results = None
+            if self.optimisation_engine_instance and self.optimisation_engine_instance.results:
+                opt_results = self.optimisation_engine_instance.results
+            elif hasattr(self, "optimization_tab") and getattr(self.optimization_tab, "current_results", None):
+                opt_results = self.optimization_tab.current_results
+
+            optimization_results_to_save = self._prepare_results_for_saving(opt_results)
+
+            uq_results_to_save = None
+            if hasattr(self, "analysis_tab") and hasattr(self.analysis_tab, "uq_engine") and self.analysis_tab.uq_engine:
+                uq_results_to_save = getattr(self.analysis_tab.uq_engine, "results", None)
+
             data_to_save = {
                 "schema_version": "1.1",
                 "application_version": QApplication.applicationVersion(),
@@ -1039,6 +1090,7 @@ class MainWindow(QMainWindow):
                 "well_data_list": self.current_well_data,
                 "reservoir_data": self.current_reservoir_data,
                 "pvt_properties": self.current_pvt_properties,
+                "manual_inputs": manual_inputs,
                 "mmp_value": self.current_mmp_value,
                 "economic_parameters": self.current_economic_params,
                 "eor_parameters": self.current_eor_params,
@@ -1051,6 +1103,7 @@ class MainWindow(QMainWindow):
                 if self.sensitivity_analyzer_instance
                 else None,
                 "uq_parameters": self.analysis_tab.get_uq_parameters(),
+                "uq_results": uq_results_to_save,
                 "ui_state": {
                     "current_tab_index": self.main_tab_widget.currentIndex(),
                     "stacked_layout_index": self.stacked_layout.currentIndex(),
@@ -1841,11 +1894,21 @@ class MainWindow(QMainWindow):
         self.main_tab_widget.setCurrentIndex(0)
         self.show_status_message(self.tr("Configuration panel opened."), 3000)
 
-    @pyqtSlot(dict)
-    def _on_optimization_run_completed(self, results: Dict[str, Any]):
+    def _on_optimization_run_completed(
+        self, results: Dict[str, Any], from_project_load: bool = False
+    ):
         logger.info("MainWindow: Optimization run completed.")
-        self.set_project_modified(True)
-        self.show_status_message(self.tr("Optimization complete."), 5000)
+        if not from_project_load:
+            self.set_project_modified(True)
+            self.show_status_message(self.tr("Optimization complete."), 5000)
+
+        if self.optimisation_engine_instance:
+            if not self.optimisation_engine_instance.results and results:
+                self.optimisation_engine_instance.results = results
+        if hasattr(self, "optimization_tab") and self.optimization_tab and results:
+            if not getattr(self.optimization_tab, "current_results", None):
+                self.optimization_tab.current_results = results
+
         if self.optimisation_engine_instance and self.optimisation_engine_instance.results:
             try:
                 self.sensitivity_analyzer_instance = SensitivityAnalyzer(

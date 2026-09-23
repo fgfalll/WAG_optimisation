@@ -63,6 +63,9 @@ python main.py
 ### Run Tests
 ```bash
 python -m pytest tests/ -v
+
+# Run Project Save/Load verification (mandatory after model/UI changes)
+python -m pytest tests/test_project_save_load.py -v
 ```
 
 ---
@@ -115,6 +118,12 @@ co2eor_optimizer/
 - **Bayesian Optimization** (Gaussian Process surrogate)
 - **Particle Swarm Optimization**
 - **Differential Evolution**
+
+### 💾 Project Persistence & Serialization
+- **Lossless `.tphd` file format**: Full state persistence for reservoir parameters, PVT models, well schedules, manual inputs, and optimization runs
+- **Type-preserving dataclass serialization**: Preserves nested types (`EOSModelParameters`, `LayerDefinition`, `GeostatisticalParams`)
+- **Grid-shape agnostic**: Ingests scalar, 1D flattened, and 3D petrophysical arrays seamlessly
+- **Automated verification**: Dedicated regression test suite (`tests/test_project_save_load.py`) guarding against breaking changes
 
 ---
 

@@ -423,6 +423,11 @@ class OptimizationEngine:
         """Returns the results of the last optimization run."""
         return self._results
 
+    @results.setter
+    def results(self, value: Optional[Dict[str, Any]]) -> None:
+        """Sets the results of the optimization run."""
+        self._results = value
+
     def calculate_mmp(self, method_override: Optional[str] = None) -> float:
         """Calculates the MMP using the configured method or an override."""
         if self._mmp_value_init_override is not None:

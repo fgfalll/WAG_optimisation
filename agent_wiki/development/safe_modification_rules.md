@@ -72,3 +72,13 @@ To prevent accidental breakage of scientific invariants or silent corruption of 
 - **The Rule**: Arps decline models ($q(t) = q_i / (1 + b D_i t)^{1/b}$) are physically valid only in boundary-dominated decline ($dq/dt < 0$).
 - **Protocol**: In `analysis/decline_curve_analysis.py`, always detect plateau onset ($q(t) < 0.95 \times q_{\text{peak}}$). If a multi-year plateau exists, preserve historical plateau rates and fit Arps parameters strictly to the declining segment $(t - t_{\text{onset}})$. Never regress Arps equations across a plateau.
 
+## 13. Project Save/Load Serialization & State Preservation Integrity
+- **The Rule**: Any changes to data models in `core/data_models.py`, serialization logic in `utils/project_file_handler.py`, or GUI tabs (`ui/data_management_widget.py`, `ui/config_widget.py`, `ui/main_window.py`) must guarantee that saving to `.tphd` and loading from `.tphd` round-trips without data loss, type stripping, or unhandled exceptions.
+- **Protocol**:
+  1. **Shallow Dataclass Serialization**: In `ProjectEncoder`, never use recursive `dataclasses.asdict(o)`, which strips `_dataclass` tags from nested dataclasses (`EOSModelParameters`, `LayerDefinition`, `GeostatisticalParams`). Instead, serialize fields shallowly.
+  2. **Backwards Compatibility**: In `project_decoder`, convert untyped nested dicts into typed dataclasses to ensure legacy `.tphd` project files load seamlessly.
+  3. **Array Shape Agnostic Ingestion**: In `DataManagementWidget.load_project_data()`, handle scalar, 1D flattened, and multi-dimensional grid arrays (e.g. `grid['PERMX'].flat[0]`), never assuming 3D indexing `[0,0,0]`.
+  4. **Engine Results Accessor**: `OptimizationEngine.results` must retain `@results.setter` so that restored optimization runs populate engine state and GUI graphs.
+  5. **UI State Flush Before Save**: In `MainWindow._perform_project_save()`, always query `data_management_tab.get_current_project_data()` and `config_tab.get_all_configurations()` to synchronize active widget inputs before writing to disk.
+  6. **Mandatory Test**: Run `pytest tests/test_project_save_load.py -v` whenever touching data models, serialization, or UI state.
+

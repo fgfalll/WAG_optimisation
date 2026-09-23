@@ -32,6 +32,7 @@ The **Agent Wiki** (`agent_wiki/`) is the definitive, authoritative source of tr
 2. **Deliverability & Inflow (IPR)**: Well production is governed by Composite Vogel-Darcy IPR clamped to physical reservoir limits. Never scale field recovery by well counts.
 3. **Mass Conservation**: Cumulative recycled CO₂ cannot exceed cumulative produced CO₂ ($M_{\text{recycled}} \le M_{\text{produced}} \le M_{\text{injected}}$).
 4. **Geomechanical Safety**: Sandface injection pressure is strictly bounded by EPA Class VI UIC standards ($P_{\text{sandface}} \le 0.90 \times P_{\text{frac}}$).
+5. **Project Save/Load & State Persistence**: All user inputs, reservoir configurations, PVT models, well coordinates, manual overrides, and optimization results must cleanly serialize and deserialize to/from `.tphd` files via `utils/project_file_handler.py`. Never use recursive `dataclasses.asdict()` (it strips `_dataclass` tags on nested objects). Grid permeability loading must support scalar, 1D flattened, and 3D arrays. Whenever modifying data models or UI widgets, you MUST run `pytest tests/test_project_save_load.py -v`.
 
 
 ## Build, Lint, and Test Commands
@@ -52,6 +53,9 @@ pip install -r requirements.txt
 ```bash
 # Run all tests
 python -m pytest tests/ -v
+
+# Run project save/load verification (MANDATORY after data model or UI changes)
+python -m pytest tests/test_project_save_load.py -v
 
 # Run a single test file
 python -m pytest tests/test_imports.py -v

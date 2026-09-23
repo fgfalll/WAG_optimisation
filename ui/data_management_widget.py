@@ -423,7 +423,11 @@ class DataManagementWidget(QWidget):
         
         self.uniform_props_group = QGroupBox("Uniform Properties")
         uniform_props_layout = QGridLayout(self.uniform_props_group)
-        for i, name in enumerate(['poro', 'perm', 'rock_compressibility', 'kv_kh_ratio']):
+        uniform_res_keys = [
+            'poro', 'perm', 'rock_compressibility', 'kv_kh_ratio',
+            'dip_angle', 'density_contrast', 'interfacial_tension'
+        ]
+        for i, name in enumerate(uniform_res_keys):
             label, w_type, p_type, kwargs = self.MANUAL_RES_DEFS[name]
             input_group = ParameterInputGroup(param_name=name, label_text=label, input_type=w_type, **kwargs)
             input_group.setProperty("param_type", p_type)
@@ -863,11 +867,15 @@ class DataManagementWidget(QWidget):
             area_acres=self.manual_inputs_values.get('area'),
             thickness_ft=self.manual_inputs_values.get('thickness'),
             average_porosity=self.manual_inputs_values.get('poro'),
+            average_permeability=self.manual_inputs_values.get('perm', 100.0),
             initial_water_saturation=self.manual_inputs_values.get('swi'),
             oil_fvf=self.manual_inputs_values.get('boi'),
             rock_type=self.manual_inputs_values.get('rock_type'),
             depositional_environment=self.manual_inputs_values.get('depositional_environment'),
             structural_complexity=self.manual_inputs_values.get('structural_complexity'),
+            dip_angle=self.manual_inputs_values.get('dip_angle', 0.0),
+            density_contrast=self.manual_inputs_values.get('density_contrast', 0.3),
+            interfacial_tension=self.manual_inputs_values.get('interfacial_tension', 5.0),
             layer_definitions=layer_definitions,
             geostatistical_params=geostat_params,
         )
@@ -1914,53 +1922,155 @@ class DataManagementWidget(QWidget):
             logger.error(f"Error calculating PVT properties: {e}", exc_info=True)
             QMessageBox.warning(self, self.tr("Calculation Error"), self.tr(f"Failed to estimate PVT properties: {e}"))
 
+    def get_current_project_data(self) -> Dict[str, Any]:
+        """Returns the current project data dictionary, synchronizing from UI widgets."""
+        all_defs = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS, **self.SURROGATE_TUNING_DEFS}
+        for name, widget in self.manual_inputs_widgets.items():
+            val = widget.get_value()
+            if val is not None:
+                param_type = all_defs.get(name, (None, None, str))[2]
+                try:
+                    self.manual_inputs_values[name] = self._coerce_value(val, param_type)
+                except Exception:
+                    self.manual_inputs_values[name] = val
+
+        res_data = self.reservoir_data
+        if res_data is None:
+            try:
+                res_data = self._create_reservoir_data_from_ui()
+            except Exception as e:
+                logger.warning(f"Could not construct reservoir data from UI: {e}")
+
+        pvt_data = self.pvt_properties
+        if pvt_data is None:
+            try:
+                pvt_data = self._create_pvt_properties_from_ui()
+            except Exception as e:
+                logger.warning(f"Could not construct PVT data from UI: {e}")
+
+        return {
+            "reservoir_data": res_data,
+            "pvt_properties": pvt_data,
+            "well_data_list": list(self.well_data_list),
+            "detailed_pvt_data": self.detailed_pvt_data,
+            "manual_inputs": dict(self.manual_inputs_values),
+        }
+
     def load_project_data(self, project_data: Dict[str, Any]):
         try:
             self.clear_all_project_data()
 
             self.reservoir_data = project_data.get('reservoir_data')
             self.pvt_properties = project_data.get('pvt_properties')
-            self.well_data_list = project_data.get('well_data_list', [])
+            self.well_data_list = list(project_data.get('well_data_list', []))
             self.detailed_pvt_data = project_data.get('detailed_pvt_data')
 
-            if self.reservoir_data:
-                # Load reservoir data into UI
-                if self.reservoir_data.grid:
-                    self.manual_inputs_widgets['nx'].set_value(self.reservoir_data.grid.get('NX', [50])[0])
-                    self.manual_inputs_widgets['ny'].set_value(self.reservoir_data.grid.get('NY', [50])[0])
-                    self.manual_inputs_widgets['nz'].set_value(self.reservoir_data.grid.get('NZ', [10])[0])
-                
-                self.manual_inputs_widgets['poro'].set_value(self.reservoir_data.average_porosity)
-                # Assuming uniform permeability for now
-                if self.reservoir_data.grid and 'PERMX' in self.reservoir_data.grid:
-                    self.manual_inputs_widgets['perm'].set_value(self.reservoir_data.grid['PERMX'][0,0,0])
+            all_defs = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS, **self.SURROGATE_TUNING_DEFS}
 
-                self.manual_inputs_widgets['rock_compressibility'].set_value(self.reservoir_data.rock_compressibility)
-                self.manual_inputs_widgets['swi'].set_value(self.reservoir_data.initial_water_saturation)
-                self.manual_inputs_widgets['boi'].set_value(self.reservoir_data.oil_fvf)
-                self.manual_inputs_widgets['ooip_stb'].set_value(self.reservoir_data.ooip_stb)
+            def _set_manual_val(name: str, value: Any):
+                if value is not None and name in self.manual_inputs_widgets:
+                    try:
+                        self.manual_inputs_widgets[name].set_value(value, emit_signal=False)
+                        p_type = all_defs.get(name, (None, None, str))[2]
+                        self.manual_inputs_values[name] = self._coerce_value(value, p_type)
+                    except Exception as err:
+                        logger.debug(f"Failed to set manual input {name}={value}: {err}")
+                        self.manual_inputs_values[name] = value
+
+            # 1. Restore saved manual inputs dictionary if present
+            saved_manual_inputs = project_data.get('manual_inputs', {})
+            if isinstance(saved_manual_inputs, dict):
+                for k, v in saved_manual_inputs.items():
+                    _set_manual_val(k, v)
+
+            # 2. Restore reservoir data into UI
+            if self.reservoir_data:
+                grid = self.reservoir_data.grid or {}
+                nx_val, ny_val, nz_val = 50, 50, 10
+                if 'NX' in grid:
+                    nx_arr = np.asarray(grid['NX'])
+                    if nx_arr.size > 0:
+                        nx_val = int(nx_arr.flat[0])
+                elif self.reservoir_data.runspec and 'DIMENSIONS' in self.reservoir_data.runspec:
+                    dims = self.reservoir_data.runspec['DIMENSIONS']
+                    if len(dims) >= 3:
+                        nx_val, ny_val, nz_val = int(dims[0]), int(dims[1]), int(dims[2])
+
+                if 'NY' in grid:
+                    ny_arr = np.asarray(grid['NY'])
+                    if ny_arr.size > 0:
+                        ny_val = int(ny_arr.flat[0])
+                if 'NZ' in grid:
+                    nz_arr = np.asarray(grid['NZ'])
+                    if nz_arr.size > 0:
+                        nz_val = int(nz_arr.flat[0])
+
+                _set_manual_val('nx', nx_val)
+                _set_manual_val('ny', ny_val)
+                _set_manual_val('nz', nz_val)
+
+                # Safe permeability extraction (supporting scalar, 1D flattened, and multi-D grids)
+                perm_val = None
+                if self.reservoir_data.average_permeability is not None:
+                    perm_val = float(self.reservoir_data.average_permeability)
+                elif 'PERMX' in grid:
+                    perm_arr = np.asarray(grid['PERMX'])
+                    if perm_arr.size > 0:
+                        perm_val = float(perm_arr.flat[0])
+                if perm_val is not None:
+                    _set_manual_val('perm', perm_val)
+
+                res_fields = [
+                    ('poro', self.reservoir_data.average_porosity),
+                    ('rock_compressibility', self.reservoir_data.rock_compressibility),
+                    ('swi', self.reservoir_data.initial_water_saturation),
+                    ('boi', self.reservoir_data.oil_fvf),
+                    ('ooip_stb', self.reservoir_data.ooip_stb),
+                    ('area', self.reservoir_data.area_acres),
+                    ('thickness', self.reservoir_data.thickness_ft),
+                    ('length', self.reservoir_data.length_ft),
+                    ('dip_angle', self.reservoir_data.dip_angle),
+                    ('density_contrast', self.reservoir_data.density_contrast),
+                    ('interfacial_tension', self.reservoir_data.interfacial_tension),
+                    ('rock_type', self.reservoir_data.rock_type),
+                    ('depositional_environment', self.reservoir_data.depositional_environment),
+                    ('structural_complexity', self.reservoir_data.structural_complexity),
+                ]
+                for param_name, param_val in res_fields:
+                    _set_manual_val(param_name, param_val)
 
                 if self.reservoir_data.layer_definitions:
                     self.use_layered_model_checkbox.setChecked(True)
                     self.layers_table.setRowCount(0)
                     for layer in self.reservoir_data.layer_definitions:
-                        self._add_layer_row(pv_frac=0, perm_factor=layer.permeability_multiplier, poro=layer.porosity, thickness=layer.thickness)
-                
+                        perm_fac = layer.permeability_multiplier if hasattr(layer, 'permeability_multiplier') else (layer.get('permeability_multiplier', 1.0) if isinstance(layer, dict) else 1.0)
+                        poro = layer.porosity if hasattr(layer, 'porosity') else (layer.get('porosity', 0.2) if isinstance(layer, dict) else 0.2)
+                        thick = layer.thickness if hasattr(layer, 'thickness') else (layer.get('thickness', 10.0) if isinstance(layer, dict) else 10.0)
+                        self._add_layer_row(pv_frac=0, perm_factor=perm_fac, poro=poro, thickness=thick)
+
                 if self.reservoir_data.geostatistical_params:
                     self.use_geostatistical_model_checkbox.setChecked(True)
 
+            # 3. Restore PVT data into UI
             if self.pvt_properties:
-                # Load PVT data into UI
-                self.manual_inputs_widgets['temperature'].set_value(self.pvt_properties.temperature)
-                self.manual_inputs_widgets['initial_pressure'].set_value(self.reservoir_data.initial_pressure if self.reservoir_data else 4000.0)
-                self.manual_inputs_widgets['api_gravity'].set_value(self.pvt_properties.api_gravity)
-                self.manual_inputs_widgets['gas_specific_gravity'].set_value(self.pvt_properties.gas_specific_gravity)
-                self.manual_inputs_widgets['oil_viscosity_cp'].set_value(self.pvt_properties.oil_viscosity_cp)
+                pvt_fields = [
+                    ('temperature', self.pvt_properties.temperature),
+                    ('initial_pressure', self.reservoir_data.initial_pressure if self.reservoir_data else 4000.0),
+                    ('api_gravity', self.pvt_properties.api_gravity),
+                    ('gas_specific_gravity', self.pvt_properties.gas_specific_gravity),
+                    ('oil_viscosity_cp', self.pvt_properties.oil_viscosity_cp),
+                    ('gas_viscosity_cp', getattr(self.pvt_properties, 'gas_viscosity_cp', None)),
+                    ('c7_plus_fraction', getattr(self.pvt_properties, 'c7_plus_fraction', None)),
+                    ('co2_solubility_scm_per_bbl', getattr(self.pvt_properties, 'co2_solubility_scm_per_bbl', None)),
+                ]
+                for param_name, param_val in pvt_fields:
+                    _set_manual_val(param_name, param_val)
 
             if self.detailed_pvt_data:
                 self.use_detailed_pvt_checkbox.setChecked(True)
 
-            # Load wells
+            # 4. Load wells
+            self.well_list_widget.clear()
             for well_data in self.well_data_list:
                 self._add_well_to_ui(well_data)
 
