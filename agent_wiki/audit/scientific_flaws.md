@@ -60,10 +60,10 @@ This document catalogs confirmed scientific flaws, unphysical equations, and the
 ---
 
 > [!NOTE]
-> **SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT** has been resolved and archived to [`resolved_issues.md`](resolved_issues.md#sci-flaw-02).
+> **SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT** has been resolved and archived to [`resolved_issues.md`](resolved_issues.md#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt).
 
 > [!NOTE]
-> **SCI-FLAW-03: Inverted Pressure-Viscosity Dependence** has been resolved and archived to [`resolved_issues.md`](resolved_issues.md#sci-flaw-03).
+> **SCI-FLAW-03: Inverted Pressure-Viscosity Dependence** has been resolved and archived to [`resolved_issues.md`](resolved_issues.md#sci-flaw-03-inverted-pressure-viscosity-dependence).
 
 ### SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density
 - **ID**: `SCI-FLAW-04`

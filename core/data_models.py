@@ -1,13 +1,15 @@
 import dataclasses
 from dataclasses import field
-from typing import Dict, List, Optional, Any, Tuple
-import numpy as np
-import logging
 from enum import Enum
-from typing import Optional
+import logging
+from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar
+
+import numpy as np
+
+T = TypeVar("T")
 
 
-def from_dict_to_dataclass(cls, data: Dict[str, Any]):
+def from_dict_to_dataclass(cls: Type[T], data: Dict[str, Any]) -> T:
     kwargs = {}
     for f in dataclasses.fields(cls):
         field_value = data.get(f.name)
@@ -302,17 +304,17 @@ class ReservoirData:
             raise ValueError("Reservoir thickness must be positive")
 
     def calculate_ooip_from_physics(self) -> float:
-        if None in [
-            self.area_acres,
-            self.thickness_ft,
-            self.average_porosity,
-            self.initial_water_saturation,
-            self.oil_fvf,
-        ]:
+        if (
+            self.area_acres is None
+            or self.thickness_ft is None
+            or self.average_porosity is None
+            or self.initial_water_saturation is None
+            or self.oil_fvf is None
+        ):
             raise ValueError("Cannot calculate OOIP: Missing required physical parameters")
 
-        pore_volume = 7758 * self.area_acres * self.thickness_ft * self.average_porosity
-        return pore_volume * (1 - self.initial_water_saturation) / self.oil_fvf
+        pore_volume = 7758.0 * self.area_acres * self.thickness_ft * self.average_porosity
+        return float(pore_volume * (1.0 - self.initial_water_saturation) / self.oil_fvf)
 
     def is_physics_based_model_compatible(self) -> bool:
         required_params = [
@@ -349,7 +351,9 @@ class ReservoirData:
             if self.geostatistical_grid is not None
             else float(np.mean(self.grid.get("PORO", 0.2)))
         )
-        return float((self.length_ft * self.cross_sectional_area_acres * 43560.0 * porosity) / 5.61458)
+        length = self.length_ft if self.length_ft is not None else 2000.0
+        area = self.cross_sectional_area_acres if self.cross_sectional_area_acres is not None else 10.0
+        return float((length * area * 43560.0 * porosity) / 5.61458)
 
 
 class FaultType(Enum):
@@ -419,10 +423,10 @@ class FaultGeometry:
             dz = -0.5 * np.sin(dip_rad)
 
         # Normalize the vector
-        norm = np.linalg.norm([dx, dy, dz])
+        norm = float(np.linalg.norm([dx, dy, dz]))
         if norm == 0:
             return np.array([0.0, 0.0, 0.0])  # Avoid division by zero
-        return np.array([dx, dy, dz]) / norm
+        return np.asarray(np.array([dx, dy, dz]) / norm, dtype=float)
 
 
 @dataclasses.dataclass
@@ -447,71 +451,7 @@ class FaultProperties:
             raise ValueError("Aperture values are invalid.")
 
     def calculate_friction_angle(self) -> float:
-        return np.degrees(np.arctan(self.friction_coefficient))
-
-
-    # Formation volume factors
-    water_fvf_ref: float = 1.0  # Water formation volume factor
-    oil_fvf_ref: float = 1.2  # Oil formation volume factor
-    gas_fvf_ref: float = 0.005  # Gas formation volume factor
-
-    # Initial saturations
-    initial_water_saturation: float = 0.2  # Initial water saturation (fraction)
-    oil_fvf: float = 1.2  # Oil formation volume factor at reservoir conditions
-
-    def __post_init__(self):
-        """Validate fluid properties"""
-        if any(
-            param <= 0
-            for param in [
-                self.water_density_ref,
-                self.water_viscosity_ref,
-                self.oil_density_ref,
-                self.oil_viscosity_ref,
-                self.gas_density_ref,
-                self.gas_viscosity_ref,
-            ]
-        ):
-            raise ValueError("Density and viscosity must be positive")
-
-    def water_density(self, pressure: float, temperature: float) -> float:
-        """Calculate water density at given pressure and temperature"""
-        rho = self.water_density_ref * (1 + self.water_compressibility * pressure)
-        return rho
-
-    def water_viscosity(self, pressure: float, temperature: float) -> float:
-        """Calculate water viscosity at given pressure and temperature"""
-        mu = self.water_viscosity_ref * np.exp(0.02 * (temperature - 293.15))
-        p_scale = 1 + 0.001 * (pressure - 1e5) / 1e5
-        mu *= min(p_scale, 5.0)
-        return mu
-
-    def oil_density(self, pressure: float, temperature: float) -> float:
-        """Calculate oil density at given pressure and temperature"""
-        rho = self.oil_density_ref * (1 + self.oil_compressibility * pressure)
-        return rho
-
-    def oil_viscosity(self, pressure: float, temperature: float) -> float:
-        """Calculate oil viscosity at given pressure and temperature"""
-        mu = self.oil_viscosity_ref * np.exp(0.03 * (temperature - 293.15))
-        # Cap physical density derivations so mobilities don't mathematically lock well equations beneath injection constants
-        p_scale = 1 + 0.002 * (pressure - 1e5) / 1e5
-        mu *= min(p_scale, 5.0)
-        return mu
-
-    def gas_density(self, pressure: float, temperature: float) -> float:
-        """Calculate gas density using ideal gas law"""
-        R = 8.314  # Gas constant J/(mol·K)
-        M_gas = 0.016  # Molar mass of methane kg/mol
-        rho = (M_gas * pressure) / (R * temperature)
-        return rho
-
-    def gas_viscosity(self, pressure: float, temperature: float) -> float:
-        """Calculate gas viscosity at given pressure and temperature"""
-        mu = self.gas_viscosity_ref * (temperature / 273.15) ** 0.7
-        p_scale = 1 + 0.01 * (pressure - 1e5) / 1e5
-        mu *= min(p_scale, 5.0)
-        return mu
+        return float(np.degrees(np.arctan(self.friction_coefficient)))
 
 
 @dataclasses.dataclass
@@ -1149,6 +1089,64 @@ class FluidProperties:
     water_viscosity_ref: float = 0.0006
     oil_fvf_ref: float = 1.25
     oil_fvf: float = 1.25
+    water_compressibility: float = 4.5e-10
+    oil_compressibility: float = 1e-9
+    gas_density_ref: float = 1.0
+    gas_viscosity_ref: float = 2e-5
+    gas_compressibility: float = 1e-8
+    water_fvf_ref: float = 1.0
+    gas_fvf_ref: float = 0.005
+    initial_water_saturation: float = 0.2
+
+    def __post_init__(self):
+        """Validate fluid properties"""
+        if any(
+            param <= 0
+            for param in [
+                self.water_density_ref,
+                self.water_viscosity_ref,
+                self.oil_density_ref,
+                self.oil_viscosity_ref,
+                self.gas_density_ref,
+                self.gas_viscosity_ref,
+            ]
+        ):
+            raise ValueError("Density and viscosity must be positive")
+
+    def water_density(self, pressure: float, temperature: float) -> float:
+        """Calculate water density at given pressure and temperature"""
+        return float(self.water_density_ref * (1.0 + self.water_compressibility * pressure))
+
+    def water_viscosity(self, pressure: float, temperature: float) -> float:
+        """Calculate water viscosity at given pressure and temperature"""
+        mu = self.water_viscosity_ref * float(np.exp(0.02 * (temperature - 293.15)))
+        p_scale = 1.0 + 0.001 * (pressure - 1e5) / 1e5
+        mu *= min(p_scale, 5.0)
+        return float(mu)
+
+    def oil_density(self, pressure: float, temperature: float) -> float:
+        """Calculate oil density at given pressure and temperature"""
+        return float(self.oil_density_ref * (1.0 + self.oil_compressibility * pressure))
+
+    def oil_viscosity(self, pressure: float, temperature: float) -> float:
+        """Calculate oil viscosity at given pressure and temperature"""
+        mu = self.oil_viscosity_ref * float(np.exp(0.03 * (temperature - 293.15)))
+        p_scale = 1.0 + 0.002 * (pressure - 1e5) / 1e5
+        mu *= min(p_scale, 5.0)
+        return float(mu)
+
+    def gas_density(self, pressure: float, temperature: float) -> float:
+        """Calculate gas density using ideal gas law"""
+        r_const = 8.314  # Gas constant J/(mol·K)
+        m_gas = 0.016  # Molar mass of methane kg/mol
+        return float((m_gas * pressure) / (r_const * temperature))
+
+    def gas_viscosity(self, pressure: float, temperature: float) -> float:
+        """Calculate gas viscosity at given pressure and temperature"""
+        mu = self.gas_viscosity_ref * float((temperature / 273.15) ** 0.7)
+        p_scale = 1.0 + 0.01 * (pressure - 1e5) / 1e5
+        mu *= min(p_scale, 5.0)
+        return float(mu)
 
 
 @dataclasses.dataclass
@@ -1654,7 +1652,7 @@ class CCUSState:
     fault_transmissibility: np.ndarray
     dissolved_co2: np.ndarray
     mineral_precipitate: np.ndarray
-    fluxes: np.ndarray = None
+    fluxes: Optional[np.ndarray] = None
     fault_stability: Optional[Dict] = None
     injection_rates: Optional[Dict] = None
 

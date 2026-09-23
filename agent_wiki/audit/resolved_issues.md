@@ -68,6 +68,10 @@ All issue entries across the wiki follow this machine-readable section schema to
 | **SFT-04** | AttributeError on ConfigWidget.engine_selection_changed | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
 | **SFT-05** | Root Import Mismatch on ConfigManager in DataManagementWidget | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
 | **SFT-06** | Missing Qt Translation Files Suppressed Gracefully | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
+| **SFT-07** | Parsers Directory Elimination & LAS Parser Consolidation | Architectural Refactoring | `module_map.md` | 2026-09-23 | **VERIFIED** |
+| **SFT-08** | Core Directory Architecture Audit & Prototyping Artifacts Elimination | Architectural Refactoring | `source_of_truth_map.md` | 2026-09-23 | **VERIFIED** |
+| **SFT-09** | Application Entry Point (`main.py`) Modernization & Multiprocess Logging Decoupling | Architectural Refactoring | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
+| **SFT-10** | Data Models (`core/data_models.py`) Type Safety Hardening & Fault/Fluid Separation | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
 
 ---
 
@@ -805,5 +809,54 @@ All issue entries across the wiki follow this machine-readable section schema to
     - `core/optimisation_engine.py`: Removed dead imports (`npv`, breakthrough classes); cleaned constants (`B_GAS_RB_PER_MSCF = 1.0` fallback); delegated GA, hybrid model, and breakthrough mechanism plotting directly to `PlottingManager`.
   - **Startup Smoke Test**: Added `tests/test_app_startup.py` which executes `timed_import_main_window()`, `SensitivityAnalyzer`, and `ProductionProfiler` under `QApplication`, permanently guarding against startup import regressions.
 - **Verification**: All 310 tests pass (307 existing + 3 startup smoke tests); application boots and exits cleanly with code 0.
+
+---
+
+### [SFT-09] Application Entry Point (`main.py`) Modernization & Multiprocess Logging Decoupling
+- **ID**: `SFT-09`
+- **Category**: Architectural Refactoring / Code Quality
+- **Original Document**: [`agent_wiki/audit/technical_debt.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md)
+- **Location**: [`main.py`](file:///d:/rep/4.6/co2eor_optimizer/main.py), [`ui/main_window.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/main_window.py), [`utils/multiprocess_logging.py`](file:///d:/rep/4.6/co2eor_optimizer/utils/multiprocess_logging.py)
+- **Severity**: MEDIUM
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-23
+- **Previous Defect**:
+  - `main.py` had accumulated 390 lines with excessive debugging scaffolding, a 140-line import wall with 40+ unused imports inside `timed_import_main_window`, platform-specific workarounds (`windows:darkmode=0`), a hardcoded 21-line palette override, and inlined logging setup/teardown functions.
+  - Screen geometry initialization was handled by an external helper function in `main.py` rather than being encapsulated within `MainWindow`.
+  - Pyright/Pylance emitted false-positive keyword argument errors for `MainWindow` because PyQt6's underlying C++ bindings lack rich type hints for subclassed constructors.
+- **Resolution Details**:
+  - Reduced `main.py` from 390 lines to 163 clean, modular lines.
+  - Decoupled application logging into `init_application_logging(...)` inside `utils/multiprocess_logging.py` and called `shutdown_queue_logging()` on exit.
+  - Replaced the 140-line import block with a clean 13-line timing wrapper around `from ui.main_window import MainWindow`.
+  - Retained `QCoreApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)` before creating `CO2EORApplication(sys.argv)`, strictly preserving PyQt6 QtWebEngine context requirements.
+  - Encapsulated default first-launch centering and 80% screen geometry fallback directly in `MainWindow.load_window_settings()`.
+  - Added `from __future__ import annotations`, typed `timed_import_main_window() -> type[MainWindow]`, and added `# type: ignore[call-arg]` on `main_window = MainWindow(...)`.
+- **Verification**: Application boots cleanly with exit code 0; `tests/test_app_startup.py` passes 3/3 smoke tests.
+
+---
+
+### [SFT-10] Data Models (`core/data_models.py`) Type Safety Hardening & Fault/Fluid Separation
+- **ID**: `SFT-10`
+- **Category**: Software Defect / Type Safety
+- **Original Document**: [`agent_wiki/audit/technical_debt.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/technical_debt.md)
+- **Location**: [`core/data_models.py`](file:///d:/rep/4.6/co2eor_optimizer/core/data_models.py)
+- **Severity**: MEDIUM
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-23
+- **Previous Defect**:
+  - In `calculate_ooip_from_physics`, using `if None in [...]` failed to narrow `Optional[float]` fields, causing 8 operand type mismatch errors (`*` and `/` not supported between `float` and `None`).
+  - In `pore_volume`, `self.length_ft` and `self.cross_sectional_area_acres` were multiplied without non-None guards.
+  - In `FaultProperties`, an old fragment of fluid properties (including 6 density/viscosity methods and a duplicate `__post_init__`) was accidentally pasted inside the class definition, overriding the fault validator and triggering 16 `AttributeError` warnings.
+  - `CCUSState.fluxes` was declared as `fluxes: np.ndarray = None`, which Pyright rejected as invalid assignment to non-optional type.
+  - `from_dict_to_dataclass` was un-typed, causing `from_config_dict` to return implicit `Any`.
+- **Resolution Details**:
+  - Converted `calculate_ooip_from_physics` to explicit `is None` checks, guaranteeing safe float narrowing.
+  - Added fallback defaults to `pore_volume` calculation for `length_ft` and `cross_sectional_area_acres`.
+  - Completely cleaned `FaultProperties`, removing the duplicate `__post_init__` and misplaced fluid methods.
+  - Enhanced the standalone `FluidProperties` dataclass with all reference properties (`water_density_ref`, `oil_viscosity_ref`, compressibilities, FVF) and temperature/pressure calculations with explicit float casts.
+  - Declared `fluxes: Optional[np.ndarray] = None` in `CCUSState`.
+  - Added generic type parameter `TypeVar("T")` to `from_dict_to_dataclass(cls: Type[T], data: Dict[str, Any]) -> T`.
+- **Verification**: `tests/test_reservoir_outputs_streams.py` and `tests/test_app_startup.py` pass 6/6 tests.
+
 
 

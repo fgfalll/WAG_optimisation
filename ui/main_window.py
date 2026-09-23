@@ -143,13 +143,18 @@ class MainWindow(QMainWindow):
         self,
         app_settings: QSettings,
         preferences_manager=None,
-        startup_action: str = "show_overview",
+        startup_action: Optional[str] = None,
         qt_log_handler: Optional[Any] = None,
     ):
         super().__init__(None)
         self.app_settings = app_settings
         self.preferences_manager = preferences_manager
-        self.startup_action = startup_action
+        if startup_action is not None:
+            self.startup_action = startup_action
+        elif preferences_manager and hasattr(preferences_manager, "general"):
+            self.startup_action = getattr(preferences_manager.general, "startup_action", "show_overview")
+        else:
+            self.startup_action = "show_overview"
         self.auto_save_timer = None
         self.qt_log_handler = qt_log_handler
 
@@ -1976,6 +1981,17 @@ class MainWindow(QMainWindow):
                     f"Correcting window geometry from {current_geometry.width()}x{current_geometry.height()} to {new_width}x{new_height}"
                 )
                 self.setGeometry(new_x, new_y, new_width, new_height)
+        else:
+            screen = QApplication.primaryScreen()
+            if screen:
+                geom = screen.availableGeometry()
+                self.setGeometry(
+                    int(geom.width() * 0.1),
+                    int(geom.height() * 0.1),
+                    int(geom.width() * 0.8),
+                    int(geom.height() * 0.8),
+                )
+                logger.info("Setting default window geometry for first launch.")
 
         if state := self.app_settings.value("MainWindow/state"):
             self.restoreState(state)
