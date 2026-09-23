@@ -3,7 +3,8 @@ from typing import Optional, Any, Dict
 
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox, QLabel, QLineEdit,
-    QComboBox, QTextEdit, QPushButton, QMessageBox, QScrollArea, QApplication
+    QComboBox, QTextEdit, QPushButton, QMessageBox, QScrollArea, QApplication,
+    QInputDialog
 )
 from PyQt6.QtGui import QIcon, QTextCursor
 from PyQt6.QtCore import Qt, QSettings, pyqtSignal, QEvent
@@ -186,7 +187,7 @@ class AIAssistantWidget(QWidget):
         service_config = ai_prefs.services.get(service, {})
         api_key = service_config.get("api_key")
         base_url = service_config.get("base_url")
-        endpoint = AI_SERVICES_CONFIG.get(service, {}).get("model_endpoint")
+        endpoint = self.AI_SERVICES_CONFIG.get(service, {}).get("model_endpoint")
 
         if not api_key:
             QMessageBox.warning(self, self.tr("API Key Required"), self.tr("API key is not set for the active service in Preferences."))

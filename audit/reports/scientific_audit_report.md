@@ -8,11 +8,11 @@
 
 ## 1. Executive Scientific Audit Summary
 
-- **Total Scanned Python Files**: 238
-- **Total Scanned Code Lines**: 88,073
-- **Total Documented Scientific Flaws**: 15 (Critical: 5, High: 7, Medium: 3)
-- **Total Documented Fallback Exception Handlers**: 459
-- **Total Documented Hardcoded Numerical Literals**: 1165
+- **Total Scanned Python Files**: 226
+- **Total Scanned Code Lines**: 77,220
+- **Total Documented Scientific Flaws**: 18 (Critical: 6, High: 9, Medium: 3)
+- **Total Documented Fallback Exception Handlers**: 524
+- **Total Documented Hardcoded Numerical Literals**: 1001
 
 ### Primary Scientific Finding:
 > **The codebase contains multiple fundamental violations of physical and thermodynamic laws** (inverted Buckley-Leverett/Koval fractional flow, negative compressibility, inverted viscosity-pressure dependence, inverted CO2 thermal expansion, and inverted cubic EOS phase labeling). These defects are currently masked by post-hoc profile scalers, heuristic damping factors, and artificial recovery factor ceilings.
@@ -35,9 +35,12 @@
 | **SCI-FLAW-10** | **HIGH** | Immiscible Gas Displacement | `core/simulation/recovery_models.py:498-501` | Immiscible displacement efficiency is 0.01-0.03 (predicting ~1% total recovery).... | CONFIRMED_AUDIT_OPEN |
 | **SCI-FLAW-11** | **MEDIUM** | Ultimate Recovery Factor Limit | `core/engine_surrogate/analytical_models.py:881, surrogate_engine.py:425` | RF clipped to 1.0 - Swi - Sor (~0.55) instead of (1 - Swi - Sor)/(1 - Swi) (~0.7... | CONFIRMED_AUDIT_OPEN |
 | **SCI-FLAW-12** | **HIGH** | Gas Formation Volume Factor (Bg) | `core/optimisation_engine.py:98 vs surrogate_engine.py:201` | optimisation_engine defines B_GAS_RB_PER_MSCF = 5.0; surrogate_engine uses ~0.5 ... | CONFIRMED_AUDIT_OPEN |
-| **SCI-FLAW-13** | **MEDIUM** | Minimum Miscibility Pressure Correlation | `evaluation/mmp.py:111` | At API >= 55.0, (55 - API)^0.279 evaluates to 0.0 or produces imaginary/NaN numb... | CONFIRMED_AUDIT_OPEN |
+| **SCI-FLAW-13** | **MEDIUM** | Minimum Miscibility Pressure Correlation | `evaluation/mmp.py:111` | At API >= 55.0, (55 - API)^0.279 evaluates to 0.0 or produces imaginary/NaN numb... | RESOLVED |
 | **SCI-FLAW-14** | **HIGH** | Vapor-Liquid Equilibrium (VLE) | `analysis/material_balance.py:85-108` | Calculates vapor fraction from compressibility factor Z without flash calculatio... | CONFIRMED_AUDIT_OPEN |
 | **SCI-FLAW-15** | **MEDIUM** | Reservoir Gas Inventory Dynamics | `core/engine_surrogate/profile_generator_fast.py:983-986` | co2_rate_available = injection_profile[i] * (1.0 - total_trapping). Shut-in drop... | CONFIRMED_AUDIT_OPEN |
+| **SCI-FLAW-16** | **HIGH** | Areal Sweep Continuity | `core/engine_surrogate/surrogate_models.py:164-182` | At M <= 1.0, Ea = 0.5460 / M^0.0988 (Ea=0.546 at M=1). At M > 1.0, Ea = 1.0 - 0.... | CONFIRMED_AUDIT_OPEN |
+| **SCI-FLAW-17** | **HIGH** | Capillary Trapping Inversion | `core/engine_surrogate/surrogate_models.py:238-241` | residual_trapping = 1.0 - Sgc. If Sgc increases from 0.05 to 0.20, residual trap... | CONFIRMED_AUDIT_OPEN |
+| **SCI-FLAW-18** | **CRITICAL** | Peng-Robinson Fugacity Formulation | `core/unified_engine/physics/eos/__init__.py:206, 257-270` | ln_phi = (Z - 1) - ln(Z - B) - A/B * ln(1 + B/Z). Denominator 2*sqrt(2)*B missin... | CONFIRMED_AUDIT_OPEN |
 
 ---
 

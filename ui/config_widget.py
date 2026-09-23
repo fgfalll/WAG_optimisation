@@ -33,6 +33,7 @@ from PyQt6.QtCore import pyqtSignal, Qt, QEvent
 
 from ui.widgets.parameter_input_group import ParameterInputGroup
 from ui.utils.scheme_utils import format_scheme_display_name
+from utils.config_manager import ConfigManager
 
 try:
     from core.data_models import (

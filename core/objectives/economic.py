@@ -61,10 +61,17 @@ def calculate_npv(
     )
 
     # Operating costs — reads variable_opex_usd_per_bbl from EconomicParameters
-    operating_cost = oil_production * getattr(
-        economic_params, "variable_opex_usd_per_bbl",
-        getattr(economic_params, "operating_cost_usd_per_bbl", 10.0)  # legacy fallback
-    )
+    opex_val = getattr(economic_params, "variable_opex_usd_per_bbl", None)
+    if not isinstance(opex_val, (int, float, np.number, np.ndarray)):
+        legacy_opex = getattr(economic_params, "operating_cost_usd_per_bbl", None)
+        if isinstance(legacy_opex, (int, float, np.number, np.ndarray)):
+            opex_val = legacy_opex
+        else:
+            try:
+                opex_val = float(legacy_opex) if legacy_opex is not None else 10.0
+            except (TypeError, ValueError):
+                opex_val = 10.0
+    operating_cost = oil_production * opex_val
 
     # CO2 storage credits/penalties
     # Primary source: economic_params.co2_storage_credit_usd_per_tonne (user-configured)
@@ -72,9 +79,14 @@ def calculate_npv(
     storage_credit = np.zeros_like(oil_production)
     if storage_metrics is not None:
         net_stored = storage_metrics.get("net_co2_stored_tonne", np.zeros_like(oil_production))
-        carbon_credit_rate = getattr(economic_params, "co2_storage_credit_usd_per_tonne", 0.0)
-        if carbon_credit_rate == 0.0 and co2_storage_params is not None:
-            carbon_credit_rate = getattr(co2_storage_params, "carbon_credit_usd_per_tonne", 0.0)
+        carbon_credit_rate = 0.0
+        cc_val = getattr(economic_params, "co2_storage_credit_usd_per_tonne", None)
+        if isinstance(cc_val, (int, float, np.number)):
+            carbon_credit_rate = float(cc_val)
+        elif co2_storage_params is not None:
+            legacy_cc = getattr(co2_storage_params, "carbon_credit_usd_per_tonne", None)
+            if isinstance(legacy_cc, (int, float, np.number)):
+                carbon_credit_rate = float(legacy_cc)
         storage_credit = net_stored * carbon_credit_rate
 
     # Carbon tax penalty for CO2 leakage
@@ -98,14 +110,27 @@ def calculate_npv(
     )
 
     # Initial investment (year 0) — reads capex_usd from EconomicParameters
-    capex = getattr(
-        economic_params, "capex_usd",
-        getattr(economic_params, "initial_investment_usd", 0.0)  # legacy fallback
-    )
+    capex_val = getattr(economic_params, "capex_usd", None)
+    if not isinstance(capex_val, (int, float, np.number)):
+        legacy_capex = getattr(economic_params, "initial_investment_usd", None)
+        if isinstance(legacy_capex, (int, float, np.number)):
+            capex_val = float(legacy_capex)
+        else:
+            try:
+                capex_val = float(legacy_capex) if legacy_capex is not None else 0.0
+            except (TypeError, ValueError):
+                capex_val = 0.0
+    capex = float(capex_val)
     cashflow_with_capex = np.concatenate([[-capex], cashflow])
 
     # Calculate NPV
-    discount_rate = economic_params.discount_rate_fraction
+    discount_rate = getattr(economic_params, "discount_rate_fraction", None)
+    if not isinstance(discount_rate, (int, float, np.number)):
+        dr_legacy = getattr(economic_params, "discount_rate", 0.1)
+        try:
+            discount_rate = float(dr_legacy)
+        except (TypeError, ValueError):
+            discount_rate = 0.1
     npv_value = npv_func(discount_rate, cashflow_with_capex)
 
     return float(npv_value)
@@ -146,19 +171,32 @@ def calculate_cashflow(
         co2_recycled * co2_density_tonne_per_mscf * economic_params.co2_recycle_cost_usd_per_tonne
     )
 
-    operating_cost = oil_production * getattr(
-        economic_params, "variable_opex_usd_per_bbl",
-        getattr(economic_params, "operating_cost_usd_per_bbl", 10.0)  # legacy fallback
-    )
+    opex_val = getattr(economic_params, "variable_opex_usd_per_bbl", None)
+    if not isinstance(opex_val, (int, float, np.number, np.ndarray)):
+        legacy_opex = getattr(economic_params, "operating_cost_usd_per_bbl", None)
+        if isinstance(legacy_opex, (int, float, np.number, np.ndarray)):
+            opex_val = legacy_opex
+        else:
+            try:
+                opex_val = float(legacy_opex) if legacy_opex is not None else 10.0
+            except (TypeError, ValueError):
+                opex_val = 10.0
+    operating_cost = oil_production * opex_val
 
     storage_credit = np.zeros_like(oil_production)
     if storage_metrics is not None:
         net_stored = storage_metrics.get("net_co2_stored_tonne", np.zeros_like(oil_production))
-        carbon_credit_rate = getattr(economic_params, "co2_storage_credit_usd_per_tonne", 0.0)
-        if carbon_credit_rate == 0.0 and co2_storage_params is not None:
-            carbon_credit_rate = getattr(co2_storage_params, "carbon_credit_usd_per_tonne", 0.0)
+        carbon_credit_rate = 0.0
+        cc_val = getattr(economic_params, "co2_storage_credit_usd_per_tonne", None)
+        if isinstance(cc_val, (int, float, np.number)):
+            carbon_credit_rate = float(cc_val)
+        elif co2_storage_params is not None:
+            legacy_cc = getattr(co2_storage_params, "carbon_credit_usd_per_tonne", None)
+            if isinstance(legacy_cc, (int, float, np.number)):
+                carbon_credit_rate = float(legacy_cc)
         storage_credit = net_stored * carbon_credit_rate
 
     cashflow = oil_revenue - co2_purchase_cost - co2_recycle_cost - operating_cost + storage_credit
 
     return cashflow
+

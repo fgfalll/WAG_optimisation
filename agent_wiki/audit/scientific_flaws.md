@@ -9,8 +9,8 @@ This document catalogs confirmed scientific flaws, unphysical equations, and the
 | ID | Severity | Model / Location | Physical Principle Violated | Scientific Impact | Status |
 |:---|:---|:---|:---|:---|:---|
 | **SCI-FLAW-01** | **CRITICAL** | `profile_generator_fast.py:895-901` | Buckley-Leverett / Koval Fractional Flow | Inverts gas breakthrough: unfavorable mobility yields 10% gas, favorable yields 70% | OPEN |
-| **SCI-FLAW-02** | **CRITICAL** | `data_integration_engine.py:370, 456` | Fluid Thermodynamics (Compressibility) | Oil expands under pressure ($\partial B_o / \partial P > 0$, negative compressibility) | OPEN |
-| **SCI-FLAW-03** | **HIGH** | `data_integration_engine.py:372, 375` | Viscosity-Pressure Dependence | Oil and supercritical CO₂ viscosities decrease exponentially with pressure | OPEN |
+| **SCI-FLAW-02** | **CRITICAL** | `data_integration_engine.py:370, 456` | Fluid Thermodynamics (Compressibility) | Oil expands under pressure ($\partial B_o / \partial P > 0$, negative compressibility) | [**RESOLVED**](resolved_issues.md#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt) |
+| **SCI-FLAW-03** | **HIGH** | `data_integration_engine.py:372, 375` | Viscosity-Pressure Dependence | Oil and supercritical CO₂ viscosities decrease exponentially with pressure | [**RESOLVED**](resolved_issues.md#sci-flaw-03-inverted-pressure-viscosity-dependence) |
 | **SCI-FLAW-04** | **HIGH** | `unified_engine/co2_properties.py:140` | Isobaric Thermal Expansion | Supercritical CO₂ density increases with temperature ($\partial\rho/\partial T > 0$) | OPEN |
 | **SCI-FLAW-05** | **CRITICAL** | `optimisation_engine.py:1410`, `profile_generator_fast.py:501` | Darcy Inflow & Pattern Interference | Single producer drains 1,354 acres at 7,270 BOPD flat plateau for 6.4 years | OPEN |
 | **SCI-FLAW-06** | **CRITICAL** | `optimisation_engine.py:3215`, `surrogate_engine.py:948` | Thermodynamic State Consistency | Optimizer surrogate evaluated at 4,450 psia, while reservoir tank ODE is at 3,100 psia | OPEN |
@@ -20,7 +20,7 @@ This document catalogs confirmed scientific flaws, unphysical equations, and the
 | **SCI-FLAW-10** | **HIGH** | `simulation/recovery_models.py:498-501` | Fractional Flow Displacement | Immiscible recovery models only capillary desaturation $\Delta S_{or}$, predicting 1-2% RF | OPEN |
 | **SCI-FLAW-11** | **MEDIUM** | `analytical_models.py:205` | Conservation & Ultimate Recovery | Silent 80% recovery factor ceiling erases optimization gradients | OPEN |
 | **SCI-FLAW-12** | **HIGH** | `optimisation_engine.py:98`, `surrogate_engine.py:201` | Gas Volumetric Factor ($B_g$) | 10× discrepancy in $B_g$ ($0.50$ vs $5.0\text{ RB/MSCF}$) between engine and optimizer | OPEN |
-| **SCI-FLAW-13** | **MEDIUM** | `evaluation/mmp.py:111` | MMP Correlation Validity | Non-standard Cronquist $(55 - API)$ crashes on light oils ($API > 55^\circ$) | OPEN |
+| **SCI-FLAW-13** | **MEDIUM** | `evaluation/mmp.py:111` | MMP Correlation Validity | Non-standard Cronquist $(55 - API)$ crashes on light oils ($API > 55^\circ$) | [**RESOLVED**](resolved_issues.md#sci-flaw-13-non-standard-cronquist-55---api-correlation) |
 | **SCI-FLAW-14** | **HIGH** | `analysis/material_balance.py:85-108` | Thermodynamic Vapor-Liquid Equilibrium | Heuristic vapor fraction formula $V = 1 - Z + 0.2$ has zero physical basis | OPEN |
 | **SCI-FLAW-15** | **MEDIUM** | `profile_generator_fast.py:983-986` | Reservoir Material Balance | Produced CO₂ tied directly to instantaneous injection; shut-in zeroes production | OPEN |
 | **SCI-FLAW-16** | **HIGH** | `core/engine_surrogate/surrogate_models.py:164-182` | Areal Sweep Continuity | Discontinuous 48% cliff in Craig areal sweep correlation at $M = 1.0$ | OPEN |
@@ -75,7 +75,7 @@ This document catalogs confirmed scientific flaws, unphysical equations, and the
 - **Affected Outputs**: `pvt_tables["OIL_FVF"]`, `ReservoirData.oil_fvf`.
 - **Confidence**: 100%.
 - **Recommended Investigation**: Invert sign: $B_o(P) = 1.2 \cdot \exp(-c_o (P - P_b))$ with $c_o \approx 1.5 \times 10^{-5}\text{ psi}^{-1}$.
-- **Status**: OPEN.
+- **Status**: [**RESOLVED**](resolved_issues.md#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt) (2026-09-23).
 
 ---
 
@@ -92,7 +92,7 @@ This document catalogs confirmed scientific flaws, unphysical equations, and the
 - **Scientific Consequence**: Higher injection pressures create artificially favorable mobility ratios, giving unphysical economic incentives for over-pressurization.
 - **Affected Outputs**: `pvt_tables["OIL_VISC"]`, `pvt_tables["CO2_VISC"]`, `mobility_ratio`.
 - **Confidence**: 100%.
-- **Status**: OPEN.
+- **Status**: [**RESOLVED**](resolved_issues.md#sci-flaw-03-inverted-pressure-viscosity-dependence) (2026-09-23).
 
 ---
 
@@ -243,21 +243,6 @@ This document catalogs confirmed scientific flaws, unphysical equations, and the
 
 ---
 
-### SCI-FLAW-13: Non-Standard Cronquist $(55 - API)$ Correlation
-- **ID**: `SCI-FLAW-13`
-- **Severity**: **MEDIUM**
-- **Location**: [`evaluation/mmp.py:111-112`](file:///d:/rep/4.6/co2eor_optimizer/evaluation/mmp.py#L111-L112)
-- **Model**: Analytical MMP Correlation
-- **Equation**:
-  $$MMP = 15.988 \cdot T^{0.744206} \cdot (55 - API)^{0.279033}$$
-- **Observation**: Published Cronquist (1978) correlation uses volatile oil mole fraction and C7+ molecular weight. The term $(55 - API)$ is an undocumented modification that crashes with `ValueError` (fractional power of negative number) whenever oil gravity exceeds $55^\circ\text{API}$.
-- **Scientific Consequence**: Unphysical correlation crashes on volatile oils and light condensates.
-- **Affected Outputs**: `calculate_mmp(method="cronquist")`.
-- **Confidence**: 100%.
-- **Status**: OPEN.
-
----
-
 ### SCI-FLAW-14: Heuristic Vapor Fraction in Material Balance
 - **ID**: `SCI-FLAW-14`
 - **Severity**: **HIGH**
@@ -349,3 +334,16 @@ This document catalogs confirmed scientific flaws, unphysical equations, and the
 - **Affected Outputs**: `calculate_fugacity()`, `flash_calculation()`, `compositional_solver`.
 - **Confidence**: 100%.
 - **Status**: OPEN.
+
+---
+
+## 3. Master Resolved Scientific Flaws Archive
+
+The following scientific flaws have been fully eliminated, with comprehensive post-mortems and verification proofs archived in [**`agent_wiki/audit/resolved_issues.md`**](resolved_issues.md):
+
+| ID | Scientific Flaw Title | Location | Status | Full Post-Mortem |
+|:---|:---|:---|:---|:---|
+| **SCI-FLAW-02** | Negative Oil Compressibility in Synthetic PVT | `core/data_integration_engine.py:370, 456` | VERIFIED | [View Record](resolved_issues.md#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt) |
+| **SCI-FLAW-03** | Inverted Pressure-Viscosity Dependence | `core/data_integration_engine.py:372, 375` | VERIFIED | [View Record](resolved_issues.md#sci-flaw-03-inverted-pressure-viscosity-dependence) |
+| **SCI-FLAW-13** | Non-Standard Cronquist $(55 - API)$ Correlation | `evaluation/mmp.py:111` | VERIFIED | [View Record](resolved_issues.md#sci-flaw-13-non-standard-cronquist-55---api-correlation) |
+

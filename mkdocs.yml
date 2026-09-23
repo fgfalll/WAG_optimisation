@@ -120,7 +120,8 @@ nav:
       - Module Map: architecture/module_map.md
       - Execution Flow: architecture/execution_flow.md
       - Dependency Graph: architecture/dependency_graph.md
-      - Source of Truth: architecture/source_of_truth_map.md
+      - Source of Truth Map: architecture/source_of_truth_map.md
+      - Subsystem Matrix: architecture/source_of_truth.md
   - Physics Models:
       - Reservoir Model: physics/reservoir_model.md
       - Fluid Model: physics/fluid_model.md
@@ -130,6 +131,7 @@ nav:
       - Relative Permeability: physics/relative_permeability.md
       - Recovery Model: physics/recovery_model.md
       - CO₂ Storage: physics/co2_storage.md
+      - Units Audit: physics/units_audit.md
   - Data & Parameters:
       - Inputs: data/inputs.md
       - Outputs: data/outputs.md
@@ -143,11 +145,14 @@ nav:
       - Extension Points: development/extension_points.md
       - Agent Skills: development/agent_skills.md
   - Audit Reports:
+      - Scientific Flaws: audit/scientific_flaws.md
+      - Mathematical Flaws: audit/mathematical_flaws.md
+      - Suspicious Logic: audit/suspicious_logic.md
+      - Resolved Archive: audit/resolved_issues.md
       - Technical Debt: audit/technical_debt.md
       - Dead Code: audit/dead_code.md
       - Hardcoded Values: audit/hardcoded_values.md
       - Fallbacks: audit/fallbacks.md
-      - Suspicious Logic: audit/suspicious_logic.md
       - Hidden Calibration: audit/hidden_calibration.md
       - Duplicate Logic: audit/duplicate_logic.md
       - Parameter Provenance: audit/parameter_provenance.md
@@ -169,6 +174,28 @@ nav:
       - Conservation: validation/conservation.md
       - Test Suite: validation/test_suite_audit.md
       - Known Limitations: validation/known_limitations.md
+      - Tests Inventory: validation/tests.md
   - Decisions:
       - Architecture Decisions: decisions/architecture_decisions.md
       - Scientific Decisions: decisions/scientific_decisions.md
+  - Code Reference:
+      - Inventory: code/inventory.md
+      - Classes:
+          - Overview: code/classes/README.md
+          - Optimization: code/classes/optimization_classes.md
+          - Physical Data: code/classes/physical_data_classes.md
+          - Surrogate: code/classes/surrogate_classes.md
+      - Functions:
+          - Overview: code/functions/README.md
+          - Recovery: code/functions/recovery_functions.md
+          - Simulation: code/functions/simulation_functions.md
+          - Thermodynamic & PVT: code/functions/thermo_pvt_functions.md
+      - Modules:
+          - Overview: code/modules/README.md
+          - Core Surrogate Engine: code/modules/core_engine_surrogate.md
+          - Objectives & Data: code/modules/core_objectives_data.md
+          - Optimisation Engine: code/modules/core_optimisation.md
+          - Evaluation & Analysis: code/modules/evaluation_analysis.md
+          - UI & Utilities: code/modules/ui_utils.md
+          - Dormant Engines: code/modules/dormant_engines.md
+

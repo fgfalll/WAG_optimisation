@@ -587,30 +587,22 @@ class LiteratureBasedMMP:
     @staticmethod
     def calculate_mmp_cronquist(temperature_f: float, api_gravity: float) -> float:
         """
-        Calculate MMP using Cronquist (1978) correlation.
-
-        Formula: MMP = 15.988 · T^0.744206 · (55 - API)^0.279033
-
-        Reference: Cronquist, C. (1978). Proceedings of the Fourth Annual
-        U.S. DOE Symposium, 287-300.
+        Calculate MMP using published Cronquist (1978) correlation.
+        Delegates to evaluation.mmp for single source of truth.
         """
-        # Using (55 - API) to ensure lighter oils have lower MMP
-        gravity_term = max(55.0 - api_gravity, 1.0)
-        mmp = 15.988 * (temperature_f**0.744206) * (gravity_term**0.279033)
-        return float(mmp)
+        from evaluation.mmp import calculate_mmp, MMPParameters
+        params = MMPParameters(temperature=temperature_f, oil_gravity=api_gravity)
+        return float(calculate_mmp(params, method="cronquist"))
 
     @staticmethod
     def calculate_mmp_yellig_metcalfe(temperature_f: float) -> float:
         """
         Calculate MMP using Yellig & Metcalfe (1980) for pure CO2.
-
-        Formula: MMP = 1016 + 4.773·T - 0.00946·T² + 0.000021·T³
-
-        Reference: Yellig & Metcalfe (1980). JPT, 32(1), 160-168.
+        Delegates to evaluation.mmp for single source of truth.
         """
-        T = temperature_f
-        mmp = 1016.0 + 4.773 * T - 0.00946 * (T**2) + 0.000021 * (T**3)
-        return float(mmp)
+        from evaluation.mmp import calculate_mmp, MMPParameters
+        params = MMPParameters(temperature=temperature_f, oil_gravity=35.0)
+        return float(calculate_mmp(params, method="yellig_metcalfe"))
 
     @staticmethod
     def miscibility_factor(pressure_psi: float, mmp_psi: float) -> float:

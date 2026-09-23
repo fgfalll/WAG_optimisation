@@ -231,7 +231,7 @@
     "Reproducibility Consequence": "Invented ad-hoc modification masquerading as published Cronquist correlation.",
     "Recommended Investigation": "Implement authentic published Cronquist 1978 correlation with C7+ MW.",
     "Verification Test": "tests/scientific/mathematical/test_singularity_and_overflow.py::test_cronquist_mmp_singularity_at_55_api",
-    "Status": "CONFIRMED_AUDIT_OPEN"
+    "Status": "RESOLVED"
   },
   {
     "ID": "SCI-FLAW-14",
@@ -267,6 +267,60 @@
     "Reproducibility Consequence": "Produces unphysical square-wave GOR fluctuations in WAG cycles.",
     "Recommended Investigation": "Tie produced CO2 to dynamic free gas saturation S_g and fractional flow f_g.",
     "Verification Test": "tests/scientific/limiting_cases/test_zero_injection.py::test_zero_injection_limits",
+    "Status": "CONFIRMED_AUDIT_OPEN"
+  },
+  {
+    "ID": "SCI-FLAW-16",
+    "Severity": "HIGH",
+    "Category": "Physical / Areal Sweep",
+    "Physical Phenomenon": "Areal Sweep Continuity",
+    "Mathematical Issue": "Discontinuous 48% cliff in Craig areal sweep correlation at M = 1.0",
+    "Code Location": "core/engine_surrogate/surrogate_models.py:164-182",
+    "Observed Behavior": "At M <= 1.0, Ea = 0.5460 / M^0.0988 (Ea=0.546 at M=1). At M > 1.0, Ea = 1.0 - 0.043*M (Ea=0.957 at M=1). 41% step jump at M=1.0.",
+    "Expected Behavior": "Smooth C0/C1 continuity across M=1.0; Ea should decrease monotonically with adverse mobility ratio M.",
+    "Evidence": "Branching piecewise equations in surrogate_models.py:164-182.",
+    "Equation / Reference": "Craig, F.F. (1971). The Reservoir Engineering Aspects of Waterflooding.",
+    "Scientific Consequence": "Artificial step cliff traps gradient and heuristic optimizers at M = 1.0.",
+    "Numerical Consequence": "Gradient spikes and discontinuous objective landscape.",
+    "Reproducibility Consequence": "Cannot match continuous experimental areal sweep curves.",
+    "Recommended Investigation": "Formulate single smooth C1 continuous correlation for Craig areal sweep.",
+    "Verification Test": "tests/scientific/physics/test_displacement_physics.py",
+    "Status": "CONFIRMED_AUDIT_OPEN"
+  },
+  {
+    "ID": "SCI-FLAW-17",
+    "Severity": "HIGH",
+    "Category": "Physical / Trapping",
+    "Physical Phenomenon": "Capillary Trapping Inversion",
+    "Mathematical Issue": "Trapping efficiency calculated as 1.0 - S_gc; higher critical gas reduces trapping",
+    "Code Location": "core/engine_surrogate/surrogate_models.py:238-241",
+    "Observed Behavior": "residual_trapping = 1.0 - Sgc. If Sgc increases from 0.05 to 0.20, residual trapping drops from 0.95 to 0.80.",
+    "Expected Behavior": "Higher critical gas saturation S_gc or residual gas saturation S_gr means MORE gas is immobilized by capillary forces.",
+    "Evidence": "Direct subtraction residual_trapping = 1.0 - s_gc in surrogate_models.py:240.",
+    "Equation / Reference": "Land, C.S. (1968). SPE Journal, 8(2), 149-156.",
+    "Scientific Consequence": "Reverses the physics of capillary gas immobilization in carbon storage calculations.",
+    "Numerical Consequence": "Optimizer penalizes high-trapping formations and favors low-trapping formations.",
+    "Reproducibility Consequence": "Contradicts Land trapping model and published coreflood observations.",
+    "Recommended Investigation": "Use Land (1968) or Holtz (2002) capillary trapping correlation: S_gr = S_gi / (1 + C*S_gi).",
+    "Verification Test": "tests/scientific/co2/test_co2_storage_physics.py",
+    "Status": "CONFIRMED_AUDIT_OPEN"
+  },
+  {
+    "ID": "SCI-FLAW-18",
+    "Severity": "CRITICAL",
+    "Category": "Physical / Thermodynamics",
+    "Physical Phenomenon": "Peng-Robinson Fugacity Formulation",
+    "Mathematical Issue": "Corrupted PR fugacity equation omits 2*sqrt(2)*B denominator and partial derivatives",
+    "Code Location": "core/unified_engine/physics/eos/__init__.py:206, 257-270",
+    "Observed Behavior": "ln_phi = (Z - 1) - ln(Z - B) - A/B * ln(1 + B/Z). Denominator 2*sqrt(2)*B missing.",
+    "Expected Behavior": "Authentic PR-EOS fugacity coefficient requires ln((Z + (1+sqrt(2))B)/(Z + (1-sqrt(2))B)) / (2*sqrt(2)*B).",
+    "Evidence": "ln_phi formula in unified_engine/physics/eos/__init__.py:206.",
+    "Equation / Reference": "Peng, D.Y. & Robinson, D.B. (1976). Ind. Eng. Chem. Fundam., 15(1), 59-64.",
+    "Scientific Consequence": "Fugacities calculated by legacy EOS are mathematically incorrect by factors of 2x to 5x.",
+    "Numerical Consequence": "Equilibrium K-values diverge; phase envelope distorted.",
+    "Reproducibility Consequence": "Contradicts standard thermodynamic chemical engineering benchmarks.",
+    "Recommended Investigation": "Replace with standard Peng-Robinson (1976) fugacity coefficient formula.",
+    "Verification Test": "tests/scientific/physics/test_phase_equilibrium.py",
     "Status": "CONFIRMED_AUDIT_OPEN"
   }
 ]

@@ -160,7 +160,14 @@ class SolventExtendedPVTEngine:
         # Dense supercritical CO2 is typically 400 - 950 kg/m³
         return float(np.clip(rho, 2.0, 1100.0))
 
-    def calculate_co2_fvf_rb_per_mscf(self, pressure_psi: float) -> float:
+    def calculate_co2_fvf_rb_per_mscf(
+        self,
+        pressure_psi: Optional[float] = None,
+        *,
+        p_psia: Optional[float] = None,
+        t_f: Optional[float] = None,
+        **kwargs,
+    ) -> float:
         """
         Calculate supercritical CO2 Formation Volume Factor B_CO2 (RB/MSCF).
 
@@ -169,12 +176,28 @@ class SolventExtendedPVTEngine:
         Downhole volume = 52.046 / rho_CO2 m³ = (52.046 / rho_CO2) * 6.2898 bbl = 327.36 / rho_CO2 [RB].
 
         Args:
-            pressure_psi: Sandface pressure in psia.
+            pressure_psi: Sandface pressure in psia (or passed via p_psia keyword).
+            p_psia: Optional alias for pressure_psi.
+            t_f: Optional temperature in °F (overrides engine temperature if provided).
 
         Returns:
             B_CO2 in RB/MSCF (typically 0.45 - 0.75 RB/MSCF for dense CO2).
         """
-        rho = self.calculate_co2_density_kg_m3(pressure_psi)
+        p = pressure_psi if pressure_psi is not None else p_psia
+        if p is None:
+            p = self.p_init
+        if t_f is not None:
+            prev_temp_f = self.temp_f
+            prev_temp_k = self.temp_k
+            self.temp_f = float(t_f)
+            self.temp_k = (self.temp_f - 32.0) * 5.0 / 9.0 + 273.15
+            try:
+                rho = self.calculate_co2_density_kg_m3(p)
+            finally:
+                self.temp_f = prev_temp_f
+                self.temp_k = prev_temp_k
+        else:
+            rho = self.calculate_co2_density_kg_m3(p)
         b_co2_rb_per_mscf = 327.362 / max(rho, 1e-3)
         return float(np.clip(b_co2_rb_per_mscf, 0.20, 15.0))
 

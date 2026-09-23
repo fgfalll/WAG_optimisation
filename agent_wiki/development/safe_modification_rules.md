@@ -10,7 +10,7 @@ To prevent accidental breakage of scientific invariants or silent corruption of 
 
 ## 2. Never Add Hardcoded Calibration Factors
 - **The Rule**: Never introduce unconfigurable numerical multipliers (e.g., `* 1.08` or `* 0.96`) into physical formulas or rate profiles.
-- **Protocol**: If an empirical adjustment is physically justified, it must be added to [core/data_models.py:EmpiricalFittingParameters](file:///d:/rep/4.6/co2eor_optimizer/core/data_models.py#L2238), documented in `docs/surrogate_engine_fitting_parameters.md`, and default to an uncalibrated baseline (1.0 or physical theory).
+- **Protocol**: If an empirical adjustment is physically justified, it must be added to [core/data_models.py:EmpiricalFittingParameters](file:///d:/rep/4.6/co2eor_optimizer/core/data_models.py#L2238), documented in [`agent_wiki/data/parameters.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/data/parameters.md#e-empiricalfittingparameters-line-2241), and default to an uncalibrated baseline (1.0 or physical theory).
 
 ## 3. Always Support `economic_params=None` Gracefully
 - **The Rule**: `evaluate_scenario()` in `surrogate_engine.py` must never raise a breaking exception if `economic_params` is omitted.

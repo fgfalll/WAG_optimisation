@@ -8,17 +8,7 @@ This document details all **5 major duplicated subsystems**, highlighting code l
 
 ---
 
-## 2. Inventory of Duplicate Implementations
-
-### Duplicate 1: Minimum Miscibility Pressure (MMP) Correlations
-- **Implementation A**: [evaluation/mmp.py](file:///d:/rep/4.6/co2eor_optimizer/evaluation/mmp.py) (`calculate_mmp`, `calculate_mmp_cronquist`, `calculate_mmp_lee`, `calculate_mmp_glaso`)
-  - *Details*: Fully unit-checked, supporting 6 literature correlations, input dataclass `MMPParameters`, validated against SPE publications.
-- **Implementation B**: [core/engine_surrogate/analytical_models.py:530-580](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py#L530-L580) (`_calculate_mmp`, `_cronquist_mmp`)
-  - *Details*: Duplicates Cronquist and Yellig-Metcalfe in-line. Uses a modified Cronquist formula: $(55 - \gamma_{API})^{0.279}$.
-- **Active Runtime Choice**: `evaluation/mmp.py` is called by `SurrogateEngine.__init__`, but `analytical_models.py` uses its own internal `_calculate_mmp` if called directly.
-- **Recommendation**: Standardize entirely on `evaluation/mmp.py`.
-
----
+## 2. Inventory of Active Duplicate Implementations
 
 ### Duplicate 2: Profile Generation (WAG & Continuous)
 - **Implementation A**: [core/simulation/profile_generator.py](file:///d:/rep/4.6/co2eor_optimizer/core/simulation/profile_generator.py) (`ProfileGenerator`)
@@ -57,3 +47,14 @@ This document details all **5 major duplicated subsystems**, highlighting code l
   - *Details*: Real-time mass calculation used to drive cash flows and storage metrics during optimization.
 - **Active Runtime Choice**: `surrogate_engine.py` is authoritative for optimization; `material_balance.py` is for post-processing.
 - **Recommendation**: Correct `analysis/material_balance.py` to match the mass accounting of `surrogate_engine.py`.
+
+---
+
+## 3. Master Consolidated Duplicates Archive
+
+The following duplicate subsystems have been unified into a single source of truth, with full details archived in [**`agent_wiki/audit/resolved_issues.md`**](resolved_issues.md):
+
+| ID | Duplicate Subsystem | Status | Single Source of Truth | Full Post-Mortem |
+|:---|:---|:---|:---|:---|
+| **DUP-01** | Minimum Miscibility Pressure (MMP) Correlations | VERIFIED | `evaluation/mmp.py` | [View Record](resolved_issues.md#dup-01-minimum-miscibility-pressure-mmp-correlations-duplication) |
+

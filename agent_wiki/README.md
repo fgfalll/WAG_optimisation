@@ -14,7 +14,7 @@ This documentation is designed for **reservoir engineers, AI pair-programmers, s
 | [**Physics Models**](physics/reservoir_model.md) | Reservoir geometry, PVT, CO₂ properties, displacement, Koval, Todd-Longstaff |
 | [**Data & Parameters**](data/inputs.md) | Input/output schemas, parameter registry, field unit definitions |
 | [**Development Guide**](development/common_pitfalls.md) | Change safety matrix, common pitfalls, safe modification rules |
-| [**Audit Reports**](audit/technical_debt.md) | Dead code, hardcoded values, fallbacks, suspicious logic |
+| [**Audit Reports**](audit/technical_debt.md) | Dead code, hardcoded values, fallbacks, suspicious logic, [**resolved archive**](audit/resolved_issues.md) |
 | [**Verification**](verification/verification_strategy.md) | 7-level V&V hierarchy, conservation tests, convergence studies |
 | [**Validation**](validation/benchmarks.md) | SPE 5, CMG GEM reference benchmarks |
 | [**Decisions**](decisions/architecture_decisions.md) | Architecture & scientific rationale records (ADRs) |

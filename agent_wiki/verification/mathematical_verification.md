@@ -69,7 +69,7 @@ A critical requirement of scientific software is robustness against mathematical
 | Singularity Condition | Mathematical Origin | Code Location | Implemented Protection | Audit Status |
 |:---|:---|:---|:---|:---|
 | **$V_{DP} \to 1.0$ (Infinite Heterogeneity)** | Koval heterogeneity factor $H_k = 10^{V_{DP} / (1 - V_{DP})^2}$ has essential singularity at $V_{DP} = 1.0$ | `surrogate_models.py:125` | Clamped to $V_{DP} \le 0.95$ ($H_k \le 10^{380}$) | **VERIFIED** (No IEEE overflow) |
-| **$\text{API} \ge 55^\circ$ (Light Condensate)** | Cronquist correlation uses term $(55 - \text{API})^{0.279}$ | `evaluation/mmp.py:111` | Clamped or complex branch guarded | **SCIENTIFIC FLAW (SCI-FLAW-13)** |
+| **$\text{API} \ge 55^\circ$ (Light Condensate)** | Published Cronquist (1978) power-law $P_{MMP} = 15.988 \cdot T_F^Y$ with $MW_{C5+} = 4247.986 \cdot \text{API}^{-0.87}$ | `evaluation/mmp.py:115-165` | Authentic formulation replaces non-standard $(55-\text{API})$ term | **VERIFIED** (SCI-FLAW-13 resolved) |
 | **$M \to 1.0$ (Unit Mobility)** | Craig areal sweep correlation jumps discontinuously | `surrogate_models.py:175` | Discontinuous piecewise step at $M=1.0$ | **SCIENTIFIC FLAW (SCI-FLAW-16)** |
 | **$S_s \to 0$ (Zero Solvent Saturation)** | Fractional flow denominator $1 + S_s(K-1)$ approaches $1$ | `surrogate_models.py:210` | Non-singular; returns $0.0$ smoothly | **VERIFIED** |
 | **$\Delta P \to 0$ (Zero Wellbore Drawdown)** | Productivity index calculation $q / \Delta P$ | `surrogate_engine.py:380` | Clamped: $\Delta P = \max(\Delta P, 10^{-4})$ | **VERIFIED** |

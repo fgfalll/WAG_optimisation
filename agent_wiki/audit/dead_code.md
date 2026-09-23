@@ -67,22 +67,9 @@ s_wi = params.get("s_wi", 0.25) # UNUSED (F841)
 
 ---
 
-## 5. Removed Root Artifacts & Superseded Scripts [RESOLVED]
+> [!NOTE]
+> **5. Removed Root Artifacts & Superseded Scripts [RESOLVED]** has been archived to [`resolved_issues.md`](resolved_issues.md#dead-05).
 
-As part of the codebase cleanup, redundant and orphaned root artifacts were deleted or relocated:
-- **`data_processor.py` & `ui/workers/data_processing_worker.py`**: Removed. Superseded by the modernized standalone CLI tool [`scripts/process_las_data.py`](file:///d:/rep/4.6/co2eor_optimizer/scripts/process_las_data.py).
-- **`core/engine_surrogate/analytical_models – копія.py`**: Duplicate file removed.
-- **`fixed_phd_class.txt`**: Temporary scratch file removed.
-- **`test_surrogate.py`**: Ad-hoc root test script removed (all tests integrated into `tests/core/test_surrogate_engine.py`).
-- **`nul` & `report.log`**: Stale build and debug artifacts deleted from root.
-- **Utility Modules**: Relocated from flat root to `utils/` package (`config_manager.py`, `error_handler.py`, `path_utils.py`, `validation_manager.py`).
-
----
-
-## 6. Removed Scientific Justification and Help Subsystems [RESOLVED]
-
-The legacy Scientific Justification and Help Panel subsystems were completely decommissioned and removed:
-- **Scientific Justification Dialogs & Assets**: Deleted `ui/dialogs/scientific_justification_dialog.py`, subdialogs (`breakthrough_physics_dialog.py`, `eos_modeling_dialog.py`, `profiler_dialog.py`, `recovery_models_dialog.py`, `overview_dialog.py`), `ui/dialogs/mathjax/`, and `ui/assets/docs/*_justification.html`.
-- **Help Panel & Documentation Subsystem**: Deleted `ui/dialogs/parameter_help_dialog.py` (`HelpPanel`), `utils/help_manager.py` (`HelpManager`), `config/help_content.yaml`, and the `help/` directory containing markdown guides.
-- **UI Integration**: Cleaned up [`ui/main_window.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/main_window.py) and [`main.py`](file:///d:/rep/4.6/co2eor_optimizer/main.py) to remove corresponding menu actions, dialog launchers, side panel splitters, and unused imports.
+> [!NOTE]
+> **6. Removed Scientific Justification and Help Subsystems [RESOLVED]** has been archived to [`resolved_issues.md`](resolved_issues.md#dead-06).
 

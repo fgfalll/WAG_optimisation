@@ -2,13 +2,13 @@
 
 ## 1. Executive Summary of Verification Coverage
 
-The active production simulation pipeline (`core/engine_surrogate/` and `core/optimisation_engine.py`) has been audited and verified across 40 dedicated scientific tests in `tests/scientific/`. However, significant architectural gaps exist in dormant and legacy subsystems:
+The active production simulation pipeline (`core/engine_surrogate/` and `core/optimisation_engine.py`) has been audited and verified across 42 dedicated scientific tests in `tests/scientific/`. However, significant architectural gaps exist in dormant and legacy subsystems:
 
 1. **Active vs Legacy Divergence**: The repository contains five separate engine directories (`engine_surrogate`, `engine_simple`, `Phys_engine_full`, `compositional_engine`, and `unified_engine`). Only `engine_surrogate` is active in production optimization. The others are dormant but contain severe physical errors that would fail immediately if activated.
 2. **Dormant Code Flaws**:
    - `core/unified_engine/physics/eos/__init__.py`: Inverted phase labels (SCI-FLAW-08) and corrupted Peng-Robinson fugacity (SCI-FLAW-18).
    - `core/unified_engine/physics/co2_properties.py`: Inverted thermal expansion (SCI-FLAW-04).
-   - `core/data_integration_engine.py`: Negative oil compressibility (SCI-FLAW-02) and inverted pressure-viscosity (SCI-FLAW-03).
+   - `core/data_integration_engine.py`: Negative oil compressibility (SCI-FLAW-02) and inverted pressure-viscosity (SCI-FLAW-03) — **RESOLVED & VERIFIED** in `tests/scientific/physics/test_thermodynamic_positivity.py`.
 3. **Surrogate-Physics Decoupling**: The optimizer explores a unconstrained proxy parameter space (e.g., setting target pressure to 4,450 psia) while the underlying 0D tank ODE calculates real pressure at 3,100 psia (SCI-FLAW-06).
 
 ---

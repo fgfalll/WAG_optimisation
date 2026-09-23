@@ -29,29 +29,26 @@ def test_cronquist_mmp_singularity_at_55_api():
     """
     Test Cronquist MMP correlation at oil_gravity >= 55.0 deg API.
 
-    Formula in evaluation/mmp.py:111:
-        gravity_term = 55.0 - params.oil_gravity
-        mmp = 15.988 * (params.temperature**0.744206) * (gravity_term**0.279033)
-    At API = 55.0: gravity_term = 0.0 -> MMP = 0.0 psia (unphysical zero miscibility pressure).
-    At API > 55.0: gravity_term < 0.0 -> (-1)**0.279 produces NaN or complex number.
-    Exposes SCI-FLAW-13.
+    Verifies elimination of SCI-FLAW-13 (ad-hoc (55 - API) singularity).
+    Authentic Cronquist (1978) correlation uses MW_C5+ derived from API gravity or C7+ MW:
+        MMP = 15.988 * (Temperature ^ Y)
+    At API = 55.0 and API = 56.0, Cronquist predicts positive, finite, real MMP values
+    and lighter oil (API=56) has lower MMP than API=55.
     """
     # Case 1: Exactly 55 API
     params_55 = MMPParameters(temperature=150.0, oil_gravity=55.0)
     mmp_55 = calculate_mmp(params_55, method="cronquist")
-    assert np.isclose(mmp_55, 0.0), f"At API=55, Cronquist predicted non-zero: {mmp_55}"
+    assert np.isfinite(mmp_55) and not isinstance(mmp_55, complex)
+    assert 500.0 < mmp_55 < 3000.0, f"Expected physical MMP at API=55, got {mmp_55}"
 
     # Case 2: 56 API (Light volatile condensate)
     params_56 = MMPParameters(temperature=150.0, oil_gravity=56.0)
-    try:
-        mmp_56 = calculate_mmp(params_56, method="cronquist")
-        # In Python, (-1.0)**0.279 raises ValueError or returns complex/NaN
-        assert np.isnan(mmp_56) or isinstance(mmp_56, complex) or mmp_56 <= 0, (
-            f"Expected NaN or non-physical result for API > 55, got {mmp_56}"
-        )
-    except (ValueError, ZeroDivisionError) as e:
-        # Documented failure mode
-        pass
+    mmp_56 = calculate_mmp(params_56, method="cronquist")
+    assert np.isfinite(mmp_56) and not isinstance(mmp_56, complex)
+    assert 500.0 < mmp_56 < 3000.0, f"Expected physical MMP at API=56, got {mmp_56}"
+
+    # In physics: higher API (lighter oil) has lower MMP
+    assert mmp_56 < mmp_55, f"Expected MMP(56 API) < MMP(55 API), got {mmp_56} vs {mmp_55}"
 
 
 def test_mobility_ratio_unit_limit_singularity():

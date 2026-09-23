@@ -23,6 +23,8 @@ import numpy as np
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple, Any
 
+from core.data_models import CCUSState
+
 logger = logging.getLogger(__name__)
 
 

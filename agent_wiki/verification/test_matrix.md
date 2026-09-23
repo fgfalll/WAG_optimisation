@@ -2,7 +2,7 @@
 
 ## 1. Test Suite Architecture
 
-The dedicated scientific verification test suite is located in `tests/scientific/`. It comprises **40 test items across 15 subdirectories**, organized strictly by scientific verification discipline.
+The dedicated scientific verification test suite is located in `tests/scientific/`. It comprises **42 test items across 16 subdirectories**, organized strictly by scientific verification discipline.
 
 ---
 
@@ -14,10 +14,10 @@ The dedicated scientific verification test suite is located in `tests/scientific
 | | `test_welge_tangent_identity` | $1 - f_w(S_{wf}) \equiv f_w'(S_{wf})(\bar{S}_w - S_{wf})$ | `analytical_models.py:340` | **VERIFIED** |
 | | `test_arps_rate_cumulative_derivative_identity` | $\frac{d}{dt}[N_p(t)] \equiv q(t)$ (SymPy) | `analytical_models.py:410` | **VERIFIED** |
 | | `test_v_dp_near_unity_singularity` | $H_k = 10^{V_{DP}/(1-V_{DP})^2}$ as $V_{DP} \to 0.999$ | `surrogate_models.py:125` | **VERIFIED** |
-| | `test_cronquist_mmp_singularity_at_55_api` | $(55 - \text{API})^{0.279}$ at $\text{API} \ge 55^\circ$ | `evaluation/mmp.py:111` | **CONTRADICTED BY TEST (SCI-FLAW-13)** |
+| | `test_cronquist_mmp_singularity_at_55_api` | Published Cronquist (1978) $P_{MMP} = 15.988 \cdot T_F^Y$ with $MW_{C5+} = 4247.986 \cdot \text{API}^{-0.87}$ at $\text{API} \ge 55^\circ$ | `evaluation/mmp.py:115` | **VERIFIED** |
 | | `test_mobility_ratio_unit_limit_singularity` | $M \to 1.0$ limit in Craig sweep | `surrogate_models.py:175` | **CONTRADICTED BY TEST (SCI-FLAW-16)** |
-| **`physics/`** | `test_oil_compressibility_positivity` | $c_o = -\frac{1}{B_o}\frac{\partial B_o}{\partial P} > 0$ | `data_integration_engine.py:370` | **CONTRADICTED BY TEST (SCI-FLAW-02)** |
-| | `test_liquid_viscosity_pressure_derivative` | $\frac{\partial\mu_o}{\partial P} > 0$ and $\frac{\partial\mu_g}{\partial P} > 0$ | `data_integration_engine.py:372` | **CONTRADICTED BY TEST (SCI-FLAW-03)** |
+| **`physics/`** | `test_oil_compressibility_positivity` | $c_o = -\frac{1}{B_o}\frac{\partial B_o}{\partial P} > 0$ | `data_integration_engine.py:347, 433` | **VERIFIED (RESOLVED SCI-FLAW-02)** |
+| | `test_liquid_viscosity_pressure_derivative` | $\frac{\partial\mu_o}{\partial P} > 0$ and $\frac{\partial\mu_g}{\partial P} > 0$ | `data_integration_engine.py:349, 352, 437, 443` | **VERIFIED (RESOLVED SCI-FLAW-03)** |
 | | `test_co2_density_thermal_expansion` | $\frac{\partial\rho}{\partial T} < 0$ (Isobaric expansion) | `unified_engine/co2_properties.py:140` | **CONTRADICTED BY TEST (SCI-FLAW-04)** |
 | | `test_cubic_eos_z_factor_bounds` | $Z_L \in [0.01, 0.40]$, $Z_V \in [0.70, 1.20]$ | `unified_engine/eos/__init__.py:180` | **VERIFIED** |
 | | `test_phase_label_assignment` | $Z < 0.8 \implies \text{Liquid}$, $Z \ge 0.8 \implies \text{Vapor}$ | `unified_engine/eos/__init__.py:195` | **CONTRADICTED BY TEST (SCI-FLAW-08)** |

@@ -1,99 +1,92 @@
 Module,Line,Literal,Code Snippet
-analysis/breakthrough_physics.py,21,981.0,GRAVITY_ACCEL_CM_S2 = 981.0
-analysis/breakthrough_physics.py,22,9.869233e-16,PERM_MD_TO_M2 = _PERM_CONSTANTS.MD_TO_M2  # 9.869233e-16 mD to m^2
-analysis/breakthrough_physics.py,23,9.869233e-13,PERM_MD_TO_CM2 = _PERM_CONSTANTS.MD_TO_CM2  # 9.869233e-13 mD to cm^2
-analysis/breakthrough_physics.py,24,0.01,VISC_CP_TO_POISE = 0.01
-analysis/breakthrough_physics.py,25,0.001,VISC_CP_TO_PA_S = _PERM_CONSTANTS.VISC_CP_TO_PA_S  # 0.001 cP to Pa·s
-analysis/breakthrough_physics.py,26,32.174,GRAVITY_FT_S2 = _PERM_CONSTANTS.GRAVITY_FT_S2  # 32.174 ft/s^2
-analysis/breakthrough_physics.py,27,86400.0,SECONDS_PER_DAY = _PERM_CONSTANTS.SECONDS_PER_DAY  # 86400.0
-analysis/breakthrough_physics.py,36,300.0,"default=300.0,"
-analysis/breakthrough_physics.py,40,0.95,"default=0.95,"
-analysis/breakthrough_physics.py,44,0.1,"default=0.1,"
-analysis/breakthrough_physics.py,50,0.9,"default=0.9,"
-analysis/breakthrough_physics.py,54,0.95,"default=0.95,"
-analysis/breakthrough_physics.py,58,15.0,"default=15.0,"
-analysis/breakthrough_physics.py,64,0.08,"default=0.08,"
-analysis/breakthrough_physics.py,70,0.15,"default=0.15,"
-analysis/breakthrough_physics.py,74,0.35,"default=0.35,"
-analysis/breakthrough_physics.py,78,15.0,"default=15.0,"
-analysis/breakthrough_physics.py,82,5.0,"default=5.0,"
-analysis/breakthrough_physics.py,90,2.5,"default=2.5,"
-analysis/breakthrough_physics.py,96,3.0,"default=3.0,"
-analysis/breakthrough_physics.py,104,25.0,"default=25.0,"
-analysis/breakthrough_physics.py,109,50.0,if not (50.0 <= self.breakthrough_gor_threshold <= 5000.0):
-analysis/breakthrough_physics.py,109,5000.0,if not (50.0 <= self.breakthrough_gor_threshold <= 5000.0):
-analysis/breakthrough_physics.py,111,0.7,if not (0.7 <= self.breakthrough_water_cut_threshold <= 1.0):
-analysis/breakthrough_physics.py,112,0.7,"raise ValueError(""Breakthrough water cut threshold must be between 0.7 and 1.0"")"
-analysis/breakthrough_physics.py,153,2000.0,"pressure = _to_float(reservoir_params.get(""pressure"", 2000.0))"
-analysis/breakthrough_physics.py,154,150.0,"temp_f = _to_float(reservoir_params.get(""temperature"", 150.0))"
-analysis/breakthrough_physics.py,172,273.15,temp_k = (temp_f - 32) * 5 / 9 + 273.15
-analysis/breakthrough_physics.py,173,6894.76,pres_pa = pressure * 6894.76
-analysis/breakthrough_physics.py,177,44.0,"rho_co2 = props.get(""vapor_properties"", {}).get(""density"", 44.0 * 16.0185) / 16.0185"
-analysis/breakthrough_physics.py,177,16.0185,"rho_co2 = props.get(""vapor_properties"", {}).get(""density"", 44.0 * 16.0185) / 16.0185"
-analysis/breakthrough_physics.py,177,16.0185,"rho_co2 = props.get(""vapor_properties"", {}).get(""density"", 44.0 * 16.0185) / 16.0185"
-analysis/breakthrough_physics.py,178,50.0,"rho_oil = props.get(""liquid_properties"", {}).get(""density"", 50.0 * 16.0185) / 16.0185"
-analysis/breakthrough_physics.py,178,16.0185,"rho_oil = props.get(""liquid_properties"", {}).get(""density"", 50.0 * 16.0185) / 16.0185"
-analysis/breakthrough_physics.py,178,16.0185,"rho_oil = props.get(""liquid_properties"", {}).get(""density"", 50.0 * 16.0185) / 16.0185"
-analysis/breakthrough_physics.py,181,0.08,"mu_co2 = props.get(""vapor_properties"", {}).get(""viscosity"", 0.08 / 1000.0) * 1000.0"
-analysis/breakthrough_physics.py,181,1000.0,"mu_co2 = props.get(""vapor_properties"", {}).get(""viscosity"", 0.08 / 1000.0) * 1000.0"
-analysis/breakthrough_physics.py,181,1000.0,"mu_co2 = props.get(""vapor_properties"", {}).get(""viscosity"", 0.08 / 1000.0) * 1000.0"
-analysis/breakthrough_physics.py,182,1000.0,"mu_oil = props.get(""liquid_properties"", {}).get(""viscosity"", 2.0 / 1000.0) * 1000.0"
-analysis/breakthrough_physics.py,182,1000.0,"mu_oil = props.get(""liquid_properties"", {}).get(""viscosity"", 2.0 / 1000.0) * 1000.0"
-analysis/breakthrough_physics.py,188,0.00503,"bg = 0.00503 * 0.85 * (temp_f + 460.0) / max(pressure, 14.7)"
-analysis/breakthrough_physics.py,188,0.85,"bg = 0.00503 * 0.85 * (temp_f + 460.0) / max(pressure, 14.7)"
-analysis/breakthrough_physics.py,188,460.0,"bg = 0.00503 * 0.85 * (temp_f + 460.0) / max(pressure, 14.7)"
-analysis/breakthrough_physics.py,188,14.7,"bg = 0.00503 * 0.85 * (temp_f + 460.0) / max(pressure, 14.7)"
-analysis/breakthrough_physics.py,194,44.0,"rho_co2 = _to_float(eor_params.get(""co2_density"", 44.0))"
-analysis/breakthrough_physics.py,195,50.0,"rho_oil = _to_float(eor_params.get(""oil_density"", 50.0))"
-analysis/breakthrough_physics.py,196,0.08,"mu_co2 = _to_float(eor_params.get(""co2_viscosity"", 0.08))"
-analysis/breakthrough_physics.py,252,0.95,"vdp = np.clip(vdp, 0.0, 0.95)"
-analysis/breakthrough_physics.py,257,0.22,m_eff = (0.22 + 0.78 * (mobility_ratio**0.25)) ** 4
-analysis/breakthrough_physics.py,257,0.78,m_eff = (0.22 + 0.78 * (mobility_ratio**0.25)) ** 4
-analysis/breakthrough_physics.py,257,0.25,m_eff = (0.22 + 0.78 * (mobility_ratio**0.25)) ** 4
-analysis/breakthrough_physics.py,263,2000.0,"length_ft = _to_float(reservoir_params.get(""length_ft"", 2000.0))"
-analysis/breakthrough_physics.py,264,1000.0,"width_ft = _to_float(reservoir_params.get(""width_ft"", 1000.0))"
-analysis/breakthrough_physics.py,265,50.0,"thickness_ft = _to_float(reservoir_params.get(""thickness_ft"", 50.0))"
-analysis/breakthrough_physics.py,266,0.15,"porosity = np.clip(_to_float(reservoir_params.get(""porosity"", 0.15)), 0.01, 0.4)"
-analysis/breakthrough_physics.py,266,0.01,"porosity = np.clip(_to_float(reservoir_params.get(""porosity"", 0.15)), 0.01, 0.4)"
-analysis/breakthrough_physics.py,266,0.4,"porosity = np.clip(_to_float(reservoir_params.get(""porosity"", 0.15)), 0.01, 0.4)"
-analysis/breakthrough_physics.py,271,5000.0,"inj_mscfd = _to_float(eor_params.get(""injection_rate"", 5000.0))"
-analysis/breakthrough_physics.py,273,5.61458,q_res_ft3_day = inj_mscfd * bg * 5.61458
-analysis/breakthrough_physics.py,275,365.25,bt_years = (bt_pore_volumes * pore_volume_ft3) / (q_res_ft3_day * 365.25 + EPSILON)
-analysis/breakthrough_physics.py,292,2000.0,"length_ft = _to_float(reservoir_params.get(""length_ft"", 2000.0))"
-analysis/breakthrough_physics.py,293,50.0,"height_ft = _to_float(reservoir_params.get(""thickness_ft"", 50.0))"
-analysis/breakthrough_physics.py,294,1000.0,"width_ft = _to_float(reservoir_params.get(""width_ft"", 1000.0))"
-analysis/breakthrough_physics.py,295,100.0,"perm_md = _to_float(reservoir_params.get(""permeability"", 100.0))"
-analysis/breakthrough_physics.py,296,0.15,"porosity = _to_float(reservoir_params.get(""porosity"", 0.15))"
-analysis/breakthrough_physics.py,302,5000.0,"inj_mscfd = _to_float(eor_params.get(""injection_rate"", 5000.0))"
-analysis/breakthrough_physics.py,304,5.61458,q_res_ft3_day = inj_mscfd * bg * 5.61458
-analysis/breakthrough_physics.py,308,1.0623e-14,k_ft2 = perm_md * 1.0623e-14
-analysis/breakthrough_physics.py,311,2.417e-10,mu_o_lb_day_ft2 = mu_o_cp * 2.417e-10
-analysis/breakthrough_physics.py,314,240000000000.0,g_ft_day2 = 2.4e11
-analysis/breakthrough_physics.py,326,0.01,"bt_pv = (1.0 / m_ratio) * (1.0 - np.exp(-max(rvg, 0.01)))"
-analysis/breakthrough_physics.py,329,365.25,bt_years = (bt_pv * pore_volume_ft3) / (q_res_ft3_day * 365.25 + EPSILON)
-analysis/breakthrough_physics.py,346,100.0,"perm_md = _to_float(reservoir_params.get(""permeability"", 100.0))"
-analysis/breakthrough_physics.py,351,5000.0,"inj_mscfd = _to_float(eor_params.get(""injection_rate"", 5000.0))"
-analysis/breakthrough_physics.py,353,1000.0,"width_ft = _to_float(reservoir_params.get(""width_ft"", 1000.0))"
-analysis/breakthrough_physics.py,354,50.0,"height_ft = _to_float(reservoir_params.get(""thickness_ft"", 50.0))"
-analysis/breakthrough_physics.py,355,5.61458,q_res_ft3_day = inj_mscfd * bg * 5.61458
-analysis/breakthrough_physics.py,359,1.0623e-14,k_ft2 = perm_md * 1.0623e-14
-analysis/breakthrough_physics.py,360,2.417e-10,mu_g_lb_day_ft2 = mu_g_cp * 2.417e-10
-analysis/breakthrough_physics.py,361,240000000000.0,g_ft_day2 = 2.4e11
-analysis/breakthrough_physics.py,395,800.0,"base_gor = eor_params.get(""gas_oil_ratio_at_breakthrough"", 800.0)"
-analysis/breakthrough_physics.py,396,10000.0,"injection_gor = eor_params.get(""injection_gor"", 10000.0)  # Typical injected CO₂ GOR"
-analysis/breakthrough_physics.py,406,1.1,"return float(min(gor, injection_gor * 1.1))  # Cap at 10% above injection GOR"
-analysis/breakthrough_physics.py,421,0.8,"co2_purity = produced_gas_composition.get(""co2_fraction"", 0.8)"
-analysis/breakthrough_physics.py,474,200.0,"gor_profile[i] = eor_params.get(""initial_gor"", 200.0)  # Base reservoir GOR"
-analysis/breakthrough_physics.py,513,5.0,"return self.generate_breakthrough_profile(15, 5.0, eor_params)"
-analysis/breakthrough_physics.py,530,30.44,"state.current_time if hasattr(state, ""current_time"") else i * 30.44"
-analysis/breakthrough_physics.py,548,0.1,co2_front_idx = np.where(co2_saturation_profile[i] > 0.1)[0]
-analysis/breakthrough_physics.py,557,0.05,"producer_co2_sat > 0.05,"
-analysis/breakthrough_physics.py,558,200.0,"200.0 + producer_co2_sat * 5000.0,  # Scale GOR with CO2 saturation"
-analysis/breakthrough_physics.py,558,5000.0,"200.0 + producer_co2_sat * 5000.0,  # Scale GOR with CO2 saturation"
-analysis/breakthrough_physics.py,559,200.0,"eor_params.get(""initial_gor"", 200.0),"
-analysis/breakthrough_physics.py,564,0.05,"producer_co2_sat > 0.05, self.params.recycling_efficiency, 0.0"
-analysis/breakthrough_physics.py,568,0.05,breakthrough_threshold = 0.05  # 5% CO2 at producer
-analysis/breakthrough_physics.py,571,999.0,times[breakthrough_indices[0]] if len(breakthrough_indices) > 0 else 999.0
+analysis/breakthrough_physics.py,29,300.0,"default=300.0,"
+analysis/breakthrough_physics.py,33,0.95,"default=0.95,"
+analysis/breakthrough_physics.py,37,0.1,"default=0.1,"
+analysis/breakthrough_physics.py,43,0.9,"default=0.9,"
+analysis/breakthrough_physics.py,47,0.95,"default=0.95,"
+analysis/breakthrough_physics.py,51,15.0,"default=15.0,"
+analysis/breakthrough_physics.py,57,0.08,"default=0.08,"
+analysis/breakthrough_physics.py,63,0.15,"default=0.15,"
+analysis/breakthrough_physics.py,67,0.35,"default=0.35,"
+analysis/breakthrough_physics.py,71,15.0,"default=15.0,"
+analysis/breakthrough_physics.py,75,5.0,"default=5.0,"
+analysis/breakthrough_physics.py,83,2.5,"default=2.5,"
+analysis/breakthrough_physics.py,89,3.0,"default=3.0,"
+analysis/breakthrough_physics.py,97,25.0,"default=25.0,"
+analysis/breakthrough_physics.py,102,50.0,if not (50.0 <= self.breakthrough_gor_threshold <= 5000.0):
+analysis/breakthrough_physics.py,102,5000.0,if not (50.0 <= self.breakthrough_gor_threshold <= 5000.0):
+analysis/breakthrough_physics.py,104,0.7,if not (0.7 <= self.breakthrough_water_cut_threshold <= 1.0):
+analysis/breakthrough_physics.py,105,0.7,"raise ValueError(""Breakthrough water cut threshold must be between 0.7 and 1.0"")"
+analysis/breakthrough_physics.py,146,2000.0,"pressure = _to_float(reservoir_params.get(""pressure"", 2000.0))"
+analysis/breakthrough_physics.py,147,150.0,"temp_f = _to_float(reservoir_params.get(""temperature"", 150.0))"
+analysis/breakthrough_physics.py,165,273.15,temp_k = (temp_f - 32) * 5 / 9 + 273.15
+analysis/breakthrough_physics.py,166,6894.76,pres_pa = pressure * 6894.76
+analysis/breakthrough_physics.py,170,44.0,"rho_co2 = props.get(""vapor_properties"", {}).get(""density"", 44.0 * 16.0185) / 16.0185"
+analysis/breakthrough_physics.py,170,16.0185,"rho_co2 = props.get(""vapor_properties"", {}).get(""density"", 44.0 * 16.0185) / 16.0185"
+analysis/breakthrough_physics.py,170,16.0185,"rho_co2 = props.get(""vapor_properties"", {}).get(""density"", 44.0 * 16.0185) / 16.0185"
+analysis/breakthrough_physics.py,171,50.0,"rho_oil = props.get(""liquid_properties"", {}).get(""density"", 50.0 * 16.0185) / 16.0185"
+analysis/breakthrough_physics.py,171,16.0185,"rho_oil = props.get(""liquid_properties"", {}).get(""density"", 50.0 * 16.0185) / 16.0185"
+analysis/breakthrough_physics.py,171,16.0185,"rho_oil = props.get(""liquid_properties"", {}).get(""density"", 50.0 * 16.0185) / 16.0185"
+analysis/breakthrough_physics.py,174,0.08,"mu_co2 = props.get(""vapor_properties"", {}).get(""viscosity"", 0.08 / 1000.0) * 1000.0"
+analysis/breakthrough_physics.py,174,1000.0,"mu_co2 = props.get(""vapor_properties"", {}).get(""viscosity"", 0.08 / 1000.0) * 1000.0"
+analysis/breakthrough_physics.py,174,1000.0,"mu_co2 = props.get(""vapor_properties"", {}).get(""viscosity"", 0.08 / 1000.0) * 1000.0"
+analysis/breakthrough_physics.py,175,1000.0,"mu_oil = props.get(""liquid_properties"", {}).get(""viscosity"", 2.0 / 1000.0) * 1000.0"
+analysis/breakthrough_physics.py,175,1000.0,"mu_oil = props.get(""liquid_properties"", {}).get(""viscosity"", 2.0 / 1000.0) * 1000.0"
+analysis/breakthrough_physics.py,181,0.00503,"bg = 0.00503 * 0.85 * (temp_f + 460.0) / max(pressure, 14.7)"
+analysis/breakthrough_physics.py,181,0.85,"bg = 0.00503 * 0.85 * (temp_f + 460.0) / max(pressure, 14.7)"
+analysis/breakthrough_physics.py,181,460.0,"bg = 0.00503 * 0.85 * (temp_f + 460.0) / max(pressure, 14.7)"
+analysis/breakthrough_physics.py,181,14.7,"bg = 0.00503 * 0.85 * (temp_f + 460.0) / max(pressure, 14.7)"
+analysis/breakthrough_physics.py,187,44.0,"rho_co2 = _to_float(eor_params.get(""co2_density"", 44.0))"
+analysis/breakthrough_physics.py,188,50.0,"rho_oil = _to_float(eor_params.get(""oil_density"", 50.0))"
+analysis/breakthrough_physics.py,189,0.08,"mu_co2 = _to_float(eor_params.get(""co2_viscosity"", 0.08))"
+analysis/breakthrough_physics.py,248,0.95,"vdp = np.clip(vdp, 0.0, 0.95)"
+analysis/breakthrough_physics.py,253,0.22,m_eff = (0.22 + 0.78 * (mobility_ratio**0.25)) ** 4
+analysis/breakthrough_physics.py,253,0.78,m_eff = (0.22 + 0.78 * (mobility_ratio**0.25)) ** 4
+analysis/breakthrough_physics.py,253,0.25,m_eff = (0.22 + 0.78 * (mobility_ratio**0.25)) ** 4
+analysis/breakthrough_physics.py,259,2000.0,"length_ft = _to_float(reservoir_params.get(""length_ft"", 2000.0))"
+analysis/breakthrough_physics.py,260,1000.0,"width_ft = _to_float(reservoir_params.get(""width_ft"", 1000.0))"
+analysis/breakthrough_physics.py,261,50.0,"thickness_ft = _to_float(reservoir_params.get(""thickness_ft"", 50.0))"
+analysis/breakthrough_physics.py,262,0.15,"porosity = np.clip(_to_float(reservoir_params.get(""porosity"", 0.15)), 0.01, 0.4)"
+analysis/breakthrough_physics.py,262,0.01,"porosity = np.clip(_to_float(reservoir_params.get(""porosity"", 0.15)), 0.01, 0.4)"
+analysis/breakthrough_physics.py,262,0.4,"porosity = np.clip(_to_float(reservoir_params.get(""porosity"", 0.15)), 0.01, 0.4)"
+analysis/breakthrough_physics.py,267,5000.0,"inj_mscfd = _to_float(eor_params.get(""injection_rate"", 5000.0))"
+analysis/breakthrough_physics.py,269,5.61458,q_res_ft3_day = inj_mscfd * bg * 5.61458
+analysis/breakthrough_physics.py,271,365.25,bt_years = (bt_pore_volumes * pore_volume_ft3) / (q_res_ft3_day * 365.25 + EPSILON)
+analysis/breakthrough_physics.py,288,2000.0,"length_ft = _to_float(reservoir_params.get(""length_ft"", 2000.0))"
+analysis/breakthrough_physics.py,289,50.0,"height_ft = _to_float(reservoir_params.get(""thickness_ft"", 50.0))"
+analysis/breakthrough_physics.py,290,1000.0,"width_ft = _to_float(reservoir_params.get(""width_ft"", 1000.0))"
+analysis/breakthrough_physics.py,291,100.0,"perm_md = _to_float(reservoir_params.get(""permeability"", 100.0))"
+analysis/breakthrough_physics.py,292,0.15,"porosity = _to_float(reservoir_params.get(""porosity"", 0.15))"
+analysis/breakthrough_physics.py,298,5000.0,"inj_mscfd = _to_float(eor_params.get(""injection_rate"", 5000.0))"
+analysis/breakthrough_physics.py,300,5.61458,q_res_ft3_day = inj_mscfd * bg * 5.61458
+analysis/breakthrough_physics.py,304,1.0623e-14,k_ft2 = perm_md * 1.0623e-14
+analysis/breakthrough_physics.py,307,2.417e-10,mu_o_lb_day_ft2 = mu_o_cp * 2.417e-10
+analysis/breakthrough_physics.py,310,240000000000.0,g_ft_day2 = 2.4e11
+analysis/breakthrough_physics.py,322,0.01,"bt_pv = (1.0 / m_ratio) * (1.0 - np.exp(-max(rvg, 0.01)))"
+analysis/breakthrough_physics.py,325,365.25,bt_years = (bt_pv * pore_volume_ft3) / (q_res_ft3_day * 365.25 + EPSILON)
+analysis/breakthrough_physics.py,342,100.0,"perm_md = _to_float(reservoir_params.get(""permeability"", 100.0))"
+analysis/breakthrough_physics.py,347,5000.0,"inj_mscfd = _to_float(eor_params.get(""injection_rate"", 5000.0))"
+analysis/breakthrough_physics.py,349,1000.0,"width_ft = _to_float(reservoir_params.get(""width_ft"", 1000.0))"
+analysis/breakthrough_physics.py,350,50.0,"height_ft = _to_float(reservoir_params.get(""thickness_ft"", 50.0))"
+analysis/breakthrough_physics.py,351,5.61458,q_res_ft3_day = inj_mscfd * bg * 5.61458
+analysis/breakthrough_physics.py,355,1.0623e-14,k_ft2 = perm_md * 1.0623e-14
+analysis/breakthrough_physics.py,356,2.417e-10,mu_g_lb_day_ft2 = mu_g_cp * 2.417e-10
+analysis/breakthrough_physics.py,357,240000000000.0,g_ft_day2 = 2.4e11
+analysis/breakthrough_physics.py,391,800.0,"base_gor = eor_params.get(""gas_oil_ratio_at_breakthrough"", 800.0)"
+analysis/breakthrough_physics.py,392,10000.0,"injection_gor = eor_params.get(""injection_gor"", 10000.0)  # Typical injected CO₂ GOR"
+analysis/breakthrough_physics.py,402,1.1,"return float(min(gor, injection_gor * 1.1))  # Cap at 10% above injection GOR"
+analysis/breakthrough_physics.py,417,0.8,"co2_purity = produced_gas_composition.get(""co2_fraction"", 0.8)"
+analysis/breakthrough_physics.py,470,200.0,"gor_profile[i] = eor_params.get(""initial_gor"", 200.0)  # Base reservoir GOR"
+analysis/breakthrough_physics.py,509,5.0,"return self.generate_breakthrough_profile(15, 5.0, eor_params)"
+analysis/breakthrough_physics.py,526,30.44,"state.current_time if hasattr(state, ""current_time"") else i * 30.44"
+analysis/breakthrough_physics.py,544,0.1,co2_front_idx = np.where(co2_saturation_profile[i] > 0.1)[0]
+analysis/breakthrough_physics.py,553,0.05,"producer_co2_sat > 0.05,"
+analysis/breakthrough_physics.py,554,200.0,"200.0 + producer_co2_sat * 5000.0,  # Scale GOR with CO2 saturation"
+analysis/breakthrough_physics.py,554,5000.0,"200.0 + producer_co2_sat * 5000.0,  # Scale GOR with CO2 saturation"
+analysis/breakthrough_physics.py,555,200.0,"eor_params.get(""initial_gor"", 200.0),"
+analysis/breakthrough_physics.py,560,0.05,"producer_co2_sat > 0.05, self.params.recycling_efficiency, 0.0"
+analysis/breakthrough_physics.py,564,0.05,breakthrough_threshold = 0.05  # 5% CO2 at producer
+analysis/breakthrough_physics.py,567,999.0,times[breakthrough_indices[0]] if len(breakthrough_indices) > 0 else 999.0
 analysis/data_validation.py,20,0.01,"rf: float, ooip: float, total_oil_produced: float, tolerance: float = 0.01"
 analysis/data_validation.py,60,500.0,"min_pressure: float = 500.0,"
 analysis/data_validation.py,93,1.2,if max_observed > max_pressure * 1.2:
@@ -153,83 +146,83 @@ analysis/material_balance.py,517,1.02,"legend=dict(orientation=""h"", yanchor=""
 analysis/material_balance.py,571,0.053,"co2_density_tonne_per_mscf: float = 0.053,"
 analysis/material_balance.py,572,0.01,"leakage_rate_fraction: float = 0.01,"
 analysis/material_balance.py,634,12.0,"balance_data[""years""] = np.arange(1, len(balance_data[""injected_tonne""]) + 1) / 12.0"
-analysis/profiler.py,18,5.61458,FT3_PER_BBL = 5.61458
-analysis/profiler.py,73,0.2,"* np.mean(self.reservoir.grid.get(""PORO"", 0.2))"
-analysis/profiler.py,93,0.4,base_efficiency = 0.5 + 0.4 * np.log10(M) / (M - 1)
-analysis/profiler.py,95,0.1,base_efficiency = np.exp(-0.1 * (M - 10)) * (0.546 + 0.0357 / M)
-analysis/profiler.py,95,0.546,base_efficiency = np.exp(-0.1 * (M - 10)) * (0.546 + 0.0357 / M)
-analysis/profiler.py,95,0.0357,base_efficiency = np.exp(-0.1 * (M - 10)) * (0.546 + 0.0357 / M)
-analysis/profiler.py,101,0.1,"return np.clip(enhanced_efficiency, 0.1, 1.0)"
-analysis/profiler.py,113,1.1,factor *= 1.1  # Sandstone typically has better sweep
-analysis/profiler.py,115,0.9,factor *= 0.9  # Carbonates often have more heterogeneity
-analysis/profiler.py,117,0.7,factor *= 0.7  # Shale has poor sweep characteristics
-analysis/profiler.py,123,1.05,factor *= 1.05  # Channelized systems can have good sweep if properly targeted
-analysis/profiler.py,125,0.95,factor *= 0.95  # Dune systems can have complex flow patterns
-analysis/profiler.py,133,1.1,factor *= 1.1
-analysis/profiler.py,137,0.9,factor *= 0.9
-analysis/profiler.py,139,0.8,factor *= 0.8
-analysis/profiler.py,149,0.3,heterogeneity * 0.3
-analysis/profiler.py,151,0.7,"factor *= np.clip(heterogeneity_penalty, 0.7, 1.0)"
-analysis/profiler.py,186,1.2,modifier *= 1.2  # Sandstone typically has higher permeability
-analysis/profiler.py,188,0.8,modifier *= 0.8  # Carbonates can have variable permeability
-analysis/profiler.py,190,0.3,modifier *= 0.3  # Shale has very low permeability
-analysis/profiler.py,204,1.1,factor *= 1.1  # Sandstone can typically handle higher injection rates
-analysis/profiler.py,206,0.9,factor *= 0.9  # Carbonates may have fracture concerns
-analysis/profiler.py,208,0.6,factor *= 0.6  # Shale has very low injectivity
-analysis/profiler.py,214,0.8,factor *= 0.8
-analysis/profiler.py,216,0.6,factor *= 0.6
-analysis/profiler.py,218,1.5,"return np.clip(factor, 0.5, 1.5)"
-analysis/profiler.py,358,1.2,B_oil = 1.2  # rb/stb
-analysis/profiler.py,360,5.0,B_gas = 5.0  # Default value
-analysis/profiler.py,363,273.15,temp_K = (self.temperature_F - 32) * 5 / 9 + 273.15
-analysis/profiler.py,364,6894.76,pressure_Pa = self.initial_pressure * 6894.76
-analysis/profiler.py,369,5.0,"f""Could not calculate B_gas, falling back to default 5.0. Error: {e}"""
-analysis/profiler.py,381,0.2,base_productivity_index * permeability_modifier * (1.0 - heterogeneity_index * 0.2)
-analysis/profiler.py,451,0.01,"s_oil = max(s_oil, 0.01)  # Minimum oil saturation"
-analysis/profiler.py,452,0.01,"s_gas = max(s_gas, 0.01)  # Minimum gas saturation"
-analysis/profiler.py,453,0.01,"s_water = max(s_water, 0.01)  # Minimum water saturation"
-analysis/profiler.py,489,0.01,min_scaling_factor = 0.01  # 1% minimum injection to continue simulation
-analysis/profiler.py,499,0.1,if day % 100 == 0 or scaling_factor < 0.1:
-analysis/profiler.py,522,100.0,"pressure_increase, 100.0"
-analysis/profiler.py,551,5.0,"pressure_decline, 5.0"
-analysis/profiler.py,554,80.0,"pressure_decline, 80.0"
-analysis/profiler.py,579,0.35,"1600, self.initial_pressure * 0.35"
-analysis/profiler.py,605,0.05,min_production_factor = 0.05  # 5% of peak production
-analysis/profiler.py,649,0.4,self.pore_volume_bbl * 0.4
-analysis/profiler.py,652,0.85,"0.85, co2_volume_in_reservoir_rb / pore_volume_near_well"
-analysis/profiler.py,655,0.4,"co2_saturation_near_well, 0.4, 0.85"
-analysis/profiler.py,655,0.85,"co2_saturation_near_well, 0.4, 0.85"
-analysis/profiler.py,656,0.3,)  # Increased minimum from 0.3 to 0.4
-analysis/profiler.py,656,0.4,)  # Increased minimum from 0.3 to 0.4
-analysis/profiler.py,666,0.4,base_efficiency = 0.5  # Increased from 0.4 to 0.5
-analysis/profiler.py,667,0.15,improvement_rate = 0.15  # Increased from 0.12 to 0.15
-analysis/profiler.py,667,0.12,improvement_rate = 0.15  # Increased from 0.12 to 0.15
-analysis/profiler.py,667,0.15,improvement_rate = 0.15  # Increased from 0.12 to 0.15
-analysis/profiler.py,669,0.95,"0.95, base_efficiency + cycles_completed * improvement_rate"
-analysis/profiler.py,670,0.95,)  # Increased cap to 0.95
-analysis/profiler.py,675,0.4,"f_co2_at_producer = max(f_co2_at_producer, 0.4)  # Increased from 0.3 to 0.4"
-analysis/profiler.py,675,0.3,"f_co2_at_producer = max(f_co2_at_producer, 0.4)  # Increased from 0.3 to 0.4"
-analysis/profiler.py,675,0.4,"f_co2_at_producer = max(f_co2_at_producer, 0.4)  # Increased from 0.3 to 0.4"
-analysis/profiler.py,677,0.85,"f_co2_at_producer, 0.85"
-analysis/profiler.py,678,0.8,)  # Increased cap from 0.8 to 0.85
-analysis/profiler.py,678,0.85,)  # Increased cap from 0.8 to 0.85
-analysis/profiler.py,682,1.2,f_co2_at_producer *= 1.2  # 20% boost for early cycles
-analysis/profiler.py,694,0.8,0.8  # Reduced from 1.5 to make breakthrough more gradual
-analysis/profiler.py,694,1.5,0.8  # Reduced from 1.5 to make breakthrough more gradual
-analysis/profiler.py,697,0.6,"1.0 - np.exp(-co2_cut_aggressiveness * pvi_past_bt), 0, 0.6"
-analysis/profiler.py,698,0.8,)  # Reduced max from 0.8 to 0.6
-analysis/profiler.py,698,0.6,)  # Reduced max from 0.8 to 0.6
-analysis/profiler.py,703,0.3,"S_wf + (1 - self.eor_params.sor - S_wf) * (1 - np.exp(-0.3 * pvi_past_bt)),"
-analysis/profiler.py,713,0.1,if day % 100 == 0 or (PVI_current >= PVI_bt and f_co2_at_producer > 0.1):
-analysis/profiler.py,744,0.1,if day % 100 == 0 or (PVI_current >= PVI_bt and f_water_at_producer > 0.1):
-analysis/profiler.py,791,0.9,"recycling_fraction = getattr(self.eor_params, ""co2_recycling_fraction"", 0.9)"
-analysis/profiler.py,824,4.0,"""quarterly"": DAYS_PER_YEAR / 4.0,"
-analysis/profiler.py,825,12.0,"""monthly"": DAYS_PER_YEAR / 12.0,"
-analysis/sensitivity_analyzer.py,342,2500.0,"""GeneralFallbacks.mmp_default_psi"", 2500.0"
-analysis/sensitivity_analyzer.py,395,0.8,"""SensitivityAnalysis.single_value_lower_multiplier"", 0.8"
-analysis/sensitivity_analyzer.py,398,1.2,"""SensitivityAnalysis.single_value_upper_multiplier"", 1.2"
-analysis/sensitivity_analyzer.py,844,0.01,"legend=dict(x=0.01, y=0.99, borderwidth=1),"
-analysis/sensitivity_analyzer.py,844,0.99,"legend=dict(x=0.01, y=0.99, borderwidth=1),"
+analysis/profiler.py,17,5.61458,FT3_PER_BBL = 5.61458
+analysis/profiler.py,72,0.2,"* np.mean(self.reservoir.grid.get(""PORO"", 0.2))"
+analysis/profiler.py,92,0.4,base_efficiency = 0.5 + 0.4 * np.log10(M) / (M - 1)
+analysis/profiler.py,94,0.1,base_efficiency = np.exp(-0.1 * (M - 10)) * (0.546 + 0.0357 / M)
+analysis/profiler.py,94,0.546,base_efficiency = np.exp(-0.1 * (M - 10)) * (0.546 + 0.0357 / M)
+analysis/profiler.py,94,0.0357,base_efficiency = np.exp(-0.1 * (M - 10)) * (0.546 + 0.0357 / M)
+analysis/profiler.py,100,0.1,"return np.clip(enhanced_efficiency, 0.1, 1.0)"
+analysis/profiler.py,112,1.1,factor *= 1.1  # Sandstone typically has better sweep
+analysis/profiler.py,114,0.9,factor *= 0.9  # Carbonates often have more heterogeneity
+analysis/profiler.py,116,0.7,factor *= 0.7  # Shale has poor sweep characteristics
+analysis/profiler.py,122,1.05,factor *= 1.05  # Channelized systems can have good sweep if properly targeted
+analysis/profiler.py,124,0.95,factor *= 0.95  # Dune systems can have complex flow patterns
+analysis/profiler.py,132,1.1,factor *= 1.1
+analysis/profiler.py,136,0.9,factor *= 0.9
+analysis/profiler.py,138,0.8,factor *= 0.8
+analysis/profiler.py,148,0.3,heterogeneity * 0.3
+analysis/profiler.py,150,0.7,"factor *= np.clip(heterogeneity_penalty, 0.7, 1.0)"
+analysis/profiler.py,185,1.2,modifier *= 1.2  # Sandstone typically has higher permeability
+analysis/profiler.py,187,0.8,modifier *= 0.8  # Carbonates can have variable permeability
+analysis/profiler.py,189,0.3,modifier *= 0.3  # Shale has very low permeability
+analysis/profiler.py,203,1.1,factor *= 1.1  # Sandstone can typically handle higher injection rates
+analysis/profiler.py,205,0.9,factor *= 0.9  # Carbonates may have fracture concerns
+analysis/profiler.py,207,0.6,factor *= 0.6  # Shale has very low injectivity
+analysis/profiler.py,213,0.8,factor *= 0.8
+analysis/profiler.py,215,0.6,factor *= 0.6
+analysis/profiler.py,217,1.5,"return np.clip(factor, 0.5, 1.5)"
+analysis/profiler.py,357,1.2,B_oil = 1.2  # rb/stb
+analysis/profiler.py,359,5.0,B_gas = 5.0  # Default value
+analysis/profiler.py,362,273.15,temp_K = (self.temperature_F - 32) * 5 / 9 + 273.15
+analysis/profiler.py,363,6894.76,pressure_Pa = self.initial_pressure * 6894.76
+analysis/profiler.py,368,5.0,"f""Could not calculate B_gas, falling back to default 5.0. Error: {e}"""
+analysis/profiler.py,380,0.2,base_productivity_index * permeability_modifier * (1.0 - heterogeneity_index * 0.2)
+analysis/profiler.py,450,0.01,"s_oil = max(s_oil, 0.01)  # Minimum oil saturation"
+analysis/profiler.py,451,0.01,"s_gas = max(s_gas, 0.01)  # Minimum gas saturation"
+analysis/profiler.py,452,0.01,"s_water = max(s_water, 0.01)  # Minimum water saturation"
+analysis/profiler.py,488,0.01,min_scaling_factor = 0.01  # 1% minimum injection to continue simulation
+analysis/profiler.py,498,0.1,if day % 100 == 0 or scaling_factor < 0.1:
+analysis/profiler.py,521,100.0,"pressure_increase, 100.0"
+analysis/profiler.py,550,5.0,"pressure_decline, 5.0"
+analysis/profiler.py,553,80.0,"pressure_decline, 80.0"
+analysis/profiler.py,578,0.35,"1600, self.initial_pressure * 0.35"
+analysis/profiler.py,604,0.05,min_production_factor = 0.05  # 5% of peak production
+analysis/profiler.py,648,0.4,self.pore_volume_bbl * 0.4
+analysis/profiler.py,651,0.85,"0.85, co2_volume_in_reservoir_rb / pore_volume_near_well"
+analysis/profiler.py,654,0.4,"co2_saturation_near_well, 0.4, 0.85"
+analysis/profiler.py,654,0.85,"co2_saturation_near_well, 0.4, 0.85"
+analysis/profiler.py,655,0.3,)  # Increased minimum from 0.3 to 0.4
+analysis/profiler.py,655,0.4,)  # Increased minimum from 0.3 to 0.4
+analysis/profiler.py,665,0.4,base_efficiency = 0.5  # Increased from 0.4 to 0.5
+analysis/profiler.py,666,0.15,improvement_rate = 0.15  # Increased from 0.12 to 0.15
+analysis/profiler.py,666,0.12,improvement_rate = 0.15  # Increased from 0.12 to 0.15
+analysis/profiler.py,666,0.15,improvement_rate = 0.15  # Increased from 0.12 to 0.15
+analysis/profiler.py,668,0.95,"0.95, base_efficiency + cycles_completed * improvement_rate"
+analysis/profiler.py,669,0.95,)  # Increased cap to 0.95
+analysis/profiler.py,674,0.4,"f_co2_at_producer = max(f_co2_at_producer, 0.4)  # Increased from 0.3 to 0.4"
+analysis/profiler.py,674,0.3,"f_co2_at_producer = max(f_co2_at_producer, 0.4)  # Increased from 0.3 to 0.4"
+analysis/profiler.py,674,0.4,"f_co2_at_producer = max(f_co2_at_producer, 0.4)  # Increased from 0.3 to 0.4"
+analysis/profiler.py,676,0.85,"f_co2_at_producer, 0.85"
+analysis/profiler.py,677,0.8,)  # Increased cap from 0.8 to 0.85
+analysis/profiler.py,677,0.85,)  # Increased cap from 0.8 to 0.85
+analysis/profiler.py,681,1.2,f_co2_at_producer *= 1.2  # 20% boost for early cycles
+analysis/profiler.py,693,0.8,0.8  # Reduced from 1.5 to make breakthrough more gradual
+analysis/profiler.py,693,1.5,0.8  # Reduced from 1.5 to make breakthrough more gradual
+analysis/profiler.py,696,0.6,"1.0 - np.exp(-co2_cut_aggressiveness * pvi_past_bt), 0, 0.6"
+analysis/profiler.py,697,0.8,)  # Reduced max from 0.8 to 0.6
+analysis/profiler.py,697,0.6,)  # Reduced max from 0.8 to 0.6
+analysis/profiler.py,702,0.3,"S_wf + (1 - self.eor_params.sor - S_wf) * (1 - np.exp(-0.3 * pvi_past_bt)),"
+analysis/profiler.py,712,0.1,if day % 100 == 0 or (PVI_current >= PVI_bt and f_co2_at_producer > 0.1):
+analysis/profiler.py,743,0.1,if day % 100 == 0 or (PVI_current >= PVI_bt and f_water_at_producer > 0.1):
+analysis/profiler.py,794,0.9,"recycling_fraction = getattr(self.eor_params, ""co2_recycling_fraction"", 0.9)"
+analysis/profiler.py,827,4.0,"""quarterly"": DAYS_PER_YEAR / 4.0,"
+analysis/profiler.py,828,12.0,"""monthly"": DAYS_PER_YEAR / 12.0,"
+analysis/sensitivity_analyzer.py,340,2500.0,"""GeneralFallbacks.mmp_default_psi"", 2500.0"
+analysis/sensitivity_analyzer.py,393,0.8,"""SensitivityAnalysis.single_value_lower_multiplier"", 0.8"
+analysis/sensitivity_analyzer.py,396,1.2,"""SensitivityAnalysis.single_value_upper_multiplier"", 1.2"
+analysis/sensitivity_analyzer.py,842,0.01,"legend=dict(x=0.01, y=0.99, borderwidth=1),"
+analysis/sensitivity_analyzer.py,842,0.99,"legend=dict(x=0.01, y=0.99, borderwidth=1),"
 analysis/well_analysis.py,18,60.0,STD_TEMP_F = 60.0
 analysis/well_analysis.py,19,14.696,STD_PRESS_PSIA = 14.696
 analysis/well_analysis.py,29,70.0,surface_temp: float = 70.0  # Default surface temperature in °F
@@ -240,6 +233,67 @@ analysis/well_analysis.py,68,141.5,api_gravity = (141.5 / specific_gravity_oil) 
 analysis/well_analysis.py,68,131.5,api_gravity = (141.5 / specific_gravity_oil) - 131.5
 analysis/well_analysis.py,90,141.5,api = (141.5 / rhob) - 131.5
 analysis/well_analysis.py,90,131.5,api = (141.5 / rhob) - 131.5
+co2eor_optimizer/analysis/sensitivity_analyzer.py,192,2500.0,mmp_to_use = mmp_to_use or 2500.0 # Use a hardcoded fallback if everything else fails
+co2eor_optimizer/analysis/sensitivity_analyzer.py,226,0.8,"min_v, max_v = (center_val * 0.8, center_val * 1.2) if center_val != 0 else (-1.0, 1.0)"
+co2eor_optimizer/analysis/sensitivity_analyzer.py,226,1.2,"min_v, max_v = (center_val * 0.8, center_val * 1.2) if center_val != 0 else (-1.0, 1.0)"
+co2eor_optimizer/analysis/uq_engine.py,353,0.1,"'P10': data.quantile(0.10), 'P50': data.quantile(0.50), 'P90': data.quantile(0.90),"
+co2eor_optimizer/analysis/uq_engine.py,353,0.9,"'P10': data.quantile(0.10), 'P50': data.quantile(0.50), 'P90': data.quantile(0.90),"
+co2eor_optimizer/analysis/well_analysis.py,18,60.0,STD_TEMP_F = 60.0
+co2eor_optimizer/analysis/well_analysis.py,19,14.696,STD_PRESS_PSIA = 14.696
+co2eor_optimizer/analysis/well_analysis.py,29,70.0,surface_temp: float = 70.0  # Default surface temperature in °F
+co2eor_optimizer/analysis/well_analysis.py,30,32.0,default_api_gravity: float = 32.0  # Default API gravity if no other source is available
+co2eor_optimizer/analysis/well_analysis.py,31,212.0,default_reservoir_temp: float = 212.0 # Default reservoir temperature if no other source is availabl
+co2eor_optimizer/analysis/well_analysis.py,66,1000.0,specific_gravity_oil = rho_o / 1000.0
+co2eor_optimizer/analysis/well_analysis.py,68,141.5,api_gravity = (141.5 / specific_gravity_oil) - 131.5
+co2eor_optimizer/analysis/well_analysis.py,68,131.5,api_gravity = (141.5 / specific_gravity_oil) - 131.5
+co2eor_optimizer/analysis/well_analysis.py,90,141.5,api = (141.5 / rhob) - 131.5
+co2eor_optimizer/analysis/well_analysis.py,90,131.5,api = (141.5 / rhob) - 131.5
+co2eor_optimizer/evaluation/mmp.py,39,0.95,"The sum of fractions must be 1.0. Example: {'CO2': 0.95, 'CH4': 0.05}."
+co2eor_optimizer/evaluation/mmp.py,39,0.05,"The sum of fractions must be 1.0. Example: {'CO2': 0.95, 'CH4': 0.05}."
+co2eor_optimizer/evaluation/mmp.py,103,15.988,Formula: MMP [psi] = 15.988 * (Temperature [°F] ^ 0.744206) * (API Gravity ^ 0.279033)
+co2eor_optimizer/evaluation/mmp.py,103,0.744206,Formula: MMP [psi] = 15.988 * (Temperature [°F] ^ 0.744206) * (API Gravity ^ 0.279033)
+co2eor_optimizer/evaluation/mmp.py,103,0.279033,Formula: MMP [psi] = 15.988 * (Temperature [°F] ^ 0.744206) * (API Gravity ^ 0.279033)
+co2eor_optimizer/evaluation/mmp.py,105,15.988,mmp = 15.988 * (params.temperature ** 0.744206) * (params.oil_gravity ** 0.279033)
+co2eor_optimizer/evaluation/mmp.py,105,0.744206,mmp = 15.988 * (params.temperature ** 0.744206) * (params.oil_gravity ** 0.279033)
+co2eor_optimizer/evaluation/mmp.py,105,0.279033,mmp = 15.988 * (params.temperature ** 0.744206) * (params.oil_gravity ** 0.279033)
+co2eor_optimizer/evaluation/mmp.py,129,0.007,mmp_adj_c7 = mmp_base * (1.0 + 0.007 * (params.c7_plus_mw - 190))
+co2eor_optimizer/evaluation/mmp.py,137,0.25,IMPURITY_SENSITIVITY_FACTOR = 0.25
+co2eor_optimizer/evaluation/mmp.py,157,1.356,a = 10**(1.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
+co2eor_optimizer/evaluation/mmp.py,157,0.0016,a = 10**(1.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
+co2eor_optimizer/evaluation/mmp.py,157,3.3e-06,a = 10**(1.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
+co2eor_optimizer/evaluation/mmp.py,159,10.3,m_c5_plus = 630 - 10.3 * params.oil_gravity
+co2eor_optimizer/evaluation/mmp.py,160,0.36,b = (m_c5_plus**0.36) / (0.641 * params.temperature**0.21)
+co2eor_optimizer/evaluation/mmp.py,160,0.641,b = (m_c5_plus**0.36) / (0.641 * params.temperature**0.21)
+co2eor_optimizer/evaluation/mmp.py,160,0.21,b = (m_c5_plus**0.36) / (0.641 * params.temperature**0.21)
+co2eor_optimizer/evaluation/mmp.py,163,0.993,c = 0.993 - 0.778 * (1 - x_co2)**0.11
+co2eor_optimizer/evaluation/mmp.py,163,0.778,c = 0.993 - 0.778 * (1 - x_co2)**0.11
+co2eor_optimizer/evaluation/mmp.py,163,0.11,c = 0.993 - 0.778 * (1 - x_co2)**0.11
+co2eor_optimizer/evaluation/mmp.py,167,145.038,return mmp_mpa * 145.038  # Convert MPa to psi
+co2eor_optimizer/evaluation/mmp.py,185,304.1,"CRITICAL_TEMPS_K = {'CO2': 304.1, 'CH4': 190.6, 'N2': 126.2}"
+co2eor_optimizer/evaluation/mmp.py,185,190.6,"CRITICAL_TEMPS_K = {'CO2': 304.1, 'CH4': 190.6, 'N2': 126.2}"
+co2eor_optimizer/evaluation/mmp.py,185,126.2,"CRITICAL_TEMPS_K = {'CO2': 304.1, 'CH4': 190.6, 'N2': 126.2}"
+co2eor_optimizer/evaluation/mmp.py,198,4.773,mmp_pure_co2 = 1016 + 4.773*T_F - 0.00946*(T_F**2) + 0.000021*(T_F**3)
+co2eor_optimizer/evaluation/mmp.py,198,0.00946,mmp_pure_co2 = 1016 + 4.773*T_F - 0.00946*(T_F**2) + 0.000021*(T_F**3)
+co2eor_optimizer/evaluation/mmp.py,198,2.1e-05,mmp_pure_co2 = 1016 + 4.773*T_F - 0.00946*(T_F**2) + 0.000021*(T_F**3)
+co2eor_optimizer/evaluation/mmp.py,201,2.41,exponent_A = 2.41 - 0.00284 * params.c7_plus_mw
+co2eor_optimizer/evaluation/mmp.py,201,0.00284,exponent_A = 2.41 - 0.00284 * params.c7_plus_mw
+co2eor_optimizer/evaluation/mmp.py,242,0.85,gamma_o = 0.85  # Initial guess for a typical crude oil
+co2eor_optimizer/evaluation/mmp.py,245,1.25,F = R_s * (gamma_g / gamma_o)**0.5 + 1.25 * T
+co2eor_optimizer/evaluation/mmp.py,246,0.972,gamma_o_new = 0.972 + 0.000147 * F**1.175
+co2eor_optimizer/evaluation/mmp.py,246,0.000147,gamma_o_new = 0.972 + 0.000147 * F**1.175
+co2eor_optimizer/evaluation/mmp.py,246,1.175,gamma_o_new = 0.972 + 0.000147 * F**1.175
+co2eor_optimizer/evaluation/mmp.py,261,141.5,api = (141.5 / gamma_o) - 131.5
+co2eor_optimizer/evaluation/mmp.py,261,131.5,api = (141.5 / gamma_o) - 131.5
+co2eor_optimizer/evaluation/mmp.py,262,15.0,"return max(15.0, min(50.0, api))"
+co2eor_optimizer/evaluation/mmp.py,262,50.0,"return max(15.0, min(50.0, api))"
+co2eor_optimizer/evaluation/mmp.py,324,0.98,"mmp_params.injection_gas_composition.get('CO2', 0.0) < 0.98:"
+co2eor_optimizer/evaluation/mmp.py,327,0.95,"elif mmp_params.injection_gas_composition and mmp_params.injection_gas_composition.get('CO2', 0.0) <"
+co2eor_optimizer/ui/mmp_well_analysis_widget.py,102,50.0,"self.c7_mw_input = QDoubleSpinBox(); self.c7_mw_input.setRange(50.0, 250.0); self.c7_mw_input.setVal"
+co2eor_optimizer/ui/mmp_well_analysis_widget.py,102,250.0,"self.c7_mw_input = QDoubleSpinBox(); self.c7_mw_input.setRange(50.0, 250.0); self.c7_mw_input.setVal"
+co2eor_optimizer/ui/mmp_well_analysis_widget.py,102,190.0,"self.c7_mw_input = QDoubleSpinBox(); self.c7_mw_input.setRange(50.0, 250.0); self.c7_mw_input.setVal"
+co2eor_optimizer/ui/mmp_well_analysis_widget.py,355,0.98,"legend=dict(yanchor=""top"", y=0.98, xanchor=""left"", x=0.02,"
+co2eor_optimizer/ui/mmp_well_analysis_widget.py,355,0.02,"legend=dict(yanchor=""top"", y=0.98, xanchor=""left"", x=0.02,"
+co2eor_optimizer/ui/mmp_well_analysis_widget.py,356,0.7,"bgcolor='rgba(255,255,255,0.7)'),"
 core/engine_surrogate/__init__.py,60,0.1,"__version__ = ""0.1.0"""
 core/engine_surrogate/analytical_models.py,51,0.053,CO2_DENSITY_TONNE_PER_MSCF = 0.053
 core/engine_surrogate/analytical_models.py,58,0.05,"S_GC_CRITICAL = 0.05  # Critical gas saturation, Corey (1954)"
@@ -257,123 +311,140 @@ core/engine_surrogate/analytical_models.py,165,0.05,"viscosity_inj = params.get(
 core/engine_surrogate/analytical_models.py,176,0.25,inner = f_s * (viscosity_inj ** (-0.25)) + (1.0 - f_s) * (viscosity_oil ** (-0.25))
 core/engine_surrogate/analytical_models.py,176,0.25,inner = f_s * (viscosity_inj ** (-0.25)) + (1.0 - f_s) * (viscosity_oil ** (-0.25))
 core/engine_surrogate/analytical_models.py,177,4.0,mu_m = inner ** (-4.0)
-core/engine_surrogate/analytical_models.py,191,0.78,e_eff = (0.78 + 0.22 * (m_eff**0.25)) ** 4
-core/engine_surrogate/analytical_models.py,191,0.22,e_eff = (0.78 + 0.22 * (m_eff**0.25)) ** 4
-core/engine_surrogate/analytical_models.py,191,0.25,e_eff = (0.78 + 0.22 * (m_eff**0.25)) ** 4
-core/engine_surrogate/analytical_models.py,198,3.0,displacement_eff = (3.0 * koval**2 - 3.0 * koval + 1.0) / (koval**3)
-core/engine_surrogate/analytical_models.py,198,3.0,displacement_eff = (3.0 * koval**2 - 3.0 * koval + 1.0) / (koval**3)
-core/engine_surrogate/analytical_models.py,205,0.05,"return float(np.clip(rf, 0.05, 0.80))"
-core/engine_surrogate/analytical_models.py,205,0.8,"return float(np.clip(rf, 0.05, 0.80))"
-core/engine_surrogate/analytical_models.py,266,0.05,"viscosity_inj = params.get(""viscosity_inj"", params.get(""co2_viscosity"", 0.05))"
-core/engine_surrogate/analytical_models.py,267,0.99,"v_dp = np.clip(params.get(""v_dp"", params.get(""v_dp_coefficient"", 0.5)), 0.0, 0.99)"
-core/engine_surrogate/analytical_models.py,269,0.8,"soi = params.get(""soi"", 0.8)"
-core/engine_surrogate/analytical_models.py,271,0.8,"params.get(""s_wi"", params.get(""connate_water_saturation"", S_WI_CONNATE)), 0.0, 0.8"
-core/engine_surrogate/analytical_models.py,316,0.517,areal_eff = 0.517 - 0.072 * np.log10(mobility_ratio)
-core/engine_surrogate/analytical_models.py,316,0.072,areal_eff = 0.517 - 0.072 * np.log10(mobility_ratio)
-core/engine_surrogate/analytical_models.py,317,0.1,"areal_eff = np.clip(areal_eff, 0.1, 1.0)"
-core/engine_surrogate/analytical_models.py,321,0.7,vertical_eff = 1.0 - (v_dp**0.7)
-core/engine_surrogate/analytical_models.py,322,0.1,"vertical_eff = np.clip(vertical_eff, 0.1, 1.0)"
-core/engine_surrogate/analytical_models.py,329,0.1,"return float(np.clip(recovery, 0.10, 0.50))"
-core/engine_surrogate/analytical_models.py,344,0.75,self.model = BuckleyLeverettModel(max_rf_cap=0.75)
-core/engine_surrogate/analytical_models.py,366,0.05,"params.setdefault(""viscosity_inj"", params.get(""co2_viscosity"", 0.05))"
-core/engine_surrogate/analytical_models.py,389,0.05,"viscosity_inj = params.get(""viscosity_inj"", params.get(""co2_viscosity"", 0.05))"
-core/engine_surrogate/analytical_models.py,419,0.75,"return float(np.clip(displacement_eff, 0.0, 0.75))"
-core/engine_surrogate/analytical_models.py,450,3000.0,"pressure = params.get(""pressure"", params.get(""target_pressure_psi"", 3000.0))"
-core/engine_surrogate/analytical_models.py,451,2500.0,"mmp = params.get(""mmp"", 2500.0)"
-core/engine_surrogate/analytical_models.py,452,0.3,"c7_plus = params.get(""c7_plus_fraction"", 0.3)"
-core/engine_surrogate/analytical_models.py,461,0.95,alpha = 0.95 + 0.05 * (c7_plus - 0.3)
-core/engine_surrogate/analytical_models.py,461,0.05,alpha = 0.95 + 0.05 * (c7_plus - 0.3)
-core/engine_surrogate/analytical_models.py,461,0.3,alpha = 0.95 + 0.05 * (c7_plus - 0.3)
-core/engine_surrogate/analytical_models.py,462,20.0,beta = 20.0
-core/engine_surrogate/analytical_models.py,478,0.05,"return float(np.clip(rf, 0.05, 0.80))"
-core/engine_surrogate/analytical_models.py,478,0.8,"return float(np.clip(rf, 0.05, 0.80))"
-core/engine_surrogate/analytical_models.py,495,0.75,self.model = KovalRecoveryModel(max_rf_cap=0.75)
-core/engine_surrogate/analytical_models.py,529,0.78,kv = hk · (0.78 + 0.22·M^0.25)⁴  [Koval factor]
-core/engine_surrogate/analytical_models.py,529,0.22,kv = hk · (0.78 + 0.22·M^0.25)⁴  [Koval factor]
-core/engine_surrogate/analytical_models.py,529,0.25,kv = hk · (0.78 + 0.22·M^0.25)⁴  [Koval factor]
-core/engine_surrogate/analytical_models.py,532,0.999,"v_dp = np.clip(params.get(""v_dp"", params.get(""v_dp_coefficient"", 0.5)), 0.0, 0.999)"
-core/engine_surrogate/analytical_models.py,533,5.0,"M = max(params.get(""mobility_ratio"", 5.0), EPSILON)"
-core/engine_surrogate/analytical_models.py,541,0.78,kv = hk * (0.78 + 0.22 * M**0.25) ** 4
-core/engine_surrogate/analytical_models.py,541,0.22,kv = hk * (0.78 + 0.22 * M**0.25) ** 4
-core/engine_surrogate/analytical_models.py,541,0.25,kv = hk * (0.78 + 0.22 * M**0.25) ** 4
-core/engine_surrogate/analytical_models.py,562,0.75,"return float(np.clip(sweep, 0.0, 0.75))"
-core/engine_surrogate/analytical_models.py,581,15.988,Formula: MMP = 15.988 · T^0.744206 · (55 - API)^0.279033
-core/engine_surrogate/analytical_models.py,581,0.744206,Formula: MMP = 15.988 · T^0.744206 · (55 - API)^0.279033
-core/engine_surrogate/analytical_models.py,581,0.279033,Formula: MMP = 15.988 · T^0.744206 · (55 - API)^0.279033
-core/engine_surrogate/analytical_models.py,587,55.0,"gravity_term = max(55.0 - api_gravity, 1.0)"
-core/engine_surrogate/analytical_models.py,588,15.988,mmp = 15.988 * (temperature_f**0.744206) * (gravity_term**0.279033)
-core/engine_surrogate/analytical_models.py,588,0.744206,mmp = 15.988 * (temperature_f**0.744206) * (gravity_term**0.279033)
-core/engine_surrogate/analytical_models.py,588,0.279033,mmp = 15.988 * (temperature_f**0.744206) * (gravity_term**0.279033)
-core/engine_surrogate/analytical_models.py,596,4.773,Formula: MMP = 1016 + 4.773·T - 0.00946·T² + 0.000021·T³
-core/engine_surrogate/analytical_models.py,596,0.00946,Formula: MMP = 1016 + 4.773·T - 0.00946·T² + 0.000021·T³
-core/engine_surrogate/analytical_models.py,596,2.1e-05,Formula: MMP = 1016 + 4.773·T - 0.00946·T² + 0.000021·T³
-core/engine_surrogate/analytical_models.py,601,1016.0,mmp = 1016.0 + 4.773 * T - 0.00946 * (T**2) + 0.000021 * (T**3)
-core/engine_surrogate/analytical_models.py,601,4.773,mmp = 1016.0 + 4.773 * T - 0.00946 * (T**2) + 0.000021 * (T**3)
-core/engine_surrogate/analytical_models.py,601,0.00946,mmp = 1016.0 + 4.773 * T - 0.00946 * (T**2) + 0.000021 * (T**3)
-core/engine_surrogate/analytical_models.py,601,2.1e-05,mmp = 1016.0 + 4.773 * T - 0.00946 * (T**2) + 0.000021 * (T**3)
-core/engine_surrogate/analytical_models.py,619,20.0,beta = 20.0  # Sharpness of transition
-core/engine_surrogate/analytical_models.py,715,0.9,Steepness (beta) derived from a 10% pressure window (Pr = 0.9 to 1.1).
-core/engine_surrogate/analytical_models.py,715,1.1,Steepness (beta) derived from a 10% pressure window (Pr = 0.9 to 1.1).
-core/engine_surrogate/analytical_models.py,724,3000.0,"pressure = params.get(""pressure"") or params.get(""target_pressure_psi"") or 3000.0"
-core/engine_surrogate/analytical_models.py,725,2500.0,"mmp = params.get(""mmp"") or 2500.0"
-core/engine_surrogate/analytical_models.py,728,0.95,"v_dp = np.clip(params.get(""v_dp"") or params.get(""v_dp_coefficient"") or 0.5, 0.0, 0.95)"
-core/engine_surrogate/analytical_models.py,730,0.8,"params.get(""s_wi"") or params.get(""connate_water_saturation"") or S_WI_CONNATE, 0.0, 0.8"
-core/engine_surrogate/analytical_models.py,732,1.5,"viscosity_oil = params.get(""viscosity_oil"") or params.get(""mu_oil"") or 1.5"
-core/engine_surrogate/analytical_models.py,733,0.05,"viscosity_inj = params.get(""viscosity_inj"") or params.get(""co2_viscosity"") or 0.05"
-core/engine_surrogate/analytical_models.py,738,0.3,"c7_plus = params.get(""c7_plus_fraction"") or params.get(""c7_plus"") or 0.3"
-core/engine_surrogate/analytical_models.py,745,100.0,"perm_md = params.get(""permeability"") or 100.0"
-core/engine_surrogate/analytical_models.py,746,0.15,"porosity = params.get(""porosity"") or 0.15"
-core/engine_surrogate/analytical_models.py,748,0.15,phi_ref = 0.15
-core/engine_surrogate/analytical_models.py,749,100.0,k_ref = 100.0
-core/engine_surrogate/analytical_models.py,757,0.03,n_o_adj = n_o * (1.0 + 0.03 * log_k)
-core/engine_surrogate/analytical_models.py,758,0.03,n_g_adj = n_g * (1.0 + 0.03 * log_k)
-core/engine_surrogate/analytical_models.py,760,0.8,"k_ro_0 = params.get(""k_ro_0"") or 0.8"
-core/engine_surrogate/analytical_models.py,763,0.15,k_ro_end = k_ro_0 * phi_factor**0.15
-core/engine_surrogate/analytical_models.py,764,0.15,k_rg_end = k_rg_0 * phi_factor**0.15
-core/engine_surrogate/analytical_models.py,772,0.6,"omega_tl = params.get(""omega_tl"") or 0.6"
-core/engine_surrogate/analytical_models.py,779,0.15,omega_tl = omega_tl * (1.0 - 0.15 * flashing_fraction)
-core/engine_surrogate/analytical_models.py,781,0.25,mu_mix = (0.5 * (viscosity_inj**-0.25) + 0.5 * (viscosity_oil**-0.25)) ** -4.0
-core/engine_surrogate/analytical_models.py,781,0.25,mu_mix = (0.5 * (viscosity_inj**-0.25) + 0.5 * (viscosity_oil**-0.25)) ** -4.0
-core/engine_surrogate/analytical_models.py,781,4.0,mu_mix = (0.5 * (viscosity_inj**-0.25) + 0.5 * (viscosity_oil**-0.25)) ** -4.0
-core/engine_surrogate/analytical_models.py,795,0.78,e_eff = (0.78 + 0.22 * (M**0.25)) ** 4
-core/engine_surrogate/analytical_models.py,795,0.22,e_eff = (0.78 + 0.22 * (M**0.25)) ** 4
-core/engine_surrogate/analytical_models.py,795,0.25,e_eff = (0.78 + 0.22 * (M**0.25)) ** 4
-core/engine_surrogate/analytical_models.py,800,100.0,"perm_md = params.get(""permeability"") or 100.0"
-core/engine_surrogate/analytical_models.py,804,5000.0,"inj_mscfd = params.get(""injection_rate"") or 5000.0"
-core/engine_surrogate/analytical_models.py,807,5.615,q_res_ft3_day = q_res_bbl_day * 5.615
-core/engine_surrogate/analytical_models.py,808,1000.0,"area_ft2 = (params.get(""width_ft"") or 1000.0) * (params.get(""thickness_ft"") or 50.0)"
-core/engine_surrogate/analytical_models.py,808,50.0,"area_ft2 = (params.get(""width_ft"") or 1000.0) * (params.get(""thickness_ft"") or 50.0)"
-core/engine_surrogate/analytical_models.py,812,30.0,"sigma_ref = params.get(""co2_oil_interfacial_tension"") or params.get(""ift_dynes_cm"") or 30.0"
-core/engine_surrogate/analytical_models.py,814,0.01,"sigma_dynes_cm = max(0.01, sigma_ref * (1.0 - 0.999 * omega))"
-core/engine_surrogate/analytical_models.py,814,0.999,"sigma_dynes_cm = max(0.01, sigma_ref * (1.0 - 0.999 * omega))"
-core/engine_surrogate/analytical_models.py,819,3.5e-06,"N_c = (viscosity_inj * u_ft_day / max(sigma_dynes_cm, EPSILON)) * 3.5e-6"
-core/engine_surrogate/analytical_models.py,820,1e-05,N_c_ref = 1.0e-5
-core/engine_surrogate/analytical_models.py,823,0.3,"sor_imm = params.get(""sor"") or 0.3"
-core/engine_surrogate/analytical_models.py,824,0.05,"sor_min = params.get(""min_sor"") or 0.05"
-core/engine_surrogate/analytical_models.py,849,50.0,"delta_rho = abs((params.get(""rho_oil"") or 50.0) - (params.get(""rho_co2"") or 44.0))"
-core/engine_surrogate/analytical_models.py,849,44.0,"delta_rho = abs((params.get(""rho_oil"") or 50.0) - (params.get(""rho_co2"") or 44.0))"
-core/engine_surrogate/analytical_models.py,852,0.01,"effective_angle = max(sin_theta, 0.01)"
-core/engine_surrogate/analytical_models.py,860,4.3948e-05,N_g = (perm_md * delta_rho * effective_angle * 4.3948e-5) / (
-core/engine_surrogate/analytical_models.py,864,0.1,"e_v = float(np.clip(1.0 / (1.0 + N_g), 0.1, 1.0))"
-core/engine_surrogate/analytical_models.py,895,3000.0,"pressure = params.get(""pressure"", 3000.0)"
-core/engine_surrogate/analytical_models.py,896,2500.0,"mmp = params.get(""mmp"", 2500.0)"
-core/engine_surrogate/analytical_models.py,897,0.3,"c7_plus = params.get(""c7_plus_fraction"", 0.3)"
-core/engine_surrogate/analytical_models.py,906,0.001,h_rel = 0.001
-core/engine_surrogate/analytical_models.py,907,0.01,h_abs = 0.01
-core/engine_surrogate/analytical_models.py,957,3000.0,"pressure = kwargs.pop(""pressure"", kwargs.pop(""target_pressure_psi"", 3000.0))"
-core/engine_surrogate/analytical_models.py,962,2500.0,"mmp = kwargs.pop(""mmp"", 2500.0)"
-core/engine_surrogate/analytical_models.py,966,0.3,"c7_plus = kwargs.pop(""c7_plus_fraction"", kwargs.pop(""c7_plus"", 0.3))"
-core/engine_surrogate/analytical_models.py,974,0.1,"lambda_c7 = kwargs.get(""lambda_c7"", 0.1)"
-core/engine_surrogate/analytical_models.py,975,0.3,alpha_eff = alpha_base + lambda_c7 * (c7_plus - 0.3)
-core/engine_surrogate/analytical_models.py,978,0.1,"miscibility_window = kwargs.get(""miscibility_window"", 0.1)"
-core/engine_surrogate/analytical_models.py,979,4.394,"beta_transition = 4.394 / max(miscibility_window, 0.01)"
-core/engine_surrogate/analytical_models.py,979,0.01,"beta_transition = 4.394 / max(miscibility_window, 0.01)"
-core/engine_surrogate/analytical_models.py,993,0.3,"c7_plus: float = 0.3,"
-core/engine_surrogate/analytical_models.py,1013,0.1,"lambda_c7 = kwargs.get(""lambda_c7"", 0.1)"
-core/engine_surrogate/analytical_models.py,1014,0.3,alpha_eff = alpha_base + lambda_c7 * (c7_plus - 0.3)
-core/engine_surrogate/analytical_models.py,1015,0.1,"miscibility_window = kwargs.get(""miscibility_window"", 0.1)"
-core/engine_surrogate/analytical_models.py,1016,4.394,"beta_transition = 4.394 / max(miscibility_window, 0.01)"
-core/engine_surrogate/analytical_models.py,1016,0.01,"beta_transition = 4.394 / max(miscibility_window, 0.01)"
+core/engine_surrogate/analytical_models.py,188,0.01,"h_factor = 1.0 / max(1.0 - v_dp, 0.01) ** 2"
+core/engine_surrogate/analytical_models.py,192,0.78,e_eff = (0.78 + 0.22 * (m_eff**0.25)) ** 4
+core/engine_surrogate/analytical_models.py,192,0.22,e_eff = (0.78 + 0.22 * (m_eff**0.25)) ** 4
+core/engine_surrogate/analytical_models.py,192,0.25,e_eff = (0.78 + 0.22 * (m_eff**0.25)) ** 4
+core/engine_surrogate/analytical_models.py,198,1.2,"t_D = float(params.get(""hcpvi"", params.get(""t_d"", params.get(""pvi"", 1.2))))"
+core/engine_surrogate/analytical_models.py,207,0.05,"displacement_eff = float(np.clip(displacement_eff, 0.05, 0.95))"
+core/engine_surrogate/analytical_models.py,207,0.95,"displacement_eff = float(np.clip(displacement_eff, 0.05, 0.95))"
+core/engine_surrogate/analytical_models.py,214,0.05,"return float(np.clip(rf, 0.05, 0.85))"
+core/engine_surrogate/analytical_models.py,214,0.85,"return float(np.clip(rf, 0.05, 0.85))"
+core/engine_surrogate/analytical_models.py,275,0.05,"viscosity_inj = params.get(""viscosity_inj"", params.get(""co2_viscosity"", 0.05))"
+core/engine_surrogate/analytical_models.py,276,0.99,"v_dp = np.clip(params.get(""v_dp"", params.get(""v_dp_coefficient"", 0.5)), 0.0, 0.99)"
+core/engine_surrogate/analytical_models.py,278,0.8,"soi = params.get(""soi"", 0.8)"
+core/engine_surrogate/analytical_models.py,280,0.8,"params.get(""s_wi"", params.get(""connate_water_saturation"", S_WI_CONNATE)), 0.0, 0.8"
+core/engine_surrogate/analytical_models.py,325,0.517,areal_eff = 0.517 - 0.072 * np.log10(mobility_ratio)
+core/engine_surrogate/analytical_models.py,325,0.072,areal_eff = 0.517 - 0.072 * np.log10(mobility_ratio)
+core/engine_surrogate/analytical_models.py,326,0.1,"areal_eff = np.clip(areal_eff, 0.1, 1.0)"
+core/engine_surrogate/analytical_models.py,330,0.7,vertical_eff = 1.0 - (v_dp**0.7)
+core/engine_surrogate/analytical_models.py,331,0.1,"vertical_eff = np.clip(vertical_eff, 0.1, 1.0)"
+core/engine_surrogate/analytical_models.py,339,0.1,"max_cap = min(0.50, rf_max_physical) if rf_max_physical > 0.10 else 0.50"
+core/engine_surrogate/analytical_models.py,340,0.1,"return float(np.clip(recovery, 0.10, max_cap))"
+core/engine_surrogate/analytical_models.py,355,0.75,self.model = BuckleyLeverettModel(max_rf_cap=0.75)
+core/engine_surrogate/analytical_models.py,377,0.05,"params.setdefault(""viscosity_inj"", params.get(""co2_viscosity"", 0.05))"
+core/engine_surrogate/analytical_models.py,400,0.05,"viscosity_inj = params.get(""viscosity_inj"", params.get(""co2_viscosity"", 0.05))"
+core/engine_surrogate/analytical_models.py,430,0.75,"return float(np.clip(displacement_eff, 0.0, 0.75))"
+core/engine_surrogate/analytical_models.py,461,3000.0,"pressure = params.get(""pressure"", params.get(""target_pressure_psi"", 3000.0))"
+core/engine_surrogate/analytical_models.py,462,2500.0,"mmp = params.get(""mmp"", 2500.0)"
+core/engine_surrogate/analytical_models.py,463,0.3,"c7_plus = params.get(""c7_plus_fraction"", 0.3)"
+core/engine_surrogate/analytical_models.py,472,0.95,alpha = 0.95 + 0.05 * (c7_plus - 0.3)
+core/engine_surrogate/analytical_models.py,472,0.05,alpha = 0.95 + 0.05 * (c7_plus - 0.3)
+core/engine_surrogate/analytical_models.py,472,0.3,alpha = 0.95 + 0.05 * (c7_plus - 0.3)
+core/engine_surrogate/analytical_models.py,473,20.0,beta = 20.0
+core/engine_surrogate/analytical_models.py,489,0.05,"return float(np.clip(rf, 0.05, 0.80))"
+core/engine_surrogate/analytical_models.py,489,0.8,"return float(np.clip(rf, 0.05, 0.80))"
+core/engine_surrogate/analytical_models.py,506,0.75,self.model = KovalRecoveryModel(max_rf_cap=0.75)
+core/engine_surrogate/analytical_models.py,540,0.78,kv = hk · (0.78 + 0.22·M^0.25)⁴  [Koval factor]
+core/engine_surrogate/analytical_models.py,540,0.22,kv = hk · (0.78 + 0.22·M^0.25)⁴  [Koval factor]
+core/engine_surrogate/analytical_models.py,540,0.25,kv = hk · (0.78 + 0.22·M^0.25)⁴  [Koval factor]
+core/engine_surrogate/analytical_models.py,543,0.999,"v_dp = np.clip(params.get(""v_dp"", params.get(""v_dp_coefficient"", 0.5)), 0.0, 0.999)"
+core/engine_surrogate/analytical_models.py,544,5.0,"M = max(params.get(""mobility_ratio"", 5.0), EPSILON)"
+core/engine_surrogate/analytical_models.py,552,0.78,kv = hk * (0.78 + 0.22 * M**0.25) ** 4
+core/engine_surrogate/analytical_models.py,552,0.22,kv = hk * (0.78 + 0.22 * M**0.25) ** 4
+core/engine_surrogate/analytical_models.py,552,0.25,kv = hk * (0.78 + 0.22 * M**0.25) ** 4
+core/engine_surrogate/analytical_models.py,573,0.75,"return float(np.clip(sweep, 0.0, 0.75))"
+core/engine_surrogate/analytical_models.py,604,35.0,"params = MMPParameters(temperature=temperature_f, oil_gravity=35.0)"
+core/engine_surrogate/analytical_models.py,622,20.0,beta = 20.0  # Sharpness of transition
+core/engine_surrogate/analytical_models.py,718,0.9,Steepness (beta) derived from a 10% pressure window (Pr = 0.9 to 1.1).
+core/engine_surrogate/analytical_models.py,718,1.1,Steepness (beta) derived from a 10% pressure window (Pr = 0.9 to 1.1).
+core/engine_surrogate/analytical_models.py,727,3000.0,"pressure = params.get(""pressure"") or params.get(""target_pressure_psi"") or 3000.0"
+core/engine_surrogate/analytical_models.py,728,2500.0,"mmp = params.get(""mmp"") or 2500.0"
+core/engine_surrogate/analytical_models.py,731,0.95,"v_dp = np.clip(params.get(""v_dp"") or params.get(""v_dp_coefficient"") or 0.5, 0.0, 0.95)"
+core/engine_surrogate/analytical_models.py,733,0.8,"params.get(""s_wi"") or params.get(""connate_water_saturation"") or S_WI_CONNATE, 0.0, 0.8"
+core/engine_surrogate/analytical_models.py,735,1.5,"viscosity_oil = params.get(""viscosity_oil"") or params.get(""mu_oil"") or 1.5"
+core/engine_surrogate/analytical_models.py,736,0.05,"viscosity_inj = params.get(""viscosity_inj"") or params.get(""co2_viscosity"") or 0.05"
+core/engine_surrogate/analytical_models.py,741,0.3,"c7_plus = params.get(""c7_plus_fraction"") or params.get(""c7_plus"") or 0.3"
+core/engine_surrogate/analytical_models.py,748,100.0,"perm_md = params.get(""permeability"") or 100.0"
+core/engine_surrogate/analytical_models.py,749,0.15,"porosity = params.get(""porosity"") or 0.15"
+core/engine_surrogate/analytical_models.py,751,0.15,phi_ref = 0.15
+core/engine_surrogate/analytical_models.py,752,100.0,k_ref = 100.0
+core/engine_surrogate/analytical_models.py,760,0.03,n_o_adj = n_o * (1.0 + 0.03 * log_k)
+core/engine_surrogate/analytical_models.py,761,0.03,n_g_adj = n_g * (1.0 + 0.03 * log_k)
+core/engine_surrogate/analytical_models.py,763,0.8,"k_ro_0 = params.get(""k_ro_0"") or 0.8"
+core/engine_surrogate/analytical_models.py,766,0.15,k_ro_end = k_ro_0 * phi_factor**0.15
+core/engine_surrogate/analytical_models.py,767,0.15,k_rg_end = k_rg_0 * phi_factor**0.15
+core/engine_surrogate/analytical_models.py,775,0.6,"omega_tl = params.get(""omega_tl"") or 0.6"
+core/engine_surrogate/analytical_models.py,782,0.15,omega_tl = omega_tl * (1.0 - 0.15 * flashing_fraction)
+core/engine_surrogate/analytical_models.py,784,0.25,mu_mix = (0.5 * (viscosity_inj**-0.25) + 0.5 * (viscosity_oil**-0.25)) ** -4.0
+core/engine_surrogate/analytical_models.py,784,0.25,mu_mix = (0.5 * (viscosity_inj**-0.25) + 0.5 * (viscosity_oil**-0.25)) ** -4.0
+core/engine_surrogate/analytical_models.py,784,4.0,mu_mix = (0.5 * (viscosity_inj**-0.25) + 0.5 * (viscosity_oil**-0.25)) ** -4.0
+core/engine_surrogate/analytical_models.py,798,0.78,e_eff = (0.78 + 0.22 * (M**0.25)) ** 4
+core/engine_surrogate/analytical_models.py,798,0.22,e_eff = (0.78 + 0.22 * (M**0.25)) ** 4
+core/engine_surrogate/analytical_models.py,798,0.25,e_eff = (0.78 + 0.22 * (M**0.25)) ** 4
+core/engine_surrogate/analytical_models.py,803,100.0,"perm_md = params.get(""permeability"") or 100.0"
+core/engine_surrogate/analytical_models.py,807,5000.0,"inj_mscfd = params.get(""injection_rate"") or 5000.0"
+core/engine_surrogate/analytical_models.py,810,5.615,q_res_ft3_day = q_res_bbl_day * 5.615
+core/engine_surrogate/analytical_models.py,811,1000.0,"area_ft2 = (params.get(""width_ft"") or 1000.0) * (params.get(""thickness_ft"") or 50.0)"
+core/engine_surrogate/analytical_models.py,811,50.0,"area_ft2 = (params.get(""width_ft"") or 1000.0) * (params.get(""thickness_ft"") or 50.0)"
+core/engine_surrogate/analytical_models.py,815,30.0,"sigma_ref = params.get(""co2_oil_interfacial_tension"") or params.get(""ift_dynes_cm"") or 30.0"
+core/engine_surrogate/analytical_models.py,817,0.01,"sigma_dynes_cm = max(0.01, sigma_ref * (1.0 - 0.999 * omega))"
+core/engine_surrogate/analytical_models.py,817,0.999,"sigma_dynes_cm = max(0.01, sigma_ref * (1.0 - 0.999 * omega))"
+core/engine_surrogate/analytical_models.py,822,3.5e-06,"N_c = (viscosity_inj * u_ft_day / max(sigma_dynes_cm, EPSILON)) * 3.5e-6"
+core/engine_surrogate/analytical_models.py,823,1e-05,N_c_ref = 1.0e-5
+core/engine_surrogate/analytical_models.py,826,0.3,"sor_imm = params.get(""sor"") or 0.3"
+core/engine_surrogate/analytical_models.py,827,0.05,"sor_min = params.get(""min_sor"") or 0.05"
+core/engine_surrogate/analytical_models.py,852,50.0,"delta_rho = abs((params.get(""rho_oil"") or 50.0) - (params.get(""rho_co2"") or 44.0))"
+core/engine_surrogate/analytical_models.py,852,44.0,"delta_rho = abs((params.get(""rho_oil"") or 50.0) - (params.get(""rho_co2"") or 44.0))"
+core/engine_surrogate/analytical_models.py,855,0.01,"effective_angle = max(sin_theta, 0.01)"
+core/engine_surrogate/analytical_models.py,863,4.3948e-05,N_g = (perm_md * delta_rho * effective_angle * 4.3948e-5) / (
+core/engine_surrogate/analytical_models.py,867,0.1,"e_v = float(np.clip(1.0 / (1.0 + N_g), 0.1, 1.0))"
+core/engine_surrogate/analytical_models.py,899,3000.0,"""pressure"": 3000.0,"
+core/engine_surrogate/analytical_models.py,900,2500.0,"""mmp"": 2500.0,"
+core/engine_surrogate/analytical_models.py,901,0.3,"""c7_plus_fraction"": 0.3,"
+core/engine_surrogate/analytical_models.py,912,0.001,h_rel = 0.001
+core/engine_surrogate/analytical_models.py,913,0.01,h_abs = 0.01
+core/engine_surrogate/analytical_models.py,966,3000.0,"pressure = kwargs.pop(""pressure"", kwargs.pop(""target_pressure_psi"", 3000.0))"
+core/engine_surrogate/analytical_models.py,971,2500.0,"mmp = kwargs.pop(""mmp"", 2500.0)"
+core/engine_surrogate/analytical_models.py,975,0.3,"c7_plus = kwargs.pop(""c7_plus_fraction"", kwargs.pop(""c7_plus"", 0.3))"
+core/engine_surrogate/analytical_models.py,983,0.1,"lambda_c7 = kwargs.get(""lambda_c7"", 0.1)"
+core/engine_surrogate/analytical_models.py,984,0.3,alpha_eff = alpha_base + lambda_c7 * (c7_plus - 0.3)
+core/engine_surrogate/analytical_models.py,987,0.1,"miscibility_window = kwargs.get(""miscibility_window"", 0.1)"
+core/engine_surrogate/analytical_models.py,988,4.394,"beta_transition = 4.394 / max(miscibility_window, 0.01)"
+core/engine_surrogate/analytical_models.py,988,0.01,"beta_transition = 4.394 / max(miscibility_window, 0.01)"
+core/engine_surrogate/analytical_models.py,1002,0.3,"c7_plus: float = 0.3,"
+core/engine_surrogate/analytical_models.py,1022,0.1,"lambda_c7 = kwargs.get(""lambda_c7"", 0.1)"
+core/engine_surrogate/analytical_models.py,1023,0.3,alpha_eff = alpha_base + lambda_c7 * (c7_plus - 0.3)
+core/engine_surrogate/analytical_models.py,1024,0.1,"miscibility_window = kwargs.get(""miscibility_window"", 0.1)"
+core/engine_surrogate/analytical_models.py,1025,4.394,"beta_transition = 4.394 / max(miscibility_window, 0.01)"
+core/engine_surrogate/analytical_models.py,1025,0.01,"beta_transition = 4.394 / max(miscibility_window, 0.01)"
+core/engine_surrogate/geomechanics_fault.py,71,5000.0,"depth_ft: float = 5000.0,"
+core/engine_surrogate/geomechanics_fault.py,72,3000.0,"initial_pressure_psi: float = 3000.0,"
+core/engine_surrogate/geomechanics_fault.py,74,0.75,"horizontal_stress_ratio_k0: float = 0.75,"
+core/engine_surrogate/geomechanics_fault.py,75,0.25,"poissons_ratio: float = 0.25,"
+core/engine_surrogate/geomechanics_fault.py,76,0.8,"biot_coefficient: float = 0.80,"
+core/engine_surrogate/geomechanics_fault.py,79,200.0,"caprock_tensile_strength_psi: float = 200.0,"
+core/engine_surrogate/geomechanics_fault.py,80,400.0,"caprock_cohesion_psi: float = 400.0,"
+core/engine_surrogate/geomechanics_fault.py,81,30.0,"caprock_friction_angle_deg: float = 30.0,"
+core/engine_surrogate/geomechanics_fault.py,82,0.9,"caprock_safety_factor: float = 0.90,"
+core/engine_surrogate/geomechanics_fault.py,84,60.0,"fault_dip_deg: float = 60.0,"
+core/engine_surrogate/geomechanics_fault.py,86,0.6,"fault_friction_coefficient: float = 0.60,"
+core/engine_surrogate/geomechanics_fault.py,90,500.0,"self.depth = float(max(depth_ft, 500.0))"
+core/engine_surrogate/geomechanics_fault.py,91,14.7,"self.p_init = float(max(initial_pressure_psi, 14.7))"
+core/engine_surrogate/geomechanics_fault.py,93,0.4,"self.k0 = float(np.clip(horizontal_stress_ratio_k0, 0.40, 1.20))"
+core/engine_surrogate/geomechanics_fault.py,93,1.2,"self.k0 = float(np.clip(horizontal_stress_ratio_k0, 0.40, 1.20))"
+core/engine_surrogate/geomechanics_fault.py,94,0.1,"self.nu = float(np.clip(poissons_ratio, 0.10, 0.45))"
+core/engine_surrogate/geomechanics_fault.py,94,0.45,"self.nu = float(np.clip(poissons_ratio, 0.10, 0.45))"
+core/engine_surrogate/geomechanics_fault.py,122,0.1,"self.mu_f = float(max(fault_friction_coefficient, 0.10))"
+core/engine_surrogate/geomechanics_fault.py,146,14.7,"P = float(max(current_pressure_psi, 14.7))"
+core/engine_surrogate/geomechanics_fault.py,168,100.0,"margin_frac = (self.p_safe_ceiling - P) / max(self.p_safe_ceiling - self.p_init, 100.0)"
+core/engine_surrogate/geomechanics_fault.py,177,0.05,caprock_leakage = 0.05 * (overpressure / 100.0) ** 1.5
+core/engine_surrogate/geomechanics_fault.py,177,100.0,caprock_leakage = 0.05 * (overpressure / 100.0) ** 1.5
+core/engine_surrogate/geomechanics_fault.py,177,1.5,caprock_leakage = 0.05 * (overpressure / 100.0) ** 1.5
+core/engine_surrogate/geomechanics_fault.py,179,5.0,caprock_leakage *= 5.0
+core/engine_surrogate/geomechanics_fault.py,206,0.1,fault_leakage = 0.10 * (1.0 + 10.0 * excess_slip) * (excess_p / 100.0)
+core/engine_surrogate/geomechanics_fault.py,206,10.0,fault_leakage = 0.10 * (1.0 + 10.0 * excess_slip) * (excess_p / 100.0)
+core/engine_surrogate/geomechanics_fault.py,206,100.0,fault_leakage = 0.10 * (1.0 + 10.0 * excess_slip) * (excess_p / 100.0)
 core/engine_surrogate/profile_generator_fast.py,84,1.8,"q_two_phase = (pi * mmp / 1.8) * max(0.0, 1.0 - 0.2 * ratio - 0.8 * (ratio**2))"
 core/engine_surrogate/profile_generator_fast.py,84,0.2,"q_two_phase = (pi * mmp / 1.8) * max(0.0, 1.0 - 0.2 * ratio - 0.8 * (ratio**2))"
 core/engine_surrogate/profile_generator_fast.py,84,0.8,"q_two_phase = (pi * mmp / 1.8) * max(0.0, 1.0 - 0.2 * ratio - 0.8 * (ratio**2))"
@@ -470,132 +541,297 @@ core/engine_surrogate/profile_generator_fast.py,929,0.2,"if tp else params.get("
 core/engine_surrogate/profile_generator_fast.py,933,0.03,"if tp else params.get(""solubility_trapping_fraction"", 0.03)"
 core/engine_surrogate/profile_generator_fast.py,939,0.2,"co2_rate_const = params.get(""co2_production_rate_constant"", 0.2)"
 core/engine_surrogate/profile_generator_fast.py,942,0.95,"total_trapping = float(np.clip(residual_trap + solubility_trap + structural_trap, 0.0, 0.95))"
-core/engine_surrogate/profile_generator_fast.py,944,0.78,E = (0.78 + 0.22 * (mobility_ratio ** 0.25)) ** 4
-core/engine_surrogate/profile_generator_fast.py,944,0.22,E = (0.78 + 0.22 * (mobility_ratio ** 0.25)) ** 4
-core/engine_surrogate/profile_generator_fast.py,944,0.25,E = (0.78 + 0.22 * (mobility_ratio ** 0.25)) ** 4
-core/engine_surrogate/profile_generator_fast.py,946,10.0,"koval_factor = float(np.clip(koval_factor, 0.5, 10.0))"
-core/engine_surrogate/profile_generator_fast.py,949,0.1,"frac_flow_co2 = float(np.clip(frac_flow_co2, 0.1, 0.7))"
-core/engine_surrogate/profile_generator_fast.py,949,0.7,"frac_flow_co2 = float(np.clip(frac_flow_co2, 0.1, 0.7))"
-core/engine_surrogate/profile_generator_fast.py,1083,0.001,"mobility_factor = params.get(""mobility_ratio_factor"", 0.001)"
-core/engine_surrogate/profile_generator_fast.py,1086,1.5,"wag_ratio_enhancement = params.get(""wag_ratio_enhancement_factor"", 1.5)"
-core/engine_surrogate/profile_generator_fast.py,1087,0.1,"co2_taper_percentage = params.get(""co2_taper_percentage"", 0.1)"
-core/engine_surrogate/profile_generator_fast.py,1088,0.85,"min_co2_taper_factor = params.get(""min_co2_taper_factor"", 0.85)"
-core/engine_surrogate/profile_generator_fast.py,1089,0.005,"default_b_gas = params.get(""default_gas_fvf"", 0.005)"
-core/engine_surrogate/profile_generator_fast.py,1146,30.0,"inj_period = params.get(""huff_n_puff_injection_period_days"", 30.0)"
-core/engine_surrogate/profile_generator_fast.py,1147,7.0,"soak_period = params.get(""huff_n_puff_soaking_period_days"", 7.0)"
-core/engine_surrogate/profile_generator_fast.py,1148,60.0,"prod_period = params.get(""huff_n_puff_production_period_days"", 60.0)"
-core/engine_surrogate/profile_generator_fast.py,1153,97.0,cycle_length = 97.0
-core/engine_surrogate/profile_generator_fast.py,1154,30.0,inj_period = 30.0
-core/engine_surrogate/profile_generator_fast.py,1155,7.0,soak_period = 7.0
-core/engine_surrogate/profile_generator_fast.py,1156,60.0,prod_period = 60.0
-core/engine_surrogate/profile_generator_fast.py,1184,0.9,"mixing_efficiency = params.get(""swag_mixing_efficiency"", 0.9)"
-core/engine_surrogate/profile_generator_fast.py,1190,0.005,"water_rate_bpd = base_injection_rate * wgr * params.get(""default_gas_fvf"", 0.005) * 1000"
-core/engine_surrogate/profile_generator_fast.py,1222,5.0,"duration_years = params.get(""tapered_duration_years"", 5.0)"
-core/engine_surrogate/profile_generator_fast.py,1225,365.25,time_years = time_vector / 365.25
-core/engine_surrogate/profile_generator_fast.py,1226,0.001,"t_normalized = np.clip(time_years / max(duration_years, 0.001), 0.0, 1.0)"
-core/engine_surrogate/profile_generator_fast.py,1229,3.0,"exponential_decay_factor = params.get(""exponential_decay_factor"", 3.0)"
-core/engine_surrogate/profile_generator_fast.py,1246,0.05,"min_floor = base_injection_rate * params.get(""tapered_min_rate_floor"", 0.05)"
-core/engine_surrogate/profile_generator_fast.py,1260,15.0,"pulse_days = params.get(""pulsed_pulse_duration_days"", 15.0)"
-core/engine_surrogate/profile_generator_fast.py,1261,15.0,"pause_days = params.get(""pulsed_pause_duration_days"", 15.0)"
-core/engine_surrogate/profile_generator_fast.py,1266,30.0,cycle_length = 30.0
-core/engine_surrogate/profile_generator_fast.py,1267,15.0,pulse_days = 15.0
-core/engine_surrogate/surrogate_engine.py,88,0.15,"""structural"": 0.15,"
-core/engine_surrogate/surrogate_engine.py,89,0.25,"""residual"": 0.25,"
-core/engine_surrogate/surrogate_engine.py,90,0.2,"""solubility"": 0.20,"
-core/engine_surrogate/surrogate_engine.py,91,0.05,"""mineral"": 0.05,"
-core/engine_surrogate/surrogate_engine.py,92,0.65,"""total"": 0.65,"
-core/engine_surrogate/surrogate_engine.py,184,3000.0,"initial_pressure = getattr(reservoir_data, 'initial_pressure', 3000.0)"
-core/engine_surrogate/surrogate_engine.py,192,0.25,"swi = getattr(reservoir_data, 'connate_water_saturation', 0.25)"
-core/engine_surrogate/surrogate_engine.py,193,1.2,bo = 1.2 # Assume typical formation volume factor
-core/engine_surrogate/surrogate_engine.py,202,1000.0,"bg = getattr(reservoir_data, ""bg"", bg_rb_per_mscf / 1000.0)  # RB/SCF for gas_profile conv."
-core/engine_surrogate/surrogate_engine.py,208,1000.0,"profile_result[""gas_profile""] * 1000.0 * bg)  # MSCFD->SCF->RB"
-core/engine_surrogate/surrogate_engine.py,220,1430.0,"p_max = params.get(""target_pressure_psi"", 1430.0) * 1.5"
-core/engine_surrogate/surrogate_engine.py,220,1.5,"p_max = params.get(""target_pressure_psi"", 1430.0) * 1.5"
-core/engine_surrogate/surrogate_engine.py,221,1000.0,"p_min = params.get(""bhp_prod"", 1000.0)"
-core/engine_surrogate/surrogate_engine.py,222,1e-05,"c_o = params.get(""compressibility_oil"", 1.0e-5)"
-core/engine_surrogate/surrogate_engine.py,223,3e-06,"c_w = params.get(""compressibility_water"", 3.0e-6)"
-core/engine_surrogate/surrogate_engine.py,224,4e-06,"c_f = params.get(""compressibility_rock"", 4.0e-6)"
-core/engine_surrogate/surrogate_engine.py,227,1000.0,"bg_ref = getattr(reservoir_data, ""bg"", bg_rb_per_mscf / 1000.0)"
-core/engine_surrogate/surrogate_engine.py,240,100.0,"bg_dynamic = bg_ref * (initial_pressure / max(current_p, 100.0))"
-core/engine_surrogate/surrogate_engine.py,242,100.0,"c_g_dynamic = 1.0 / max(current_p, 100.0)"
-core/engine_surrogate/surrogate_engine.py,253,1000.0,"nominal_gas_rb = profile_result[""gas_profile""][i] * 1000.0 * bg_dynamic"
-core/engine_surrogate/surrogate_engine.py,258,0.25,"S_wi = params.get(""connate_water_saturation"", 0.25)"
-core/engine_surrogate/surrogate_engine.py,259,0.25,"S_orm = params.get(""residual_oil_saturation"", 0.25)"
-core/engine_surrogate/surrogate_engine.py,262,2500.0,"mmp = params.get(""mmp"", 2500.0)"
-core/engine_surrogate/surrogate_engine.py,263,0.3,"c7_val = params.get(""c7_plus"", params.get(""c7_plus_fraction"", 0.3))"
-core/engine_surrogate/surrogate_engine.py,271,43.94,arg = 43.94 * (p_ratio - (1.0 + 0.1 * (c7_val - 0.3)))
-core/engine_surrogate/surrogate_engine.py,271,0.1,arg = 43.94 * (p_ratio - (1.0 + 0.1 * (c7_val - 0.3)))
-core/engine_surrogate/surrogate_engine.py,271,0.3,arg = 43.94 * (p_ratio - (1.0 + 0.1 * (c7_val - 0.3)))
-core/engine_surrogate/surrogate_engine.py,274,0.05,"mu_g = params.get(""co2_viscosity"", 0.05)"
-core/engine_surrogate/surrogate_engine.py,275,1.5,"mu_o = params.get(""viscosity_oil"", 1.5)"
-core/engine_surrogate/surrogate_engine.py,276,0.25,mu_mix = (0.5 * mu_g**-0.25 + 0.5 * mu_o**-0.25)**-4.0
-core/engine_surrogate/surrogate_engine.py,276,0.25,mu_mix = (0.5 * mu_g**-0.25 + 0.5 * mu_o**-0.25)**-4.0
-core/engine_surrogate/surrogate_engine.py,276,4.0,mu_mix = (0.5 * mu_g**-0.25 + 0.5 * mu_o**-0.25)**-4.0
-core/engine_surrogate/surrogate_engine.py,278,0.67,"omega_tl = params.get(""omega_tl"", 0.67)"
-core/engine_surrogate/surrogate_engine.py,283,0.8,"k_ro_end = params.get(""k_ro_0"", 0.8)"
-core/engine_surrogate/surrogate_engine.py,320,0.25,"s_wi_val = params.get(""connate_water_saturation"", 0.25)"
-core/engine_surrogate/surrogate_engine.py,321,0.25,"s_or_val = params.get(""residual_oil_saturation"", params.get(""sor"", 0.25))"
-core/engine_surrogate/surrogate_engine.py,341,1430.0,"p_target = params.get(""target_pressure_psi"", 1430.0)"
-core/engine_surrogate/surrogate_engine.py,342,5500.0,"p_frac = float(params.get(""caprock_fracture_pressure_psi"", 5500.0))"
-core/engine_surrogate/surrogate_engine.py,343,0.9,p_safe_ceiling = 0.90 * p_frac
-core/engine_surrogate/surrogate_engine.py,347,500.0,nominal_drawdown = 500.0
-core/engine_surrogate/surrogate_engine.py,366,500.0,"bleed_factor = max(0.0, 1.0 - (current_p - p_target) / 500.0)"
-core/engine_surrogate/surrogate_engine.py,379,450.0,"dp = float(np.clip(dp, -450.0, 450.0))"
-core/engine_surrogate/surrogate_engine.py,379,450.0,"dp = float(np.clip(dp, -450.0, 450.0))"
-core/engine_surrogate/surrogate_engine.py,382,50.0,tolerance_window = 50.0  # psi
-core/engine_surrogate/surrogate_engine.py,383,0.33,k_smooth = 1.0 / (tolerance_window * 0.33)  # Matches 95% damping
-core/engine_surrogate/surrogate_engine.py,425,0.25,"rf_max_physical = max(0.0, 1.0 - swi - getattr(reservoir_data, ""residual_oil_saturation"", params.get"
-core/engine_surrogate/surrogate_engine.py,450,0.053,"co2_tonne_per_mscf = float(params.get(""co2_density_tonne_per_mscf"", 0.053))"
-core/engine_surrogate/surrogate_engine.py,461,0.05,gas_threshold = 0.05 * np.max(gas_rates) if len(gas_rates) > 0 and np.max(gas_rates) > 0 else 1.0
-core/engine_surrogate/surrogate_engine.py,463,365.25,bt_years = float(time_vector[bt_indices[0]] / 365.25) if len(bt_indices) > 0 else float(operational_
-core/engine_surrogate/surrogate_engine.py,476,0.95,"co2_recycle_eff = float(params.get(""co2_recycling_efficiency"", 0.95))"
-core/engine_surrogate/surrogate_engine.py,482,365.25,"y = min(n_years - 1, max(0, int(t_mid // 365.25)))"
-core/engine_surrogate/surrogate_engine.py,486,365.25,annual_co2_inj_mscf[0] = float(np.sum(inj_rate) * 365.25)
-core/engine_surrogate/surrogate_engine.py,487,365.25,annual_co2_prod_mscf[0] = float(np.sum(co2_gas_rate) * 365.25)
-core/engine_surrogate/surrogate_engine.py,560,90.0,"""cycle_length_days"": getattr(eor_params, ""cycle_length_days"", 90.0),"
-core/engine_surrogate/surrogate_engine.py,564,90.0,"""huff_n_puff_cycle_length_days"": getattr(eor_params, ""huff_n_puff_cycle_length_days"", 90.0),"
-core/engine_surrogate/surrogate_engine.py,565,30.0,"""huff_n_puff_injection_period_days"": getattr(eor_params, ""huff_n_puff_injection_period_days"", 30.0),"
-core/engine_surrogate/surrogate_engine.py,566,15.0,"""huff_n_puff_soaking_period_days"": getattr(eor_params, ""huff_n_puff_soaking_period_days"", 15.0),"
-core/engine_surrogate/surrogate_engine.py,567,45.0,"""huff_n_puff_production_period_days"": getattr(eor_params, ""huff_n_puff_production_period_days"", 45.0"
-core/engine_surrogate/surrogate_engine.py,576,5.0,"""tapered_duration_years"": getattr(eor_params, ""tapered_duration_years"", 5.0),"
-core/engine_surrogate/surrogate_engine.py,579,15.0,"""pulsed_pulse_duration_days"": getattr(eor_params, ""pulsed_pulse_duration_days"", 15.0),"
-core/engine_surrogate/surrogate_engine.py,580,15.0,"""pulsed_pause_duration_days"": getattr(eor_params, ""pulsed_pause_duration_days"", 15.0),"
-core/engine_surrogate/surrogate_engine.py,586,0.15,"""porosity"": reservoir_data.average_porosity or 0.15,"
-core/engine_surrogate/surrogate_engine.py,587,100.0,"""permeability"": reservoir_data.average_permeability or 100.0,"
-core/engine_surrogate/surrogate_engine.py,589,2000.0,"""length_ft"": getattr(reservoir_data, ""length_ft"", 2000.0) or 2000.0,"
-core/engine_surrogate/surrogate_engine.py,589,2000.0,"""length_ft"": getattr(reservoir_data, ""length_ft"", 2000.0) or 2000.0,"
-core/engine_surrogate/surrogate_engine.py,590,10.0,"""width_ft"": (getattr(reservoir_data, ""area_acres"", 10.0) or 10.0) * 43560.0 / (getattr(reservoir_dat"
-core/engine_surrogate/surrogate_engine.py,590,10.0,"""width_ft"": (getattr(reservoir_data, ""area_acres"", 10.0) or 10.0) * 43560.0 / (getattr(reservoir_dat"
-core/engine_surrogate/surrogate_engine.py,590,43560.0,"""width_ft"": (getattr(reservoir_data, ""area_acres"", 10.0) or 10.0) * 43560.0 / (getattr(reservoir_dat"
-core/engine_surrogate/surrogate_engine.py,590,2000.0,"""width_ft"": (getattr(reservoir_data, ""area_acres"", 10.0) or 10.0) * 43560.0 / (getattr(reservoir_dat"
-core/engine_surrogate/surrogate_engine.py,590,2000.0,"""width_ft"": (getattr(reservoir_data, ""area_acres"", 10.0) or 10.0) * 43560.0 / (getattr(reservoir_dat"
-core/engine_surrogate/surrogate_engine.py,591,50.0,"""thickness_ft"": getattr(reservoir_data, ""thickness_ft"", 50.0) or 50.0,"
-core/engine_surrogate/surrogate_engine.py,591,50.0,"""thickness_ft"": getattr(reservoir_data, ""thickness_ft"", 50.0) or 50.0,"
-core/engine_surrogate/surrogate_engine.py,602,0.25,"""s_wi"": getattr(reservoir_data, ""initial_water_saturation"", 0.25),"
-core/engine_surrogate/surrogate_engine.py,603,0.25,"""sor"": getattr(reservoir_data, ""residual_oil_saturation"", 0.25),"
-core/engine_surrogate/surrogate_engine.py,604,0.05,"""s_gc"": 0.05, # Critical gas saturation"
-core/engine_surrogate/surrogate_engine.py,605,400.0,"""co2_solubility"": 400.0,  # scf/STB (standard default)"
-core/engine_surrogate/surrogate_engine.py,606,150.0,"""temperature_f"": getattr(reservoir_data, ""temperature"", 150.0),"
-core/engine_surrogate/surrogate_engine.py,610,0.0005,"""mscf_per_res_bbl"": 1.0 / (max(getattr(reservoir_data, ""bg"", 0.0005), 1e-6) * 1000.0),"
-core/engine_surrogate/surrogate_engine.py,610,1000.0,"""mscf_per_res_bbl"": 1.0 / (max(getattr(reservoir_data, ""bg"", 0.0005), 1e-6) * 1000.0),"
-core/engine_surrogate/surrogate_engine.py,632,0.25,"swi = getattr(reservoir_data, ""initial_water_saturation"", 0.25)"
-core/engine_surrogate/surrogate_engine.py,633,1.2,bo = 1.2 # Formation volume factor
-core/engine_surrogate/surrogate_engine.py,634,0.1,"pv_rb = (ooip * bo) / max(1.0 - swi, 0.1)"
-core/engine_surrogate/surrogate_engine.py,640,365.25,total_inj_rb = q_inj_rb_day_hcpvi * 365.25 * operational_params.project_lifetime_years
-core/engine_surrogate/surrogate_engine.py,646,10.0,"H_k = 10.0 ** (v_dp / max(1.0 - v_dp, 1e-4))"
-core/engine_surrogate/surrogate_engine.py,647,2.5,"M_eff = float(params.get(""mobility_ratio"", 2.5))"
-core/engine_surrogate/surrogate_engine.py,648,0.78,E_eff = (0.78 + 0.22 * (M_eff**0.25))**4
-core/engine_surrogate/surrogate_engine.py,648,0.22,E_eff = (0.78 + 0.22 * (M_eff**0.25))**4
-core/engine_surrogate/surrogate_engine.py,648,0.25,E_eff = (0.78 + 0.22 * (M_eff**0.25))**4
-core/engine_surrogate/surrogate_engine.py,649,1.01,"K_koval = max(1.01, H_k * E_eff)"
-core/engine_surrogate/surrogate_engine.py,656,43560.0,pv_calc = (area_acres * 43560.0 * thickness_ft * porosity) / 5.615
-core/engine_surrogate/surrogate_engine.py,656,5.615,pv_calc = (area_acres * 43560.0 * thickness_ft * porosity) / 5.615
-core/engine_surrogate/surrogate_engine.py,669,365.25,"annual_inj_rb = max(q_inj_rb_day * 365.25, 1.0)"
-core/engine_surrogate/surrogate_engine.py,674,0.1,"bt_time = float(np.clip(t_bt_calc, 0.1, max(lifetime * 0.9, 0.5)))"
-core/engine_surrogate/surrogate_engine.py,674,0.9,"bt_time = float(np.clip(t_bt_calc, 0.1, max(lifetime * 0.9, 0.5)))"
-core/engine_surrogate/surrogate_engine.py,689,35.0,"api_gravity = getattr(reservoir_data, ""oil_api_gravity"", 35.0)"
-core/engine_surrogate/surrogate_engine.py,691,150.0,"temperature=getattr(reservoir_data, ""temperature"", 150.0),"
-core/engine_surrogate/surrogate_engine.py,848,0.01,0.01 <= reservoir_data.average_porosity <= 0.5
+core/engine_surrogate/profile_generator_fast.py,946,0.95,"h_koval = 1.0 / max(1.0 - min(v_dp, 0.95), 0.05) ** 2"
+core/engine_surrogate/profile_generator_fast.py,946,0.05,"h_koval = 1.0 / max(1.0 - min(v_dp, 0.95), 0.05) ** 2"
+core/engine_surrogate/profile_generator_fast.py,948,0.78,e_eff = (0.78 + 0.22 * (m_eff ** 0.25)) ** 4
+core/engine_surrogate/profile_generator_fast.py,948,0.22,e_eff = (0.78 + 0.22 * (m_eff ** 0.25)) ** 4
+core/engine_surrogate/profile_generator_fast.py,948,0.25,e_eff = (0.78 + 0.22 * (m_eff ** 0.25)) ** 4
+core/engine_surrogate/profile_generator_fast.py,949,50.0,"koval_factor = float(np.clip(h_koval * e_eff * koval_mult, 1.0, 50.0))"
+core/engine_surrogate/profile_generator_fast.py,953,0.4,s_ref = 0.40
+core/engine_surrogate/profile_generator_fast.py,955,0.15,"frac_flow_co2 = float(np.clip(frac_flow_co2, 0.15, 0.95))"
+core/engine_surrogate/profile_generator_fast.py,955,0.95,"frac_flow_co2 = float(np.clip(frac_flow_co2, 0.15, 0.95))"
+core/engine_surrogate/profile_generator_fast.py,1089,0.001,"mobility_factor = params.get(""mobility_ratio_factor"", 0.001)"
+core/engine_surrogate/profile_generator_fast.py,1092,1.5,"wag_ratio_enhancement = params.get(""wag_ratio_enhancement_factor"", 1.5)"
+core/engine_surrogate/profile_generator_fast.py,1093,0.1,"co2_taper_percentage = params.get(""co2_taper_percentage"", 0.1)"
+core/engine_surrogate/profile_generator_fast.py,1094,0.85,"min_co2_taper_factor = params.get(""min_co2_taper_factor"", 0.85)"
+core/engine_surrogate/profile_generator_fast.py,1095,0.005,"default_b_gas = params.get(""default_gas_fvf"", 0.005)"
+core/engine_surrogate/profile_generator_fast.py,1152,30.0,"inj_period = params.get(""huff_n_puff_injection_period_days"", 30.0)"
+core/engine_surrogate/profile_generator_fast.py,1153,7.0,"soak_period = params.get(""huff_n_puff_soaking_period_days"", 7.0)"
+core/engine_surrogate/profile_generator_fast.py,1154,60.0,"prod_period = params.get(""huff_n_puff_production_period_days"", 60.0)"
+core/engine_surrogate/profile_generator_fast.py,1159,97.0,cycle_length = 97.0
+core/engine_surrogate/profile_generator_fast.py,1160,30.0,inj_period = 30.0
+core/engine_surrogate/profile_generator_fast.py,1161,7.0,soak_period = 7.0
+core/engine_surrogate/profile_generator_fast.py,1162,60.0,prod_period = 60.0
+core/engine_surrogate/profile_generator_fast.py,1190,0.9,"mixing_efficiency = params.get(""swag_mixing_efficiency"", 0.9)"
+core/engine_surrogate/profile_generator_fast.py,1196,0.005,"water_rate_bpd = base_injection_rate * wgr * params.get(""default_gas_fvf"", 0.005) * 1000"
+core/engine_surrogate/profile_generator_fast.py,1228,5.0,"duration_years = params.get(""tapered_duration_years"", 5.0)"
+core/engine_surrogate/profile_generator_fast.py,1231,365.25,time_years = time_vector / 365.25
+core/engine_surrogate/profile_generator_fast.py,1232,0.001,"t_normalized = np.clip(time_years / max(duration_years, 0.001), 0.0, 1.0)"
+core/engine_surrogate/profile_generator_fast.py,1235,3.0,"exponential_decay_factor = params.get(""exponential_decay_factor"", 3.0)"
+core/engine_surrogate/profile_generator_fast.py,1252,0.05,"min_floor = base_injection_rate * params.get(""tapered_min_rate_floor"", 0.05)"
+core/engine_surrogate/profile_generator_fast.py,1266,15.0,"pulse_days = params.get(""pulsed_pulse_duration_days"", 15.0)"
+core/engine_surrogate/profile_generator_fast.py,1267,15.0,"pause_days = params.get(""pulsed_pause_duration_days"", 15.0)"
+core/engine_surrogate/profile_generator_fast.py,1272,30.0,cycle_length = 30.0
+core/engine_surrogate/profile_generator_fast.py,1273,15.0,pulse_days = 15.0
+core/engine_surrogate/pvt_state.py,13,14.7,"from sandface (P_wf) to stock tank (14.7 psia, 60°F), driving true stock-tank oil shrinkage and"
+core/engine_surrogate/pvt_state.py,31,14.696,P_SC_PSIA = 14.696
+core/engine_surrogate/pvt_state.py,32,519.67,T_SC_RANKINE = 519.67  # 60 °F
+core/engine_surrogate/pvt_state.py,33,10.7316,R_GAS_FIELD = 10.7316  # psia·ft³ / (lbmol·°R)
+core/engine_surrogate/pvt_state.py,34,8.314462,R_GAS_SI = 8.314462    # J / (mol·K)
+core/engine_surrogate/pvt_state.py,37,44.01,MW_CO2 = 44.01         # g/mol
+core/engine_surrogate/pvt_state.py,38,304.13,TC_CO2_K = 304.13      # K
+core/engine_surrogate/pvt_state.py,39,7376000.0,PC_CO2_PA = 7.376e6    # Pa (~1070 psia)
+core/engine_surrogate/pvt_state.py,40,0.225,OMEGA_CO2 = 0.225      # Acentric factor
+core/engine_surrogate/pvt_state.py,41,1.838,"RHO_CO2_SC_KG_M3 = 1.838  # Standard density at 14.7 psia, 60°F"
+core/engine_surrogate/pvt_state.py,41,14.7,"RHO_CO2_SC_KG_M3 = 1.838  # Standard density at 14.7 psia, 60°F"
+core/engine_surrogate/pvt_state.py,42,0.05295,CO2_TONNE_PER_MSCF = 0.05295  # Metric tonnes per MSCF of pure CO2 (~0.0530)
+core/engine_surrogate/pvt_state.py,42,0.053,CO2_TONNE_PER_MSCF = 0.05295  # Metric tonnes per MSCF of pure CO2 (~0.0530)
+core/engine_surrogate/pvt_state.py,43,18.88,MSCF_PER_TONNE = 1.0 / CO2_TONNE_PER_MSCF  # ~18.88 MSCF/tonne
+core/engine_surrogate/pvt_state.py,46,16.04,MW_CH4 = 16.04
+core/engine_surrogate/pvt_state.py,47,0.65,GAMMA_G_DEFAULT = 0.65  # Gas gravity relative to air
+core/engine_surrogate/pvt_state.py,75,150.0,"reservoir_temperature_f: float = 150.0,"
+core/engine_surrogate/pvt_state.py,76,3000.0,"initial_pressure_psi: float = 3000.0,"
+core/engine_surrogate/pvt_state.py,77,35.0,"api_gravity: float = 35.0,"
+core/engine_surrogate/pvt_state.py,78,0.7,"gas_gravity: float = 0.70,"
+core/engine_surrogate/pvt_state.py,79,2.5,"dead_oil_viscosity_cp: float = 2.5,"
+core/engine_surrogate/pvt_state.py,81,0.35,"c7_plus_fraction: float = 0.35,"
+core/engine_surrogate/pvt_state.py,82,30000.0,"salinity_ppm: float = 30000.0,"
+core/engine_surrogate/pvt_state.py,85,459.67,self.temp_r = self.temp_f + 459.67
+core/engine_surrogate/pvt_state.py,86,32.0,self.temp_k = (self.temp_f - 32.0) * 5.0 / 9.0 + 273.15
+core/engine_surrogate/pvt_state.py,86,5.0,self.temp_k = (self.temp_f - 32.0) * 5.0 / 9.0 + 273.15
+core/engine_surrogate/pvt_state.py,86,9.0,self.temp_k = (self.temp_f - 32.0) * 5.0 / 9.0 + 273.15
+core/engine_surrogate/pvt_state.py,86,273.15,self.temp_k = (self.temp_f - 32.0) * 5.0 / 9.0 + 273.15
+core/engine_surrogate/pvt_state.py,91,141.5,self.gamma_o = 141.5 / (self.api + 131.5)  # Specific gravity of stock-tank oil
+core/engine_surrogate/pvt_state.py,91,131.5,self.gamma_o = 141.5 / (self.api + 131.5)  # Specific gravity of stock-tank oil
+core/engine_surrogate/pvt_state.py,97,0.6,"live_oil_viscosity_ref_cp if live_oil_viscosity_ref_cp is not None else max(0.5, self.mu_o_dead * 0."
+core/engine_surrogate/pvt_state.py,111,0.37464,m = 0.37464 + 1.54226 * omega - 0.26992 * (omega**2)
+core/engine_surrogate/pvt_state.py,111,1.54226,m = 0.37464 + 1.54226 * omega - 0.26992 * (omega**2)
+core/engine_surrogate/pvt_state.py,111,0.26992,m = 0.37464 + 1.54226 * omega - 0.26992 * (omega**2)
+core/engine_surrogate/pvt_state.py,114,0.45724,self.pr_a_co2 = 0.45724 * (R * Tc) ** 2 / Pc * alpha
+core/engine_surrogate/pvt_state.py,115,0.0778,self.pr_b_co2 = 0.07780 * R * Tc / Pc
+core/engine_surrogate/pvt_state.py,131,14.7,"p_pa = max(pressure_psi, 14.7) * 6894.757"
+core/engine_surrogate/pvt_state.py,131,6894.757,"p_pa = max(pressure_psi, 14.7) * 6894.757"
+core/engine_surrogate/pvt_state.py,142,3.0,"coeffs = [1.0, -(1.0 - B), A - 3.0 * (B**2) - 2.0 * B, -(A * B - (B**2) - (B**3))]"
+core/engine_surrogate/pvt_state.py,145,4.0,valid = real_roots[(real_roots > B) & (real_roots < 4.0)]
+core/engine_surrogate/pvt_state.py,149,0.25,"Z = max(0.25, B * 1.05)"
+core/engine_surrogate/pvt_state.py,149,1.05,"Z = max(0.25, B * 1.05)"
+core/engine_surrogate/pvt_state.py,157,0.1,"Z = max(float(Z), 0.1)"
+core/engine_surrogate/pvt_state.py,161,1100.0,"return float(np.clip(rho, 2.0, 1100.0))"
+core/engine_surrogate/pvt_state.py,168,28.3168,1 MSCF CO2 = 1000 SCF = 28.3168 m³(st) * 1.838 kg/m³ = 52.046 kg.
+core/engine_surrogate/pvt_state.py,168,1.838,1 MSCF CO2 = 1000 SCF = 28.3168 m³(st) * 1.838 kg/m³ = 52.046 kg.
+core/engine_surrogate/pvt_state.py,168,52.046,1 MSCF CO2 = 1000 SCF = 28.3168 m³(st) * 1.838 kg/m³ = 52.046 kg.
+core/engine_surrogate/pvt_state.py,169,52.046,Downhole volume = 52.046 / rho_CO2 m³ = (52.046 / rho_CO2) * 6.2898 bbl = 327.36 / rho_CO2 [RB].
+core/engine_surrogate/pvt_state.py,169,52.046,Downhole volume = 52.046 / rho_CO2 m³ = (52.046 / rho_CO2) * 6.2898 bbl = 327.36 / rho_CO2 [RB].
+core/engine_surrogate/pvt_state.py,169,6.2898,Downhole volume = 52.046 / rho_CO2 m³ = (52.046 / rho_CO2) * 6.2898 bbl = 327.36 / rho_CO2 [RB].
+core/engine_surrogate/pvt_state.py,169,327.36,Downhole volume = 52.046 / rho_CO2 m³ = (52.046 / rho_CO2) * 6.2898 bbl = 327.36 / rho_CO2 [RB].
+core/engine_surrogate/pvt_state.py,175,0.45,B_CO2 in RB/MSCF (typically 0.45 - 0.75 RB/MSCF for dense CO2).
+core/engine_surrogate/pvt_state.py,175,0.75,B_CO2 in RB/MSCF (typically 0.45 - 0.75 RB/MSCF for dense CO2).
+core/engine_surrogate/pvt_state.py,178,327.362,"b_co2_rb_per_mscf = 327.362 / max(rho, 1e-3)"
+core/engine_surrogate/pvt_state.py,179,0.2,"return float(np.clip(b_co2_rb_per_mscf, 0.20, 15.0))"
+core/engine_surrogate/pvt_state.py,179,15.0,"return float(np.clip(b_co2_rb_per_mscf, 0.20, 15.0))"
+core/engine_surrogate/pvt_state.py,189,0.03,Viscosity in cP (typically 0.03 - 0.08 cP for supercritical CO2).
+core/engine_surrogate/pvt_state.py,189,0.08,Viscosity in cP (typically 0.03 - 0.08 cP for supercritical CO2).
+core/engine_surrogate/pvt_state.py,195,1.00697e-06,mu_0 = 1.00697e-6 * np.sqrt(T_k)  # Pa·s
+core/engine_surrogate/pvt_state.py,198,467.6,rho_r = rho / 467.6  # Critical density of CO2 ~467.6 kg/m³
+core/engine_surrogate/pvt_state.py,198,467.6,rho_r = rho / 467.6  # Critical density of CO2 ~467.6 kg/m³
+core/engine_surrogate/pvt_state.py,199,0.235,mu_excess = mu_0 * (0.235 * rho_r + 0.395 * (rho_r**2) - 0.041 * (rho_r**3))
+core/engine_surrogate/pvt_state.py,199,0.395,mu_excess = mu_0 * (0.235 * rho_r + 0.395 * (rho_r**2) - 0.041 * (rho_r**3))
+core/engine_surrogate/pvt_state.py,199,0.041,mu_excess = mu_0 * (0.235 * rho_r + 0.395 * (rho_r**2) - 0.041 * (rho_r**3))
+core/engine_surrogate/pvt_state.py,202,1000.0,mu_cp = mu_total_pa_s * 1000.0  # Pa·s to cP
+core/engine_surrogate/pvt_state.py,203,0.015,"return float(np.clip(mu_cp, 0.015, 0.12))"
+core/engine_surrogate/pvt_state.py,203,0.12,"return float(np.clip(mu_cp, 0.015, 0.12))"
+core/engine_surrogate/pvt_state.py,214,14.7,"p = max(pressure_psi, 14.7)"
+core/engine_surrogate/pvt_state.py,216,0.0178,c1 = 0.0178 if self.api > 30 else 0.0362
+core/engine_surrogate/pvt_state.py,216,0.0362,c1 = 0.0178 if self.api > 30 else 0.0362
+core/engine_surrogate/pvt_state.py,217,1.187,c2 = 1.1870 if self.api > 30 else 1.0937
+core/engine_surrogate/pvt_state.py,217,1.0937,c2 = 1.1870 if self.api > 30 else 1.0937
+core/engine_surrogate/pvt_state.py,218,23.931,c3 = 23.931 if self.api > 30 else 25.724
+core/engine_surrogate/pvt_state.py,218,25.724,c3 = 23.931 if self.api > 30 else 25.724
+core/engine_surrogate/pvt_state.py,221,4000.0,"return float(np.clip(rs, 0.0, 4000.0))"
+core/engine_surrogate/pvt_state.py,237,14.7,"p_scale = (max(pressure_psi, 14.7) / 2500.0) ** 0.85"
+core/engine_surrogate/pvt_state.py,237,2500.0,"p_scale = (max(pressure_psi, 14.7) / 2500.0) ** 0.85"
+core/engine_surrogate/pvt_state.py,237,0.85,"p_scale = (max(pressure_psi, 14.7) / 2500.0) ** 0.85"
+core/engine_surrogate/pvt_state.py,238,650.0,r_s_co2_sat = 650.0 * (self.api / 35.0) * p_scale * (560.0 / self.temp_r)
+core/engine_surrogate/pvt_state.py,238,35.0,r_s_co2_sat = 650.0 * (self.api / 35.0) * p_scale * (560.0 / self.temp_r)
+core/engine_surrogate/pvt_state.py,238,560.0,r_s_co2_sat = 650.0 * (self.api / 35.0) * p_scale * (560.0 / self.temp_r)
+core/engine_surrogate/pvt_state.py,242,1.1,return float(r_s_co2_sat * (x_clamped**1.1))
+core/engine_surrogate/pvt_state.py,252,14.7,"p = max(pressure_psi, 14.7)"
+core/engine_surrogate/pvt_state.py,256,1.05,sf_max = 1.05 + 0.35 * float(np.tanh((p - 500.0) / 2000.0))
+core/engine_surrogate/pvt_state.py,256,0.35,sf_max = 1.05 + 0.35 * float(np.tanh((p - 500.0) / 2000.0))
+core/engine_surrogate/pvt_state.py,256,500.0,sf_max = 1.05 + 0.35 * float(np.tanh((p - 500.0) / 2000.0))
+core/engine_surrogate/pvt_state.py,256,2000.0,sf_max = 1.05 + 0.35 * float(np.tanh((p - 500.0) / 2000.0))
+core/engine_surrogate/pvt_state.py,260,1.25,sf = 1.0 + (sf_max - 1.0) * (x_clamped**1.25)
+core/engine_surrogate/pvt_state.py,261,1.8,"return float(np.clip(sf, 1.0, 1.80))"
+core/engine_surrogate/pvt_state.py,270,14.7,"p = max(pressure_psi, 14.7)"
+core/engine_surrogate/pvt_state.py,274,1.25,"f_val = rs_hc * np.sqrt(self.gamma_g / max(self.gamma_o, 1e-4)) + 1.25 * self.temp_f"
+core/engine_surrogate/pvt_state.py,275,0.9759,bo_hc = 0.9759 + 0.000120 * (f_val**1.2)
+core/engine_surrogate/pvt_state.py,275,0.00012,bo_hc = 0.9759 + 0.000120 * (f_val**1.2)
+core/engine_surrogate/pvt_state.py,275,1.2,bo_hc = 0.9759 + 0.000120 * (f_val**1.2)
+core/engine_surrogate/pvt_state.py,276,1.02,"bo_hc = max(1.02, bo_hc)"
+core/engine_surrogate/pvt_state.py,280,1.2e-05,c_o = 1.2e-5
+core/engine_surrogate/pvt_state.py,284,1.02,"return float(np.clip(bo_hc * swelling, 1.02, 2.50))"
+core/engine_surrogate/pvt_state.py,284,2.5,"return float(np.clip(bo_hc * swelling, 1.02, 2.50))"
+core/engine_surrogate/pvt_state.py,295,14.7,"p = max(pressure_psi, 14.7)"
+core/engine_surrogate/pvt_state.py,300,10.715,a_param = 10.715 * ((rs_hc + 100.0) ** (-0.515))
+core/engine_surrogate/pvt_state.py,300,100.0,a_param = 10.715 * ((rs_hc + 100.0) ** (-0.515))
+core/engine_surrogate/pvt_state.py,300,0.515,a_param = 10.715 * ((rs_hc + 100.0) ** (-0.515))
+core/engine_surrogate/pvt_state.py,301,5.44,b_param = 5.44 * ((rs_hc + 150.0) ** (-0.338))
+core/engine_surrogate/pvt_state.py,301,150.0,b_param = 5.44 * ((rs_hc + 150.0) ** (-0.338))
+core/engine_surrogate/pvt_state.py,301,0.338,b_param = 5.44 * ((rs_hc + 150.0) ** (-0.338))
+core/engine_surrogate/pvt_state.py,303,0.2,"mu_live_hc = float(np.clip(mu_live_hc, 0.2, self.mu_o_dead))"
+core/engine_surrogate/pvt_state.py,308,2.2,"k_visc = 2.2 * (self.mu_o_dead / max(mu_live_hc, 0.1)) ** 0.15"
+core/engine_surrogate/pvt_state.py,308,0.1,"k_visc = 2.2 * (self.mu_o_dead / max(mu_live_hc, 0.1)) ** 0.15"
+core/engine_surrogate/pvt_state.py,308,0.15,"k_visc = 2.2 * (self.mu_o_dead / max(mu_live_hc, 0.1)) ** 0.15"
+core/engine_surrogate/pvt_state.py,309,0.95,mu_o = mu_live_hc * np.exp(-k_visc * (x_clamped**0.95))
+core/engine_surrogate/pvt_state.py,311,0.08,"return float(np.clip(mu_o, 0.08, self.mu_o_dead * 1.5))"
+core/engine_surrogate/pvt_state.py,311,1.5,"return float(np.clip(mu_o, 0.08, self.mu_o_dead * 1.5))"
+core/engine_surrogate/pvt_state.py,331,14.7,"p = max(pressure_psi, 14.7)"
+core/engine_surrogate/pvt_state.py,339,709.6,Ppr = p / (709.6 - 58.7 * self.gamma_g)
+core/engine_surrogate/pvt_state.py,339,58.7,Ppr = p / (709.6 - 58.7 * self.gamma_g)
+core/engine_surrogate/pvt_state.py,340,170.5,Tpr = self.temp_r / (170.5 + 307.3 * self.gamma_g)
+core/engine_surrogate/pvt_state.py,340,307.3,Tpr = self.temp_r / (170.5 + 307.3 * self.gamma_g)
+core/engine_surrogate/pvt_state.py,342,0.1,"t_inv = 1.0 / max(Tpr, 0.1)"
+core/engine_surrogate/pvt_state.py,343,0.06422,z_hc = 1.0 + (0.06422 * t_inv - 0.00332 * (t_inv**2)) * Ppr
+core/engine_surrogate/pvt_state.py,343,0.00332,z_hc = 1.0 + (0.06422 * t_inv - 0.00332 * (t_inv**2)) * Ppr
+core/engine_surrogate/pvt_state.py,344,0.65,"z_hc = float(np.clip(z_hc, 0.65, 1.4))"
+core/engine_surrogate/pvt_state.py,344,1.4,"z_hc = float(np.clip(z_hc, 0.65, 1.4))"
+core/engine_surrogate/pvt_state.py,347,28.96,mw_hc = self.gamma_g * 28.96
+core/engine_surrogate/pvt_state.py,348,6894.757,rho_hc = (p * 6894.757 * (mw_hc * 1e-3)) / (z_hc * R_GAS_SI * self.temp_k)
+core/engine_surrogate/pvt_state.py,350,0.1587,"bg_hc = 0.1587 * z_hc * self.temp_r / max(p, 1e-4)"
+core/engine_surrogate/pvt_state.py,353,9.4,k_param = (9.4 + 0.02 * mw_hc) * (self.temp_r**1.5) / (209.0 + 19.0 * mw_hc + self.temp_r)
+core/engine_surrogate/pvt_state.py,353,0.02,k_param = (9.4 + 0.02 * mw_hc) * (self.temp_r**1.5) / (209.0 + 19.0 * mw_hc + self.temp_r)
+core/engine_surrogate/pvt_state.py,353,1.5,k_param = (9.4 + 0.02 * mw_hc) * (self.temp_r**1.5) / (209.0 + 19.0 * mw_hc + self.temp_r)
+core/engine_surrogate/pvt_state.py,353,209.0,k_param = (9.4 + 0.02 * mw_hc) * (self.temp_r**1.5) / (209.0 + 19.0 * mw_hc + self.temp_r)
+core/engine_surrogate/pvt_state.py,353,19.0,k_param = (9.4 + 0.02 * mw_hc) * (self.temp_r**1.5) / (209.0 + 19.0 * mw_hc + self.temp_r)
+core/engine_surrogate/pvt_state.py,354,3.5,x_param = 3.5 + 986.0 / self.temp_r + 0.01 * mw_hc
+core/engine_surrogate/pvt_state.py,354,986.0,x_param = 3.5 + 986.0 / self.temp_r + 0.01 * mw_hc
+core/engine_surrogate/pvt_state.py,354,0.01,x_param = 3.5 + 986.0 / self.temp_r + 0.01 * mw_hc
+core/engine_surrogate/pvt_state.py,355,2.4,y_param = 2.4 - 0.2 * x_param
+core/engine_surrogate/pvt_state.py,355,0.2,y_param = 2.4 - 0.2 * x_param
+core/engine_surrogate/pvt_state.py,358,0.01,"mu_hc = float(np.clip(mu_hc, 0.01, 0.06))"
+core/engine_surrogate/pvt_state.py,358,0.06,"mu_hc = float(np.clip(mu_hc, 0.01, 0.06))"
+core/engine_surrogate/pvt_state.py,366,14.7,"cg_ideal = 1.0 / max(p, 14.7)"
+core/engine_surrogate/pvt_state.py,368,1500.0,if p > 1500.0:
+core/engine_surrogate/pvt_state.py,369,0.35,cg_mix = cg_ideal * (0.35 * y_c + 0.85 * (1.0 - y_c))
+core/engine_surrogate/pvt_state.py,369,0.85,cg_mix = cg_ideal * (0.35 * y_c + 0.85 * (1.0 - y_c))
+core/engine_surrogate/pvt_state.py,416,14.7,"p_prod = max(producer_sandface_p_psi, 14.7)"
+core/engine_surrogate/pvt_state.py,427,1000.0,evolved_hc_mscfd = (q_oil_stb * rs_hc) / 1000.0
+core/engine_surrogate/pvt_state.py,428,1000.0,evolved_co2_mscfd = (q_oil_stb * rs_co2) / 1000.0
+core/engine_surrogate/pvt_state.py,446,1000.0,"total_gor = (total_gas_mscfd * 1000.0) / max(q_oil_stb, 1e-4)"
+core/engine_surrogate/pvt_state.py,447,1000.0,"hc_gor = (total_hc_gas_mscfd * 1000.0) / max(q_oil_stb, 1e-4)"
+core/engine_surrogate/pvt_state.py,448,1000.0,"co2_gor = (total_co2_gas_mscfd * 1000.0) / max(q_oil_stb, 1e-4)"
+core/engine_surrogate/surrogate_engine.py,90,0.15,"""structural"": 0.15,"
+core/engine_surrogate/surrogate_engine.py,91,0.25,"""residual"": 0.25,"
+core/engine_surrogate/surrogate_engine.py,92,0.2,"""solubility"": 0.20,"
+core/engine_surrogate/surrogate_engine.py,93,0.05,"""mineral"": 0.05,"
+core/engine_surrogate/surrogate_engine.py,94,0.65,"""total"": 0.65,"
+core/engine_surrogate/surrogate_engine.py,186,3000.0,"initial_pressure = float(getattr(reservoir_data, 'initial_pressure', 3000.0))"
+core/engine_surrogate/surrogate_engine.py,192,150.0,"reservoir_temperature_f=float(getattr(reservoir_data, ""temperature"", 150.0)),"
+core/engine_surrogate/surrogate_engine.py,194,35.0,"api_gravity=float(getattr(reservoir_data, ""api_gravity"", 35.0)),"
+core/engine_surrogate/surrogate_engine.py,196,0.35,"c7_plus_fraction=float(getattr(eor_params, ""c7_plus_fraction"", 0.35)),"
+core/engine_surrogate/surrogate_engine.py,200,5000.0,"depth_ft=float(getattr(reservoir_data, ""depth_ft"", getattr(eor_params, ""reservoir_depth_ft"", 5000.0)"
+core/engine_surrogate/surrogate_engine.py,203,0.75,"horizontal_stress_ratio_k0=float(getattr(eor_params, ""horizontal_stress_ratio_k0"", 0.75)),"
+core/engine_surrogate/surrogate_engine.py,204,0.25,"poissons_ratio=float(getattr(eor_params, ""poissons_ratio"", 0.25)),"
+core/engine_surrogate/surrogate_engine.py,205,0.8,"biot_coefficient=float(getattr(eor_params, ""biot_coefficient"", 0.80)),"
+core/engine_surrogate/surrogate_engine.py,206,5500.0,"caprock_fracture_pressure_psi=float(getattr(eor_params, ""caprock_fracture_pressure_psi"", 5500.0)),"
+core/engine_surrogate/surrogate_engine.py,207,200.0,"caprock_tensile_strength_psi=float(getattr(eor_params, ""caprock_tensile_strength_psi"", 200.0)),"
+core/engine_surrogate/surrogate_engine.py,208,400.0,"caprock_cohesion_psi=float(getattr(eor_params, ""caprock_cohesion_psi"", 400.0)),"
+core/engine_surrogate/surrogate_engine.py,209,30.0,"caprock_friction_angle_deg=float(getattr(eor_params, ""caprock_friction_angle_deg"", 30.0)),"
+core/engine_surrogate/surrogate_engine.py,210,0.9,"caprock_safety_factor=float(getattr(eor_params, ""caprock_safety_factor"", 0.90)),"
+core/engine_surrogate/surrogate_engine.py,211,60.0,"fault_dip_deg=float(getattr(eor_params, ""default_fault_dip"", getattr(eor_params, ""fault_dip_deg"", 60"
+core/engine_surrogate/surrogate_engine.py,213,0.6,"fault_friction_coefficient=float(getattr(eor_params, ""default_fault_friction_coefficient"", getattr(e"
+core/engine_surrogate/surrogate_engine.py,219,0.25,"swi = float(getattr(reservoir_data, 'connate_water_saturation', getattr(reservoir_data, 'initial_wat"
+core/engine_surrogate/surrogate_engine.py,223,0.05,"pore_volume_rb = (ooip * bo_init) / max(1.0 - swi, 0.05)"
+core/engine_surrogate/surrogate_engine.py,249,1000.0,"p_min = float(params.get(""bhp_prod"", 1000.0))"
+core/engine_surrogate/surrogate_engine.py,250,1e-05,"c_o = float(params.get(""compressibility_oil"", 1.0e-5))"
+core/engine_surrogate/surrogate_engine.py,251,3e-06,"c_w = float(params.get(""compressibility_water"", 3.0e-6))"
+core/engine_surrogate/surrogate_engine.py,252,4e-06,"c_f = float(params.get(""compressibility_rock"", getattr(reservoir_data, ""rock_compressibility"", 4.0e-"
+core/engine_surrogate/surrogate_engine.py,287,0.135,"oil_mass_tonne = max(ooip * 0.135, 1.0)"
+core/engine_surrogate/surrogate_engine.py,289,0.55,"x_co2 = float(np.clip((cum_inj_tonne * 0.55) / (oil_mass_tonne + cum_inj_tonne * 0.55), 0.0, 0.85))"
+core/engine_surrogate/surrogate_engine.py,289,0.55,"x_co2 = float(np.clip((cum_inj_tonne * 0.55) / (oil_mass_tonne + cum_inj_tonne * 0.55), 0.0, 0.85))"
+core/engine_surrogate/surrogate_engine.py,289,0.85,"x_co2 = float(np.clip((cum_inj_tonne * 0.55) / (oil_mass_tonne + cum_inj_tonne * 0.55), 0.0, 0.85))"
+core/engine_surrogate/surrogate_engine.py,291,1000.0,"y_co2 = float(np.clip(cum_inj_mscf_running / max(cum_inj_mscf_running + 1000.0, 1.0), 0.05, 0.95))"
+core/engine_surrogate/surrogate_engine.py,291,0.05,"y_co2 = float(np.clip(cum_inj_mscf_running / max(cum_inj_mscf_running + 1000.0, 1.0), 0.05, 0.95))"
+core/engine_surrogate/surrogate_engine.py,291,0.95,"y_co2 = float(np.clip(cum_inj_mscf_running / max(cum_inj_mscf_running + 1000.0, 1.0), 0.05, 0.95))"
+core/engine_surrogate/surrogate_engine.py,294,400.0,"p_inj_sandface = min(current_p + 400.0, geomech_model.p_safe_ceiling)"
+core/engine_surrogate/surrogate_engine.py,295,400.0,"p_prod_sandface = max(p_min, current_p - 400.0)"
+core/engine_surrogate/surrogate_engine.py,355,500.0,nominal_drawdown = 500.0
+core/engine_surrogate/surrogate_engine.py,369,500.0,"bleed_factor = max(0.0, 1.0 - (current_p - target_pressure) / 500.0)"
+core/engine_surrogate/surrogate_engine.py,380,450.0,"dp = float(np.clip(dp, -450.0, 450.0))"
+core/engine_surrogate/surrogate_engine.py,380,450.0,"dp = float(np.clip(dp, -450.0, 450.0))"
+core/engine_surrogate/surrogate_engine.py,382,50.0,tolerance_window = 50.0
+core/engine_surrogate/surrogate_engine.py,383,0.33,k_smooth = 1.0 / (tolerance_window * 0.33)
+core/engine_surrogate/surrogate_engine.py,403,0.25,sat_oil_profile = np.array([1.0 - 0.25])
+core/engine_surrogate/surrogate_engine.py,405,0.25,sat_water_profile = np.array([0.25])
+core/engine_surrogate/surrogate_engine.py,406,1.2,bo_profile = np.array([1.2])
+core/engine_surrogate/surrogate_engine.py,409,0.3,fault_slip_profile = np.array([0.3])
+core/engine_surrogate/surrogate_engine.py,420,0.25,"swi_val = float(getattr(reservoir_data, ""initial_water_saturation"", getattr(reservoir_data, ""connate"
+core/engine_surrogate/surrogate_engine.py,421,0.05,"simulated_hcpvi = float(cum_inj_rb / max(ooip_val * b_co2_mean / max(1.0 - swi_val, 0.05), 1e-6))"
+core/engine_surrogate/surrogate_engine.py,426,0.135,"rec_params[""x_co2""] = float(np.clip(cum_inj_mscf * CO2_TONNE_PER_MSCF / max(ooip_val * 0.135, 1.0), "
+core/engine_surrogate/surrogate_engine.py,426,0.85,"rec_params[""x_co2""] = float(np.clip(cum_inj_mscf * CO2_TONNE_PER_MSCF / max(ooip_val * 0.135, 1.0), "
+core/engine_surrogate/surrogate_engine.py,433,0.25,"rf_max_physical = max(0.0, 1.0 - swi_val - getattr(reservoir_data, ""residual_oil_saturation"", params"
+core/engine_surrogate/surrogate_engine.py,476,0.05,gas_threshold = 0.05 * np.max(co2_prod_rate) if len(co2_prod_rate) > 0 and np.max(co2_prod_rate) > 0
+core/engine_surrogate/surrogate_engine.py,478,365.25,bt_years = float(time_vector[bt_indices[0]] / 365.25) if len(bt_indices) > 0 else float(operational_
+core/engine_surrogate/surrogate_engine.py,494,50000.0,"q_comp_max_annual_mscf = float(getattr(eor_params, ""recycle_compressor_capacity_mscfd"", 50000.0)) * "
+core/engine_surrogate/surrogate_engine.py,494,365.25,"q_comp_max_annual_mscf = float(getattr(eor_params, ""recycle_compressor_capacity_mscfd"", 50000.0)) * "
+core/engine_surrogate/surrogate_engine.py,494,0.95,"q_comp_max_annual_mscf = float(getattr(eor_params, ""recycle_compressor_capacity_mscfd"", 50000.0)) * "
+core/engine_surrogate/surrogate_engine.py,495,0.05,"recycle_loss_frac = float(getattr(eor_params, ""co2_recycle_loss_fraction"", 0.05))"
+core/engine_surrogate/surrogate_engine.py,496,0.95,"co2_recycle_eff = min(float(params.get(""co2_recycling_efficiency"", 0.95)), 1.0 - recycle_loss_frac)"
+core/engine_surrogate/surrogate_engine.py,502,365.25,"y = min(n_years - 1, max(0, int(t_mid // 365.25)))"
+core/engine_surrogate/surrogate_engine.py,510,365.25,annual_oil_stb[0] = float(np.sum(oil_rate) * 365.25)
+core/engine_surrogate/surrogate_engine.py,511,365.25,annual_water_prod_bbl[0] = float(np.sum(water_rate) * 365.25)
+core/engine_surrogate/surrogate_engine.py,512,365.25,annual_co2_prod_mscf[0] = float(np.sum(co2_prod_rate) * 365.25)
+core/engine_surrogate/surrogate_engine.py,513,365.25,annual_co2_inj_mscf[0] = float(np.sum(inj_rate) * 365.25)
+core/engine_surrogate/surrogate_engine.py,524,1000.0,"total_gor_profile = (total_gas_rate * 1000.0) / np.maximum(oil_rate, 1e-4)"
+core/engine_surrogate/surrogate_engine.py,525,1000.0,"hc_gor_profile = (hc_gas_rate * 1000.0) / np.maximum(oil_rate, 1e-4)"
+core/engine_surrogate/surrogate_engine.py,530,50000.0,"q_comp_max_daily_mscfd = float(getattr(eor_params, ""recycle_compressor_capacity_mscfd"", 50000.0)) * "
+core/engine_surrogate/surrogate_engine.py,530,0.95,"q_comp_max_daily_mscfd = float(getattr(eor_params, ""recycle_compressor_capacity_mscfd"", 50000.0)) * "
+core/engine_surrogate/surrogate_engine.py,733,90.0,"""cycle_length_days"": getattr(eor_params, ""cycle_length_days"", 90.0),"
+core/engine_surrogate/surrogate_engine.py,737,90.0,"""huff_n_puff_cycle_length_days"": getattr(eor_params, ""huff_n_puff_cycle_length_days"", 90.0),"
+core/engine_surrogate/surrogate_engine.py,738,30.0,"""huff_n_puff_injection_period_days"": getattr(eor_params, ""huff_n_puff_injection_period_days"", 30.0),"
+core/engine_surrogate/surrogate_engine.py,739,15.0,"""huff_n_puff_soaking_period_days"": getattr(eor_params, ""huff_n_puff_soaking_period_days"", 15.0),"
+core/engine_surrogate/surrogate_engine.py,740,45.0,"""huff_n_puff_production_period_days"": getattr(eor_params, ""huff_n_puff_production_period_days"", 45.0"
+core/engine_surrogate/surrogate_engine.py,749,5.0,"""tapered_duration_years"": getattr(eor_params, ""tapered_duration_years"", 5.0),"
+core/engine_surrogate/surrogate_engine.py,752,15.0,"""pulsed_pulse_duration_days"": getattr(eor_params, ""pulsed_pulse_duration_days"", 15.0),"
+core/engine_surrogate/surrogate_engine.py,753,15.0,"""pulsed_pause_duration_days"": getattr(eor_params, ""pulsed_pause_duration_days"", 15.0),"
+core/engine_surrogate/surrogate_engine.py,759,0.15,"""porosity"": reservoir_data.average_porosity or 0.15,"
+core/engine_surrogate/surrogate_engine.py,760,100.0,"""permeability"": reservoir_data.average_permeability or 100.0,"
+core/engine_surrogate/surrogate_engine.py,762,2000.0,"""length_ft"": getattr(reservoir_data, ""length_ft"", 2000.0) or 2000.0,"
+core/engine_surrogate/surrogate_engine.py,762,2000.0,"""length_ft"": getattr(reservoir_data, ""length_ft"", 2000.0) or 2000.0,"
+core/engine_surrogate/surrogate_engine.py,763,10.0,"""width_ft"": (getattr(reservoir_data, ""area_acres"", 10.0) or 10.0) * 43560.0 / (getattr(reservoir_dat"
+core/engine_surrogate/surrogate_engine.py,763,10.0,"""width_ft"": (getattr(reservoir_data, ""area_acres"", 10.0) or 10.0) * 43560.0 / (getattr(reservoir_dat"
+core/engine_surrogate/surrogate_engine.py,763,43560.0,"""width_ft"": (getattr(reservoir_data, ""area_acres"", 10.0) or 10.0) * 43560.0 / (getattr(reservoir_dat"
+core/engine_surrogate/surrogate_engine.py,763,2000.0,"""width_ft"": (getattr(reservoir_data, ""area_acres"", 10.0) or 10.0) * 43560.0 / (getattr(reservoir_dat"
+core/engine_surrogate/surrogate_engine.py,763,2000.0,"""width_ft"": (getattr(reservoir_data, ""area_acres"", 10.0) or 10.0) * 43560.0 / (getattr(reservoir_dat"
+core/engine_surrogate/surrogate_engine.py,764,50.0,"""thickness_ft"": getattr(reservoir_data, ""thickness_ft"", 50.0) or 50.0,"
+core/engine_surrogate/surrogate_engine.py,764,50.0,"""thickness_ft"": getattr(reservoir_data, ""thickness_ft"", 50.0) or 50.0,"
+core/engine_surrogate/surrogate_engine.py,775,0.25,"""s_wi"": getattr(reservoir_data, ""initial_water_saturation"", 0.25),"
+core/engine_surrogate/surrogate_engine.py,776,0.25,"""sor"": getattr(reservoir_data, ""residual_oil_saturation"", 0.25),"
+core/engine_surrogate/surrogate_engine.py,777,0.05,"""s_gc"": 0.05, # Critical gas saturation"
+core/engine_surrogate/surrogate_engine.py,778,400.0,"""co2_solubility"": 400.0,  # scf/STB (standard default)"
+core/engine_surrogate/surrogate_engine.py,779,150.0,"""temperature_f"": getattr(reservoir_data, ""temperature"", 150.0),"
+core/engine_surrogate/surrogate_engine.py,783,0.0005,"""mscf_per_res_bbl"": 1.0 / (max(getattr(reservoir_data, ""bg"", 0.0005), 1e-6) * 1000.0),"
+core/engine_surrogate/surrogate_engine.py,783,1000.0,"""mscf_per_res_bbl"": 1.0 / (max(getattr(reservoir_data, ""bg"", 0.0005), 1e-6) * 1000.0),"
+core/engine_surrogate/surrogate_engine.py,805,0.25,"swi = getattr(reservoir_data, ""initial_water_saturation"", 0.25)"
+core/engine_surrogate/surrogate_engine.py,806,1.2,bo = 1.2 # Formation volume factor
+core/engine_surrogate/surrogate_engine.py,807,0.1,"pv_rb = (ooip * bo) / max(1.0 - swi, 0.1)"
+core/engine_surrogate/surrogate_engine.py,813,365.25,total_inj_rb = q_inj_rb_day_hcpvi * 365.25 * operational_params.project_lifetime_years
+core/engine_surrogate/surrogate_engine.py,819,10.0,"H_k = 10.0 ** (v_dp / max(1.0 - v_dp, 1e-4))"
+core/engine_surrogate/surrogate_engine.py,820,2.5,"M_eff = float(params.get(""mobility_ratio"", 2.5))"
+core/engine_surrogate/surrogate_engine.py,821,0.78,E_eff = (0.78 + 0.22 * (M_eff**0.25))**4
+core/engine_surrogate/surrogate_engine.py,821,0.22,E_eff = (0.78 + 0.22 * (M_eff**0.25))**4
+core/engine_surrogate/surrogate_engine.py,821,0.25,E_eff = (0.78 + 0.22 * (M_eff**0.25))**4
+core/engine_surrogate/surrogate_engine.py,822,1.01,"K_koval = max(1.01, H_k * E_eff)"
+core/engine_surrogate/surrogate_engine.py,829,43560.0,pv_calc = (area_acres * 43560.0 * thickness_ft * porosity) / 5.615
+core/engine_surrogate/surrogate_engine.py,829,5.615,pv_calc = (area_acres * 43560.0 * thickness_ft * porosity) / 5.615
+core/engine_surrogate/surrogate_engine.py,842,365.25,"annual_inj_rb = max(q_inj_rb_day * 365.25, 1.0)"
+core/engine_surrogate/surrogate_engine.py,847,0.1,"bt_time = float(np.clip(t_bt_calc, 0.1, max(lifetime * 0.9, 0.5)))"
+core/engine_surrogate/surrogate_engine.py,847,0.9,"bt_time = float(np.clip(t_bt_calc, 0.1, max(lifetime * 0.9, 0.5)))"
+core/engine_surrogate/surrogate_engine.py,854,35.0,"api_gravity = getattr(reservoir_data, ""oil_api_gravity"", 35.0)"
+core/engine_surrogate/surrogate_engine.py,856,150.0,"temperature=getattr(reservoir_data, ""temperature"", 150.0),"
+core/engine_surrogate/surrogate_engine.py,876,5.0,"""variable_opex_usd_per_bbl"": getattr(economic_params, ""variable_opex_usd_per_bbl"", 5.0),"
+core/engine_surrogate/surrogate_engine.py,884,5.0,"params[""productivity_index""] = getattr(eor_params, ""productivity_index"", 5.0)"
+core/engine_surrogate/surrogate_engine.py,1027,0.01,0.01 <= reservoir_data.average_porosity <= 0.5
 core/engine_surrogate/surrogate_models.py,26,0.053,CO2_DENSITY_TONNE_PER_MSCF = 0.053
 core/engine_surrogate/surrogate_models.py,31,0.05,S_GC_CRITICAL = 0.05  # Critical gas saturation
 core/engine_surrogate/surrogate_models.py,32,0.25,S_OR_BASE = 0.25  # Residual oil saturation
@@ -658,509 +894,109 @@ core/engine_surrogate/training_data.py,239,1500.0,"""mmp"": (1500.0, 4000.0),  #
 core/engine_surrogate/training_data.py,239,4000.0,"""mmp"": (1500.0, 4000.0),  # psi"
 core/engine_surrogate/training_data.py,240,4.0,"""wag_ratio"": (0.0, 4.0),  # dimensionless"
 core/engine_surrogate/training_data.py,241,0.01,"""kv_kh_ratio"": (0.01, 1.0),  # dimensionless"
-core/optimization_analysis.py,159,0.975,"t_critical = stats.t.ppf(0.975, n - 2)"
-core/optimization_analysis.py,196,1.96,"confidence_interval=(mu - 1.96*sigma/np.sqrt(len(elementary_effects)),"
-core/optimization_analysis.py,197,1.96,"mu + 1.96*sigma/np.sqrt(len(elementary_effects))),"
-core/optimization_analysis.py,218,0.95,"confidence_level: float = 0.95) -> Tuple[float, float]:"
-core/optimization_analysis.py,274,0.01,threshold = 0.01 * np.std(objective_values)
-core/optimization_analysis.py,338,0.01,convergence_threshold = 0.01 * np.std(param_values)
-core/optimization_analysis.py,505,1.02,"colorbar=dict(title=""Sensitivity"", x=1.02)"
-core/unified_engine/base/engine_config.py,52,0.01,minimum: float = 0.01        # Minimum timestep (days)
-core/unified_engine/base/engine_config.py,53,365.0,maximum: float = 365.0       # Maximum timestep (days)
-core/unified_engine/base/engine_config.py,55,1.5,growth_factor: float = 1.5   # Maximum timestep growth factor
-core/unified_engine/base/engine_config.py,60,0.8,cfl_safety_factor: float = 0.8  # Safety factor for CFL condition
-core/unified_engine/base/engine_config.py,96,100.0,dx: float = 100.0            # Cell size in x (ft)
-core/unified_engine/base/engine_config.py,97,100.0,dy: float = 100.0            # Cell size in y (ft)
-core/unified_engine/base/engine_config.py,98,10.0,dz: float = 10.0             # Cell size in z (ft)
-core/unified_engine/base/engine_config.py,159,365.0,simulation_time: float = 365.0  # Total simulation time (days)
-core/unified_engine/base/engine_config.py,160,30.0,output_frequency: float = 30.0  # Output interval (days)
-core/unified_engine/base/engine_config.py,164,0.01,tolerance_saturation: float = 0.01  # Saturation tolerance
-core/unified_engine/base/engine_config.py,179,8000.0,reservoir_depth: float = 8000.0
-core/unified_engine/base/engine_config.py,346,0.01,"minimum=timestep_data.get(""minimum"", 0.01),"
-core/unified_engine/base/engine_config.py,347,365.0,"maximum=timestep_data.get(""maximum"", 365.0),"
-core/unified_engine/base/engine_config.py,349,1.5,"growth_factor=timestep_data.get(""growth_factor"", 1.5),"
-core/unified_engine/base/engine_config.py,352,0.8,"cfl_safety_factor=timestep_data.get(""cfl_safety_factor"", 0.8),"
-core/unified_engine/base/engine_config.py,375,100.0,"dx=grid_data.get(""dx"", 100.0),"
-core/unified_engine/base/engine_config.py,376,100.0,"dy=grid_data.get(""dy"", 100.0),"
-core/unified_engine/base/engine_config.py,377,10.0,"dz=grid_data.get(""dz"", 10.0),"
-core/unified_engine/base/engine_config.py,381,365.0,"simulation_time=data.get(""simulation_time"", 365.0),"
-core/unified_engine/base/engine_config.py,382,30.0,"output_frequency=data.get(""output_frequency"", 30.0),"
-core/unified_engine/base/engine_config.py,384,0.01,"tolerance_saturation=data.get(""tolerance_saturation"", 0.01),"
-core/unified_engine/core/grid_manager.py,335,0.00633,transmissibility = 6.33e-3 * k_avg * area / dist
-core/unified_engine/core/state_manager.py,184,0.01,"if not np.allclose(sums, 1.0, atol=0.01):"
-core/unified_engine/core/state_manager.py,384,0.05,"if not np.allclose(sums, 1.0, atol=0.05):"
-core/unified_engine/core/state_manager.py,396,0.05,"if not np.allclose(sums, 1.0, atol=0.05):"
-core/unified_engine/core/state_manager.py,458,2000.0,"initial_pressure: float = 2000.0,"
-core/unified_engine/core/state_manager.py,482,0.2,"saturations[:, 2] = 0.2  # Water saturation (Swc)"
-core/unified_engine/core/state_manager.py,483,0.8,"saturations[:, 0] = 0.8  # Oil saturation"
-core/unified_engine/core/state_manager.py,504,150.0,"state.temperature = np.full(self.n_cells, 150.0, dtype=np.float64)"
-core/unified_engine/core/time_stepper.py,79,0.8,"def __init__(self, safety_factor: float = 0.8):"
-core/unified_engine/core/time_stepper.py,116,0.00633,velocity = 6.33e-3 * k_max / viscosity  # ft/day/psi
-core/unified_engine/core/time_stepper.py,126,0.001,"return max(dt_cfl, 0.001)  # Minimum 0.001 days"
-core/unified_engine/core/time_stepper.py,126,0.001,"return max(dt_cfl, 0.001)  # Minimum 0.001 days"
-core/unified_engine/core/time_stepper.py,190,100.0,"grid_spacing: float = 100.0,"
-core/unified_engine/core/time_stepper.py,252,0.1,"self._current_dt / (1 + 0.1 * (iteration_count - target_iterations)),"
-core/unified_engine/engines/detailed_engine.py,131,2000.0,"initial_conditions.get(""pressure"", 2000.0) if initial_conditions else 2000.0"
-core/unified_engine/engines/detailed_engine.py,131,2000.0,"initial_conditions.get(""pressure"", 2000.0) if initial_conditions else 2000.0"
-core/unified_engine/engines/detailed_engine.py,138,0.2,"porosity = np.full(n_cells, 0.2, dtype=np.float64)"
-core/unified_engine/engines/detailed_engine.py,141,100.0,"permeability = np.full((n_cells, 3), 100.0, dtype=np.float64)"
-core/unified_engine/engines/detailed_engine.py,364,2000.0,"else UnifiedState(pressure=np.array([2000.0]), saturations=np.array([[1.0, 0.0, 0.0]]))"
-core/unified_engine/engines/detailed_engine.py,394,1000.0,re = 1000.0  # ft (drainage radius)
-core/unified_engine/engines/detailed_engine.py,436,100.0,"""oil"": np.array([100.0 * mobility.get(""oil"", 1.0)]),"
-core/unified_engine/engines/detailed_engine.py,437,10000.0,"""gas"": np.array([10000.0 * mobility.get(""gas"", 2.0)]),"
-core/unified_engine/engines/detailed_engine.py,438,50.0,"""water"": np.array([50.0 * mobility.get(""water"", 0.5)]),"
-core/unified_engine/engines/detailed_engine.py,448,10000.0,"""oil"": 10000.0,"
-core/unified_engine/engines/detailed_engine.py,450,5000.0,"""water"": 5000.0,"
-core/unified_engine/engines/fast_engine.py,97,2000.0,"initial_conditions.get(""pressure"", 2000.0) if initial_conditions else 2000.0"
-core/unified_engine/engines/fast_engine.py,97,2000.0,"initial_conditions.get(""pressure"", 2000.0) if initial_conditions else 2000.0"
-core/unified_engine/engines/fast_engine.py,103,0.2,"porosity = np.full(n_cells, 0.2, dtype=np.float64)"
-core/unified_engine/engines/fast_engine.py,107,100.0,"permeability = np.full(n_cells, 100.0, dtype=np.float64)"
-core/unified_engine/engines/fast_engine.py,242,2000.0,"else UnifiedState(pressure=np.array([2000.0]), saturations=np.array([[1.0, 0.0, 0.0]]))"
-core/unified_engine/engines/fast_engine.py,255,0.00708,PI = (0.00708 * kh) / (μ * ln(re/rw) + s)
-core/unified_engine/engines/fast_engine.py,282,0.7,"saturations = np.array(state.saturations) if hasattr(state, 'saturations') else np.array([[0.7, 0.2,"
-core/unified_engine/engines/fast_engine.py,282,0.2,"saturations = np.array(state.saturations) if hasattr(state, 'saturations') else np.array([[0.7, 0.2,"
-core/unified_engine/engines/fast_engine.py,282,0.1,"saturations = np.array(state.saturations) if hasattr(state, 'saturations') else np.array([[0.7, 0.2,"
-core/unified_engine/engines/fast_engine.py,288,0.7,"s_oil, s_water, s_gas = 0.7, 0.2, 0.1"
-core/unified_engine/engines/fast_engine.py,288,0.2,"s_oil, s_water, s_gas = 0.7, 0.2, 0.1"
-core/unified_engine/engines/fast_engine.py,288,0.1,"s_oil, s_water, s_gas = 0.7, 0.2, 0.1"
-core/unified_engine/engines/fast_engine.py,291,0.1,"kro = max(0.1, s_oil ** 2)  # Oil relative permeability"
-core/unified_engine/engines/fast_engine.py,292,0.01,"krw = max(0.01, s_water ** 3)  # Water relative permeability"
-core/unified_engine/engines/fast_engine.py,293,0.01,"krg = max(0.01, s_gas ** 2)  # Gas relative permeability"
-core/unified_engine/engines/fast_engine.py,298,0.08,mu_gas = 0.08
-core/unified_engine/engines/fast_engine.py,307,0.6,oil_cut = lambda_o / lambda_total if lambda_total > 0 else 0.6
-core/unified_engine/engines/fast_engine.py,308,0.4,water_cut = lambda_w / lambda_total if lambda_total > 0 else 0.4
-core/unified_engine/engines/fast_engine.py,325,100.0,perm_md = 100.0  # Permeability (mD)
-core/unified_engine/engines/fast_engine.py,326,50.0,thickness_ft = 50.0  # Net thickness (ft)
-core/unified_engine/engines/fast_engine.py,327,0.25,"well_radius_ft = getattr(self._config, 'well_radius_ft', 0.25)  # 3 inch well"
-core/unified_engine/engines/fast_engine.py,329,1000.0,"drainage_radius_ft = getattr(self._config, 'drainage_radius_ft', 1000.0)"
-core/unified_engine/engines/fast_engine.py,353,0.75,denominator = mu_oil * (np.log(drainage_radius_ft / rw) + skin_factor - 0.75)
-core/unified_engine/engines/fast_engine.py,356,0.1,pi = 0.1  # Fallback
-core/unified_engine/engines/fast_engine.py,358,0.00708,pi = (0.00708 * kh) / denominator
-core/unified_engine/engines/fast_engine.py,361,0.01,"pi = max(0.01, min(100.0, pi))"
-core/unified_engine/engines/fast_engine.py,361,100.0,"pi = max(0.01, min(100.0, pi))"
-core/unified_engine/engines/fast_engine.py,371,100.0,"""oil"": np.array([100.0]),  # Placeholder"
-core/unified_engine/engines/fast_engine.py,372,10000.0,"""gas"": np.array([10000.0]),"
-core/unified_engine/engines/fast_engine.py,373,50.0,"""water"": np.array([50.0]),"
-core/unified_engine/engines/fast_engine.py,379,10000.0,"""oil"": 10000.0,"
-core/unified_engine/engines/fast_engine.py,381,5000.0,"""water"": 5000.0,"
-core/unified_engine/engines/wrapper.py,91,2000.0,"""pressure"": eor_params.initial_pressure_psi if hasattr(eor_params, 'initial_pressure_psi') else 2000"
-core/unified_engine/engines/wrapper.py,154,10000.0,"injection_rate = getattr(eor_params, 'injection_rate', 10000.0) * 0.0283  # MSCFD to tons/day"
-core/unified_engine/engines/wrapper.py,154,0.0283,"injection_rate = getattr(eor_params, 'injection_rate', 10000.0) * 0.0283  # MSCFD to tons/day"
-core/unified_engine/engines/wrapper.py,212,0.01,validation['porosity_valid'] = avg_porosity is not None and 0.01 <= avg_porosity <= 0.5
-core/unified_engine/engines/wrapper.py,224,2000.0,"pressure = np.array(state.pressure) if hasattr(state, 'pressure') else np.array([2000.0])"
-core/unified_engine/engines/wrapper.py,233,0.7,s_oil = np.ones(len(pressure)) * 0.7
-core/unified_engine/engines/wrapper.py,234,0.2,s_water = np.ones(len(pressure)) * 0.2
-core/unified_engine/engines/wrapper.py,235,0.1,s_gas = np.ones(len(pressure)) * 0.1
-core/unified_engine/engines/wrapper.py,245,5.0,pi = 5.0  # STB/day/psi (productivity index)
-core/unified_engine/engines/wrapper.py,248,1000.0,bhp = 1000.0  # psi
-core/unified_engine/engines/wrapper.py,259,800.0,solution_gor = 800.0  # scf/stb
-core/unified_engine/engines/wrapper.py,279,0.7,initial_sat = 0.7  # Assumed initial oil saturation
-core/unified_engine/engines/wrapper.py,283,0.35,return 0.35  # Default estimate
-core/unified_engine/engines/wrapper.py,295,80.0,"oil_price = economic_params.get('oil_price_usd_per_bbl', 80.0)"
-core/unified_engine/engines/wrapper.py,296,3.0,"gas_price = economic_params.get('gas_price_usd_per_mscf', 3.0)"
-core/unified_engine/engines/wrapper.py,297,0.1,"discount_rate = economic_params.get('discount_rate', 0.1)"
-core/unified_engine/engines/wrapper.py,298,50.0,"co2_cost = economic_params.get('co2_cost_per_ton', 50.0)"
-core/unified_engine/engines/wrapper.py,317,0.0283,daily_co2_tons = injection_rate * 0.0283
-core/unified_engine/physics/co2_properties.py,33,7.38,"critical_pressure: Critical pressure (Pa), default ~7.38 MPa"
-core/unified_engine/physics/co2_properties.py,34,304.13,"critical_temperature: Critical temperature (K), default ~304.13 K"
-core/unified_engine/physics/co2_properties.py,35,0.04401,"molecular_weight: Molecular weight (kg/mol), default ~0.04401 kg/mol"
-core/unified_engine/physics/co2_properties.py,36,0.225,"acentric_factor: Acentric factor, default ~0.225"
-core/unified_engine/physics/co2_properties.py,39,7376000.0,critical_pressure: float = 7.376e6
-core/unified_engine/physics/co2_properties.py,40,304.13,critical_temperature: float = 304.13
-core/unified_engine/physics/co2_properties.py,41,0.04401,molecular_weight: float = 0.04401
-core/unified_engine/physics/co2_properties.py,42,0.225,acentric_factor: float = 0.225
-core/unified_engine/physics/co2_properties.py,44,273.15,reference_temperature: float = 273.15
-core/unified_engine/physics/co2_properties.py,67,273.15,temp_f = (temperature - 273.15) * 9 / 5 + 32
-core/unified_engine/physics/co2_properties.py,68,6894.76,psi_to_pa = 6894.76
-core/unified_engine/physics/co2_properties.py,80,1833.7217,mmp_psi = 1833.7217 + 2.2518055 * temp_f + 0.0180067 * (temp_f**2) - 103949.93 / temp_f
-core/unified_engine/physics/co2_properties.py,80,2.2518055,mmp_psi = 1833.7217 + 2.2518055 * temp_f + 0.0180067 * (temp_f**2) - 103949.93 / temp_f
-core/unified_engine/physics/co2_properties.py,80,0.0180067,mmp_psi = 1833.7217 + 2.2518055 * temp_f + 0.0180067 * (temp_f**2) - 103949.93 / temp_f
-core/unified_engine/physics/co2_properties.py,80,103949.93,mmp_psi = 1833.7217 + 2.2518055 * temp_f + 0.0180067 * (temp_f**2) - 103949.93 / temp_f
-core/unified_engine/physics/co2_properties.py,88,0.4,c5_plus_fraction = 0.4
-core/unified_engine/physics/co2_properties.py,89,30.0,api_gravity = 30.0
-core/unified_engine/physics/co2_properties.py,91,0.4,"c5_plus_fraction = oil_composition.get(""c5_plus"", 0.4)"
-core/unified_engine/physics/co2_properties.py,92,30.0,"api_gravity = oil_composition.get(""api_gravity"", 30.0)"
-core/unified_engine/physics/co2_properties.py,93,18.2,mmp_psi = 18.2 * temp_f**0.5 - 120 * (api_gravity**0.5) + 203 * c5_plus_fraction + 1370
-core/unified_engine/physics/co2_properties.py,100,0.2,c2_c6_fraction = 0.20  # mol fraction C2-C6 (~20%)
-core/unified_engine/physics/co2_properties.py,101,0.57,c7_plus_fraction = 0.57  # mol fraction C7+ (~57%)
-core/unified_engine/physics/co2_properties.py,103,0.2,"c2_c6_fraction = oil_composition.get(""c2_c6"", 0.20)"
-core/unified_engine/physics/co2_properties.py,104,0.57,"c7_plus_fraction = oil_composition.get(""c7_plus"", 0.57)"
-core/unified_engine/physics/co2_properties.py,107,100.0,"c2_c6_pct = max(c2_c6_fraction * 100.0, 0.1)"
-core/unified_engine/physics/co2_properties.py,107,0.1,"c2_c6_pct = max(c2_c6_fraction * 100.0, 0.1)"
-core/unified_engine/physics/co2_properties.py,108,100.0,"c7_plus_pct = max(c7_plus_fraction * 100.0, 0.1)"
-core/unified_engine/physics/co2_properties.py,108,0.1,"c7_plus_pct = max(c7_plus_fraction * 100.0, 0.1)"
-core/unified_engine/physics/co2_properties.py,109,459.67,T_rankine = temp_f + 459.67
-core/unified_engine/physics/co2_properties.py,112,19350.0,mmp_psi = 1.935e4 * (T_rankine**1.078) * (c2_c6_pct**0.17) * (c7_plus_pct ** (-0.89))
-core/unified_engine/physics/co2_properties.py,112,1.078,mmp_psi = 1.935e4 * (T_rankine**1.078) * (c2_c6_pct**0.17) * (c7_plus_pct ** (-0.89))
-core/unified_engine/physics/co2_properties.py,112,0.17,mmp_psi = 1.935e4 * (T_rankine**1.078) * (c2_c6_pct**0.17) * (c7_plus_pct ** (-0.89))
-core/unified_engine/physics/co2_properties.py,112,0.89,mmp_psi = 1.935e4 * (T_rankine**1.078) * (c2_c6_pct**0.17) * (c7_plus_pct ** (-0.89))
-core/unified_engine/physics/co2_properties.py,116,0.4,if c7_plus_fraction > 0.4:
-core/unified_engine/physics/co2_properties.py,117,0.15,lag_factor = 1.0 + 0.15 * (c7_plus_fraction - 0.4)
-core/unified_engine/physics/co2_properties.py,117,0.4,lag_factor = 1.0 + 0.15 * (c7_plus_fraction - 0.4)
-core/unified_engine/physics/co2_properties.py,139,273.15,temp_c = temperature - 273.15
-core/unified_engine/physics/co2_properties.py,140,1.01,rho = 1.01 + 1.09e-2 * p_mpa - 1.25e-5 * p_mpa**2 + 2.3e-3 * temp_c
-core/unified_engine/physics/co2_properties.py,140,0.0109,rho = 1.01 + 1.09e-2 * p_mpa - 1.25e-5 * p_mpa**2 + 2.3e-3 * temp_c
-core/unified_engine/physics/co2_properties.py,140,1.25e-05,rho = 1.01 + 1.09e-2 * p_mpa - 1.25e-5 * p_mpa**2 + 2.3e-3 * temp_c
-core/unified_engine/physics/co2_properties.py,140,0.0023,rho = 1.01 + 1.09e-2 * p_mpa - 1.25e-5 * p_mpa**2 + 2.3e-3 * temp_c
-core/unified_engine/physics/co2_properties.py,149,8.314,R = 8.314
-core/unified_engine/physics/co2_properties.py,155,0.01,"Tr = max(Tr, 0.01)"
-core/unified_engine/physics/co2_properties.py,158,0.37464,m = 0.37464 + 1.54226 * omega - 0.26992 * omega**2
-core/unified_engine/physics/co2_properties.py,158,1.54226,m = 0.37464 + 1.54226 * omega - 0.26992 * omega**2
-core/unified_engine/physics/co2_properties.py,158,0.26992,m = 0.37464 + 1.54226 * omega - 0.26992 * omega**2
-core/unified_engine/physics/co2_properties.py,161,0.45724,a = 0.45724 * R**2 * Tc**2 / Pc * alpha
-core/unified_engine/physics/co2_properties.py,162,0.0778,b = 0.07780 * R * Tc / Pc
-core/unified_engine/physics/co2_properties.py,171,0.1,valid_roots = real_roots[(real_roots > 0.1) & (real_roots < 3.0)]
-core/unified_engine/physics/co2_properties.py,171,3.0,valid_roots = real_roots[(real_roots > 0.1) & (real_roots < 3.0)]
-core/unified_engine/physics/co2_properties.py,176,0.3,"Z = max(0.3, min(1.0 - 0.1 * B / max(A, 1e-6), 1.5))"
-core/unified_engine/physics/co2_properties.py,176,0.1,"Z = max(0.3, min(1.0 - 0.1 * B / max(A, 1e-6), 1.5))"
-core/unified_engine/physics/co2_properties.py,176,1.5,"Z = max(0.3, min(1.0 - 0.1 * B / max(A, 1e-6), 1.5))"
-core/unified_engine/physics/co2_properties.py,198,0.021,mu_cp = 0.021 * np.exp(6.3e-4 * p_mpa - 0.02 * Tr)
-core/unified_engine/physics/co2_properties.py,198,0.00063,mu_cp = 0.021 * np.exp(6.3e-4 * p_mpa - 0.02 * Tr)
-core/unified_engine/physics/co2_properties.py,198,0.02,mu_cp = 0.021 * np.exp(6.3e-4 * p_mpa - 0.02 * Tr)
-core/unified_engine/physics/co2_properties.py,207,1.00697e-06,mu_0 = 1.00697e-6 * np.sqrt(temperature)
-core/unified_engine/physics/co2_properties.py,211,467.6,rho_r = rho / 467.6
-core/unified_engine/physics/co2_properties.py,213,0.235,mu_c = mu_0 * (1 + 0.235 * rho_r + 0.395 * rho_r**2 - 0.041 * rho_r**3)
-core/unified_engine/physics/co2_properties.py,213,0.395,mu_c = mu_0 * (1 + 0.235 * rho_r + 0.395 * rho_r**2 - 0.041 * rho_r**3)
-core/unified_engine/physics/co2_properties.py,213,0.041,mu_c = mu_0 * (1 + 0.235 * rho_r + 0.395 * rho_r**2 - 0.041 * rho_r**3)
-core/unified_engine/physics/co2_properties.py,216,0.1,pressure_factor = 1 + 0.1 * (P_r - 1) * np.exp(-2 * rho_r)
-core/unified_engine/physics/co2_properties.py,232,273.15,"temperature = max(temperature, 273.15)"
-core/unified_engine/physics/co2_properties.py,234,58.0931,ln_kh = -58.0931 + 90.5069e3 / temperature + 22.2940 * np.log(temperature)
-core/unified_engine/physics/co2_properties.py,234,90506.9,ln_kh = -58.0931 + 90.5069e3 / temperature + 22.2940 * np.log(temperature)
-core/unified_engine/physics/co2_properties.py,234,22.294,ln_kh = -58.0931 + 90.5069e3 / temperature + 22.2940 * np.log(temperature)
-core/unified_engine/physics/co2_properties.py,239,0.1,setschenow_constant = 0.1
-core/unified_engine/physics/co2_properties.py,244,30.0,"def solubility_oil(self, pressure: float, temperature: float, oil_api: float = 30.0) -> float:"
-core/unified_engine/physics/co2_properties.py,257,273.15,temp_c = temperature - 273.15
-core/unified_engine/physics/co2_properties.py,259,0.1,solubility = 0.1 * p_mpa * np.exp(-0.01 * temp_c) * (1 + 0.01 * oil_api)
-core/unified_engine/physics/co2_properties.py,259,0.01,solubility = 0.1 * p_mpa * np.exp(-0.01 * temp_c) * (1 + 0.01 * oil_api)
-core/unified_engine/physics/co2_properties.py,259,0.01,solubility = 0.1 * p_mpa * np.exp(-0.01 * temp_c) * (1 + 0.01 * oil_api)
-core/unified_engine/physics/co2_properties.py,275,0.02,return 1.0 + 0.02 * co2_solubility
-core/unified_engine/physics/co2_properties.py,291,0.1,return np.exp(-0.1 * co2_solubility)
-core/unified_engine/physics/co2_properties.py,383,30.0,"self, pressure: float, temperature: float, oil_api: float = 30.0"
-core/unified_engine/physics/eos/__init__.py,57,0.8,"self.mole_fractions = np.array([0.8, 0.1, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01])"
-core/unified_engine/physics/eos/__init__.py,57,0.1,"self.mole_fractions = np.array([0.8, 0.1, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01])"
-core/unified_engine/physics/eos/__init__.py,57,0.03,"self.mole_fractions = np.array([0.8, 0.1, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01])"
-core/unified_engine/physics/eos/__init__.py,57,0.02,"self.mole_fractions = np.array([0.8, 0.1, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01])"
-core/unified_engine/physics/eos/__init__.py,57,0.02,"self.mole_fractions = np.array([0.8, 0.1, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01])"
-core/unified_engine/physics/eos/__init__.py,57,0.01,"self.mole_fractions = np.array([0.8, 0.1, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01])"
-core/unified_engine/physics/eos/__init__.py,57,0.01,"self.mole_fractions = np.array([0.8, 0.1, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01])"
-core/unified_engine/physics/eos/__init__.py,57,0.01,"self.mole_fractions = np.array([0.8, 0.1, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01])"
-core/unified_engine/physics/eos/__init__.py,60,304.13,"[304.13, 190.56, 305.32, 369.83, 425.12, 469.7, 507.4, 540.2]"
-core/unified_engine/physics/eos/__init__.py,60,190.56,"[304.13, 190.56, 305.32, 369.83, 425.12, 469.7, 507.4, 540.2]"
-core/unified_engine/physics/eos/__init__.py,60,305.32,"[304.13, 190.56, 305.32, 369.83, 425.12, 469.7, 507.4, 540.2]"
-core/unified_engine/physics/eos/__init__.py,60,369.83,"[304.13, 190.56, 305.32, 369.83, 425.12, 469.7, 507.4, 540.2]"
-core/unified_engine/physics/eos/__init__.py,60,425.12,"[304.13, 190.56, 305.32, 369.83, 425.12, 469.7, 507.4, 540.2]"
-core/unified_engine/physics/eos/__init__.py,60,469.7,"[304.13, 190.56, 305.32, 369.83, 425.12, 469.7, 507.4, 540.2]"
-core/unified_engine/physics/eos/__init__.py,60,507.4,"[304.13, 190.56, 305.32, 369.83, 425.12, 469.7, 507.4, 540.2]"
-core/unified_engine/physics/eos/__init__.py,60,540.2,"[304.13, 190.56, 305.32, 369.83, 425.12, 469.7, 507.4, 540.2]"
-core/unified_engine/physics/eos/__init__.py,64,7376000.0,"[7.376e6, 4.599e6, 4.872e6, 4.248e6, 3.792e6, 3.369e6, 3.025e6, 2.756e6]"
-core/unified_engine/physics/eos/__init__.py,64,4599000.0,"[7.376e6, 4.599e6, 4.872e6, 4.248e6, 3.792e6, 3.369e6, 3.025e6, 2.756e6]"
-core/unified_engine/physics/eos/__init__.py,64,4872000.0,"[7.376e6, 4.599e6, 4.872e6, 4.248e6, 3.792e6, 3.369e6, 3.025e6, 2.756e6]"
-core/unified_engine/physics/eos/__init__.py,64,4248000.0,"[7.376e6, 4.599e6, 4.872e6, 4.248e6, 3.792e6, 3.369e6, 3.025e6, 2.756e6]"
-core/unified_engine/physics/eos/__init__.py,64,3792000.0,"[7.376e6, 4.599e6, 4.872e6, 4.248e6, 3.792e6, 3.369e6, 3.025e6, 2.756e6]"
-core/unified_engine/physics/eos/__init__.py,64,3369000.0,"[7.376e6, 4.599e6, 4.872e6, 4.248e6, 3.792e6, 3.369e6, 3.025e6, 2.756e6]"
-core/unified_engine/physics/eos/__init__.py,64,3025000.0,"[7.376e6, 4.599e6, 4.872e6, 4.248e6, 3.792e6, 3.369e6, 3.025e6, 2.756e6]"
-core/unified_engine/physics/eos/__init__.py,64,2756000.0,"[7.376e6, 4.599e6, 4.872e6, 4.248e6, 3.792e6, 3.369e6, 3.025e6, 2.756e6]"
-core/unified_engine/physics/eos/__init__.py,68,0.225,"[0.225, 0.011, 0.099, 0.152, 0.201, 0.251, 0.296, 0.350]"
-core/unified_engine/physics/eos/__init__.py,68,0.011,"[0.225, 0.011, 0.099, 0.152, 0.201, 0.251, 0.296, 0.350]"
-core/unified_engine/physics/eos/__init__.py,68,0.099,"[0.225, 0.011, 0.099, 0.152, 0.201, 0.251, 0.296, 0.350]"
-core/unified_engine/physics/eos/__init__.py,68,0.152,"[0.225, 0.011, 0.099, 0.152, 0.201, 0.251, 0.296, 0.350]"
-core/unified_engine/physics/eos/__init__.py,68,0.201,"[0.225, 0.011, 0.099, 0.152, 0.201, 0.251, 0.296, 0.350]"
-core/unified_engine/physics/eos/__init__.py,68,0.251,"[0.225, 0.011, 0.099, 0.152, 0.201, 0.251, 0.296, 0.350]"
-core/unified_engine/physics/eos/__init__.py,68,0.296,"[0.225, 0.011, 0.099, 0.152, 0.201, 0.251, 0.296, 0.350]"
-core/unified_engine/physics/eos/__init__.py,68,0.35,"[0.225, 0.011, 0.099, 0.152, 0.201, 0.251, 0.296, 0.350]"
-core/unified_engine/physics/eos/__init__.py,80,8.314,R = 8.314
-core/unified_engine/physics/eos/__init__.py,111,3.0,"coeffs = [1.0, -(1.0 - B), A - 3.0 * B**2 - 2.0 * B, -(A * B - B**2 - B**3)]"
-core/unified_engine/physics/eos/__init__.py,114,0.1,return real_roots[(real_roots > 0.1) & (real_roots < 3.0)]
-core/unified_engine/physics/eos/__init__.py,114,3.0,return real_roots[(real_roots > 0.1) & (real_roots < 3.0)]
-core/unified_engine/physics/eos/__init__.py,122,0.3,"return max(0.3, min(1.0 - 0.1 * B / max(A, 1e-6), 1.5))"
-core/unified_engine/physics/eos/__init__.py,122,0.1,"return max(0.3, min(1.0 - 0.1 * B / max(A, 1e-6), 1.5))"
-core/unified_engine/physics/eos/__init__.py,122,1.5,"return max(0.3, min(1.0 - 0.1 * B / max(A, 1e-6), 1.5))"
-core/unified_engine/physics/eos/__init__.py,141,0.45724,a_i[i] = 0.45724 * self.R**2 * Tc**2 / Pc * alpha_i
-core/unified_engine/physics/eos/__init__.py,142,0.0778,b_i[i] = 0.07780 * self.R * Tc / Pc
-core/unified_engine/physics/eos/__init__.py,163,44.01,"* np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,163,16.04,"* np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,163,30.07,"* np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,163,44.1,"* np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,163,58.12,"* np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,163,72.15,"* np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,163,86.18,"* np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,163,100.0,"* np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,164,1000.0,/ 1000.0
-core/unified_engine/physics/eos/__init__.py,171,304.13,Tr = temperature / 304.13
-core/unified_engine/physics/eos/__init__.py,172,467.6,rho_r = rho / 467.6
-core/unified_engine/physics/eos/__init__.py,174,1.00697e-06,mu_0 = 1.00697e-6 * np.sqrt(temperature)
-core/unified_engine/physics/eos/__init__.py,175,0.235,mu_c = mu_0 * (1 + 0.235 * rho_r + 0.395 * rho_r**2 - 0.041 * rho_r**3)
-core/unified_engine/physics/eos/__init__.py,175,0.395,mu_c = mu_0 * (1 + 0.235 * rho_r + 0.395 * rho_r**2 - 0.041 * rho_r**3)
-core/unified_engine/physics/eos/__init__.py,175,0.041,mu_c = mu_0 * (1 + 0.235 * rho_r + 0.395 * rho_r**2 - 0.041 * rho_r**3)
-core/unified_engine/physics/eos/__init__.py,186,44.01,"molar_masses_defaults = np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,186,16.04,"molar_masses_defaults = np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,186,30.07,"molar_masses_defaults = np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,186,44.1,"molar_masses_defaults = np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,186,58.12,"molar_masses_defaults = np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,186,72.15,"molar_masses_defaults = np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,186,86.18,"molar_masses_defaults = np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,186,100.0,"molar_masses_defaults = np.array([44.01, 16.04, 30.07, 44.10, 58.12, 72.15, 86.18, 100.0])"
-core/unified_engine/physics/eos/__init__.py,190,44.01,molar_masses = np.ones(n_comp) * 44.01
-core/unified_engine/physics/eos/__init__.py,192,1000.0,M_avg = np.sum(mole_fractions * molar_masses) / 1000.0
-core/unified_engine/physics/eos/__init__.py,195,0.8,"""phase"": ""V"" if Z < 0.8 else ""L"","
-core/unified_engine/physics/eos/__init__.py,232,0.45724,a_i[i] = 0.45724 * R**2 * Tc**2 / Pc * alpha_i
-core/unified_engine/physics/eos/__init__.py,233,0.0778,b_i[i] = 0.07780 * R * Tc / Pc
-core/unified_engine/physics/eos/__init__.py,281,0.45724,omega_a: 0.45724
-core/unified_engine/physics/eos/__init__.py,282,0.0778,omega_b: 0.07780
-core/unified_engine/physics/eos/__init__.py,291,304.13,Tr = T / 304.13
-core/unified_engine/physics/eos/__init__.py,295,0.37464,m = 0.37464 + 1.54226 * omega - 0.26992 * omega**2
-core/unified_engine/physics/eos/__init__.py,295,1.54226,m = 0.37464 + 1.54226 * omega - 0.26992 * omega**2
-core/unified_engine/physics/eos/__init__.py,295,0.26992,m = 0.37464 + 1.54226 * omega - 0.26992 * omega**2
-core/unified_engine/physics/eos/__init__.py,304,0.42748,omega_a: 0.42748
-core/unified_engine/physics/eos/__init__.py,305,0.08664,omega_b: 0.08664
-core/unified_engine/physics/eos/__init__.py,314,304.13,Tr = T / 304.13
-core/unified_engine/physics/eos/__init__.py,318,0.48,m = 0.480 + 1.574 * omega - 0.176 * omega**2
-core/unified_engine/physics/eos/__init__.py,318,1.574,m = 0.480 + 1.574 * omega - 0.176 * omega**2
-core/unified_engine/physics/eos/__init__.py,318,0.176,m = 0.480 + 1.574 * omega - 0.176 * omega**2
-core/unified_engine/physics/eos/__init__.py,336,5.373,K_i = (Pc_i / P) * exp(5.373 * (1 + omega_i) * (1 - Tc_i / T))
-core/unified_engine/physics/eos/__init__.py,353,5.373,K[i] = (Pc / pressure) * np.exp(5.373 * (1.0 + omega) * (1.0 - Tc / temperature))
-core/unified_engine/physics/eos/__init__.py,505,8.314,R = 8.314  # J/(mol·K)
-core/unified_engine/physics/eos/__init__.py,521,304.13,"""CO2"": {""Tc"": 304.13, ""Pc"": 7.376e6, ""omega"": 0.225},"
-core/unified_engine/physics/eos/__init__.py,521,7376000.0,"""CO2"": {""Tc"": 304.13, ""Pc"": 7.376e6, ""omega"": 0.225},"
-core/unified_engine/physics/eos/__init__.py,521,0.225,"""CO2"": {""Tc"": 304.13, ""Pc"": 7.376e6, ""omega"": 0.225},"
-core/unified_engine/physics/eos/__init__.py,522,190.6,"""Methane"": {""Tc"": 190.6, ""Pc"": 4.604e6, ""omega"": 0.011},"
-core/unified_engine/physics/eos/__init__.py,522,4604000.0,"""Methane"": {""Tc"": 190.6, ""Pc"": 4.604e6, ""omega"": 0.011},"
-core/unified_engine/physics/eos/__init__.py,522,0.011,"""Methane"": {""Tc"": 190.6, ""Pc"": 4.604e6, ""omega"": 0.011},"
-core/unified_engine/physics/eos/__init__.py,523,305.4,"""Ethane"": {""Tc"": 305.4, ""Pc"": 4.880e6, ""omega"": 0.099},"
-core/unified_engine/physics/eos/__init__.py,523,4880000.0,"""Ethane"": {""Tc"": 305.4, ""Pc"": 4.880e6, ""omega"": 0.099},"
-core/unified_engine/physics/eos/__init__.py,523,0.099,"""Ethane"": {""Tc"": 305.4, ""Pc"": 4.880e6, ""omega"": 0.099},"
-core/unified_engine/physics/eos/__init__.py,524,369.8,"""Propane"": {""Tc"": 369.8, ""Pc"": 4.246e6, ""omega"": 0.152},"
-core/unified_engine/physics/eos/__init__.py,524,4246000.0,"""Propane"": {""Tc"": 369.8, ""Pc"": 4.246e6, ""omega"": 0.152},"
-core/unified_engine/physics/eos/__init__.py,524,0.152,"""Propane"": {""Tc"": 369.8, ""Pc"": 4.246e6, ""omega"": 0.152},"
-core/unified_engine/physics/eos/__init__.py,525,425.2,"""C4+"": {""Tc"": 425.2, ""Pc"": 3.796e6, ""omega"": 0.200},"
-core/unified_engine/physics/eos/__init__.py,525,3796000.0,"""C4+"": {""Tc"": 425.2, ""Pc"": 3.796e6, ""omega"": 0.200},"
-core/unified_engine/physics/eos/__init__.py,525,0.2,"""C4+"": {""Tc"": 425.2, ""Pc"": 3.796e6, ""omega"": 0.200},"
-core/unified_engine/physics/eos/__init__.py,526,540.2,"""C7+"": {""Tc"": 540.2, ""Pc"": 2.736e6, ""omega"": 0.350},"
-core/unified_engine/physics/eos/__init__.py,526,2736000.0,"""C7+"": {""Tc"": 540.2, ""Pc"": 2.736e6, ""omega"": 0.350},"
-core/unified_engine/physics/eos/__init__.py,526,0.35,"""C7+"": {""Tc"": 540.2, ""Pc"": 2.736e6, ""omega"": 0.350},"
-core/unified_engine/physics/eos/__init__.py,573,0.95,elif temperature_K > co2_tc * 0.95 and pressure_Pa > co2_pc * 0.95:
-core/unified_engine/physics/eos/__init__.py,573,0.95,elif temperature_K > co2_tc * 0.95 and pressure_Pa > co2_pc * 0.95:
-core/unified_engine/physics/eos/__init__.py,595,8.314,R = 8.314  # J/(mol·K)
-core/unified_engine/physics/eos/__init__.py,613,0.001,avg_molar_mass = np.sum(mole_fractions * molar_masses) * 0.001  # g/mol to kg/mol
-core/unified_engine/physics/eos/__init__.py,615,0.04401,avg_molar_mass = 0.04401  # Default to CO2
-core/unified_engine/physics/eos/__init__.py,617,0.04401,avg_molar_mass = 0.04401
-core/unified_engine/physics/eos/__init__.py,622,0.8,"""phase"": ""V"" if Z < 0.8 else ""L"","
-core/unified_engine/physics/eos/__init__.py,637,8.314,R = 8.314  # J/(mol·K)
-core/unified_engine/physics/eos/__init__.py,640,304.13,co2_tc = 304.13
-core/unified_engine/physics/eos/__init__.py,641,7376000.0,co2_pc = 7.376e6
-core/unified_engine/physics/eos/__init__.py,646,0.35,Z = 1 - 0.35 * P_r / T_r + 0.15 * (P_r / T_r) ** 2
-core/unified_engine/physics/eos/__init__.py,646,0.15,Z = 1 - 0.35 * P_r / T_r + 0.15 * (P_r / T_r) ** 2
-core/unified_engine/physics/eos/__init__.py,647,0.6,"Z = max(0.6, min(Z, 0.95))"
-core/unified_engine/physics/eos/__init__.py,647,0.95,"Z = max(0.6, min(Z, 0.95))"
-core/unified_engine/physics/eos/__init__.py,658,0.2,"return max(0.2, min(rb_per_sm3, 2.0))"
-core/unified_engine/physics/eos/__init__.py,665,1.8,T_R = temperature_K * 1.8  # Convert to Rankine
-core/unified_engine/physics/eos/__init__.py,678,0.0001,B_oil_base = 1.0 + 0.0001 * (T_R - 460) + 0.000001 * P_psi
-core/unified_engine/physics/eos/__init__.py,678,1e-06,B_oil_base = 1.0 + 0.0001 * (T_R - 460) + 0.000001 * P_psi
-core/unified_engine/physics/eos/__init__.py,681,2.5,"return max(1.0, min(B_oil, 2.5))"
-core/unified_engine/physics/eos/__init__.py,687,8.314,R = 8.314  # J/(mol·K)
-core/unified_engine/physics/eos/__init__.py,688,7376000.0,co2_pc = 7.376e6
-core/unified_engine/physics/eos/__init__.py,692,0.7,Z = 0.7 + 0.0001 * (density - 200)
-core/unified_engine/physics/eos/__init__.py,692,0.0001,Z = 0.7 + 0.0001 * (density - 200)
-core/unified_engine/physics/eos/__init__.py,695,0.9,Z = 0.9 - 0.001 * (density if density else 0)
-core/unified_engine/physics/eos/__init__.py,695,0.001,Z = 0.9 - 0.001 * (density if density else 0)
-core/unified_engine/physics/eos/__init__.py,697,0.6,"Z = max(0.6, min(Z, 0.95))"
-core/unified_engine/physics/eos/__init__.py,697,0.95,"Z = max(0.6, min(Z, 0.95))"
-core/unified_engine/physics/eos/__init__.py,706,5.615,scf_per_rb = 5.615 / v_sc
-core/unified_engine/physics/eos/__init__.py,712,3.0,"return max(0.5, min(B_gas_rb_per_stb_eq, 3.0))"
-core/unified_engine/physics/eos/__init__.py,748,0.65,return 0.65  # Typical supercritical CO2 B_oil equivalent
-core/unified_engine/physics/eos/__init__.py,751,0.8,return 0.8  # Dense gas
-core/unified_engine/physics/eos/__init__.py,753,1.2,return 1.2  # Normal gas
-core/unified_engine/physics/eos/__init__.py,755,1.4,return 1.4  # Typical oil B_oil
-core/unified_engine/physics/fluid_properties.py,63,30.0,api_gravity: float = 30.0
-core/unified_engine/physics/fluid_properties.py,64,0.6,gas_specific_gravity: float = 0.6
-core/unified_engine/physics/fluid_properties.py,65,350.0,reservoir_temperature: float = 350.0
-core/unified_engine/physics/fluid_properties.py,69,100.0,rsb: float = 100.0
-core/unified_engine/physics/fluid_properties.py,70,1.2,bob: float = 1.2
-core/unified_engine/physics/fluid_properties.py,71,0.005,muob: float = 0.005
-core/unified_engine/physics/fluid_properties.py,90,6894.76,p_psi = pressure / 6894.76
-core/unified_engine/physics/fluid_properties.py,91,459.67,t_r = self.reservoir_temperature * 9 / 5 - 459.67
-core/unified_engine/physics/fluid_properties.py,93,0.0362,c = 0.0362 * self.api_gravity * np.exp(25.7240 / (t_r + 459.67))
-core/unified_engine/physics/fluid_properties.py,93,25.724,c = 0.0362 * self.api_gravity * np.exp(25.7240 / (t_r + 459.67))
-core/unified_engine/physics/fluid_properties.py,93,459.67,c = 0.0362 * self.api_gravity * np.exp(25.7240 / (t_r + 459.67))
-core/unified_engine/physics/fluid_properties.py,94,1.2044,b = 1.2044 * self.gas_specific_gravity * np.exp(11.1725 * self.api_gravity / (t_r + 459.67))
-core/unified_engine/physics/fluid_properties.py,94,11.1725,b = 1.2044 * self.gas_specific_gravity * np.exp(11.1725 * self.api_gravity / (t_r + 459.67))
-core/unified_engine/physics/fluid_properties.py,94,459.67,b = 1.2044 * self.gas_specific_gravity * np.exp(11.1725 * self.api_gravity / (t_r + 459.67))
-core/unified_engine/physics/fluid_properties.py,112,6894.76,p_psi = pressure / 6894.76
-core/unified_engine/physics/fluid_properties.py,113,459.67,t_r = self.reservoir_temperature * 9 / 5 - 459.67
-core/unified_engine/physics/fluid_properties.py,116,0.0009725,bg = 0.0009725 * (
-core/unified_engine/physics/fluid_properties.py,117,0.526,rs * (self.gas_specific_gravity / self.api_gravity) ** 0.526 + 0.000359 * t_r
-core/unified_engine/physics/fluid_properties.py,117,0.000359,rs * (self.gas_specific_gravity / self.api_gravity) ** 0.526 + 0.000359 * t_r
-core/unified_engine/physics/fluid_properties.py,121,0.972,0.972
-core/unified_engine/physics/fluid_properties.py,122,0.00038,+ 0.00038
-core/unified_engine/physics/fluid_properties.py,123,1.25,* (rs * (self.gas_specific_gravity / self.api_gravity) ** 0.5 + 1.25 * t_r) ** 1.2
-core/unified_engine/physics/fluid_properties.py,123,1.2,* (rs * (self.gas_specific_gravity / self.api_gravity) ** 0.5 + 1.25 * t_r) ** 1.2
-core/unified_engine/physics/fluid_properties.py,137,459.67,t_r = self.reservoir_temperature * 9 / 5 - 459.67
-core/unified_engine/physics/fluid_properties.py,139,10.715,a = 10.715 * (self.gas_specific_gravity**0.515)
-core/unified_engine/physics/fluid_properties.py,139,0.515,a = 10.715 * (self.gas_specific_gravity**0.515)
-core/unified_engine/physics/fluid_properties.py,140,5.44,b = 5.44 * (self.gas_specific_gravity**0.338) * (t_r + 200) ** (-1.038)
-core/unified_engine/physics/fluid_properties.py,140,0.338,b = 5.44 * (self.gas_specific_gravity**0.338) * (t_r + 200) ** (-1.038)
-core/unified_engine/physics/fluid_properties.py,140,1.038,b = 5.44 * (self.gas_specific_gravity**0.338) * (t_r + 200) ** (-1.038)
-core/unified_engine/physics/fluid_properties.py,142,1.163,mu_dead = a * (self.api_gravity**b) * (t_r ** (-1.163))
-core/unified_engine/physics/fluid_properties.py,149,0.338,mu_dead * (rs**0.338) * np.exp(11.513 * self.api_gravity / (t_r + 200) - 0.0002698 * rs)
-core/unified_engine/physics/fluid_properties.py,149,11.513,mu_dead * (rs**0.338) * np.exp(11.513 * self.api_gravity / (t_r + 200) - 0.0002698 * rs)
-core/unified_engine/physics/fluid_properties.py,149,0.0002698,mu_dead * (rs**0.338) * np.exp(11.513 * self.api_gravity / (t_r + 200) - 0.0002698 * rs)
-core/unified_engine/physics/fluid_properties.py,165,6894.76,p_psi = pressure / 6894.76
-core/unified_engine/physics/fluid_properties.py,166,459.67,t_r = temperature * 9 / 5 - 459.67
-core/unified_engine/physics/fluid_properties.py,169,493.0,493.0 + 0.2648 * self.gas_specific_gravity * t_r - 92.0 * self.gas_specific_gravity
-core/unified_engine/physics/fluid_properties.py,169,0.2648,493.0 + 0.2648 * self.gas_specific_gravity * t_r - 92.0 * self.gas_specific_gravity
-core/unified_engine/physics/fluid_properties.py,169,92.0,493.0 + 0.2648 * self.gas_specific_gravity * t_r - 92.0 * self.gas_specific_gravity
-core/unified_engine/physics/fluid_properties.py,171,168.0,tr = t_r / (168.0 + 325.0 * self.gas_specific_gravity - 12.5 * self.gas_specific_gravity**2)
-core/unified_engine/physics/fluid_properties.py,171,325.0,tr = t_r / (168.0 + 325.0 * self.gas_specific_gravity - 12.5 * self.gas_specific_gravity**2)
-core/unified_engine/physics/fluid_properties.py,171,12.5,tr = t_r / (168.0 + 325.0 * self.gas_specific_gravity - 12.5 * self.gas_specific_gravity**2)
-core/unified_engine/physics/fluid_properties.py,174,520.0,t_sc = 520.0
-core/unified_engine/physics/fluid_properties.py,175,14.7,p_sc = 14.7
-core/unified_engine/physics/fluid_properties.py,177,0.02827,bg = 0.02827 * Z * t_r / (p_psi + 0.0001)
-core/unified_engine/physics/fluid_properties.py,177,0.0001,bg = 0.02827 * Z * t_r / (p_psi + 0.0001)
-core/unified_engine/physics/fluid_properties.py,191,0.95,if tr < 0.95 or pr < 0.01 or pr > 30:
-core/unified_engine/physics/fluid_properties.py,191,0.01,if tr < 0.95 or pr < 0.01 or pr > 30:
-core/unified_engine/physics/fluid_properties.py,194,0.3265,A1 = 0.3265
-core/unified_engine/physics/fluid_properties.py,195,1.07,A2 = -1.0700
-core/unified_engine/physics/fluid_properties.py,196,0.5339,A3 = -0.5339
-core/unified_engine/physics/fluid_properties.py,197,0.01569,A4 = 0.01569
-core/unified_engine/physics/fluid_properties.py,198,0.05165,A5 = -0.05165
-core/unified_engine/physics/fluid_properties.py,199,0.5475,A6 = 0.5475
-core/unified_engine/physics/fluid_properties.py,200,0.1057,A7 = -0.1057
-core/unified_engine/physics/fluid_properties.py,201,0.6134,A8 = 0.6134
-core/unified_engine/physics/fluid_properties.py,202,0.721,A9 = 0.7210
-core/unified_engine/physics/fluid_properties.py,224,0.1,"z_safe = max(z, 0.1)"
-core/unified_engine/physics/fluid_properties.py,227,0.05,if abs(denom1) < 0.05:
-core/unified_engine/physics/fluid_properties.py,228,0.05,denom1 = 0.05 if denom1 >= 0 else -0.05
-core/unified_engine/physics/fluid_properties.py,228,0.05,denom1 = 0.05 if denom1 >= 0 else -0.05
-core/unified_engine/physics/fluid_properties.py,241,0.125,z = 0.125 * (27 * rhs + np.sqrt(729 * rhs * rhs + 4)) ** (1.0 / 3.0)
-core/unified_engine/physics/fluid_properties.py,241,3.0,z = 0.125 * (27 * rhs + np.sqrt(729 * rhs * rhs + 4)) ** (1.0 / 3.0)
-core/unified_engine/physics/fluid_properties.py,242,3.0,"z = (2.0 / 3.0) * z + B / (3.0 * max(z, 0.1))"
-core/unified_engine/physics/fluid_properties.py,242,3.0,"z = (2.0 / 3.0) * z + B / (3.0 * max(z, 0.1))"
-core/unified_engine/physics/fluid_properties.py,242,0.1,"z = (2.0 / 3.0) * z + B / (3.0 * max(z, 0.1))"
-core/unified_engine/physics/fluid_properties.py,247,0.1,"return max(0.1, min(z, 3.0))"
-core/unified_engine/physics/fluid_properties.py,247,3.0,"return max(0.1, min(z, 3.0))"
-core/unified_engine/physics/fluid_properties.py,251,1.5,if tr >= 1.5:
-core/unified_engine/physics/fluid_properties.py,252,0.02,return 1.0 - 0.02 * pr / tr
-core/unified_engine/physics/fluid_properties.py,254,0.95,return 0.95 - 0.1 * pr / tr
-core/unified_engine/physics/fluid_properties.py,254,0.1,return 0.95 - 0.1 * pr / tr
-core/unified_engine/physics/fluid_properties.py,255,0.7,return 0.7 + 0.3 * pr / tr
-core/unified_engine/physics/fluid_properties.py,255,0.3,return 0.7 + 0.3 * pr / tr
-core/unified_engine/physics/fluid_properties.py,268,273.15,t_c = temperature - 273.15
-core/unified_engine/physics/fluid_properties.py,269,6894.76,p_psi = pressure / 6894.76
-core/unified_engine/physics/fluid_properties.py,271,4.77e-07,bw = 1.0 + 4.77e-7 * p_psi - 3.74e-6 * t_c
-core/unified_engine/physics/fluid_properties.py,271,3.74e-06,bw = 1.0 + 4.77e-7 * p_psi - 3.74e-6 * t_c
-core/unified_engine/physics/fluid_properties.py,273,0.00024,mu_w = 0.00024 * np.exp(0.000002 * p_psi + 0.0034 * t_c)
-core/unified_engine/physics/fluid_properties.py,273,2e-06,mu_w = 0.00024 * np.exp(0.000002 * p_psi + 0.0034 * t_c)
-core/unified_engine/physics/fluid_properties.py,273,0.0034,mu_w = 0.00024 * np.exp(0.000002 * p_psi + 0.0034 * t_c)
-core/unified_engine/physics/fluid_properties.py,276,1040.0,"""density"": 1040.0 * bw,"
-core/unified_engine/physics/fluid_properties.py,328,30.0,"api_gravity: float = 30.0,"
-core/unified_engine/physics/fluid_properties.py,329,0.6,"gas_specific_gravity: float = 0.6,"
-core/unified_engine/physics/fluid_properties.py,330,350.0,"reservoir_temperature: float = 350.0,"
-core/unified_engine/physics/geomechanics.py,42,0.25,nu: float = 0.25
-core/unified_engine/physics/geomechanics.py,43,6670000000.0,K_bulk: float = 6.67e9
-core/unified_engine/physics/geomechanics.py,44,4000000000.0,G_shear: float = 4.0e9
-core/unified_engine/physics/geomechanics.py,46,22500.0,vertical_stress_gradient: float = 22.5e3
-core/unified_engine/physics/geomechanics.py,47,0.8,horizontal_stress_ratio: float = 0.8
-core/unified_engine/physics/geomechanics.py,49,2500.0,rock_density: float = 2500.0
-core/unified_engine/physics/geomechanics.py,50,2000.0,depth: float = 2000.0
-core/unified_engine/physics/geomechanics.py,70,3.0,self.K = E / (3.0 * (1.0 - 2.0 * nu))
-core/unified_engine/physics/geomechanics.py,77,3.0,self.lambda_lame = self.K - 2.0 * self.G / 3.0
-core/unified_engine/physics/geomechanics.py,93,0.7,stress_anisotropy: Ratio of Shmax to Sv (typically 0.7-1.0)
-core/unified_engine/physics/geomechanics.py,163,0.8,"def pore_pressure_change(self, delta_pore_pressure: float, biot: float = 0.8) -> float:"
-core/unified_engine/physics/geomechanics.py,177,100.0,"self, delta_pore_pressure: float, thickness: float = 100.0, area: float = 1e6"
-core/unified_engine/physics/geomechanics.py,275,0.6,"friction_coefficient: float = 0.6,"
-core/unified_engine/physics/geomechanics.py,287,0.6,friction_coefficient: Friction coefficient (typically 0.6-0.85)
-core/unified_engine/physics/geomechanics.py,287,0.85,friction_coefficient: Friction coefficient (typically 0.6-0.85)
-core/unified_engine/physics/geomechanics.py,316,0.2,"def __init__(self, params: GeomechanicsParameters, porosity: float = 0.2):"
-core/unified_engine/physics/geomechanics.py,322,0.8,"self, delta_pore_pressure: float, biot: float = 0.8, compressibility: float = 1e-10"
-core/unified_engine/physics/geomechanics.py,339,3.0,"self, delta_porosity: float, permeability_exponent: float = 3.0"
-core/unified_engine/physics/geomechanics.py,353,0.01,"phi = np.clip(self.initial_porosity + delta_porosity, 0.01, 0.99)"
-core/unified_engine/physics/geomechanics.py,353,0.99,"phi = np.clip(self.initial_porosity + delta_porosity, 0.01, 0.99)"
-core/unified_engine/physics/geomechanics.py,374,0.8,"def pore_volume_strain(self, delta_pore_pressure: float, biot: float = 0.8) -> float:"
-core/unified_engine/physics/geomechanics.py,390,2000.0,"depth: float = 2000.0, E: float = 10e9, nu: float = 0.25, pore_pressure: float = 10e6"
-core/unified_engine/physics/geomechanics.py,390,0.25,"depth: float = 2000.0, E: float = 10e9, nu: float = 0.25, pore_pressure: float = 10e6"
-core/unified_engine/physics/multiphase_flow.py,122,0.2,"Swc = self.parameters.get(""Swc"", 0.2)  # Connate water"
-core/unified_engine/physics/multiphase_flow.py,123,0.2,"Sor = self.parameters.get(""Sor"", 0.2)  # Residual oil"
-core/unified_engine/physics/multiphase_flow.py,126,0.8,"krw_max = self.parameters.get(""krw_max"", 0.8)"
-core/unified_engine/physics/multiphase_flow.py,127,0.8,"krg_max = self.parameters.get(""krg_max"", 0.8)"
-core/unified_engine/physics/multiphase_flow.py,186,0.2,"Swc = self.parameters.get(""Swc"", 0.2)"
-core/unified_engine/physics/multiphase_flow.py,187,0.2,"Sor = self.parameters.get(""Sor"", 0.2)"
-core/unified_engine/physics/multiphase_flow.py,244,0.00633,conversion = 6.33e-3
-core/unified_engine/physics/multiphase_flow.py,262,144.0,g_pressure = density * gravity / 144.0  # psi/ft
-core/unified_engine/physics/multiphase_flow.py,302,0.00633,T = 6.33e-3 * k_avg * kr_avg / viscosity * area / distance
-core/unified_engine/physics/multiphase_flow.py,328,50.0,"density=50.0,  # lb/ft^3"
-core/unified_engine/physics/multiphase_flow.py,329,1.2,"formation_volume_factor=1.2,"
-core/unified_engine/physics/multiphase_flow.py,335,64.0,"density=64.0,  # lb/ft^3"
-core/unified_engine/physics/multiphase_flow.py,341,0.02,"viscosity=0.02,  # cP"
-core/unified_engine/physics/multiphase_flow.py,342,0.1,"density=0.1,  # lb/ft^3"
-core/unified_engine/physics/multiphase_flow.py,343,0.003,"formation_volume_factor=0.003,"
-core/unified_engine/physics/multiphase_flow.py,356,0.05,"viscosity=0.05,  # cP"
-core/unified_engine/physics/multiphase_flow.py,357,40.0,"density=40.0,  # lb/ft^3 (supercritical)"
-core/unified_engine/physics/multiphase_flow.py,377,0.2,"Swc=0.2, Sor=0.2, Sgc=0.0, no=2.0, nw=2.0, ng=2.0"
-core/unified_engine/physics/multiphase_flow.py,377,0.2,"Swc=0.2, Sor=0.2, Sgc=0.0, no=2.0, nw=2.0, ng=2.0"
-core/unified_engine/physics/relative_permeability.py,40,0.3,krw0: float = 0.3
-core/unified_engine/physics/relative_permeability.py,42,0.8,krg0: float = 0.8
-core/unified_engine/physics/relative_permeability.py,46,0.2,swi: float = 0.2
-core/unified_engine/physics/relative_permeability.py,47,0.2,sor: float = 0.2
-core/unified_engine/physics/relative_permeability.py,48,0.05,sgr: float = 0.05
-core/unified_engine/physics/relative_permeability.py,123,0.3,krw_max: float = 0.3
-core/unified_engine/physics/relative_permeability.py,125,0.8,krg_max: float = 0.8
-core/unified_engine/physics/relative_permeability.py,126,0.2,swi: float = 0.2
-core/unified_engine/physics/relative_permeability.py,127,0.2,sor: float = 0.2
-core/unified_engine/physics/relative_permeability.py,128,0.05,sgr: float = 0.05
-core/unified_engine/physics/relative_permeability.py,245,0.01,if sw_max < self.params.swi + 0.01:
-core/unified_engine/solvers/flow_solver.py,150,100.0,self.grid_spacing = 100.0  # Will be set from grid
-core/unified_engine/solvers/flow_solver.py,163,0.00633,velocity = 6.33e-3 * k_max / mu
+core/optimization_analysis.py,157,0.975,"t_critical = stats.t.ppf(0.975, n - 2)"
+core/optimization_analysis.py,194,1.96,"confidence_interval=(mu - 1.96*sigma/np.sqrt(len(elementary_effects)),"
+core/optimization_analysis.py,195,1.96,"mu + 1.96*sigma/np.sqrt(len(elementary_effects))),"
+core/optimization_analysis.py,216,0.95,"confidence_level: float = 0.95) -> Tuple[float, float]:"
+core/optimization_analysis.py,272,0.01,threshold = 0.01 * np.std(objective_values)
+core/optimization_analysis.py,336,0.01,convergence_threshold = 0.01 * np.std(param_values)
+core/optimization_analysis.py,503,1.02,"colorbar=dict(title=""Sensitivity"", x=1.02)"
 evaluation/mmp.py,37,0.95,"The sum of fractions must be 1.0. Example: {'CO2': 0.95, 'CH4': 0.05}."
 evaluation/mmp.py,37,0.05,"The sum of fractions must be 1.0. Example: {'CO2': 0.95, 'CH4': 0.05}."
-evaluation/mmp.py,103,15.988,Formula: MMP [psi] = 15.988 * (Temperature [°F] ^ 0.744206) * ((55 - API Gravity) ^ 0.279033)
-evaluation/mmp.py,103,0.744206,Formula: MMP [psi] = 15.988 * (Temperature [°F] ^ 0.744206) * ((55 - API Gravity) ^ 0.279033)
-evaluation/mmp.py,103,0.279033,Formula: MMP [psi] = 15.988 * (Temperature [°F] ^ 0.744206) * ((55 - API Gravity) ^ 0.279033)
-evaluation/mmp.py,111,55.0,gravity_term = 55.0 - params.oil_gravity
-evaluation/mmp.py,112,15.988,mmp = 15.988 * (params.temperature**0.744206) * (gravity_term**0.279033)
-evaluation/mmp.py,112,0.744206,mmp = 15.988 * (params.temperature**0.744206) * (gravity_term**0.279033)
-evaluation/mmp.py,112,0.279033,mmp = 15.988 * (params.temperature**0.744206) * (gravity_term**0.279033)
-evaluation/mmp.py,137,0.007,mmp_adj_c7 = mmp_base * (1.0 + 0.007 * (params.c7_plus_mw - 190))
-evaluation/mmp.py,148,0.35,"""CH4"": 0.35,  # Methane has strong MMP-increasing effect"
-evaluation/mmp.py,149,0.45,"""N2"": 0.45,  # Nitrogen has strongest MMP-increasing effect"
-evaluation/mmp.py,150,0.15,"""H2S"": 0.15,  # H2S can decrease MMP slightly"
-evaluation/mmp.py,151,0.2,"""C2"": 0.20,  # Ethane"
-evaluation/mmp.py,152,0.15,"""C3"": 0.15,  # Propane"
-evaluation/mmp.py,170,0.15,"IMPURITY_SENSITIVITY_FACTOR = max(0.15, min(0.45, IMPURITY_SENSITIVITY_FACTOR))"
-evaluation/mmp.py,170,0.45,"IMPURITY_SENSITIVITY_FACTOR = max(0.15, min(0.45, IMPURITY_SENSITIVITY_FACTOR))"
-evaluation/mmp.py,197,1.356,a = 10 ** (1.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
-evaluation/mmp.py,197,0.0016,a = 10 ** (1.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
-evaluation/mmp.py,197,3.3e-06,a = 10 ** (1.356 + 0.0016 * params.temperature - 0.0000033 * params.temperature**2)
-evaluation/mmp.py,199,10.3,m_c5_plus = 630 - 10.3 * params.oil_gravity
-evaluation/mmp.py,200,0.36,b = (m_c5_plus**0.36) / (0.641 * params.temperature**0.21)
-evaluation/mmp.py,200,0.641,b = (m_c5_plus**0.36) / (0.641 * params.temperature**0.21)
-evaluation/mmp.py,200,0.21,b = (m_c5_plus**0.36) / (0.641 * params.temperature**0.21)
-evaluation/mmp.py,203,0.993,c = 0.993 - 0.778 * (1 - x_co2) ** 0.11
-evaluation/mmp.py,203,0.778,c = 0.993 - 0.778 * (1 - x_co2) ** 0.11
-evaluation/mmp.py,203,0.11,c = 0.993 - 0.778 * (1 - x_co2) ** 0.11
-evaluation/mmp.py,207,145.038,return mmp_mpa * 145.038  # Convert MPa to psi
-evaluation/mmp.py,226,304.1,"CRITICAL_TEMPS_K = {""CO2"": 304.1, ""CH4"": 190.6, ""N2"": 126.2}"
-evaluation/mmp.py,226,190.6,"CRITICAL_TEMPS_K = {""CO2"": 304.1, ""CH4"": 190.6, ""N2"": 126.2}"
-evaluation/mmp.py,226,126.2,"CRITICAL_TEMPS_K = {""CO2"": 304.1, ""CH4"": 190.6, ""N2"": 126.2}"
-evaluation/mmp.py,241,4.773,mmp_pure_co2 = 1016 + 4.773 * T_F - 0.00946 * (T_F**2) + 0.000021 * (T_F**3)
-evaluation/mmp.py,241,0.00946,mmp_pure_co2 = 1016 + 4.773 * T_F - 0.00946 * (T_F**2) + 0.000021 * (T_F**3)
-evaluation/mmp.py,241,2.1e-05,mmp_pure_co2 = 1016 + 4.773 * T_F - 0.00946 * (T_F**2) + 0.000021 * (T_F**3)
-evaluation/mmp.py,244,2.41,exponent_A = 2.41 - 0.00284 * params.c7_plus_mw
-evaluation/mmp.py,244,0.00284,exponent_A = 2.41 - 0.00284 * params.c7_plus_mw
-evaluation/mmp.py,253,4.773,"""""""Yellig & Metcalfe (1980) correlation for pure CO2. Formula: MMP = 1016 + 4.773·T - 0.00946·T² + 0"
-evaluation/mmp.py,253,0.00946,"""""""Yellig & Metcalfe (1980) correlation for pure CO2. Formula: MMP = 1016 + 4.773·T - 0.00946·T² + 0"
-evaluation/mmp.py,253,2.1e-05,"""""""Yellig & Metcalfe (1980) correlation for pure CO2. Formula: MMP = 1016 + 4.773·T - 0.00946·T² + 0"
-evaluation/mmp.py,255,1016.0,return float(1016.0 + 4.773 * T - 0.00946 * (T**2) + 0.000021 * (T**3))
-evaluation/mmp.py,255,4.773,return float(1016.0 + 4.773 * T - 0.00946 * (T**2) + 0.000021 * (T**3))
-evaluation/mmp.py,255,0.00946,return float(1016.0 + 4.773 * T - 0.00946 * (T**2) + 0.000021 * (T**3))
-evaluation/mmp.py,255,2.1e-05,return float(1016.0 + 4.773 * T - 0.00946 * (T**2) + 0.000021 * (T**3))
-evaluation/mmp.py,304,0.85,gamma_o = 0.85  # Initial guess for a typical crude oil
-evaluation/mmp.py,307,1.25,F = R_s * (gamma_g / gamma_o) ** 0.5 + 1.25 * T
-evaluation/mmp.py,308,0.972,gamma_o_new = 0.972 + 0.000147 * F**1.175
-evaluation/mmp.py,308,0.000147,gamma_o_new = 0.972 + 0.000147 * F**1.175
-evaluation/mmp.py,308,1.175,gamma_o_new = 0.972 + 0.000147 * F**1.175
-evaluation/mmp.py,323,141.5,api = (141.5 / gamma_o) - 131.5
-evaluation/mmp.py,323,131.5,api = (141.5 / gamma_o) - 131.5
-evaluation/mmp.py,324,15.0,"return max(15.0, min(50.0, api))"
-evaluation/mmp.py,324,50.0,"return max(15.0, min(50.0, api))"
-evaluation/mmp.py,405,0.98,"and mmp_params.injection_gas_composition.get(""CO2"", 0.0) < 0.98"
-evaluation/mmp.py,411,0.95,"and mmp_params.injection_gas_composition.get(""CO2"", 0.0) < 0.95"
+evaluation/mmp.py,101,15.988,MMP [psia] = 15.988 * (Temperature [°F] ^ Y)
+evaluation/mmp.py,102,0.744206,Y = 0.744206 + 0.0011038 * MW_C5+ + 0.0015279 * Vol
+evaluation/mmp.py,102,0.0011038,Y = 0.744206 + 0.0011038 * MW_C5+ + 0.0015279 * Vol
+evaluation/mmp.py,102,0.0015279,Y = 0.744206 + 0.0011038 * MW_C5+ + 0.0015279 * Vol
+evaluation/mmp.py,106,72.0,"If c7_plus_mw is provided, MW_C5+ = max(72.0, c7_plus_mw - 20.0)."
+evaluation/mmp.py,106,20.0,"If c7_plus_mw is provided, MW_C5+ = max(72.0, c7_plus_mw - 20.0)."
+evaluation/mmp.py,108,4247.98641,MW_C5+ = 4247.98641 * (oil_gravity ** -0.87022).
+evaluation/mmp.py,108,0.87022,MW_C5+ = 4247.98641 * (oil_gravity ** -0.87022).
+evaluation/mmp.py,118,72.0,"mw_c5_plus = max(72.0, float(params.c7_plus_mw) - 20.0)"
+evaluation/mmp.py,118,20.0,"mw_c5_plus = max(72.0, float(params.c7_plus_mw) - 20.0)"
+evaluation/mmp.py,121,10.0,"api_clamped = max(10.0, float(params.oil_gravity))"
+evaluation/mmp.py,122,4247.98641,mw_c5_plus = 4247.98641 * (api_clamped ** -0.87022)
+evaluation/mmp.py,122,0.87022,mw_c5_plus = 4247.98641 * (api_clamped ** -0.87022)
+evaluation/mmp.py,129,0.744206,exponent_y = 0.744206 + 0.0011038 * mw_c5_plus + 0.0015279 * vol_pct
+evaluation/mmp.py,129,0.0011038,exponent_y = 0.744206 + 0.0011038 * mw_c5_plus + 0.0015279 * vol_pct
+evaluation/mmp.py,129,0.0015279,exponent_y = 0.744206 + 0.0011038 * mw_c5_plus + 0.0015279 * vol_pct
+evaluation/mmp.py,132,15.988,mmp = 15.988 * (params.temperature ** exponent_y)
+evaluation/mmp.py,140,1833.7217,MMP [psia] = 1833.7217 + 2.2518055·T + 0.01800674·T² - 103949.93 / T
+evaluation/mmp.py,140,2.2518055,MMP [psia] = 1833.7217 + 2.2518055·T + 0.01800674·T² - 103949.93 / T
+evaluation/mmp.py,140,0.01800674,MMP [psia] = 1833.7217 + 2.2518055·T + 0.01800674·T² - 103949.93 / T
+evaluation/mmp.py,140,103949.93,MMP [psia] = 1833.7217 + 2.2518055·T + 0.01800674·T² - 103949.93 / T
+evaluation/mmp.py,146,95.0,if T < 95.0:
+evaluation/mmp.py,149,1070.0,return 1070.0
+evaluation/mmp.py,152,1833.7217,mmp = 1833.7217 + 2.2518055 * T + 0.01800674 * (T**2) - (103949.93 / T)
+evaluation/mmp.py,152,2.2518055,mmp = 1833.7217 + 2.2518055 * T + 0.01800674 * (T**2) - (103949.93 / T)
+evaluation/mmp.py,152,0.01800674,mmp = 1833.7217 + 2.2518055 * T + 0.01800674 * (T**2) - (103949.93 / T)
+evaluation/mmp.py,152,103949.93,mmp = 1833.7217 + 2.2518055 * T + 0.01800674 * (T**2) - (103949.93 / T)
+evaluation/mmp.py,153,1070.0,"return float(max(1070.0, mmp))"
+evaluation/mmp.py,175,0.007,mmp_adj_c7 = mmp_base * (1.0 + 0.007 * (params.c7_plus_mw - 190.0))
+evaluation/mmp.py,175,190.0,mmp_adj_c7 = mmp_base * (1.0 + 0.007 * (params.c7_plus_mw - 190.0))
+evaluation/mmp.py,184,0.35,"""CH4"": 0.35,  # Methane has strong MMP-increasing effect"
+evaluation/mmp.py,185,0.45,"""N2"": 0.45,   # Nitrogen has strongest MMP-increasing effect"
+evaluation/mmp.py,186,0.1,"""H2S"": -0.10, # H2S slightly decreases MMP (favorable)"
+evaluation/mmp.py,187,0.05,"""C2"": -0.05,  # Ethane slightly decreases MMP"
+evaluation/mmp.py,188,0.1,"""C3"": -0.10,  # Propane decreases MMP"
+evaluation/mmp.py,197,0.1,"sensitivity_factor = max(0.10, min(0.60, sensitivity_factor))"
+evaluation/mmp.py,197,0.6,"sensitivity_factor = max(0.10, min(0.60, sensitivity_factor))"
+evaluation/mmp.py,213,145.038,MMP [psia] = a * (b ** x_co2) * c * 145.038
+evaluation/mmp.py,230,10.0,a = 10.0 ** (1.356 + 0.0016 * T - 0.0000033 * (T**2))
+evaluation/mmp.py,230,1.356,a = 10.0 ** (1.356 + 0.0016 * T - 0.0000033 * (T**2))
+evaluation/mmp.py,230,0.0016,a = 10.0 ** (1.356 + 0.0016 * T - 0.0000033 * (T**2))
+evaluation/mmp.py,230,3.3e-06,a = 10.0 ** (1.356 + 0.0016 * T - 0.0000033 * (T**2))
+evaluation/mmp.py,234,72.0,"m_c5_plus = max(72.0, float(params.c7_plus_mw) - 20.0)"
+evaluation/mmp.py,234,20.0,"m_c5_plus = max(72.0, float(params.c7_plus_mw) - 20.0)"
+evaluation/mmp.py,236,72.0,"m_c5_plus = max(72.0, 630.0 - 10.3 * params.oil_gravity)"
+evaluation/mmp.py,236,630.0,"m_c5_plus = max(72.0, 630.0 - 10.3 * params.oil_gravity)"
+evaluation/mmp.py,236,10.3,"m_c5_plus = max(72.0, 630.0 - 10.3 * params.oil_gravity)"
+evaluation/mmp.py,237,0.36,b = (m_c5_plus ** 0.36) / (0.641 * (T ** 0.21))
+evaluation/mmp.py,237,0.641,b = (m_c5_plus ** 0.36) / (0.641 * (T ** 0.21))
+evaluation/mmp.py,237,0.21,b = (m_c5_plus ** 0.36) / (0.641 * (T ** 0.21))
+evaluation/mmp.py,243,1.25,c = 1.0 + 1.25 * (impurity_frac ** 0.8)
+evaluation/mmp.py,243,0.8,c = 1.0 + 1.25 * (impurity_frac ** 0.8)
+evaluation/mmp.py,247,145.038,return float(mmp_mpa * 145.038)
+evaluation/mmp.py,259,304.1,"- T_pc,CO2 = 304.1 K (87.9°F)"
+evaluation/mmp.py,259,87.9,"- T_pc,CO2 = 304.1 K (87.9°F)"
+evaluation/mmp.py,260,2.41,"- exponent_A = max(0.5, 2.41 - 0.00284 * C7+_MW)"
+evaluation/mmp.py,260,0.00284,"- exponent_A = max(0.5, 2.41 - 0.00284 * C7+_MW)"
+evaluation/mmp.py,269,304.1,"""CO2"": 304.1,"
+evaluation/mmp.py,270,190.6,"""CH4"": 190.6,"
+evaluation/mmp.py,271,126.2,"""N2"": 126.2,"
+evaluation/mmp.py,272,373.2,"""H2S"": 373.2,"
+evaluation/mmp.py,273,305.3,"""C2"": 305.3,"
+evaluation/mmp.py,274,369.8,"""C3"": 369.8,"
+evaluation/mmp.py,281,304.1,"tc = CRITICAL_TEMPS_K.get(comp.upper(), 304.1)"
+evaluation/mmp.py,294,0.2,"exponent_A = max(0.2, 2.41 - 0.00284 * params.c7_plus_mw)"
+evaluation/mmp.py,294,2.41,"exponent_A = max(0.2, 2.41 - 0.00284 * params.c7_plus_mw)"
+evaluation/mmp.py,294,0.00284,"exponent_A = max(0.2, 2.41 - 0.00284 * params.c7_plus_mw)"
+evaluation/mmp.py,298,50.0,"t_ratio = CRITICAL_TEMPS_K[""CO2""] / max(50.0, tpc_k)"
+evaluation/mmp.py,319,35.0,fallback to a typical reservoir crude default (35.0 °API).
+evaluation/mmp.py,330,10.0,if 10.0 <= val <= 65.0:
+evaluation/mmp.py,330,65.0,if 10.0 <= val <= 65.0:
+evaluation/mmp.py,340,5.0,if 5.0 <= ppg <= 12.0:
+evaluation/mmp.py,340,12.0,if 5.0 <= ppg <= 12.0:
+evaluation/mmp.py,341,8.337,gamma_o = ppg / 8.337
+evaluation/mmp.py,342,141.5,api = (141.5 / gamma_o) - 131.5
+evaluation/mmp.py,342,131.5,api = (141.5 / gamma_o) - 131.5
+evaluation/mmp.py,343,15.0,"return float(max(15.0, min(50.0, api)))"
+evaluation/mmp.py,343,50.0,"return float(max(15.0, min(50.0, api)))"
+evaluation/mmp.py,350,500.0,"R_s = float(pvt.rs[0]) if (hasattr(pvt, ""rs"") and pvt.rs is not None and pvt.rs.size > 0) else 500.0"
+evaluation/mmp.py,351,0.7,"gamma_g = float(getattr(pvt, ""gas_specific_gravity"", 0.7) or 0.7)"
+evaluation/mmp.py,351,0.7,"gamma_g = float(getattr(pvt, ""gas_specific_gravity"", 0.7) or 0.7)"
+evaluation/mmp.py,352,150.0,"T = float(getattr(pvt, ""temperature"", 150.0) or 150.0)"
+evaluation/mmp.py,352,150.0,"T = float(getattr(pvt, ""temperature"", 150.0) or 150.0)"
+evaluation/mmp.py,362,0.972,f_val = ((b_o - 0.972) / 0.000147) ** (1.0 / 1.175)
+evaluation/mmp.py,362,0.000147,f_val = ((b_o - 0.972) / 0.000147) ** (1.0 / 1.175)
+evaluation/mmp.py,362,1.175,f_val = ((b_o - 0.972) / 0.000147) ** (1.0 / 1.175)
+evaluation/mmp.py,363,1.25,rem = f_val - 1.25 * T
+evaluation/mmp.py,367,0.65,if 0.65 <= gamma_o <= 1.05:
+evaluation/mmp.py,367,1.05,if 0.65 <= gamma_o <= 1.05:
+evaluation/mmp.py,368,141.5,api = (141.5 / gamma_o) - 131.5
+evaluation/mmp.py,368,131.5,api = (141.5 / gamma_o) - 131.5
+evaluation/mmp.py,369,15.0,"return float(max(15.0, min(50.0, api)))"
+evaluation/mmp.py,369,50.0,"return float(max(15.0, min(50.0, api)))"
+evaluation/mmp.py,374,35.0,"logger.info(""Using standard reservoir crude oil gravity (35.0°API) as default PVT estimate."")"
+evaluation/mmp.py,375,35.0,return 35.0
+evaluation/mmp.py,456,0.98,"and mmp_params.injection_gas_composition.get(""CO2"", 0.0) < 0.98"
+evaluation/mmp.py,462,0.95,"and mmp_params.injection_gas_composition.get(""CO2"", 0.0) < 0.95"

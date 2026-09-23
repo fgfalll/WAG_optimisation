@@ -11,11 +11,11 @@ sequenceDiagram
     participant MMP as evaluation/mmp.py
     participant Hybrid as PhDHybridRecoveryModel
     participant PGF as core/engine_surrogate/profile_generator_fast.py
-    participant ODE as scipy.integrate.solve_ivp
+    participant MatBal as Coupled IPR & Material Balance Tank
     participant Obj as core/objectives/wrapper.py
 
     UI->>Opt: run_optimization(config, reservoir_data)
-    loop Every Generation / Trial
+    loop Every Generation / Candidate Evaluation
         Opt->>Factory: create_engine("surrogate")
         Factory-->>Opt: SurrogateEngineWrapper instance
         Opt->>Wrap: evaluate_scenario(params, reservoir_data)
@@ -26,8 +26,8 @@ sequenceDiagram
         Hybrid-->>Surv: Ultimate Recovery Factor (RF)
         Surv->>PGF: generate_profiles(eor_params, rf, operational_params)
         PGF-->>Surv: oil, water, gas rate profiles
-        Surv->>ODE: solve_ivp(tank_pressure_ode, y0=p_init)
-        ODE-->>Surv: pressure_profile (psi)
+        Surv->>MatBal: _calculate_pressure_profile(q_inj, q_prod, Bg_dynamic, IPR)
+        MatBal-->>Surv: pressure_profile (psi, bounded by 0.90*P_frac)
         Surv->>Surv: _calculate_co2_purchased_recycled(injection, gas_prod)
         Surv->>Surv: _calculate_engine_npv(profiles, econ_params)
         Surv-->>Wrap: SimulationResults(profiles, npv, rf, stored_co2)

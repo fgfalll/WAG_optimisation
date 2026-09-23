@@ -1,4 +1,5 @@
 parameter,file,value,unit,hypothesis,provenance,risk
-api_subtrahend_55,core/engine_surrogate/analytical_models.py:560,55.0,deg API,Upper limit for light crude oil gravity in Cronquist dataset,UNKNOWN,Singularity for light oils with API >= 55 (produces complex/negative numbers)
+api_subtrahend_55,core/engine_surrogate/analytical_models.py:560,55.0,deg API,Upper limit for light crude oil gravity in Cronquist dataset,UNKNOWN,Singularity for light oils with API >= 55
 phd_miscibility_steepness_alpha,core/engine_surrogate/analytical_models.py:730,0.15,dimensionless,Transition width parameter for near-miscible miscibility development,UNKNOWN,Arbitrary tuning without experimental coreflood calibration
-default_rock_compressibility,core/data_models.py:1740,4.0e-6,1/psi,Standard sandstone pore volume compressibility default,STANDARD CORRELATION,May underestimate compaction drive in high-porosity unconsolidated sands
+default_rock_compressibility,core/data_models.py:1740,4e-06,1/psi,Standard sandstone pore volume compressibility default,STANDARD CORRELATION,May underestimate compaction drive in high-porosity unconsolidated sands
+nominal_drawdown_500,core/engine_surrogate/surrogate_engine.py:348,500.0,psi,Average operating drawdown for Permian Basin CO2 floods,UNKNOWN,"Ignores kh, skin factor, and drainage radius differences between wells"

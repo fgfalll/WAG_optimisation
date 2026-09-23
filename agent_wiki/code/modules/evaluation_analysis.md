@@ -13,12 +13,18 @@ The `evaluation/` directory contains screening models, analytical correlations, 
 
 ### MMP Correlations in `mmp.py`
 1. **Cronquist (1978)** (Default for light/medium crudes):
-   $$MMP = 15.988 \cdot T^{0.7442} \cdot \left( \frac{C_1}{C_2 - C_5} \right)^{0.2111} \cdot (55 - \gamma_{API})^{0.279}$$
-   *Singularity warning*: Requires $\gamma_{API} < 55^\circ\text{API}$.
-2. **Lee (1979)**:
-   Empirical polynomial correlation based on reservoir temperature and molecular weight of pentanes-plus ($M_{C5+}$).
-3. **Glaso (1985)**:
-   Correlation calibrated for North Sea volatile crudes.
+   $$P_{MMP} = 15.988 \cdot T_F^Y \quad [\text{psia}]$$
+   where $Y = 0.744206 + 0.0011038 \cdot MW_{C5+} + 0.0015279 \cdot Vol$.
+   $MW_{C5+} = 4247.98641 \cdot \text{API}^{-0.87022}$ (DOE / CO₂ Prophet standard formulation).
+   *Robustness*: Fully verified non-singular and monotonic across light crudes and condensates ($\text{API} \ge 55^\circ$, SCI-FLAW-13 resolved).
+2. **Yellig & Metcalfe (1980)**:
+   Published pure-CO₂ correlation with low-temperature bubble-point/critical pressure capping ($1070\text{ psia}$ for $T < 95^\circ\text{F}$).
+3. **Alston et al. (1985)**:
+   CO₂ and contaminated injection gas streams using Kay's pseudo-critical temperature rules $(T_{pc,\text{CO2}}/T_{pc,\text{gas}})^A$.
+4. **Yuan et al. (2005)**:
+   Compositional multi-component minimum miscibility correlation with guaranteed impurity penalty factor $c \ge 1.0$.
+5. **Lee (1979)** & **Glaso (1985)**:
+   Empirical correlations based on reservoir temperature, volatile fractions, and heavy component molecular weights.
 
 ---
 

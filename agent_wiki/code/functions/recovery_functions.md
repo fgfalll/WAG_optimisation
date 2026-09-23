@@ -11,16 +11,16 @@ Calculates the Minimum Miscibility Pressure (psia) required for multi-contact mi
 
 ### Available Methods
 1. `"cronquist"` (Default):
-   $$MMP = 15.988 \cdot T^{0.7442} \cdot \left( \frac{C_1}{C_2 - C_5} \right)^{0.2111} \cdot (55 - \gamma_{API})^{0.279}$$
-   - $T$: Temperature in °F.
-   - $C_1$: Mole fraction of methane in crude.
-   - $C_2 - C_5$: Mole fraction of intermediate hydrocarbons.
-   - $\gamma_{API}$: Crude stock tank oil gravity.
-   - *Singularity guard*: If $\gamma_{API} \ge 55$, clamps API to 54.9 to avoid complex numbers.
-2. `"lee"`: Temperature and heptanes-plus molecular weight polynomial.
-3. `"glaso"`: Volatile oil correlation.
-4. `"alston"`: C2-C4 intermediate enrichment correlation.
-5. `"yuan"`: Impure CO₂ stream correlation (N₂ and CH₄ contamination adjustments).
+   $$P_{MMP} = 15.988 \cdot T_F^Y \quad [\text{psia}]$$
+   - $T_F$: Temperature in °F.
+   - $Y = 0.744206 + 0.0011038 \cdot MW_{C5+} + 0.0015279 \cdot Vol$.
+   - $MW_{C5+} = 4247.98641 \cdot \text{API}^{-0.87022}$ (DOE / CO₂ Prophet standard formulation) or $\max(72.0, M_{C7+} - 20.0)$.
+   - $Vol$: Mole percent of volatiles ($C_1 + N_2$) in crude oil.
+   - *Robustness*: Monotonically decreasing with API gravity, non-singular for all $\text{API} \ge 55^\circ$ (SCI-FLAW-13 resolved).
+2. `"yellig_metcalfe"`: SPE 7477 pure-CO₂ correlation with $1070\text{ psia}$ lower floor for $T < 95^\circ\text{F}$.
+3. `"alston"`: C2-C4 intermediate enrichment and impure gas streams via Kay's pseudo-critical temperature rules $(T_{pc,\text{CO2}}/T_{pc,\text{gas}})^A$.
+4. `"yuan"`: Compositional correlation with non-decreasing impurity factor $c = 1.0 + 1.25 \cdot (1 - x_{\text{CO2}})^{0.8}$.
+5. `"lee"` & `"glaso"`: Volatile and heavy crude correlations.
 
 ---
 

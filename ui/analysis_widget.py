@@ -37,6 +37,7 @@ from PyQt6.QtCore import pyqtSignal, Qt, QEvent
 from ui.sensitivity_widget import RedesignedSensitivityWidget
 from ui.widgets.parameter_tree_view import ParameterSelectionTreeView
 from ui.widgets.edit_uq_parameter_dialog import EditUQParameterDialog
+from utils.config_manager import ConfigManager
 
 SensitivityAnalysisWorker: Optional[Any] = None
 UQWorker: Optional[Any] = None

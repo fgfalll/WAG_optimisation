@@ -91,12 +91,14 @@ _PHYS_CONSTANTS = PhysicalConstants()
 DAYS_PER_YEAR = _PHYS_CONSTANTS.DAYS_PER_YEAR
 ACRES_TO_CM2 = 40468564.224
 B_GAS_RB_PER_MSCF = 5.0  # Reservoir barrels per thousand standard cubic feet
+EPSILON = 1e-10
 
 logger = logging.getLogger(__name__)
 
 from core.plotting_manager import PlottingManager
 from core.objectives import ObjectiveFunctions
 from core.objectives.storage import calculate_geomechanical_containment_score
+from core.simulation.simulator_exporter import SimulatorExporter
 
 
 INJECTION_SCHEMES = ["continuous", "wag", "tapered", "huff_n_puff", "swag"]
@@ -231,9 +233,13 @@ class OptimizationEngine:
 
         # Initialize B_gas from SolventExtendedPVTEngine
         try:
-            pvt_engine = SolventExtendedPVTEngine()
+            pvt_engine = SolventExtendedPVTEngine(
+                reservoir_temperature_f=self.reservoir.temperature,
+                initial_pressure_psi=self.reservoir.initial_pressure,
+                api_gravity=getattr(self.reservoir, "oil_gravity_api", 35.0),
+            )
             self.b_gas_rb_per_mscf = pvt_engine.calculate_co2_fvf_rb_per_mscf(
-                p_psia=self.reservoir.initial_pressure,
+                pressure_psi=self.reservoir.initial_pressure,
                 t_f=self.reservoir.temperature,
             )
             logger.info(

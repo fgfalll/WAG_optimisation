@@ -34,36 +34,6 @@ This document catalogs logic, equations, and code paths that are mathematically 
 
 ---
 
-### B. Unit Inconsistency in Reservoir Tank Pressure ODE [RESOLVED]
-- **Location**: [core/engine_surrogate/surrogate_engine.py:904-912](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L904-L912).
-- **Previous Defect**:
-  - `profile_result["injection_profile"]` in MSCFD was subtracted directly from production rates in RB/day without multiplying by $B_g$.
-  - This distorted pressure derivative $dP/dt$ by a factor of 3 to 5.
-- **Resolution**:
-  - Converted injection rate via $B_g = 2.07\text{ RB/MSCF}$ ($q_{\text{inj\_rb}} = q_{\text{inj\_mscfd}} \times 2.07$). Liquid production and gas injection are now strictly in reservoir barrels per day.
-
----
-
-### C. Recycled Gas Double-Subtraction in Material Balance [RESOLVED]
-- **Location**: [analysis/material_balance.py:216-249](file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L216-L249).
-- **Previous Defect**:
-  - `net_injection_tonne = purchased_tonne - recycled_tonne_raw` and then subtracted `produced_co2_tonne`, effectively subtracting recycled gas twice.
-- **Resolution**:
-  - Formulated mass conservation strictly as $M_{\text{stored}} = M_{\text{purchased}} - M_{\text{uncaptured}} - M_{\text{leakage}}$. Mass conservation now closes exactly.
-
----
-
-### C2. 35.3× OOIP Dimensional Unit Inconsistency [RESOLVED]
-- **Location**: [core/data_integration_engine.py:408-425](file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py#L408-L425).
-- **Previous Defect**:
-  - Grid block sizes `dx, dy, dz` were generated in **feet** by `DataManagementWidget`.
-  - `_create_reservoir_data` divided `nz * dz` by 0.3048 ($3.28\times$ inflation) and divided `(nx * dx * ny * dy)` by 4046.86 instead of 43560.0 ($10.76\times$ inflation).
-  - Combined $35.314\times$ inflation caused calculated OOIP of $171,231,839\text{ STB}$ against provided $4,848,750\text{ STB}$, tripping validation.
-- **Resolution**:
-  - Implemented exact field unit conversion ($43560\text{ ft}^2/\text{acre}$) and preserved vertical thickness directly in feet. Explicit dimensions passed from `DataManagementWidget`. Exact match achieved ($0.0\%$ discrepancy).
-
----
-
 ### D. Hard Recovery Factor Cap of 0.80
 - **Location**: [core/engine_surrogate/analytical_models.py:205](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py#L205).
 - **Code**: `return float(np.clip(rf, 0.05, 0.80))`
@@ -96,146 +66,6 @@ This document catalogs logic, equations, and code paths that are mathematically 
 - **Recommended fix**: Perturb against the merged dictionary `params_with_defaults`, include `c7_plus_fraction` in the loop, or deprecate/remove the method if gradient-based optimization is not supported.
 
 ---
-
-### F. 12× Recovery Factor Discrepancy in Data Validation [RESOLVED]
-- **Location**: [analysis/data_validation.py:288-348](file:///d:/rep/4.6/co2eor_optimizer/analysis/data_validation.py#L288-L348).
-- **Previous Defect**:
-  - `DataValidator._get_oil_production()` selected `oil_production_rate` (181 points).
-  - Because no key contained `"monthly"`, integration assumed an annual step size of $dt = 365.25\text{ days}$ instead of $dt \approx 30.4375\text{ days}$.
-  - Calculated oil was scaled by $12\times$, producing calculated recovery factors such as $4.680$ against reported $0.390$ (difference of $4.290 > 0.01$ tolerance).
-- **Resolution**:
-  - The validator now detects monthly sampling from `time_vector`, `monthly_time_years`, or array length (> 100 points for a 15-year simulation), adjusts $dt$ accordingly, and prioritizes cumulative oil volumes (`cumulative_oil`) when present.
-
----
-
-### G. Recycled CO₂ Unit Explosion (21.2M Tonnes) [RESOLVED]
-- **Location**: [analysis/material_balance.py:108-142](file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L108-L142).
-- **Previous Defect**:
-  - In `calculate_breakthrough_aware_recycling()`, cumulative oil in metric tonnes was multiplied directly by GOR in SCF/STB:
-    `produced_gas_tonne = cum_oil_tonne * current_gor * 0.001`
-  - This mixed mass in tonnes with volume in SCF, inflating calculated recycled gas to $21,200,000\text{ tonnes}$ (exceeding total injected CO₂ by a factor of 10).
-- **Resolution**:
-  - GOR in SCF/STB is converted to MSCF ($GOR / 1000.0$), multiplied by cumulative oil in STB and CO₂ density, and physically bounded such that recycled CO₂ cannot exceed produced CO₂:
-    `recycled_tonne = np.minimum(recycled_tonne_raw, produced_co2_tonne)`.
-
----
-
-### H. 180-Year Material Balance Time Vector Scaling [RESOLVED]
-- **Location**: [analysis/material_balance.py:632-636](file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L632-L636).
-- **Previous Defect**:
-  - `create_material_balance_from_optimization()` passed monthly arrays of length 181 to `calculate_material_balance()`, which treated array indices as annual steps (`np.arange(1, 182)`), stretching the x-axis to 180 project years.
-- **Resolution**:
-  - Explicitly scaled monthly balance time axes to project years: `balance_data["years"] = np.arange(1, len(...) + 1) / 12.0`.
-
----
-
-### I. 15-Bar Production Profile Truncation [RESOLVED]
-- **Location**: [core/optimisation_engine.py:856-930](file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L856-L930).
-- **Previous Defect**:
-  - `FastProfileGenerator` generates 181 monthly points. Assigning this 181-element array directly to `yearly_oil_stb` while setting `yearly_time_years = np.arange(1, 16)` caused the plotting routines to truncate the profile to the first 15 months (plateau data), displaying 15 identical flat bars.
-- **Resolution**:
-  - `OptimizationEngine.evaluate_for_analysis()` aggregates the 181 monthly steps into true 15-element annual totals for `annual_oil_stb` and `yearly_oil_stb`, matching the 15-year project lifetime.
-
----
-
-### J. CO₂ Utilization Penalty 1,000,000.00 Key Mismatch [RESOLVED]
-- **Location**: [core/objectives/wrapper.py:105-148](file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py#L105-L148).
-- **Previous Defect**:
-  - `_calculate_objective_functions()` looked only for `"annual_co2_purchased_mscf"`. Because the engine generated `"yearly_co2_purchased_mscf"`, the objective failed and assigned the fallback penalty $1,000,000.00$.
-- **Resolution**:
-  - Provided complete aliases (`annual_` and `yearly_`) in engine profiles and updated `wrapper.py` to inspect both keys.
-
----
-
-### K. Class E Artificial Storage Modifier Synthesis [RESOLVED]
-- **Location**: [core/objectives/wrapper.py:130-137](file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py#L130-L137).
-- **Previous Defect**:
-  - If simulation profiles or storage parameters were missing, the wrapper synthesized an artificial storage efficiency via `default_efficiency = max(0.3, 0.5 * (recovery_factor / 0.35))`.
-  - This awarded ~50% storage credit based purely on oil recovery without verifying any physical CO₂ retention, falsifying scientific outcomes to cheat GA penalties.
-- **Resolution**:
-  - Completely eradicated Class E synthesis. When profiles or storage parameters are missing, `storage_efficiency` evaluates strictly to `float("nan")`, and the chromosome is pruned with `FAILURE_PENALTY` ($-10^{12}$).
-
----
-
-### L. Penalty Dilution Multipliers (*0.1, *0.8) and Silent Bare Exceptions [RESOLVED]
-- **Location**: [core/optimisation_engine.py:1705-1805](file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1705-L1805), [flow/compositional_solver.py:714](file:///d:/rep/4.6/co2eor_optimizer/core/compositional_engine/flow/compositional_solver.py#L714), [phase_behavior/flash_calculator.py:292](file:///d:/rep/4.6/co2eor_optimizer/core/compositional_engine/phase_behavior/flash_calculator.py#L292).
-- **Previous Defect**:
-  - When storage sanity checks or breakthrough constraints were violated, penalties were arbitrarily softened via `FAILURE_PENALTY * 0.1` or `FAILURE_PENALTY * 0.8 + constraint_penalty`, allowing unphysical chromosomes to survive in the GA population.
-  - Furthermore, core solver and thermodynamic calculations caught `except Exception: pass` silently.
-- **Resolution**:
-  - Eradicated all penalty dilution multipliers; unphysical chromosomes are pruned with full `FAILURE_PENALTY`.
-  - Replaced all bare exceptions across the mathematical and solver core with specific exception types (`FloatingPointError`, `ZeroDivisionError`, `ValueError`, `RuntimeError`), logging exact state variables (Pressure, Saturation, Temperature, Composition).
-
----
-
-### M. Plotly Dummy Mock Classes Swallowing Visualizations [RESOLVED]
-- **Location**: [analysis/material_balance.py:9-50](file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L9-L50).
-- **Previous Defect**:
-  - `material_balance.py` defined dummy mock classes (`class go: class Figure: pass`) that swallowed plot generation silently if Plotly failed to import, outputting console print text instead of rendering interactive charts.
-- **Resolution**:
-  - Deleted all dummy mock classes. Plotly is now imported directly as a hard, mandatory dependency, and its presence is validated during startup in `main.py`.
-
----
-
-### N. 1000× Volumetric Downhole Velocity & Dimensionless Number Error ($N_c$, $N_g$)
-- **Location**: [core/engine_surrogate/analytical_models.py:813-820](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py#L813-L820), [core/engine_surrogate/surrogate_engine.py:1137-1138](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L1137-L1138).
-- **Claim / Expected Physics**: Downhole volumetric flow rate in reservoir barrels per day is $q_{\text{res\_bbl}} = q_{\text{MSCFD}} \times B_g = q_{\text{MSCFD}} / (1 / B_g)$. For supercritical CO₂, $B_g \approx 0.45\text{ RB/MSCF}$, so $1/B_g \approx 2.2\text{ MSCF/RB}$. Interstitial velocity $u = q_{\text{res\_ft3\_day}} / A$.
-- **Actual Code**:
-  In `surrogate_engine.py:1138`:
-  ```python
-  # mscf_per_res_bbl = 1/Bg = ~483 SCF/res-bbl
-  "mscf_per_res_bbl": 1.0 / max(getattr(reservoir_data, "bg", 0.00207), 1e-6),
-  ```
-  In `analytical_models.py:816-817`:
-  ```python
-  mscf_per_rb = params.get("mscf_per_res_bbl") or 2.0
-  q_res_bbl_day = inj_mscfd / max(mscf_per_rb, EPSILON)
-  ```
-- **Consequence**:
-  1. `surrogate_engine.py` computed $1 / 0.00207 = 483.09\text{ SCF/RB}$ and stored it under the key `"mscf_per_res_bbl"`.
-  2. `analytical_models.py` treated this value as MSCF/RB and divided `inj_mscfd` (e.g. 5,000 MSCFD) by 483.09, resulting in **10.35 res-bbl/day** instead of ~10,350 res-bbl/day ($1000\times$ deflation).
-  3. Interstitial velocity $u$ is deflated by $1000\times$ ($0.00116\text{ ft/day}$).
-  4. Capillary Number $N_c = \frac{\mu u}{\sigma} \times 3.5\times 10^{-6}$ is deflated by $1000\times$ ($N_c < 10^{-7} \ll N_{c\_ref} = 10^{-5}$), ensuring the capillary desaturation curve **never triggers** ($S_{or} = S_{or\_imm} = 0.30$ always).
-  5. Gravity Number $N_g = \frac{\Delta\rho g k}{\mu u}$ has $u$ in the denominator, inflating $N_g$ by **$1000\times$**, causing vertical sweep efficiency $e_v = 1 / (1 + \beta N_g)$ to collapse toward zero whenever dip angle $\theta > 0$.
-- **Severity**: Critical (Deflates downhole velocity and capillary desaturation by $1000\times$, corrupting recovery and sweep across all runs).
-- **Status**: ✅ **RESOLVED** (2026-09-17).
-- **Resolution**:
-  The following three concurrent Bg unit errors were fixed together in `surrogate_engine.py`:
-  
-  **Bug 1** — `injection_profile` treated as res-bbl/day (was MSCFD):
-  ```python
-  # BEFORE (wrong): MSCFD treated as RB/day
-  q_inj_rb = profile_result["injection_profile"]
-  # AFTER (correct): MSCFD × Bg[RB/MSCF] = RB/day
-  mscf_per_rb = params.get("mscf_per_res_bbl", 0.5)  # MSCF/RB
-  bg_rb_per_mscf = 1.0 / max(mscf_per_rb, 1e-6)        # RB/MSCF
-  q_inj_rb = profile_result["injection_profile"] * bg_rb_per_mscf
-  ```
-
-  **Bug 2** — `mscf_per_res_bbl` already stored as MSCF/RB but incorrectly multiplied by 1000 to get SCF/RB:
-  ```python
-  # BEFORE (wrong): bg_from_params = 1.0 / (0.5 * 1000.0) = 0.002 RB/SCF (wrong units compounding)
-  bg_from_params = 1.0 / (params.get("mscf_per_res_bbl", 500.0) * 1000.0)
-  # AFTER (correct): bg in RB/MSCF = 1 / mscf_per_res_bbl
-  bg_rb_per_mscf = 1.0 / max(mscf_per_rb, 1e-6)       # RB/MSCF ≈ 2.0-2.5
-  bg = bg_rb_per_mscf / 1000.0                           # RB/SCF for gas_profile conversion
-  ```
-
-  **Bug 3** — HCPVI and breakthrough time calculation used wrong Bg direction:
-  ```python
-  # BEFORE: cum_inj_rb = cum_inj_mscf * 1000.0 * (1/(mscf_per_res_bbl*1000)) — cancels to dimensionless!
-  # AFTER: cum_inj_rb = cum_inj_mscf / mscf_per_res_bbl  (MSCF / (MSCF/RB) = RB)
-  cum_inj_rb = cum_inj_mscf / max(mscf_per_rb_recouple, 1e-6)
-  ```
-  
-  The unit convention established:
-  - `mscf_per_res_bbl` stores values in **MSCF/RB** (≈ 0.4–0.6 for supercritical CO₂)
-  - `bg` = `1 / mscf_per_res_bbl` = **RB/MSCF** (≈ 2.0–2.5 for supercritical CO₂)  
-  - `injection_profile` is in **MSCFD** (raw from FastProfileGenerator)
-  - Conversion: `q_inj_RB_day = q_inj_MSCFD × bg_RB_per_MSCF`
-
----
-
 
 ### O. Silent Profile Constraint Erasure in `_objective_function_wrapper`
 - **Location**: [core/optimisation_engine.py:1777-1788](file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1777-L1788) vs [1820-1835](file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1820-L1835).
@@ -419,21 +249,6 @@ This document catalogs logic, equations, and code paths that are mathematically 
 
 ---
 
-### Y. Cronquist MMP Formula Uses Ad-Hoc `(55 - API)` Term Crashing on Light Oils (> 55 °API)
-- **Location**: [evaluation/mmp.py:111-112](file:///d:/rep/4.6/co2eor_optimizer/evaluation/mmp.py#L111-L112).
-- **Claim / Expected Math**: Published Cronquist (1978) correlation uses volatile oil mole fraction and temperature, not an ad-hoc $(55 - API)$ polynomial.
-- **Actual Code**:
-  ```python
-  gravity_term = 55.0 - params.oil_gravity
-  mmp = 15.988 * (params.temperature**0.744206) * (gravity_term**0.279033)
-  ```
-- **Consequence**: When oil gravity exceeds 55 °API (volatile oils/condensates), `gravity_term < 0`, and $(-1)^{0.279}$ produces NaN or raises `ValueError`, crashing MMP evaluation.
-- **Severity**: Medium (Unphysical custom modification of literature correlation; crashes on light fluids).
-- **Status**: Open.
-- **Recommended fix**: Implement original published Cronquist (1978) correlation or clamp `gravity_term = max(55.0 - params.oil_gravity, 1.0)`.
-
----
-
 ### Z. Unconstrained Recycling Volume Can Exceed Injected Volume in `surrogate_engine.py`
 - **Location**: [core/engine_surrogate/surrogate_engine.py:1350-1353](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L1350-L1353).
 - **Claim / Expected Physics**: Recycled CO₂ reinjected cannot exceed total CO₂ injection rate ($q_{\text{recycled}} \le q_{\text{injected}}$).
@@ -513,88 +328,6 @@ This document catalogs logic, equations, and code paths that are mathematically 
 
 ---
 
-### AD. 20× Produced CO₂ Shrinkage Bug [RESOLVED]
-- **Location**: [analysis/material_balance.py:172-178](file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L172-L178).
-- **Previous Defect**:
-  - Pure produced CO₂ stream `annual_co2_produced_mscf` was multiplied by `co2_fraction_of_produced` (default $0.05$), vanishing 95% of produced CO₂ (e.g. 749,645 tonnes disappeared).
-  - Recycled volume `recycled_tonne = np.minimum(recycled_tonne_raw, produced_co2_tonne)` was crushed to $5\%$ of true value, destroying mass conservation.
-- **Resolution**:
-  - Eliminated the redundant fractional multiplier on the pure CO₂ stream. Mass balance now closes with exact $0.0\%$ error.
-
----
-
-### AE. Hallucinated Caprock Leakage from Normal Wellbore Production [RESOLVED]
-- **Location**: [core/optimisation_engine.py:1458-1485](file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1458-L1485).
-- **Previous Defect**:
-  - Caprock leakage was algebraically defined as `total_purchased - total_recycled - net_stored = total_produced`, penalizing ordinary wellbore production with carbon taxes as if it were subsurface containment failure.
-- **Resolution**:
-  - Decoupled production from containment. Caprock leakage is now strictly governed by geomechanical containment limits ($P_{\text{sandface}} > 0.90 \times P_{\text{frac}}$) or explicit seal fracture models.
-
----
-
-### AF. Pressure Search Space Squeeze from Dimensional Mismatch on $\Delta P_{\text{inj}}$ [RESOLVED]
-- **Location**: [core/optimisation_engine.py:1906-1920](file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1906-L1920).
-- **Previous Defect**:
-  - `inj_rate_max / ii` divided field-wide MSCFD by single-well II without unit conversion or well count splitting, producing an artificial $4,000\text{ psi}$ overpressure penalty that squeezed the upper pressure bound down to $2322\text{ psia}$ ($50\text{ psi}$ above MMP).
-- **Resolution**:
-  - Fixed well splitting ($q_{\text{well}} = q_{\text{inj}} / n_{\text{inj}}$) and bounded near-wellbore transient overpressure to realistic field limits ($\le 500\text{ psi}$), opening the search space up to $4,500+\text{ psia}$.
-
----
-
-### AG. Plateau Rate Decoupling from Collapsing Drawdown [RESOLVED]
-- **Location**: [core/engine_surrogate/profile_generator_fast.py:518-596](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py#L518-L596), [core/engine_surrogate/surrogate_engine.py:950-990](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L950-L990).
-- **Previous Defect**:
-  - `_plateau_decline_profile` held an arbitrary constant rate bar for up to 11 years (`plateau_fraction = 0.79`), completely decoupled from a 65.7% collapse in reservoir driving drawdown.
-- **Resolution**:
-  - Implemented two-way staggered deliverability coupling. Single-well deliverability is evaluated at each timestep via Composite Vogel-Darcy IPR clamped to dynamic pressure $P_{\text{res}}(t)$. Decline curves emerge naturally from first principles.
-
----
-
-### AH. Apparent Mass Balance Discrepancy from Recycled Stream Double-Counting [RESOLVED]
-- **Location**: [utils/run_exporter.py:310-335](file:///d:/rep/4.6/co2eor_optimizer/utils/run_exporter.py#L310-L335).
-- **Previous Defect**:
-  - `_build_run_manifest` compared `total_injected_tonne` (fresh purchased CO₂, 740,490 t) against `total_stored_tonne + total_produced_tonne + total_leakage_tonne` (1,452,195 t), reporting an apparent 50.99% closure ($711,705.5\text{ t}$ error, equal to cumulative recycled gas).
-- **Resolution**:
-  - Formulated closed-loop gross mass balance: $\text{Gross Injected} = \text{Purchased} + \text{Recycled} = \text{Net Stored} + \text{Total Leakage} + \text{Gross Produced}$. Closure $> 99.9\%$ verified.
-
----
-
-### AI. Post Shut-In Unattenuated CO₂ Production & False Ecology Penalties [RESOLVED]
-- **Location**: [core/engine_surrogate/surrogate_engine.py:1260-1285](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L1260-L1285).
-- **Previous Defect**:
-  - `_apply_shut_in_guard` only checked `"water_production_rate"` and `"hydrocarbon_gas_production_rate"`, ignoring `FastProfileGenerator` output keys `water_profile`, `co2_gas_profile`, and `solution_gas_profile`. CO₂ production continued flowing at full rate for 10+ years post-shut-in ($444,672\text{ t}$ unattenuated), incurring repeated hundreds of thousands of dollars in false ecology penalties.
-- **Resolution**:
-  - Extended shut-in guards to taper and zero all phase streams: `water_profile`, `co2_gas_profile`, `solution_gas_profile`, `gas_profile`, and `injection_profile`.
-
----
-
-### AJ. Decline Curve Analysis Plateau Regression Breakdown ($R^2 = -3.14$) [RESOLVED]
-- **Location**: [analysis/decline_curve_analysis.py:90-130](file:///d:/rep/4.6/co2eor_optimizer/analysis/decline_curve_analysis.py#L90-L130).
-- **Previous Defect**:
-  - Arps equations were fitted directly across a 3-year flat plateau through the steep decline, causing mathematical regression breakdown ($R^2 = -3.14$) and unphysical EUR overestimation (72% OOIP).
-- **Resolution**:
-  - Added decline onset detection ($q(t) < 0.95 \times q_{\text{peak}}$). Preserves historical plateau rates and fits Arps models strictly to the declining segment $(t - t_{\text{onset}})$, yielding $R^2 > 0.95$ and physically bounded EUR forecasts.
-
----
-
-### AK. Well-Injector-1 Role Inversion via UI Substring Default Matching [RESOLVED]
-- **Location**: [ui/widgets/manual_well_dialog.py:110-125](file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/manual_well_dialog.py#L110-L125), [core/optimisation_engine.py:1400-1420](file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1400-L1420).
-- **Previous Defect**:
-  - Status check `if status in ["active", "inactive"]` failed on `"Producer (Active)"`, assigning default name `Well-Injector-1` while internal metadata saved `metadata["type"] = "producer"`. In `core/optimisation_engine.py`, injector detection partitioned wells improperly, resulting in 0 injectors in simulation runs.
-- **Resolution**:
-  - Fixed combo text parsing, implemented bidirectional live typing synchronization between well name and role dropdown, and added explicit role partitioning (`injector_wells`, `producer_wells`).
-
----
-
-### AL. Plotly Vertical Bar Schedule Collapse & Duplicate Legend Pollution [RESOLVED]
-- **Location**: [core/plotting_manager.py:plot_well_schedule](file:///d:/rep/4.6/co2eor_optimizer/core/plotting_manager.py#L780-L860), [core/optimisation_engine.py:4400-4420](file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L4400-L4420).
-- **Previous Defect**:
-  - Vertical bar geometry used `x=[duration_days]` and `base=[start_day]` with `barmode="stack"`, collapsing all operations to a 0.8-day sliver at Day 45, and appended duplicate legend traces for every operational cycle. Additionally, `_ops_standard_production` had an artificial 10-cycle cap (`max_cycles = 10`), prematurely halting continuous production after 450 days.
-- **Resolution**:
-  - Implemented true interval geometry (`x = start_day + duration/2`, `width = duration`, `base = 0`, `barmode = "overlay"`), legend deduplication (`added_legend_phases = set()`), zero-rate hatched pattern bars with diamond markers, and removed the 10-cycle cap.
-
----
-
 ### AM. Decoupled Optimizer Pressure vs. Dynamic Tank ODE Pressure (~1,350 psi Disconnect)
 - **Location**: [core/optimisation_engine.py:3215-3222](file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L3215-L3222), [core/engine_surrogate/surrogate_engine.py:948-965](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L948-L965).
 - **Observed Defect**:
@@ -644,7 +377,38 @@ This document catalogs logic, equations, and code paths that are mathematically 
 
 ---
 
-## 2. Verified Correct Modules and Physical Formulations
+## 2. Master Resolved Discrepancies Archive
+
+All 22 historical numerical errors, units explosions, and presentation bugs previously cataloged in this document have been fully resolved and migrated into [**`agent_wiki/audit/resolved_issues.md`**](resolved_issues.md):
+
+| ID | Issue Title | Location | Status | Full Post-Mortem |
+|:---|:---|:---|:---|:---|
+| **SUSP-B** | Unit Inconsistency in Reservoir Tank Pressure ODE | `surrogate_engine.py:904` | VERIFIED | [View Record](resolved_issues.md#susp-b-unit-inconsistency-in-reservoir-tank-pressure-ode) |
+| **SUSP-C** | Recycled Gas Double-Subtraction in Material Balance | `material_balance.py:216` | VERIFIED | [View Record](resolved_issues.md#susp-c-recycled-gas-double-subtraction-in-material-balance) |
+| **SUSP-C2** | 35.3× OOIP Dimensional Unit Inconsistency | `data_integration_engine.py:408` | VERIFIED | [View Record](resolved_issues.md#susp-c2-353-ooip-dimensional-unit-inconsistency) |
+| **SUSP-F** | 12× Recovery Factor Discrepancy in Data Validation | `data_validation.py:288` | VERIFIED | [View Record](resolved_issues.md#susp-f-12-recovery-factor-discrepancy-in-data-validation) |
+| **SUSP-G** | Recycled CO₂ Unit Explosion (21.2M Tonnes) | `material_balance.py:108` | VERIFIED | [View Record](resolved_issues.md#susp-g-recycled-co2-unit-explosion-212m-tonnes) |
+| **SUSP-H** | 180-Year Material Balance Time Vector Scaling | `material_balance.py:632` | VERIFIED | [View Record](resolved_issues.md#susp-h-180-year-material-balance-time-vector-scaling) |
+| **SUSP-I** | 15-Bar Production Profile Truncation | `optimisation_engine.py:856` | VERIFIED | [View Record](resolved_issues.md#susp-i-15-bar-production-profile-truncation) |
+| **SUSP-J** | CO₂ Utilization Penalty 1,000,000.00 Key Mismatch | `wrapper.py:105` | VERIFIED | [View Record](resolved_issues.md#susp-j-co2-utilization-penalty-100000000-key-mismatch) |
+| **SUSP-K** | Class E Artificial Storage Modifier Synthesis | `wrapper.py:130` | VERIFIED | [View Record](resolved_issues.md#susp-k-class-e-artificial-storage-modifier-synthesis) |
+| **SUSP-L** | Penalty Dilution Multipliers (*0.1, *0.8) and Silent Bare Exceptions | `optimisation_engine.py:1705` | VERIFIED | [View Record](resolved_issues.md#susp-l-penalty-dilution-multipliers-01-08-and-silent-bare-exceptions) |
+| **SUSP-M** | Plotly Dummy Mock Classes Swallowing Visualizations | `material_balance.py:9` | VERIFIED | [View Record](resolved_issues.md#susp-m-plotly-dummy-mock-classes-swallowing-visualizations) |
+| **SUSP-N** | 1000× Volumetric Downhole Velocity & Dimensionless Number Error ($N_c$, $N_g$) | `analytical_models.py:813` | VERIFIED | [View Record](resolved_issues.md#susp-n-1000-volumetric-downhole-velocity--dimensionless-number-error-n_c-n_g) |
+| **SUSP-Y** | Cronquist MMP Formula Uses Ad-Hoc `(55 - API)` Term | `evaluation/mmp.py:111` | VERIFIED | [View Record](resolved_issues.md#susp-y-cronquist-mmp-formula-uses-ad-hoc-55---api-term) |
+| **SUSP-AD** | 20× Produced CO₂ Shrinkage Bug | `material_balance.py:172` | VERIFIED | [View Record](resolved_issues.md#susp-ad-20-produced-co2-shrinkage-bug) |
+| **SUSP-AE** | Hallucinated Caprock Leakage from Normal Wellbore Production | `optimisation_engine.py:1458` | VERIFIED | [View Record](resolved_issues.md#susp-ae-hallucinated-caprock-leakage-from-normal-wellbore-production) |
+| **SUSP-AF** | Pressure Search Space Squeeze from Dimensional Mismatch on $\Delta P_{\text{inj}}$ | `optimisation_engine.py:1906` | VERIFIED | [View Record](resolved_issues.md#susp-af-pressure-search-space-squeeze-from-dimensional-mismatch-on-delta-p_textinj) |
+| **SUSP-AG** | Plateau Rate Decoupling from Collapsing Drawdown | `profile_generator_fast.py:518` | VERIFIED | [View Record](resolved_issues.md#susp-ag-plateau-rate-decoupling-from-collapsing-drawdown) |
+| **SUSP-AH** | Apparent Mass Balance Discrepancy from Recycled Stream Double-Counting | `utils/run_exporter.py:310` | VERIFIED | [View Record](resolved_issues.md#susp-ah-apparent-mass-balance-discrepancy-from-recycled-stream-double-counting) |
+| **SUSP-AI** | Post Shut-In Unattenuated CO₂ Production & False Ecology Penalties | `surrogate_engine.py:1260` | VERIFIED | [View Record](resolved_issues.md#susp-ai-post-shut-in-unattenuated-co2-production--false-ecology-penalties) |
+| **SUSP-AJ** | Decline Curve Analysis Plateau Regression Breakdown ($R^2 = -3.14$) | `decline_curve_analysis.py:90` | VERIFIED | [View Record](resolved_issues.md#susp-aj-decline-curve-analysis-plateau-regression-breakdown-r2---314) |
+| **SUSP-AK** | Well-Injector-1 Role Inversion via UI Substring Default Matching | `manual_well_dialog.py:110` | VERIFIED | [View Record](resolved_issues.md#susp-ak-well-injector-1-role-inversion-via-ui-substring-default-matching) |
+| **SUSP-AL** | Plotly Vertical Bar Schedule Collapse & Duplicate Legend Pollution | `plotting_manager.py:780` | VERIFIED | [View Record](resolved_issues.md#susp-al-plotly-vertical-bar-schedule-collapse--duplicate-legend-pollution) |
+
+---
+
+## 3. Verified Correct Modules and Physical Formulations
 
 The following modules, functions, and mathematical derivations were rigorously reviewed and found to be scientifically, dimensionally, and mathematically sound:
 

@@ -47,21 +47,26 @@ MMP defines the pressure threshold at which multi-contact miscibility (MCM) deve
 
 All MMP correlations are centralized in [evaluation/mmp.py](file:///d:/rep/4.6/co2eor_optimizer/evaluation/mmp.py):
 
-### A. Cronquist Correlation (1978) - Modified
-$$P_{MMP} = 15.988 \cdot T^{0.744206} \cdot (55.0 - \gamma_{API})^{0.279033} \quad [\text{psia}]$$
-- Note: Uses $(55 - \gamma_{API})$ to force an inverse relationship where lighter oil has lower MMP.
-- Applicability: Pure CO₂ injection into light-to-medium oils ($T \in [70, 300]^\circ\text{F}$, $\gamma_{API} \in [20, 50]^\circ\text{API}$).
+### A. Cronquist Correlation (1978) - Published & Validated
+$$P_{MMP} = 15.988 \cdot T^{Y} \quad [\text{psia}]$$
+Where:
+- $Y = 0.744206 + 0.0011038 \cdot MW_{C5+} + 0.0015279 \cdot Vol$
+- $MW_{C5+} = 4247.98641 \cdot \gamma_{API}^{-0.87022}$ (DOE / CO₂ Prophet standard formulation) or $\max(72.0, M_{C7+} - 20.0)$ if $C_{7+}$ molecular weight is known.
+- $Vol$: mole percent of volatiles ($C_1 + N_2$) in the oil phase.
+- SCI-FLAW-13 eliminated: No negative power singularities at $\gamma_{API} \ge 55^\circ\text{API}$. Strictly positive, finite, monotonically decreasing with API gravity.
 
 ### B. Yellig & Metcalfe (1980)
-$$P_{MMP} = 1016 + 4.773 \cdot T - 0.00946 \cdot T^2 + 2.1 \times 10^{-5} \cdot T^3 \quad [\text{psia}]$$
-- Valid for pure CO₂ ($>98\%$). If $T < 95^\circ\text{F}$, MMP is capped at the bubble-point/critical pressure.
+$$P_{MMP} = 1833.7217 + 2.2518055 \cdot T + 0.01800674 \cdot T^2 - \frac{103949.93}{T} \quad [\text{psia}]$$
+- Valid for pure CO₂ ($>98\%$). If $T < 95^\circ\text{F}$, MMP is capped at the CO₂ bubble-point/critical pressure ($1070$ psia).
 
 ### C. Alston et al. (1985) - Impure Gas Streams
-$$P_{MMP} = P_{MMP,\text{pure}} \cdot \left( \frac{T_{pc,\text{gas}}}{T_{pc,CO2}} \right)^A$$
+$$P_{MMP} = P_{MMP,\text{pure}} \cdot \left( \frac{T_{pc,CO2}}{T_{pc,\text{gas}}} \right)^A$$
 Where:
-- $T_{pc,\text{gas}} = \sum y_i T_{pc,i}$ (Kay's pseudo-critical rule with $T_{pc,CO2}=304.1\text{K}, T_{pc,CH4}=190.6\text{K}, T_{pc,N2}=126.2\text{K}$).
-- Exponent $A = 2.41 - 0.00284 \cdot M_{C7+}$.
+- $T_{pc,\text{gas}} = \sum y_i T_{pc,i}$ (Kay's pseudo-critical rule with $T_{pc,CO2}=304.1\text{K}, T_{pc,CH4}=190.6\text{K}, T_{pc,N2}=126.2\text{K}, T_{pc,H2S}=373.2\text{K}$).
+- Exponent $A = \max(0.2, 2.41 - 0.00284 \cdot M_{C7+})$.
+- Impurity ratio ensures adding volatile contaminants ($\text{CH}_4, \text{N}_2$) properly increases MMP.
 
 ### D. Yuan et al. (2005)
 $$P_{MMP} = 145.038 \cdot a \cdot b^{x_{CO2}} \cdot c \quad [\text{psia}]$$
-- Analytical correlation based on multi-component gas flooding theory, explicitly adjusting for CH₄ contamination.
+- Analytical correlation based on multi-component gas flooding theory.
+- Impurity term $c = 1.0 + 1.25 \cdot (1 - x_{CO2})^{0.8}$ strictly enforces $MMP_{\text{impure}} \ge MMP_{\text{pure}}$.

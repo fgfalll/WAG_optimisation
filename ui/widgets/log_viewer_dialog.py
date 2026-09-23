@@ -21,6 +21,7 @@ from PyQt6.QtWidgets import (
     QFormLayout,
     QTabWidget,
     QTableWidget,
+    QTableWidgetItem,
 )
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QEvent

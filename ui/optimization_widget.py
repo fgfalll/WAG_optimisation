@@ -86,6 +86,47 @@ from utils.config_manager import ConfigManager
 logger = logging.getLogger(__name__)
 
 
+class UnlockParametersDialog(QDialog):
+    """Dialog allowing users to unlock parameters when optimization target is unreachable."""
+
+    def __init__(self, available_params: List[str], parent: Optional[QWidget] = None):
+        super().__init__(parent)
+        self.setWindowTitle(self.tr("Unlock Parameters for Re-Optimization"))
+        self.setMinimumWidth(400)
+
+        layout = QVBoxLayout(self)
+        info_label = QLabel(
+            self.tr(
+                "The optimizer could not reach the target with current constraints.\n"
+                "Select parameters to unlock, allowing the optimizer to vary them to meet the target."
+            )
+        )
+        info_label.setWordWrap(True)
+        layout.addWidget(info_label)
+
+        self.checkboxes: Dict[str, QCheckBox] = {}
+        form_layout = QFormLayout()
+
+        for param_key in available_params:
+            display_name = param_key.replace("_", " ").title()
+            checkbox = QCheckBox(display_name)
+            self.checkboxes[param_key] = checkbox
+            form_layout.addRow(checkbox)
+
+        layout.addLayout(form_layout)
+
+        button_box = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        button_box.button(QDialogButtonBox.StandardButton.Ok).setText(self.tr("Re-run Optimization"))
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
+        layout.addWidget(button_box)
+
+    def get_selected_parameters(self) -> List[str]:
+        return [key for key, checkbox in self.checkboxes.items() if checkbox.isChecked()]
+
+
 class OptimizationWidget(QWidget):
     """Main widget for configuring, running, and analyzing optimization tasks."""
 
@@ -719,6 +760,10 @@ class OptimizationWidget(QWidget):
         timestamp = datetime.datetime.fromtimestamp(record.created).strftime("%H:%M:%S")
         message = f"{timestamp} [{record.levelname}] {record.name}: {record.getMessage()}"
         self.log_display.append(message)
+
+    def set_engine(self, engine: Optional[OptimizationEngine]) -> None:
+        """Sets the active optimization engine for the widget (alias for update_engine)."""
+        self.update_engine(engine)
 
     def update_engine(self, engine: Optional[OptimizationEngine]):
         self.engine = engine

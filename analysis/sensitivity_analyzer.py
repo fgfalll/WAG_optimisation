@@ -20,7 +20,13 @@ from core.data_models import (
 from core.simulation.recovery_models import recovery_factor
 from utils.config_manager import ConfigManager
 
-EOS_MODELS_AVAILABLE = False
+try:
+    from co2eor_optimizer.core.eos_models import PengRobinsonEOS, SoaveRedlichKwongEOS
+    EOS_MODELS_AVAILABLE = True
+except ImportError:
+    EOS_MODELS_AVAILABLE = False
+    PengRobinsonEOS = None
+    SoaveRedlichKwongEOS = None
 
 # Optional import for Sobol analysis
 try:
@@ -229,6 +235,10 @@ class SensitivityAnalyzer:
         cache_key = (self._get_eos_cache_key(eos_model), pressure, temperature)
         if cache_key not in self._eos_cache:
             try:
+                if not EOS_MODELS_AVAILABLE or PengRobinsonEOS is None:
+                    logger.warning("EOS models not available for sensitivity analysis.")
+                    self._eos_cache[cache_key] = {}
+                    return {}
                 eos_type = eos_model.eos_type.lower()
                 if eos_type == "peng-robinson":
                     concrete_eos_model = PengRobinsonEOS(eos_model)
@@ -667,6 +677,7 @@ class SensitivityAnalyzer:
         return pd.DataFrame(results_list)
 
     def run_two_way_sensitivity(
+        self,
         param1_path: str,
         param1_values_str: str,
         param2_path: str,

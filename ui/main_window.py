@@ -793,11 +793,11 @@ class MainWindow(QMainWindow):
 
             if self.stacked_layout.currentIndex() == 1:
                 self._transition_to_main_app_view(
-                    focus_tab_index=current_tab_index if "current_tab_index" in locals() else 0
+                    focus_tab_index=locals().get("current_tab_index", 0)
                 )
             else:
                 self.stacked_layout.setCurrentIndex(
-                    stacked_layout_index if "stacked_layout_index" in locals() else 0
+                    locals().get("stacked_layout_index", 0)
                 )
 
             self.overview_page.add_recent_project(str(filepath))
@@ -904,6 +904,8 @@ class MainWindow(QMainWindow):
         try:
             ui_state = data["ui_state"]
             if ui_state:
+                current_tab_index = ui_state.get("current_tab_index", 0)
+                stacked_layout_index = ui_state.get("stacked_layout_index", 0)
                 self.main_tab_widget.setCurrentIndex(current_tab_index)
                 self.stacked_layout.setCurrentIndex(stacked_layout_index)
         except Exception as e:
@@ -1512,7 +1514,7 @@ class MainWindow(QMainWindow):
             report_data["sensitivity_results"] = last_run["df"]
             df = last_run["df"]
             objective_col = last_run["context"].get("objective", "npv")
-            charts["sensitivity_tornado"] = self._plotly_fig_to_base64(
+            report_charts["sensitivity_tornado"] = self._plotly_fig_to_base64(
                 self.sensitivity_analyzer_instance.plot_tornado_chart(df, objective_col)
             )
 
@@ -1526,7 +1528,7 @@ class MainWindow(QMainWindow):
             mc_results_df = self.analysis_tab.uq_engine.results.get("mc_results_df")
             if mc_results_df is not None:
                 objective_col = self.analysis_tab.uq_engine.objective_column or "npv"
-                charts["uq_distribution"] = self._plotly_fig_to_base64(
+                report_charts["uq_distribution"] = self._plotly_fig_to_base64(
                     self.analysis_tab.uq_engine.plot_mc_results(mc_results_df, objective_col)
                 )
 
@@ -1535,7 +1537,7 @@ class MainWindow(QMainWindow):
                 self.analysis_tab.dca_results
             ).generate_dca_report_data()
 
-        report_data["charts"] = charts
+        report_data["charts"] = report_charts
 
         return report_data
 

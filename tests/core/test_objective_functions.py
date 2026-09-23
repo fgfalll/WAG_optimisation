@@ -189,9 +189,12 @@ class TestObjectiveFunctions:
         econ_params.injection_cost_usd_per_ton = 10.0
         econ_params.operating_cost_usd_per_bbl = 10.0
         econ_params.initial_investment_usd = 0.0
+        econ_params.capex_usd = 0.0
+        econ_params.variable_opex_usd_per_bbl = 10.0
         econ_params.co2_purchase_cost_usd_per_tonne = 50.0
         econ_params.co2_recycle_cost_usd_per_tonne = 40.0
         econ_params.carbon_credit_usd_per_ton = 0.0
+        econ_params.co2_storage_credit_usd_per_tonne = 0.0
 
         from core.objectives.economic import calculate_npv
         baseline_npv = calculate_npv(

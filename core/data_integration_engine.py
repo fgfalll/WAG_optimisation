@@ -28,7 +28,9 @@ from core.data_models import (
     PulsedInjectionParams,
     EmpiricalFittingParameters,
     PhysicalConstants,
+    GeomechanicsParameters,
 )
+from core.geology.geostatistical_modeling import create_geostatistical_grid
 from core.engine_surrogate.surrogate_engine import SurrogateEngineWrapper
 
 _PHYS_CONSTANTS = PhysicalConstants()
@@ -342,12 +344,12 @@ class DataIntegrationEngine:
         pressure_points = np.linspace(1000, 6000, 50)
         pvt_tables = {
             "PRESSURE": pressure_points,
-            "OIL_FVF": 1.2 + 0.0001 * (pressure_points - 4000),
+            "OIL_FVF": 1.2 * np.exp(-1.5e-5 * (pressure_points - 4000)),
             "OIL_VISC": pvt_params.get("oil_viscosity_cp", 2.0)
-            * np.exp(-0.0003 * (pressure_points - 4000)),
+            * np.exp(0.00005 * (pressure_points - 4000)),
             "GAS_FVF": 0.005 * (4000 / pressure_points),
             "CO2_VISC": pvt_params.get("gas_viscosity_cp", 0.02)
-            * np.exp(-0.0002 * (pressure_points - 4000)),
+            * np.exp(0.0002 * (pressure_points - 4000)),
         }
 
         # Resolve or create EOS model for CO2-EOR
@@ -427,17 +429,18 @@ class DataIntegrationEngine:
         gas_visc = pvt_params.get("gas_viscosity_cp", 0.02)
         water_visc = pvt_params.get("water_viscosity_cp", 0.5)
 
-        # Generate oil FVF correlation
-        oil_fvf = 1.2 + 0.0001 * (pressure_points - 4000) + 0.00005 * (api - 35)
+        # Generate oil FVF correlation (thermodynamically consistent compressibility: dBo/dP < 0)
+        oil_fvf = 1.2 - 0.000015 * (pressure_points - 4000) + 0.00005 * (api - 35)
+        oil_fvf = np.maximum(oil_fvf, 1.01)
 
-        # Generate oil viscosity correlation
-        oil_viscosity = oil_visc * np.exp(-0.0003 * (pressure_points - 4000))
+        # Generate oil viscosity correlation (viscosity increases slightly with pressure: dmu/dP > 0)
+        oil_viscosity = oil_visc * np.exp(0.00005 * (pressure_points - 4000))
 
         # Generate gas FVF
-        gas_fvf = 0.005 * (4000 / pressure_points) * (gas_sg / 0.65)
+        gas_fvf = 0.005 * (4000 / np.maximum(pressure_points, 14.7)) * (gas_sg / 0.65)
 
-        # Generate CO2 viscosity
-        co2_viscosity = gas_visc * np.exp(-0.0002 * (pressure_points - 4000))
+        # Generate CO2 viscosity (supercritical gas viscosity increases with pressure: dmu/dP > 0)
+        co2_viscosity = gas_visc * np.exp(0.0002 * (pressure_points - 4000))
 
         # Generate solution GOR
         rs = 200 * np.minimum(1.0, pressure_points / 4000) * (1 + 0.1 * (gas_sg - 0.65))
