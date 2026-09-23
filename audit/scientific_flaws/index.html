@@ -13,6 +13,10 @@
         <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/audit/scientific_flaws/">
       
       
+        <link rel="prev" href="../../development/agent_skills/">
+      
+      
+        <link rel="next" href="../mathematical_flaws/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -20,7 +24,7 @@
     
     
       
-        <title>Scientific Flaw Register - CO₂ EOR Optimizer — Technical Documentation</title>
+        <title>Scientific Flaws - CO₂ EOR Optimizer — Technical Documentation</title>
       
     
     
@@ -124,7 +128,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Scientific Flaw Register
+              Scientific Flaws
             
           </span>
         </div>
@@ -327,11 +331,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../technical_debt/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
     
@@ -397,6 +403,26 @@
     
   
   Decisions
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../code/inventory/" class="md-tabs__link">
+          
+  
+    
+  
+  Code Reference
 
         </a>
       </li>
@@ -483,6 +509,8 @@
   
     
     
+      
+        
       
         
       
@@ -624,7 +652,28 @@
         
   
   <span class="md-ellipsis">
-    Source of Truth
+    Source of Truth Map
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/source_of_truth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Subsystem Matrix
   </span>
   
 
@@ -649,6 +698,8 @@
   
     
     
+      
+        
       
         
       
@@ -860,6 +911,27 @@
   
   <span class="md-ellipsis">
     CO₂ Storage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/units_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Units Audit
   </span>
   
 
@@ -1212,8 +1284,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -1235,24 +1309,31 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1263,12 +1344,324 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Audit Reports
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Scientific Flaws
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Scientific Flaws
+  </span>
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#master-scientific-flaw-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Master Scientific Flaw Summary
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-scientific-flaw-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detailed Scientific Flaw Records
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed Scientific Flaw Records">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-01-inverted-co2-fractional-flow-in-profile-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-01: Inverted CO₂ Fractional Flow in Profile Generator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-03-inverted-pressure-viscosity-dependence" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-03: Inverted Pressure-Viscosity Dependence
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-05-single-well-point-drainage-anomaly" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-05: Single-Well Point Drainage Anomaly
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-06-decoupled-decision-variable-pressure-vs-tank-ode-pressure" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-06: Decoupled Decision Variable Pressure vs Tank ODE Pressure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-07-unphysical-co2-net-utilization-factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-07: Unphysical CO₂ Net Utilization Factor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-08-inverted-phase-state-classification-in-cubic-eos" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-08: Inverted Phase State Classification in Cubic EOS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-09-interfacial-tension-constant-at-maximum-immiscible-value-at-mmp" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-09: Interfacial Tension Constant at Maximum Immiscible Value at MMP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-10-immiscible-recovery-model-vanishes-without-capillary-desaturation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-10: Immiscible Recovery Model Vanishes Without Capillary Desaturation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-11-arbitrary-recovery-factor-cap-of-080" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-11: Arbitrary Recovery Factor Cap of 0.80
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-12-supercritical-b_g-discrepancy-across-active-vs-legacy-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-12: Supercritical \(B_g\) Discrepancy Across Active vs Legacy Modules
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-14-heuristic-vapor-fraction-in-material-balance" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-14: Heuristic Vapor Fraction in Material Balance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-15-instantaneous-co2-production-decoupled-from-in-situ-mobile-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-15: Instantaneous CO₂ Production Decoupled from In-Situ Mobile Storage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-16-discontinuous-cliff-in-craig-areal-sweep-at-unit-mobility" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-16: Discontinuous Cliff in Craig Areal Sweep at Unit Mobility
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-17-inverted-critical-gas-saturation-trapping-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-17: Inverted Critical Gas Saturation Trapping Formulation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sci-flaw-18-corrupted-peng-robinson-mixture-fugacity-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCI-FLAW-18: Corrupted Peng-Robinson Mixture Fugacity Formulation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-master-resolved-scientific-flaws-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Master Resolved Scientific Flaws Archive
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mathematical_flaws/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mathematical Flaws
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../suspicious_logic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Suspicious Logic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resolved_issues/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resolved Archive
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1345,27 +1738,6 @@
   
   <span class="md-ellipsis">
     Fallbacks
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../suspicious_logic/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Suspicious Logic
   </span>
   
 
@@ -1745,6 +2117,8 @@
       
         
       
+        
+      
     
     
       
@@ -1906,6 +2280,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/tests/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tests Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1998,6 +2393,560 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Code Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            Code Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/classes/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Classes
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_2">
+            <span class="md-nav__icon md-icon"></span>
+            Classes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/optimization_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/physical_data_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Physical Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/surrogate_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Surrogate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/functions/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Functions
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_3">
+            <span class="md-nav__icon md-icon"></span>
+            Functions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/recovery_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/simulation_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simulation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/thermo_pvt_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Thermodynamic & PVT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/modules/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_4">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_engine_surrogate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Surrogate Engine
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_objectives_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Objectives & Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_optimisation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimisation Engine
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/evaluation_analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluation & Analysis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/ui_utils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UI & Utilities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/dormant_engines/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dormant Engines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2166,15 +3115,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-13-non-standard-cronquist-55-api-correlation" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-13: Non-Standard Cronquist \((55 - API)\) Correlation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#sci-flaw-14-heuristic-vapor-fraction-in-material-balance" class="md-nav__link">
     <span class="md-ellipsis">
       SCI-FLAW-14: Heuristic Vapor Fraction in Material Balance
@@ -2221,6 +3161,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-master-resolved-scientific-flaws-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Master Resolved Scientific Flaws Archive
+    </span>
+  </a>
   
 </li>
       
@@ -2272,7 +3221,7 @@
 <td style="text-align: left;"><code>data_integration_engine.py:370, 456</code></td>
 <td style="text-align: left;">Fluid Thermodynamics (Compressibility)</td>
 <td style="text-align: left;">Oil expands under pressure (<span class="arithmatex">\(\partial B_o / \partial P &gt; 0\)</span>, negative compressibility)</td>
-<td style="text-align: left;">OPEN</td>
+<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt"><strong>RESOLVED</strong></a></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>SCI-FLAW-03</strong></td>
@@ -2280,7 +3229,7 @@
 <td style="text-align: left;"><code>data_integration_engine.py:372, 375</code></td>
 <td style="text-align: left;">Viscosity-Pressure Dependence</td>
 <td style="text-align: left;">Oil and supercritical CO₂ viscosities decrease exponentially with pressure</td>
-<td style="text-align: left;">OPEN</td>
+<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-03-inverted-pressure-viscosity-dependence"><strong>RESOLVED</strong></a></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>SCI-FLAW-04</strong></td>
@@ -2360,7 +3309,7 @@
 <td style="text-align: left;"><code>evaluation/mmp.py:111</code></td>
 <td style="text-align: left;">MMP Correlation Validity</td>
 <td style="text-align: left;">Non-standard Cronquist <span class="arithmatex">\((55 - API)\)</span> crashes on light oils (<span class="arithmatex">\(API &gt; 55^\circ\)</span>)</td>
-<td style="text-align: left;">OPEN</td>
+<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-13-non-standard-cronquist-55---api-correlation"><strong>RESOLVED</strong></a></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>SCI-FLAW-14</strong></td>
@@ -2450,7 +3399,7 @@
 <li><strong>Affected Outputs</strong>: <code>pvt_tables["OIL_FVF"]</code>, <code>ReservoirData.oil_fvf</code>.</li>
 <li><strong>Confidence</strong>: 100%.</li>
 <li><strong>Recommended Investigation</strong>: Invert sign: <span class="arithmatex">\(B_o(P) = 1.2 \cdot \exp(-c_o (P - P_b))\)</span> with <span class="arithmatex">\(c_o \approx 1.5 \times 10^{-5}\text{ psi}^{-1}\)</span>.</li>
-<li><strong>Status</strong>: OPEN.</li>
+<li><strong>Status</strong>: <a href="../resolved_issues/#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt"><strong>RESOLVED</strong></a> (2026-09-23).</li>
 </ul>
 <hr />
 <h3 id="sci-flaw-03-inverted-pressure-viscosity-dependence">SCI-FLAW-03: Inverted Pressure-Viscosity Dependence<a class="headerlink" href="#sci-flaw-03-inverted-pressure-viscosity-dependence" title="Permanent link">&para;</a></h3>
@@ -2467,7 +3416,7 @@
 <li><strong>Scientific Consequence</strong>: Higher injection pressures create artificially favorable mobility ratios, giving unphysical economic incentives for over-pressurization.</li>
 <li><strong>Affected Outputs</strong>: <code>pvt_tables["OIL_VISC"]</code>, <code>pvt_tables["CO2_VISC"]</code>, <code>mobility_ratio</code>.</li>
 <li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
+<li><strong>Status</strong>: <a href="../resolved_issues/#sci-flaw-03-inverted-pressure-viscosity-dependence"><strong>RESOLVED</strong></a> (2026-09-23).</li>
 </ul>
 <hr />
 <h3 id="sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density">SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density<a class="headerlink" href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" title="Permanent link">&para;</a></h3>
@@ -2615,21 +3564,6 @@
 <li><strong>Status</strong>: OPEN.</li>
 </ul>
 <hr />
-<h3 id="sci-flaw-13-non-standard-cronquist-55-api-correlation">SCI-FLAW-13: Non-Standard Cronquist <span class="arithmatex">\((55 - API)\)</span> Correlation<a class="headerlink" href="#sci-flaw-13-non-standard-cronquist-55-api-correlation" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-13</code></li>
-<li><strong>Severity</strong>: <strong>MEDIUM</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/evaluation/mmp.py#L111-L112"><code>evaluation/mmp.py:111-112</code></a></li>
-<li><strong>Model</strong>: Analytical MMP Correlation</li>
-<li><strong>Equation</strong>:
-  $<span class="arithmatex">\(MMP = 15.988 \cdot T^{0.744206} \cdot (55 - API)^{0.279033}\)</span>$</li>
-<li><strong>Observation</strong>: Published Cronquist (1978) correlation uses volatile oil mole fraction and C7+ molecular weight. The term <span class="arithmatex">\((55 - API)\)</span> is an undocumented modification that crashes with <code>ValueError</code> (fractional power of negative number) whenever oil gravity exceeds <span class="arithmatex">\(55^\circ\text{API}\)</span>.</li>
-<li><strong>Scientific Consequence</strong>: Unphysical correlation crashes on volatile oils and light condensates.</li>
-<li><strong>Affected Outputs</strong>: <code>calculate_mmp(method="cronquist")</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
 <h3 id="sci-flaw-14-heuristic-vapor-fraction-in-material-balance">SCI-FLAW-14: Heuristic Vapor Fraction in Material Balance<a class="headerlink" href="#sci-flaw-14-heuristic-vapor-fraction-in-material-balance" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>ID</strong>: <code>SCI-FLAW-14</code></li>
@@ -2721,6 +3655,43 @@
 <li><strong>Confidence</strong>: 100%.</li>
 <li><strong>Status</strong>: OPEN.</li>
 </ul>
+<hr />
+<h2 id="3-master-resolved-scientific-flaws-archive">3. Master Resolved Scientific Flaws Archive<a class="headerlink" href="#3-master-resolved-scientific-flaws-archive" title="Permanent link">&para;</a></h2>
+<p>The following scientific flaws have been fully eliminated, with comprehensive post-mortems and verification proofs archived in <a href="../resolved_issues/"><strong><code>agent_wiki/audit/resolved_issues.md</code></strong></a>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Scientific Flaw Title</th>
+<th style="text-align: left;">Location</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Full Post-Mortem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-02</strong></td>
+<td style="text-align: left;">Negative Oil Compressibility in Synthetic PVT</td>
+<td style="text-align: left;"><code>core/data_integration_engine.py:370, 456</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-03</strong></td>
+<td style="text-align: left;">Inverted Pressure-Viscosity Dependence</td>
+<td style="text-align: left;"><code>core/data_integration_engine.py:372, 375</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-03-inverted-pressure-viscosity-dependence">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SCI-FLAW-13</strong></td>
+<td style="text-align: left;">Non-Standard Cronquist <span class="arithmatex">\((55 - API)\)</span> Correlation</td>
+<td style="text-align: left;"><code>evaluation/mmp.py:111</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-13-non-standard-cronquist-55---api-correlation">View Record</a></td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -2753,6 +3724,44 @@
       
         <footer class="md-footer">
   
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../development/agent_skills/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Agent Skills">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Agent Skills
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../mathematical_flaws/" class="md-footer__link md-footer__link--next" aria-label="Next: Mathematical Flaws">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Mathematical Flaws
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
     
   
   <div class="md-footer-meta md-typeset">

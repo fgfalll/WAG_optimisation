@@ -2,286 +2,290 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/architecture/dependency_graph/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/architecture/execution_flow/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/architecture/module_map/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/architecture/overview/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/architecture/source_of_truth/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/architecture/source_of_truth_map/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/dead_code/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/duplicate_logic/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/fallbacks/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/hardcoded_values/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/hidden_calibration/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/mathematical_flaws/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/parameter_provenance/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
+    </url>
+    <url>
+         <loc>https://fgfalll.github.io/WAG_optimisation/audit/resolved_issues/</loc>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/scientific_flaws/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/suspicious_logic/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/technical_debt/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/verification_gaps/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/inventory/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/classes/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/classes/optimization_classes/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/classes/physical_data_classes/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/classes/surrogate_classes/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/functions/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/functions/recovery_functions/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/functions/simulation_functions/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/functions/thermo_pvt_functions/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/modules/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/modules/core_engine_surrogate/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/modules/core_objectives_data/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/modules/core_optimisation/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/modules/dormant_engines/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/modules/evaluation_analysis/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/code/modules/ui_utils/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/data/inputs/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/data/outputs/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/data/parameters/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/data/units/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/decisions/architecture_decisions/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/decisions/scientific_decisions/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/development/agent_skills/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/development/change_safety_matrix/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/development/coding_rules/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/development/common_pitfalls/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/development/extension_points/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/development/safe_modification_rules/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/physics/co2_model/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/physics/co2_storage/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/physics/displacement_model/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/physics/fluid_model/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/physics/pvt_model/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/physics/recovery_model/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/physics/relative_permeability/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/physics/reservoir_model/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/physics/units_audit/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/validation/benchmarks/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/validation/cmg_reference_validation/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/validation/conservation/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/validation/known_limitations/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/validation/test_suite_audit/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/validation/tests/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/validation/validation_status/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/verification/conservation_tests/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/verification/convergence_studies/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/verification/limiting_cases/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/verification/mathematical_verification/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/verification/numerical_verification/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/verification/physical_verification/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/verification/reference_solutions/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/verification/test_matrix/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/verification/verification_strategy/</loc>
-         <lastmod>2026-09-22</lastmod>
+         <lastmod>2026-09-23</lastmod>
     </url>
 </urlset>

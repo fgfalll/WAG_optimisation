@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/audit/suspicious_logic/">
       
       
-        <link rel="prev" href="../fallbacks/">
+        <link rel="prev" href="../mathematical_flaws/">
       
       
-        <link rel="next" href="../hidden_calibration/">
+        <link rel="next" href="../resolved_issues/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -337,7 +337,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../technical_debt/" class="md-tabs__link">
+        <a href="../scientific_flaws/" class="md-tabs__link">
           
   
     
@@ -403,6 +403,26 @@
     
   
   Decisions
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../code/inventory/" class="md-tabs__link">
+          
+  
+    
+  
+  Code Reference
 
         </a>
       </li>
@@ -489,6 +509,8 @@
   
     
     
+      
+        
       
         
       
@@ -630,7 +652,28 @@
         
   
   <span class="md-ellipsis">
-    Source of Truth
+    Source of Truth Map
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/source_of_truth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Subsystem Matrix
   </span>
   
 
@@ -655,6 +698,8 @@
   
     
     
+      
+        
       
         
       
@@ -866,6 +911,27 @@
   
   <span class="md-ellipsis">
     CO₂ Storage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/units_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Units Audit
   </span>
   
 
@@ -1243,6 +1309,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
       
@@ -1286,11 +1358,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../technical_debt/" class="md-nav__link">
+      <a href="../scientific_flaws/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Technical Debt
+    Scientific Flaws
   </span>
   
 
@@ -1307,53 +1379,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../dead_code/" class="md-nav__link">
+      <a href="../mathematical_flaws/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Dead Code
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../hardcoded_values/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Hardcoded Values
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../fallbacks/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Fallbacks
+    Mathematical Flaws
   </span>
   
 
@@ -1437,33 +1467,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#b-unit-inconsistency-in-reservoir-tank-pressure-ode-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      B. Unit Inconsistency in Reservoir Tank Pressure ODE [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#c-recycled-gas-double-subtraction-in-material-balance-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      C. Recycled Gas Double-Subtraction in Material Balance [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#c2-353-ooip-dimensional-unit-inconsistency-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      C2. 35.3× OOIP Dimensional Unit Inconsistency [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#d-hard-recovery-factor-cap-of-080" class="md-nav__link">
     <span class="md-ellipsis">
       D. Hard Recovery Factor Cap of 0.80
@@ -1476,87 +1479,6 @@
   <a href="#e-calculate_gradient-parameter-default-dead-end-and-omission" class="md-nav__link">
     <span class="md-ellipsis">
       E. calculate_gradient Parameter Default Dead-End and Omission
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#f-12-recovery-factor-discrepancy-in-data-validation-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      F. 12× Recovery Factor Discrepancy in Data Validation [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#g-recycled-co2-unit-explosion-212m-tonnes-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      G. Recycled CO₂ Unit Explosion (21.2M Tonnes) [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#h-180-year-material-balance-time-vector-scaling-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      H. 180-Year Material Balance Time Vector Scaling [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#i-15-bar-production-profile-truncation-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      I. 15-Bar Production Profile Truncation [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#j-co2-utilization-penalty-100000000-key-mismatch-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      J. CO₂ Utilization Penalty 1,000,000.00 Key Mismatch [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#k-class-e-artificial-storage-modifier-synthesis-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      K. Class E Artificial Storage Modifier Synthesis [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#l-penalty-dilution-multipliers-01-08-and-silent-bare-exceptions-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      L. Penalty Dilution Multipliers (0.1, 0.8) and Silent Bare Exceptions [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#m-plotly-dummy-mock-classes-swallowing-visualizations-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      M. Plotly Dummy Mock Classes Swallowing Visualizations [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#n-1000-volumetric-downhole-velocity-dimensionless-number-error-n_c-n_g" class="md-nav__link">
-    <span class="md-ellipsis">
-      N. 1000× Volumetric Downhole Velocity &amp; Dimensionless Number Error (\(N_c\), \(N_g\))
     </span>
   </a>
   
@@ -1653,15 +1575,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#y-cronquist-mmp-formula-uses-ad-hoc-55-api-term-crashing-on-light-oils-55-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      Y. Cronquist MMP Formula Uses Ad-Hoc (55 - API) Term Crashing on Light Oils (&gt; 55 °API)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#z-unconstrained-recycling-volume-can-exceed-injected-volume-in-surrogate_enginepy" class="md-nav__link">
     <span class="md-ellipsis">
       Z. Unconstrained Recycling Volume Can Exceed Injected Volume in surrogate_engine.py
@@ -1683,87 +1596,6 @@
   <a href="#ab-inverted-co2-fractional-flow-in-profile_generator_fastpy" class="md-nav__link">
     <span class="md-ellipsis">
       AB. Inverted CO₂ Fractional Flow in profile_generator_fast.py
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ad-20-produced-co2-shrinkage-bug-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AD. 20× Produced CO₂ Shrinkage Bug [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ae-hallucinated-caprock-leakage-from-normal-wellbore-production-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AE. Hallucinated Caprock Leakage from Normal Wellbore Production [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#af-pressure-search-space-squeeze-from-dimensional-mismatch-on-delta-p_textinj-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AF. Pressure Search Space Squeeze from Dimensional Mismatch on \(\Delta P_{\text{inj}}\) [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ag-plateau-rate-decoupling-from-collapsing-drawdown-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AG. Plateau Rate Decoupling from Collapsing Drawdown [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ah-apparent-mass-balance-discrepancy-from-recycled-stream-double-counting-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AH. Apparent Mass Balance Discrepancy from Recycled Stream Double-Counting [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ai-post-shut-in-unattenuated-co2-production-false-ecology-penalties-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AI. Post Shut-In Unattenuated CO₂ Production &amp; False Ecology Penalties [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#aj-decline-curve-analysis-plateau-regression-breakdown-r2-314-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AJ. Decline Curve Analysis Plateau Regression Breakdown (\(R^2 = -3.14\)) [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ak-well-injector-1-role-inversion-via-ui-substring-default-matching-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AK. Well-Injector-1 Role Inversion via UI Substring Default Matching [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#al-plotly-vertical-bar-schedule-collapse-duplicate-legend-pollution-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AL. Plotly Vertical Bar Schedule Collapse &amp; Duplicate Legend Pollution [RESOLVED]
     </span>
   </a>
   
@@ -1811,9 +1643,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-verified-correct-modules-and-physical-formulations" class="md-nav__link">
+  <a href="#2-master-resolved-discrepancies-archive" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Verified Correct Modules and Physical Formulations
+      2. Master Resolved Discrepancies Archive
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-verified-correct-modules-and-physical-formulations" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Verified Correct Modules and Physical Formulations
     </span>
   </a>
   
@@ -1823,6 +1664,111 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resolved_issues/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resolved Archive
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../technical_debt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Technical Debt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dead_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dead Code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardcoded_values/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardcoded Values
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fallbacks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fallbacks
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -2198,6 +2144,8 @@
       
         
       
+        
+      
     
     
       
@@ -2359,6 +2307,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/tests/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tests Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2463,6 +2432,560 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Code Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            Code Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/classes/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Classes
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_2">
+            <span class="md-nav__icon md-icon"></span>
+            Classes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/optimization_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/physical_data_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Physical Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/surrogate_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Surrogate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/functions/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Functions
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_3">
+            <span class="md-nav__icon md-icon"></span>
+            Functions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/recovery_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/simulation_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simulation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/thermo_pvt_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Thermodynamic & PVT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/modules/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_4">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_engine_surrogate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Surrogate Engine
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_objectives_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Objectives & Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_optimisation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimisation Engine
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/evaluation_analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluation & Analysis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/ui_utils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UI & Utilities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/dormant_engines/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dormant Engines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -2511,33 +3034,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#b-unit-inconsistency-in-reservoir-tank-pressure-ode-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      B. Unit Inconsistency in Reservoir Tank Pressure ODE [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#c-recycled-gas-double-subtraction-in-material-balance-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      C. Recycled Gas Double-Subtraction in Material Balance [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#c2-353-ooip-dimensional-unit-inconsistency-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      C2. 35.3× OOIP Dimensional Unit Inconsistency [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#d-hard-recovery-factor-cap-of-080" class="md-nav__link">
     <span class="md-ellipsis">
       D. Hard Recovery Factor Cap of 0.80
@@ -2550,87 +3046,6 @@
   <a href="#e-calculate_gradient-parameter-default-dead-end-and-omission" class="md-nav__link">
     <span class="md-ellipsis">
       E. calculate_gradient Parameter Default Dead-End and Omission
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#f-12-recovery-factor-discrepancy-in-data-validation-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      F. 12× Recovery Factor Discrepancy in Data Validation [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#g-recycled-co2-unit-explosion-212m-tonnes-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      G. Recycled CO₂ Unit Explosion (21.2M Tonnes) [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#h-180-year-material-balance-time-vector-scaling-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      H. 180-Year Material Balance Time Vector Scaling [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#i-15-bar-production-profile-truncation-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      I. 15-Bar Production Profile Truncation [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#j-co2-utilization-penalty-100000000-key-mismatch-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      J. CO₂ Utilization Penalty 1,000,000.00 Key Mismatch [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#k-class-e-artificial-storage-modifier-synthesis-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      K. Class E Artificial Storage Modifier Synthesis [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#l-penalty-dilution-multipliers-01-08-and-silent-bare-exceptions-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      L. Penalty Dilution Multipliers (0.1, 0.8) and Silent Bare Exceptions [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#m-plotly-dummy-mock-classes-swallowing-visualizations-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      M. Plotly Dummy Mock Classes Swallowing Visualizations [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#n-1000-volumetric-downhole-velocity-dimensionless-number-error-n_c-n_g" class="md-nav__link">
-    <span class="md-ellipsis">
-      N. 1000× Volumetric Downhole Velocity &amp; Dimensionless Number Error (\(N_c\), \(N_g\))
     </span>
   </a>
   
@@ -2727,15 +3142,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#y-cronquist-mmp-formula-uses-ad-hoc-55-api-term-crashing-on-light-oils-55-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      Y. Cronquist MMP Formula Uses Ad-Hoc (55 - API) Term Crashing on Light Oils (&gt; 55 °API)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#z-unconstrained-recycling-volume-can-exceed-injected-volume-in-surrogate_enginepy" class="md-nav__link">
     <span class="md-ellipsis">
       Z. Unconstrained Recycling Volume Can Exceed Injected Volume in surrogate_engine.py
@@ -2757,87 +3163,6 @@
   <a href="#ab-inverted-co2-fractional-flow-in-profile_generator_fastpy" class="md-nav__link">
     <span class="md-ellipsis">
       AB. Inverted CO₂ Fractional Flow in profile_generator_fast.py
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ad-20-produced-co2-shrinkage-bug-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AD. 20× Produced CO₂ Shrinkage Bug [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ae-hallucinated-caprock-leakage-from-normal-wellbore-production-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AE. Hallucinated Caprock Leakage from Normal Wellbore Production [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#af-pressure-search-space-squeeze-from-dimensional-mismatch-on-delta-p_textinj-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AF. Pressure Search Space Squeeze from Dimensional Mismatch on \(\Delta P_{\text{inj}}\) [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ag-plateau-rate-decoupling-from-collapsing-drawdown-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AG. Plateau Rate Decoupling from Collapsing Drawdown [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ah-apparent-mass-balance-discrepancy-from-recycled-stream-double-counting-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AH. Apparent Mass Balance Discrepancy from Recycled Stream Double-Counting [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ai-post-shut-in-unattenuated-co2-production-false-ecology-penalties-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AI. Post Shut-In Unattenuated CO₂ Production &amp; False Ecology Penalties [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#aj-decline-curve-analysis-plateau-regression-breakdown-r2-314-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AJ. Decline Curve Analysis Plateau Regression Breakdown (\(R^2 = -3.14\)) [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ak-well-injector-1-role-inversion-via-ui-substring-default-matching-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AK. Well-Injector-1 Role Inversion via UI Substring Default Matching [RESOLVED]
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#al-plotly-vertical-bar-schedule-collapse-duplicate-legend-pollution-resolved" class="md-nav__link">
-    <span class="md-ellipsis">
-      AL. Plotly Vertical Bar Schedule Collapse &amp; Duplicate Legend Pollution [RESOLVED]
     </span>
   </a>
   
@@ -2885,9 +3210,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-verified-correct-modules-and-physical-formulations" class="md-nav__link">
+  <a href="#2-master-resolved-discrepancies-archive" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Verified Correct Modules and Physical Formulations
+      2. Master Resolved Discrepancies Archive
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-verified-correct-modules-and-physical-formulations" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Verified Correct Modules and Physical Formulations
     </span>
   </a>
   
@@ -2941,36 +3275,6 @@
 <li><strong>Recommended fix</strong>: Reconnect <code>get_miscibility_weight()</code> into <code>PhDHybridRecoveryModel.calculate_recovery()</code>, replace the piecewise exponential and <code>if omega &gt; 0.01</code> with smooth Todd-Longstaff mixing weighted by <span class="arithmatex">\(\omega\)</span>, and interpolate between miscible and immiscible asymptotic displacement states.</li>
 </ul>
 <hr />
-<h3 id="b-unit-inconsistency-in-reservoir-tank-pressure-ode-resolved">B. Unit Inconsistency in Reservoir Tank Pressure ODE [RESOLVED]<a class="headerlink" href="#b-unit-inconsistency-in-reservoir-tank-pressure-ode-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L904-L912">core/engine_surrogate/surrogate_engine.py:904-912</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>profile_result["injection_profile"]</code> in MSCFD was subtracted directly from production rates in RB/day without multiplying by <span class="arithmatex">\(B_g\)</span>.</li>
-<li>This distorted pressure derivative <span class="arithmatex">\(dP/dt\)</span> by a factor of 3 to 5.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Converted injection rate via <span class="arithmatex">\(B_g = 2.07\text{ RB/MSCF}\)</span> (<span class="arithmatex">\(q_{\text{inj\_rb}} = q_{\text{inj\_mscfd}} \times 2.07\)</span>). Liquid production and gas injection are now strictly in reservoir barrels per day.</li>
-</ul>
-<hr />
-<h3 id="c-recycled-gas-double-subtraction-in-material-balance-resolved">C. Recycled Gas Double-Subtraction in Material Balance [RESOLVED]<a class="headerlink" href="#c-recycled-gas-double-subtraction-in-material-balance-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L216-L249">analysis/material_balance.py:216-249</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>net_injection_tonne = purchased_tonne - recycled_tonne_raw</code> and then subtracted <code>produced_co2_tonne</code>, effectively subtracting recycled gas twice.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Formulated mass conservation strictly as <span class="arithmatex">\(M_{\text{stored}} = M_{\text{purchased}} - M_{\text{uncaptured}} - M_{\text{leakage}}\)</span>. Mass conservation now closes exactly.</li>
-</ul>
-<hr />
-<h3 id="c2-353-ooip-dimensional-unit-inconsistency-resolved">C2. 35.3× OOIP Dimensional Unit Inconsistency [RESOLVED]<a class="headerlink" href="#c2-353-ooip-dimensional-unit-inconsistency-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_integration_engine.py#L408-L425">core/data_integration_engine.py:408-425</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li>Grid block sizes <code>dx, dy, dz</code> were generated in <strong>feet</strong> by <code>DataManagementWidget</code>.</li>
-<li><code>_create_reservoir_data</code> divided <code>nz * dz</code> by 0.3048 (<span class="arithmatex">\(3.28\times\)</span> inflation) and divided <code>(nx * dx * ny * dy)</code> by 4046.86 instead of 43560.0 (<span class="arithmatex">\(10.76\times\)</span> inflation).</li>
-<li>Combined <span class="arithmatex">\(35.314\times\)</span> inflation caused calculated OOIP of <span class="arithmatex">\(171,231,839\text{ STB}\)</span> against provided <span class="arithmatex">\(4,848,750\text{ STB}\)</span>, tripping validation.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Implemented exact field unit conversion (<span class="arithmatex">\(43560\text{ ft}^2/\text{acre}\)</span>) and preserved vertical thickness directly in feet. Explicit dimensions passed from <code>DataManagementWidget</code>. Exact match achieved (<span class="arithmatex">\(0.0\%\)</span> discrepancy).</li>
-</ul>
-<hr />
 <h3 id="d-hard-recovery-factor-cap-of-080">D. Hard Recovery Factor Cap of 0.80<a class="headerlink" href="#d-hard-recovery-factor-cap-of-080" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py#L205">core/engine_surrogate/analytical_models.py:205</a>.</li>
@@ -3003,152 +3307,22 @@
 <li><strong>Recommended fix</strong>: Perturb against the merged dictionary <code>params_with_defaults</code>, include <code>c7_plus_fraction</code> in the loop, or deprecate/remove the method if gradient-based optimization is not supported.</li>
 </ul>
 <hr />
-<h3 id="f-12-recovery-factor-discrepancy-in-data-validation-resolved">F. 12× Recovery Factor Discrepancy in Data Validation [RESOLVED]<a class="headerlink" href="#f-12-recovery-factor-discrepancy-in-data-validation-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/data_validation.py#L288-L348">analysis/data_validation.py:288-348</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>DataValidator._get_oil_production()</code> selected <code>oil_production_rate</code> (181 points).</li>
-<li>Because no key contained <code>"monthly"</code>, integration assumed an annual step size of <span class="arithmatex">\(dt = 365.25\text{ days}\)</span> instead of <span class="arithmatex">\(dt \approx 30.4375\text{ days}\)</span>.</li>
-<li>Calculated oil was scaled by <span class="arithmatex">\(12\times\)</span>, producing calculated recovery factors such as <span class="arithmatex">\(4.680\)</span> against reported <span class="arithmatex">\(0.390\)</span> (difference of <span class="arithmatex">\(4.290 &gt; 0.01\)</span> tolerance).</li>
-<li><strong>Resolution</strong>:</li>
-<li>The validator now detects monthly sampling from <code>time_vector</code>, <code>monthly_time_years</code>, or array length (&gt; 100 points for a 15-year simulation), adjusts <span class="arithmatex">\(dt\)</span> accordingly, and prioritizes cumulative oil volumes (<code>cumulative_oil</code>) when present.</li>
-</ul>
-<hr />
-<h3 id="g-recycled-co2-unit-explosion-212m-tonnes-resolved">G. Recycled CO₂ Unit Explosion (21.2M Tonnes) [RESOLVED]<a class="headerlink" href="#g-recycled-co2-unit-explosion-212m-tonnes-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L108-L142">analysis/material_balance.py:108-142</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li>In <code>calculate_breakthrough_aware_recycling()</code>, cumulative oil in metric tonnes was multiplied directly by GOR in SCF/STB:
-    <code>produced_gas_tonne = cum_oil_tonne * current_gor * 0.001</code></li>
-<li>This mixed mass in tonnes with volume in SCF, inflating calculated recycled gas to <span class="arithmatex">\(21,200,000\text{ tonnes}\)</span> (exceeding total injected CO₂ by a factor of 10).</li>
-<li><strong>Resolution</strong>:</li>
-<li>GOR in SCF/STB is converted to MSCF (<span class="arithmatex">\(GOR / 1000.0\)</span>), multiplied by cumulative oil in STB and CO₂ density, and physically bounded such that recycled CO₂ cannot exceed produced CO₂:
-    <code>recycled_tonne = np.minimum(recycled_tonne_raw, produced_co2_tonne)</code>.</li>
-</ul>
-<hr />
-<h3 id="h-180-year-material-balance-time-vector-scaling-resolved">H. 180-Year Material Balance Time Vector Scaling [RESOLVED]<a class="headerlink" href="#h-180-year-material-balance-time-vector-scaling-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L632-L636">analysis/material_balance.py:632-636</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>create_material_balance_from_optimization()</code> passed monthly arrays of length 181 to <code>calculate_material_balance()</code>, which treated array indices as annual steps (<code>np.arange(1, 182)</code>), stretching the x-axis to 180 project years.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Explicitly scaled monthly balance time axes to project years: <code>balance_data["years"] = np.arange(1, len(...) + 1) / 12.0</code>.</li>
-</ul>
-<hr />
-<h3 id="i-15-bar-production-profile-truncation-resolved">I. 15-Bar Production Profile Truncation [RESOLVED]<a class="headerlink" href="#i-15-bar-production-profile-truncation-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L856-L930">core/optimisation_engine.py:856-930</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>FastProfileGenerator</code> generates 181 monthly points. Assigning this 181-element array directly to <code>yearly_oil_stb</code> while setting <code>yearly_time_years = np.arange(1, 16)</code> caused the plotting routines to truncate the profile to the first 15 months (plateau data), displaying 15 identical flat bars.</li>
-<li><strong>Resolution</strong>:</li>
-<li><code>OptimizationEngine.evaluate_for_analysis()</code> aggregates the 181 monthly steps into true 15-element annual totals for <code>annual_oil_stb</code> and <code>yearly_oil_stb</code>, matching the 15-year project lifetime.</li>
-</ul>
-<hr />
-<h3 id="j-co2-utilization-penalty-100000000-key-mismatch-resolved">J. CO₂ Utilization Penalty 1,000,000.00 Key Mismatch [RESOLVED]<a class="headerlink" href="#j-co2-utilization-penalty-100000000-key-mismatch-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py#L105-L148">core/objectives/wrapper.py:105-148</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>_calculate_objective_functions()</code> looked only for <code>"annual_co2_purchased_mscf"</code>. Because the engine generated <code>"yearly_co2_purchased_mscf"</code>, the objective failed and assigned the fallback penalty <span class="arithmatex">\(1,000,000.00\)</span>.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Provided complete aliases (<code>annual_</code> and <code>yearly_</code>) in engine profiles and updated <code>wrapper.py</code> to inspect both keys.</li>
-</ul>
-<hr />
-<h3 id="k-class-e-artificial-storage-modifier-synthesis-resolved">K. Class E Artificial Storage Modifier Synthesis [RESOLVED]<a class="headerlink" href="#k-class-e-artificial-storage-modifier-synthesis-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py#L130-L137">core/objectives/wrapper.py:130-137</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li>If simulation profiles or storage parameters were missing, the wrapper synthesized an artificial storage efficiency via <code>default_efficiency = max(0.3, 0.5 * (recovery_factor / 0.35))</code>.</li>
-<li>This awarded ~50% storage credit based purely on oil recovery without verifying any physical CO₂ retention, falsifying scientific outcomes to cheat GA penalties.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Completely eradicated Class E synthesis. When profiles or storage parameters are missing, <code>storage_efficiency</code> evaluates strictly to <code>float("nan")</code>, and the chromosome is pruned with <code>FAILURE_PENALTY</code> (<span class="arithmatex">\(-10^{12}\)</span>).</li>
-</ul>
-<hr />
-<h3 id="l-penalty-dilution-multipliers-01-08-and-silent-bare-exceptions-resolved">L. Penalty Dilution Multipliers (<em>0.1, </em>0.8) and Silent Bare Exceptions [RESOLVED]<a class="headerlink" href="#l-penalty-dilution-multipliers-01-08-and-silent-bare-exceptions-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1705-L1805">core/optimisation_engine.py:1705-1805</a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/compositional_engine/flow/compositional_solver.py#L714">flow/compositional_solver.py:714</a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/compositional_engine/phase_behavior/flash_calculator.py#L292">phase_behavior/flash_calculator.py:292</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li>When storage sanity checks or breakthrough constraints were violated, penalties were arbitrarily softened via <code>FAILURE_PENALTY * 0.1</code> or <code>FAILURE_PENALTY * 0.8 + constraint_penalty</code>, allowing unphysical chromosomes to survive in the GA population.</li>
-<li>Furthermore, core solver and thermodynamic calculations caught <code>except Exception: pass</code> silently.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Eradicated all penalty dilution multipliers; unphysical chromosomes are pruned with full <code>FAILURE_PENALTY</code>.</li>
-<li>Replaced all bare exceptions across the mathematical and solver core with specific exception types (<code>FloatingPointError</code>, <code>ZeroDivisionError</code>, <code>ValueError</code>, <code>RuntimeError</code>), logging exact state variables (Pressure, Saturation, Temperature, Composition).</li>
-</ul>
-<hr />
-<h3 id="m-plotly-dummy-mock-classes-swallowing-visualizations-resolved">M. Plotly Dummy Mock Classes Swallowing Visualizations [RESOLVED]<a class="headerlink" href="#m-plotly-dummy-mock-classes-swallowing-visualizations-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L9-L50">analysis/material_balance.py:9-50</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>material_balance.py</code> defined dummy mock classes (<code>class go: class Figure: pass</code>) that swallowed plot generation silently if Plotly failed to import, outputting console print text instead of rendering interactive charts.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Deleted all dummy mock classes. Plotly is now imported directly as a hard, mandatory dependency, and its presence is validated during startup in <code>main.py</code>.</li>
-</ul>
-<hr />
-<h3 id="n-1000-volumetric-downhole-velocity-dimensionless-number-error-n_c-n_g">N. 1000× Volumetric Downhole Velocity &amp; Dimensionless Number Error (<span class="arithmatex">\(N_c\)</span>, <span class="arithmatex">\(N_g\)</span>)<a class="headerlink" href="#n-1000-volumetric-downhole-velocity-dimensionless-number-error-n_c-n_g" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py#L813-L820">core/engine_surrogate/analytical_models.py:813-820</a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L1137-L1138">core/engine_surrogate/surrogate_engine.py:1137-1138</a>.</li>
-<li><strong>Claim / Expected Physics</strong>: Downhole volumetric flow rate in reservoir barrels per day is <span class="arithmatex">\(q_{\text{res\_bbl}} = q_{\text{MSCFD}} \times B_g = q_{\text{MSCFD}} / (1 / B_g)\)</span>. For supercritical CO₂, <span class="arithmatex">\(B_g \approx 0.45\text{ RB/MSCF}\)</span>, so <span class="arithmatex">\(1/B_g \approx 2.2\text{ MSCF/RB}\)</span>. Interstitial velocity <span class="arithmatex">\(u = q_{\text{res\_ft3\_day}} / A\)</span>.</li>
-<li><strong>Actual Code</strong>:
-  In <code>surrogate_engine.py:1138</code>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># mscf_per_res_bbl = 1/Bg = ~483 SCF/res-bbl</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="s2">"mscf_per_res_bbl"</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">reservoir_data</span><span class="p">,</span> <span class="s2">"bg"</span><span class="p">,</span> <span class="mf">0.00207</span><span class="p">),</span> <span class="mf">1e-6</span><span class="p">),</span>
-</span></code></pre></div>
-  In <code>analytical_models.py:816-817</code>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">mscf_per_rb</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mscf_per_res_bbl"</span><span class="p">)</span> <span class="ow">or</span> <span class="mf">2.0</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">q_res_bbl_day</span> <span class="o">=</span> <span class="n">inj_mscfd</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">mscf_per_rb</span><span class="p">,</span> <span class="n">EPSILON</span><span class="p">)</span>
-</span></code></pre></div></li>
-<li><strong>Consequence</strong>:</li>
-<li><code>surrogate_engine.py</code> computed <span class="arithmatex">\(1 / 0.00207 = 483.09\text{ SCF/RB}\)</span> and stored it under the key <code>"mscf_per_res_bbl"</code>.</li>
-<li><code>analytical_models.py</code> treated this value as MSCF/RB and divided <code>inj_mscfd</code> (e.g. 5,000 MSCFD) by 483.09, resulting in <strong>10.35 res-bbl/day</strong> instead of ~10,350 res-bbl/day (<span class="arithmatex">\(1000\times\)</span> deflation).</li>
-<li>Interstitial velocity <span class="arithmatex">\(u\)</span> is deflated by <span class="arithmatex">\(1000\times\)</span> (<span class="arithmatex">\(0.00116\text{ ft/day}\)</span>).</li>
-<li>Capillary Number <span class="arithmatex">\(N_c = \frac{\mu u}{\sigma} \times 3.5\times 10^{-6}\)</span> is deflated by <span class="arithmatex">\(1000\times\)</span> (<span class="arithmatex">\(N_c &lt; 10^{-7} \ll N_{c\_ref} = 10^{-5}\)</span>), ensuring the capillary desaturation curve <strong>never triggers</strong> (<span class="arithmatex">\(S_{or} = S_{or\_imm} = 0.30\)</span> always).</li>
-<li>Gravity Number <span class="arithmatex">\(N_g = \frac{\Delta\rho g k}{\mu u}\)</span> has <span class="arithmatex">\(u\)</span> in the denominator, inflating <span class="arithmatex">\(N_g\)</span> by <strong><span class="arithmatex">\(1000\times\)</span></strong>, causing vertical sweep efficiency <span class="arithmatex">\(e_v = 1 / (1 + \beta N_g)\)</span> to collapse toward zero whenever dip angle <span class="arithmatex">\(\theta &gt; 0\)</span>.</li>
-<li><strong>Severity</strong>: Critical (Deflates downhole velocity and capillary desaturation by <span class="arithmatex">\(1000\times\)</span>, corrupting recovery and sweep across all runs).</li>
-<li><strong>Status</strong>: ✅ <strong>RESOLVED</strong> (2026-09-17).</li>
-<li><strong>Resolution</strong>:
-  The following three concurrent Bg unit errors were fixed together in <code>surrogate_engine.py</code>:</li>
-</ul>
-<p><strong>Bug 1</strong> — <code>injection_profile</code> treated as res-bbl/day (was MSCFD):
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># BEFORE (wrong): MSCFD treated as RB/day</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">q_inj_rb</span> <span class="o">=</span> <span class="n">profile_result</span><span class="p">[</span><span class="s2">"injection_profile"</span><span class="p">]</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># AFTER (correct): MSCFD × Bg[RB/MSCF] = RB/day</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">mscf_per_rb</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mscf_per_res_bbl"</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># MSCF/RB</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">bg_rb_per_mscf</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">mscf_per_rb</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>        <span class="c1"># RB/MSCF</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">q_inj_rb</span> <span class="o">=</span> <span class="n">profile_result</span><span class="p">[</span><span class="s2">"injection_profile"</span><span class="p">]</span> <span class="o">*</span> <span class="n">bg_rb_per_mscf</span>
-</span></code></pre></div></p>
-<p><strong>Bug 2</strong> — <code>mscf_per_res_bbl</code> already stored as MSCF/RB but incorrectly multiplied by 1000 to get SCF/RB:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># BEFORE (wrong): bg_from_params = 1.0 / (0.5 * 1000.0) = 0.002 RB/SCF (wrong units compounding)</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">bg_from_params</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mscf_per_res_bbl"</span><span class="p">,</span> <span class="mf">500.0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1000.0</span><span class="p">)</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># AFTER (correct): bg in RB/MSCF = 1 / mscf_per_res_bbl</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">bg_rb_per_mscf</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">mscf_per_rb</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>       <span class="c1"># RB/MSCF ≈ 2.0-2.5</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">bg</span> <span class="o">=</span> <span class="n">bg_rb_per_mscf</span> <span class="o">/</span> <span class="mf">1000.0</span>                           <span class="c1"># RB/SCF for gas_profile conversion</span>
-</span></code></pre></div></p>
-<p><strong>Bug 3</strong> — HCPVI and breakthrough time calculation used wrong Bg direction:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># BEFORE: cum_inj_rb = cum_inj_mscf * 1000.0 * (1/(mscf_per_res_bbl*1000)) — cancels to dimensionless!</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># AFTER: cum_inj_rb = cum_inj_mscf / mscf_per_res_bbl  (MSCF / (MSCF/RB) = RB)</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">cum_inj_rb</span> <span class="o">=</span> <span class="n">cum_inj_mscf</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">mscf_per_rb_recouple</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>
-</span></code></pre></div></p>
-<p>The unit convention established:
-  - <code>mscf_per_res_bbl</code> stores values in <strong>MSCF/RB</strong> (≈ 0.4–0.6 for supercritical CO₂)
-  - <code>bg</code> = <code>1 / mscf_per_res_bbl</code> = <strong>RB/MSCF</strong> (≈ 2.0–2.5 for supercritical CO₂)<br />
-  - <code>injection_profile</code> is in <strong>MSCFD</strong> (raw from FastProfileGenerator)
-  - Conversion: <code>q_inj_RB_day = q_inj_MSCFD × bg_RB_per_MSCF</code></p>
-<hr />
 <h3 id="o-silent-profile-constraint-erasure-in-_objective_function_wrapper">O. Silent Profile Constraint Erasure in <code>_objective_function_wrapper</code><a class="headerlink" href="#o-silent-profile-constraint-erasure-in-_objective_function_wrapper" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1777-L1788">core/optimisation_engine.py:1777-1788</a> vs <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1820-L1835">1820-1835</a>.</li>
 <li><strong>Claim / Expected Math</strong>: <code>_check_profile_constraints()</code> calculates proportional penalties for environmental guardrails (injection period shortfall, storage efficiency shortfall, excessive annual leakage, and carbon tax). These penalties must be deducted from the candidate solution's objective fitness.</li>
 <li><strong>Actual Code</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Lines 1782-1784:</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">profile_penalty</span> <span class="o">=</span> <span class="n">profile_constraint_result</span><span class="p">[</span><span class="s2">"penalty"</span><span class="p">]</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">if</span> <span class="n">profile_penalty</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">result</span> <span class="o">-=</span> <span class="n">profile_penalty</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># Lines 1820-1834:</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chosen_objective</span> <span class="o">==</span> <span class="s2">"co2_utilization"</span><span class="p">:</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="n">objective_value</span>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="o">...</span>
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="k">else</span><span class="p">:</span>
-</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">objective_value</span>  <span class="c1"># OVERWRITES result!</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Lines 1782-1784:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">profile_penalty</span> <span class="o">=</span> <span class="n">profile_constraint_result</span><span class="p">[</span><span class="s2">"penalty"</span><span class="p">]</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">if</span> <span class="n">profile_penalty</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">result</span> <span class="o">-=</span> <span class="n">profile_penalty</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Lines 1820-1834:</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chosen_objective</span> <span class="o">==</span> <span class="s2">"co2_utilization"</span><span class="p">:</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="n">objective_value</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="o">...</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="k">else</span><span class="p">:</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">objective_value</span>  <span class="c1"># OVERWRITES result!</span>
 </span></code></pre></div></li>
 <li><strong>Consequence</strong>: <code>result</code> is unconditionally re-assigned at line 1834, completely discarding <code>profile_penalty</code>. Every single environmental guardrail in <code>_check_profile_constraints()</code> is 100% inoperative during optimization. Candidates violating minimum injection periods or exceeding leakage limits suffer zero penalty.</li>
 <li><strong>Severity</strong>: Critical (All profile-based environmental constraints and carbon penalties are completely erased).</li>
@@ -3162,14 +3336,14 @@
 <li><strong>Claim / Expected Math</strong>: "Final Optimized NPV" must report the financial Net Present Value calculated via discounted cash flow. Internal heuristic penalty scores must not be labeled as NPV.</li>
 <li><strong>Actual Code</strong>:
   Inside <code>_objective_function_wrapper</code>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">objective_value</span>  <span class="c1"># eval_results["npv"] = ~$6.30e8</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">result</span> <span class="o">*=</span> <span class="n">breakthrough_impact</span>  <span class="c1"># breakthrough_impact in [0.5, 1.2], e.g. ~0.511</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">objective_value</span>  <span class="c1"># eval_results["npv"] = ~$6.30e8</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">result</span> <span class="o">*=</span> <span class="n">breakthrough_impact</span>  <span class="c1"># breakthrough_impact in [0.5, 1.2], e.g. ~0.511</span>
 </span></code></pre></div>
   Inside GA completion:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="s2">"objective_function_value"</span><span class="p">:</span> <span class="n">fitness</span><span class="p">,</span>  <span class="c1"># ~$3.22e8 (penalized heuristic)</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="s2">"final_metrics"</span><span class="p">:</span> <span class="n">final_eval</span><span class="p">,</span>          <span class="c1"># final_eval["npv"] = ~$6.30e8 (true DCF NPV)</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="p">}</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="s2">"objective_function_value"</span><span class="p">:</span> <span class="n">fitness</span><span class="p">,</span>  <span class="c1"># ~$3.22e8 (penalized heuristic)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="s2">"final_metrics"</span><span class="p">:</span> <span class="n">final_eval</span><span class="p">,</span>          <span class="c1"># final_eval["npv"] = ~$6.30e8 (true DCF NPV)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="p">}</span>
 </span></code></pre></div>
   UI summary line 1959:
   <code>f"Final Optimized {self.objective_combo.currentText()}: {self.current_results.get('objective_function_value'):.4g}"</code> displays <strong><span class="arithmatex">\(3.22e8**, while the KPI table displays **\)</span>630,000,000</strong>.</li>
@@ -3185,13 +3359,13 @@
 <li><strong>Claim / Expected Physics</strong>: Storage efficiency must have a clear, documented physical definition.</li>
 <li><strong>Actual Code</strong>:</li>
 <li><code>surrogate_models.py</code>:
-     <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">storage_efficiency</span> <span class="o">=</span> <span class="n">net_stored_tonne</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">co2_injected_total</span><span class="p">,</span> <span class="n">EPSILON</span><span class="p">)</span>
+     <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">storage_efficiency</span> <span class="o">=</span> <span class="n">net_stored_tonne</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">co2_injected_total</span><span class="p">,</span> <span class="n">EPSILON</span><span class="p">)</span>
 </span></code></pre></div>
      Denominator is <strong>gross cumulative injection</strong> (fresh purchased + recycled gas). For typical projects with recycling, <span class="arithmatex">\(E_{\text{gross}} \approx 0.4525\)</span> (45.25%).</li>
 <li><code>analysis/material_balance.py</code>:
-     <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">storage_efficiency</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">net_stored_tonne</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">purchased_tonne</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="o">...</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="s2">"avg_storage_efficiency"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">material_balance_data</span><span class="p">[</span><span class="s2">"storage_efficiency"</span><span class="p">])</span>
+     <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">storage_efficiency</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">net_stored_tonne</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">purchased_tonne</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="o">...</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="s2">"avg_storage_efficiency"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">material_balance_data</span><span class="p">[</span><span class="s2">"storage_efficiency"</span><span class="p">])</span>
 </span></code></pre></div>
      Denominator is <strong>fresh purchased CO₂</strong> (OSTI-1204577 standard). Because recycled gas is retained or re-injected, purchased retention is high (<span class="arithmatex">\(E_{\text{purchased}} \approx 0.8378\)</span> or 83.78%).</li>
 <li><strong>Consequence</strong>: Two distinct physical metrics (~1.85× apart) are displayed in the same report under identical labels ("Storage Efficiency"), leading users to suspect numerical errors.</li>
@@ -3207,8 +3381,8 @@
   $<span class="arithmatex">\(\text{Utilization} = \frac{\text{Cumulative Purchased CO}_2}{\text{Incremental Oil Attributable to CO}_2}\)</span>$
   with typical field values ranging between 0.3–0.6 tonne/bbl (~6–10 MSCF/STB).</li>
 <li><strong>Actual Code</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">total_oil</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">oil_produced_calc</span><span class="p">)</span> <span class="c1"># Cumulative TOTAL field oil (primary + secondary + EOR)</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">results</span><span class="p">[</span><span class="s2">"co2_utilization"</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_co2_purchased_tonne</span> <span class="o">/</span> <span class="n">total_oil</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">total_oil</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">oil_produced_calc</span><span class="p">)</span> <span class="c1"># Cumulative TOTAL field oil (primary + secondary + EOR)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">results</span><span class="p">[</span><span class="s2">"co2_utilization"</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_co2_purchased_tonne</span> <span class="o">/</span> <span class="n">total_oil</span>
 </span></code></pre></div>
   UI display: <code>f"{co2_util:.2f} MSCF/STB"</code> (raw number displayed with MSCF/STB label).
   HTML report display: <code>&lt;tr&gt;&lt;td&gt;CO2 Utilization&lt;/td&gt;&lt;td&gt;...&lt;/td&gt;&lt;td&gt;bbl/ton&lt;/td&gt;&lt;/tr&gt;</code> (inverted unit label).</li>
@@ -3225,9 +3399,9 @@
 <li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L928-L939">core/engine_surrogate/surrogate_engine.py:928-939, 1137-1138</a>.</li>
 <li><strong>Claim / Expected Physics</strong>: Gas formation volume factor <span class="arithmatex">\(B_g\)</span> must be computed from reservoir pressure and temperature (<span class="arithmatex">\(B_g = 0.02827 \frac{z T}{P}\text{ res-bbl/SCF}\)</span>). Dense supercritical CO₂ at 2500–3500 psi and 120–180°F has <span class="arithmatex">\(B_g \approx 0.00035 - 0.00045\text{ RB/SCF}\)</span> (<span class="arithmatex">\(0.35 - 0.45\text{ RB/MSCF}\)</span>).</li>
 <li><strong>Actual Code</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="s2">"mscf_per_res_bbl"</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">reservoir_data</span><span class="p">,</span> <span class="s2">"bg"</span><span class="p">,</span> <span class="mf">0.00207</span><span class="p">),</span> <span class="mf">1e-6</span><span class="p">)</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="o">...</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">q_inj_rb</span> <span class="o">=</span> <span class="n">profile_result</span><span class="p">[</span><span class="s2">"injection_profile"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1000.0</span> <span class="o">*</span> <span class="n">bg</span> <span class="c1"># bg = 0.00207 RB/SCF</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="s2">"mscf_per_res_bbl"</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">reservoir_data</span><span class="p">,</span> <span class="s2">"bg"</span><span class="p">,</span> <span class="mf">0.00207</span><span class="p">),</span> <span class="mf">1e-6</span><span class="p">)</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="o">...</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">q_inj_rb</span> <span class="o">=</span> <span class="n">profile_result</span><span class="p">[</span><span class="s2">"injection_profile"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1000.0</span> <span class="o">*</span> <span class="n">bg</span> <span class="c1"># bg = 0.00207 RB/SCF</span>
 </span></code></pre></div></li>
 <li><strong>Consequence</strong>: <span class="arithmatex">\(B_g = 0.00207\text{ RB/SCF}\)</span> (<span class="arithmatex">\(2.07\text{ RB/MSCF}\)</span>) represents low-pressure gas at ~800 psi. Applying it to dense-phase CO₂ overestimates the downhole volumetric injection rate by <strong><span class="arithmatex">\(4.5\times\)</span> to <span class="arithmatex">\(6\times\)</span></strong>, driving artificial over-pressurization in the 0D tank pressure ODE.</li>
 <li><strong>Severity</strong>: High (Physical PVT property is hardcoded to a depleted-gas value rather than dense-phase CO₂).</li>
@@ -3255,7 +3429,7 @@
 <li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/storage.py#L116">core/objectives/storage.py:116</a>.</li>
 <li><strong>Claim / Expected Physics</strong>: Produced CO₂ mass is <span class="arithmatex">\(M_{\text{co2\_prod}} = \sum q_{\text{co2\_prod}} \times \rho_{\text{co2}}\)</span>.</li>
 <li><strong>Actual Code</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">total_produced</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">co2_produced</span><span class="p">))</span> <span class="o">*</span> <span class="n">produced_co2_frac_val</span> <span class="o">*</span> <span class="n">co2_density_val</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">total_produced</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">co2_produced</span><span class="p">))</span> <span class="o">*</span> <span class="n">produced_co2_frac_val</span> <span class="o">*</span> <span class="n">co2_density_val</span>
 </span></code></pre></div>
   where <code>produced_co2_frac_val = 0.50</code>.</li>
 <li><strong>Consequence</strong>: <code>co2_produced</code> is extracted from <code>f"{time_resolution}_co2_produced_mscf"</code>, which is ALREADY only the CO₂ stream from <code>FastProfileGenerator</code>. Multiplying it by 0.50 cuts the produced CO₂ in half, artificially inflating calculated net CO₂ storage.</li>
@@ -3280,7 +3454,7 @@
 <li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L1472-L1473">core/engine_surrogate/surrogate_engine.py:1472-1473</a>.</li>
 <li><strong>Claim / Expected Math</strong>: Annual production cash flows during year <span class="arithmatex">\(t\)</span> should be discounted using end-of-period (<span class="arithmatex">\(1 / (1+r)^t\)</span>) or mid-period (<span class="arithmatex">\(1 / (1+r)^{t - 0.5}\)</span>) discounting.</li>
 <li><strong>Actual Code</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">discount_factors</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">discount_rate</span><span class="p">)</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">total_years</span><span class="p">)</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">discount_factors</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">discount_rate</span><span class="p">)</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">total_years</span><span class="p">)</span>
 </span></code></pre></div></li>
 <li><strong>Consequence</strong>: Year 1 cash flow uses index 0 (<span class="arithmatex">\((1+r)^0 = 1.0\)</span>), treating all year 1 revenue as received at day 0. This inflates project NPV by approximately 10% (at 10% discount rate) compared to end-of-period discounting.</li>
 <li><strong>Severity</strong>: Medium (Systematic financial discounting distortion).</li>
@@ -3293,11 +3467,11 @@
 <li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/data_validation.py#L310-L340">analysis/data_validation.py:310-340</a>.</li>
 <li><strong>Claim / Expected Math</strong>: Rate vs. volume classification must inspect profile metadata or key prefixes, not raw array magnitudes.</li>
 <li><strong>Actual Code</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">if</span> <span class="n">max_val</span> <span class="o">&gt;</span> <span class="mi">100000</span><span class="p">:</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="n">total_oil_produced</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">oil_production</span><span class="p">)</span>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">else</span><span class="p">:</span>
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    <span class="n">dt</span> <span class="o">=</span> <span class="mf">365.25</span> <span class="c1"># for annual arrays</span>
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>    <span class="n">total_oil_produced</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">oil_production</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">if</span> <span class="n">max_val</span> <span class="o">&gt;</span> <span class="mi">100000</span><span class="p">:</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">total_oil_produced</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">oil_production</span><span class="p">)</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">else</span><span class="p">:</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">dt</span> <span class="o">=</span> <span class="mf">365.25</span> <span class="c1"># for annual arrays</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="n">total_oil_produced</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">oil_production</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span>
 </span></code></pre></div></li>
 <li><strong>Consequence</strong>: For pilot or marginal fields (<span class="arithmatex">\(OOIP \le 1,000,000\)</span> STB) where annual oil production is <span class="arithmatex">\(&lt; 100,000\)</span> STB/year, annual volumes are mistaken for daily rates and multiplied by 365.25, inflating cumulative oil by <strong>365×</strong> and causing DataValidator to erroneously reject valid simulation runs.</li>
 <li><strong>Severity</strong>: Medium (Fails simulation validation for small/pilot reservoirs).</li>
@@ -3305,29 +3479,15 @@
 <li><strong>Recommended fix</strong>: Use profile key naming prefixes (<code>yearly_</code>, <code>monthly_</code>, <code>daily_</code>) or time vector delta to determine integration behavior, rather than magnitude thresholds.</li>
 </ul>
 <hr />
-<h3 id="y-cronquist-mmp-formula-uses-ad-hoc-55-api-term-crashing-on-light-oils-55-api">Y. Cronquist MMP Formula Uses Ad-Hoc <code>(55 - API)</code> Term Crashing on Light Oils (&gt; 55 °API)<a class="headerlink" href="#y-cronquist-mmp-formula-uses-ad-hoc-55-api-term-crashing-on-light-oils-55-api" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/evaluation/mmp.py#L111-L112">evaluation/mmp.py:111-112</a>.</li>
-<li><strong>Claim / Expected Math</strong>: Published Cronquist (1978) correlation uses volatile oil mole fraction and temperature, not an ad-hoc <span class="arithmatex">\((55 - API)\)</span> polynomial.</li>
-<li><strong>Actual Code</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">gravity_term</span> <span class="o">=</span> <span class="mf">55.0</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">oil_gravity</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">mmp</span> <span class="o">=</span> <span class="mf">15.988</span> <span class="o">*</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">temperature</span><span class="o">**</span><span class="mf">0.744206</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">gravity_term</span><span class="o">**</span><span class="mf">0.279033</span><span class="p">)</span>
-</span></code></pre></div></li>
-<li><strong>Consequence</strong>: When oil gravity exceeds 55 °API (volatile oils/condensates), <code>gravity_term &lt; 0</code>, and <span class="arithmatex">\((-1)^{0.279}\)</span> produces NaN or raises <code>ValueError</code>, crashing MMP evaluation.</li>
-<li><strong>Severity</strong>: Medium (Unphysical custom modification of literature correlation; crashes on light fluids).</li>
-<li><strong>Status</strong>: Open.</li>
-<li><strong>Recommended fix</strong>: Implement original published Cronquist (1978) correlation or clamp <code>gravity_term = max(55.0 - params.oil_gravity, 1.0)</code>.</li>
-</ul>
-<hr />
 <h3 id="z-unconstrained-recycling-volume-can-exceed-injected-volume-in-surrogate_enginepy">Z. Unconstrained Recycling Volume Can Exceed Injected Volume in <code>surrogate_engine.py</code><a class="headerlink" href="#z-unconstrained-recycling-volume-can-exceed-injected-volume-in-surrogate_enginepy" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L1350-L1353">core/engine_surrogate/surrogate_engine.py:1350-1353</a>.</li>
 <li><strong>Claim / Expected Physics</strong>: Recycled CO₂ reinjected cannot exceed total CO₂ injection rate (<span class="arithmatex">\(q_{\text{recycled}} \le q_{\text{injected}}\)</span>).</li>
 <li><strong>Actual Code</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">recycled</span> <span class="o">=</span> <span class="n">annual_co2_prod</span><span class="p">[</span><span class="n">year</span><span class="p">]</span> <span class="o">*</span> <span class="n">recycling_efficiency</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">purchased</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">annual_co2_inj</span><span class="p">[</span><span class="n">year</span><span class="p">]</span> <span class="o">-</span> <span class="n">recycled</span><span class="p">)</span>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="n">annual_co2_purchased</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">purchased</span><span class="p">)</span>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">annual_co2_recycled</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recycled</span><span class="p">)</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">recycled</span> <span class="o">=</span> <span class="n">annual_co2_prod</span><span class="p">[</span><span class="n">year</span><span class="p">]</span> <span class="o">*</span> <span class="n">recycling_efficiency</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">purchased</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">annual_co2_inj</span><span class="p">[</span><span class="n">year</span><span class="p">]</span> <span class="o">-</span> <span class="n">recycled</span><span class="p">)</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">annual_co2_purchased</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">purchased</span><span class="p">)</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">annual_co2_recycled</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recycled</span><span class="p">)</span>
 </span></code></pre></div></li>
 <li><strong>Consequence</strong>: When produced gas is high (post-breakthrough), <code>recycled</code> can exceed <code>annual_co2_inj[year]</code>. The operator is charged recycling OPEX on gas volumes that cannot physically be reinjected.</li>
 <li><strong>Severity</strong>: Medium (Inconsistent mass balance and OPEX distortion in high-GOR periods).</li>
@@ -3343,18 +3503,18 @@
   $<span class="arithmatex">\(\frac{g}{g_c} = 1.0\text{ lb}_f / \text{lb}_m\)</span>$</li>
 <li><strong>Actual Code</strong>:
   In <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py#L871">analytical_models.py:871</a>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">N_g</span> <span class="o">=</span> <span class="p">(</span><span class="n">perm_md</span> <span class="o">*</span> <span class="mf">1.0623e-14</span> <span class="o">*</span> <span class="n">delta_rho</span> <span class="o">*</span> <span class="mf">2.4e11</span> <span class="o">*</span> <span class="n">sin_theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>    <span class="n">viscosity_inj</span> <span class="o">*</span> <span class="mf">2.417e-10</span> <span class="o">*</span> <span class="n">u_ft_day</span> <span class="o">+</span> <span class="n">EPSILON</span>
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="p">)</span>
-</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="n">e_v</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">beta_gravity</span> <span class="o">*</span> <span class="n">N_g</span> <span class="o">*</span> <span class="n">override_severity</span><span class="p">)</span>
-</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="n">rf</span> <span class="o">=</span> <span class="n">e_sweep</span> <span class="o">*</span> <span class="n">e_v</span> <span class="o">*</span> <span class="n">e_d</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">N_g</span> <span class="o">=</span> <span class="p">(</span><span class="n">perm_md</span> <span class="o">*</span> <span class="mf">1.0623e-14</span> <span class="o">*</span> <span class="n">delta_rho</span> <span class="o">*</span> <span class="mf">2.4e11</span> <span class="o">*</span> <span class="n">sin_theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">viscosity_inj</span> <span class="o">*</span> <span class="mf">2.417e-10</span> <span class="o">*</span> <span class="n">u_ft_day</span> <span class="o">+</span> <span class="n">EPSILON</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="p">)</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">e_v</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">beta_gravity</span> <span class="o">*</span> <span class="n">N_g</span> <span class="o">*</span> <span class="n">override_severity</span><span class="p">)</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="n">rf</span> <span class="o">=</span> <span class="n">e_sweep</span> <span class="o">*</span> <span class="n">e_v</span> <span class="o">*</span> <span class="n">e_d</span>
 </span></code></pre></div>
   And in <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/breakthrough_physics.py#L314">breakthrough_physics.py:314, 361</a>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">g_ft_day2</span> <span class="o">=</span> <span class="mf">2.4e11</span>
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="n">ng</span> <span class="o">=</span> <span class="p">(</span><span class="n">k_ft2</span> <span class="o">*</span> <span class="n">delta_rho_lb_ft3</span> <span class="o">*</span> <span class="n">g_ft_day2</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sin_theta</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>    <span class="n">mu_g_lb_day_ft2</span> <span class="o">*</span> <span class="n">u_ft_day</span> <span class="o">+</span> <span class="n">EPSILON</span>
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="p">)</span>
-</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="n">phi_ng_m</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ng</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">m_ratio</span><span class="p">,</span> <span class="n">EPSILON</span><span class="p">)))</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">g_ft_day2</span> <span class="o">=</span> <span class="mf">2.4e11</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">ng</span> <span class="o">=</span> <span class="p">(</span><span class="n">k_ft2</span> <span class="o">*</span> <span class="n">delta_rho_lb_ft3</span> <span class="o">*</span> <span class="n">g_ft_day2</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sin_theta</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    <span class="n">mu_g_lb_day_ft2</span> <span class="o">*</span> <span class="n">u_ft_day</span> <span class="o">+</span> <span class="n">EPSILON</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="p">)</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="n">phi_ng_m</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ng</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">m_ratio</span><span class="p">,</span> <span class="n">EPSILON</span><span class="p">)))</span>
 </span></code></pre></div></li>
 <li><strong>Consequence</strong>:
   <span class="arithmatex">\(2.4 \times 10^{11}\)</span> was multiplied in the numerator without dividing by <span class="arithmatex">\(g_c\)</span>, inflating <span class="arithmatex">\(N_g\)</span> by <strong><span class="arithmatex">\(2.4 \times 10^{11}\times\)</span></strong> (evaluating to <span class="arithmatex">\(N_g \sim 10^{10}\)</span> instead of <span class="arithmatex">\(N_g \sim 0.04\)</span>):</li>
@@ -3364,9 +3524,9 @@
 <li><strong>Status</strong>: Open / Confirmed Defect.</li>
 <li><strong>Recommended fix</strong>:
   Divide by <span class="arithmatex">\(g_c\)</span> (or eliminate the <code>2.4e11</code> factor since <span class="arithmatex">\(g/g_c = 1.0\)</span> in <span class="arithmatex">\(\text{lb}_f/\text{lb}_m\)</span>):
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">N_g</span> <span class="o">=</span> <span class="p">(</span><span class="n">perm_md</span> <span class="o">*</span> <span class="mf">1.0623e-14</span> <span class="o">*</span> <span class="n">delta_rho</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">sin_theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>    <span class="n">viscosity_inj</span> <span class="o">*</span> <span class="mf">2.417e-10</span> <span class="o">*</span> <span class="n">u_ft_day</span> <span class="o">+</span> <span class="n">EPSILON</span>
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="p">)</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">N_g</span> <span class="o">=</span> <span class="p">(</span><span class="n">perm_md</span> <span class="o">*</span> <span class="mf">1.0623e-14</span> <span class="o">*</span> <span class="n">delta_rho</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">sin_theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">viscosity_inj</span> <span class="o">*</span> <span class="mf">2.417e-10</span> <span class="o">*</span> <span class="n">u_ft_day</span> <span class="o">+</span> <span class="n">EPSILON</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="p">)</span>
 </span></code></pre></div></li>
 </ul>
 <hr />
@@ -3376,12 +3536,12 @@
 <li><strong>Claim / Expected Physics or Math</strong>:
   In Buckley-Leverett and Koval fractional flow theory, higher mobility ratio <span class="arithmatex">\(M = \mu_o / \mu_{co2} \gg 1\)</span> creates severe viscous fingering, causing rapid gas breakthrough and high gas fractional flow (<span class="arithmatex">\(F_{co2} \to 1.0\)</span>).</li>
 <li><strong>Actual Code</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">E</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.78</span> <span class="o">+</span> <span class="mf">0.22</span> <span class="o">*</span> <span class="p">(</span><span class="n">mobility_ratio</span> <span class="o">**</span> <span class="mf">0.25</span><span class="p">))</span> <span class="o">**</span> <span class="mi">4</span>
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">koval_factor</span> <span class="o">=</span> <span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">mobility_ratio</span><span class="p">)</span> <span class="o">*</span> <span class="n">koval_mult</span>
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="n">koval_factor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">koval_factor</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="n">frac_flow_co2</span> <span class="o">=</span> <span class="n">koval_factor</span> <span class="o">/</span> <span class="p">(</span><span class="n">koval_factor</span> <span class="o">+</span> <span class="p">(</span><span class="n">mobility_ratio</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
-</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="n">frac_flow_co2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">frac_flow_co2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">))</span>
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">E</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.78</span> <span class="o">+</span> <span class="mf">0.22</span> <span class="o">*</span> <span class="p">(</span><span class="n">mobility_ratio</span> <span class="o">**</span> <span class="mf">0.25</span><span class="p">))</span> <span class="o">**</span> <span class="mi">4</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">koval_factor</span> <span class="o">=</span> <span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">mobility_ratio</span><span class="p">)</span> <span class="o">*</span> <span class="n">koval_mult</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">koval_factor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">koval_factor</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">frac_flow_co2</span> <span class="o">=</span> <span class="n">koval_factor</span> <span class="o">/</span> <span class="p">(</span><span class="n">koval_factor</span> <span class="o">+</span> <span class="p">(</span><span class="n">mobility_ratio</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="n">frac_flow_co2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">frac_flow_co2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">))</span>
 </span></code></pre></div></li>
 <li><strong>Consequence</strong>:
   Dividing <span class="arithmatex">\(E\)</span> by <code>mobility_ratio</code> causes <code>koval_factor</code> to decrease as mobility ratio worsens (<span class="arithmatex">\(M=1 \implies K=1.0\)</span>; <span class="arithmatex">\(M=10 \implies K=0.5\)</span>).
@@ -3393,88 +3553,6 @@
 <li><strong>Status</strong>: Open / Confirmed Defect.</li>
 <li><strong>Recommended fix</strong>:
   Implement true Koval (1963) fractional flow: <span class="arithmatex">\(K = H_k \times E \ge 1.0\)</span>, and <span class="arithmatex">\(F_{co2} = \frac{K S_{co2}}{1 + S_{co2}(K - 1)}\)</span>.</li>
-</ul>
-<hr />
-<h3 id="ad-20-produced-co2-shrinkage-bug-resolved">AD. 20× Produced CO₂ Shrinkage Bug [RESOLVED]<a class="headerlink" href="#ad-20-produced-co2-shrinkage-bug-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L172-L178">analysis/material_balance.py:172-178</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li>Pure produced CO₂ stream <code>annual_co2_produced_mscf</code> was multiplied by <code>co2_fraction_of_produced</code> (default <span class="arithmatex">\(0.05\)</span>), vanishing 95% of produced CO₂ (e.g. 749,645 tonnes disappeared).</li>
-<li>Recycled volume <code>recycled_tonne = np.minimum(recycled_tonne_raw, produced_co2_tonne)</code> was crushed to <span class="arithmatex">\(5\%\)</span> of true value, destroying mass conservation.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Eliminated the redundant fractional multiplier on the pure CO₂ stream. Mass balance now closes with exact <span class="arithmatex">\(0.0\%\)</span> error.</li>
-</ul>
-<hr />
-<h3 id="ae-hallucinated-caprock-leakage-from-normal-wellbore-production-resolved">AE. Hallucinated Caprock Leakage from Normal Wellbore Production [RESOLVED]<a class="headerlink" href="#ae-hallucinated-caprock-leakage-from-normal-wellbore-production-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1458-L1485">core/optimisation_engine.py:1458-1485</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li>Caprock leakage was algebraically defined as <code>total_purchased - total_recycled - net_stored = total_produced</code>, penalizing ordinary wellbore production with carbon taxes as if it were subsurface containment failure.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Decoupled production from containment. Caprock leakage is now strictly governed by geomechanical containment limits (<span class="arithmatex">\(P_{\text{sandface}} &gt; 0.90 \times P_{\text{frac}}\)</span>) or explicit seal fracture models.</li>
-</ul>
-<hr />
-<h3 id="af-pressure-search-space-squeeze-from-dimensional-mismatch-on-delta-p_textinj-resolved">AF. Pressure Search Space Squeeze from Dimensional Mismatch on <span class="arithmatex">\(\Delta P_{\text{inj}}\)</span> [RESOLVED]<a class="headerlink" href="#af-pressure-search-space-squeeze-from-dimensional-mismatch-on-delta-p_textinj-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1906-L1920">core/optimisation_engine.py:1906-1920</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>inj_rate_max / ii</code> divided field-wide MSCFD by single-well II without unit conversion or well count splitting, producing an artificial <span class="arithmatex">\(4,000\text{ psi}\)</span> overpressure penalty that squeezed the upper pressure bound down to <span class="arithmatex">\(2322\text{ psia}\)</span> (<span class="arithmatex">\(50\text{ psi}\)</span> above MMP).</li>
-<li><strong>Resolution</strong>:</li>
-<li>Fixed well splitting (<span class="arithmatex">\(q_{\text{well}} = q_{\text{inj}} / n_{\text{inj}}\)</span>) and bounded near-wellbore transient overpressure to realistic field limits (<span class="arithmatex">\(\le 500\text{ psi}\)</span>), opening the search space up to <span class="arithmatex">\(4,500+\text{ psia}\)</span>.</li>
-</ul>
-<hr />
-<h3 id="ag-plateau-rate-decoupling-from-collapsing-drawdown-resolved">AG. Plateau Rate Decoupling from Collapsing Drawdown [RESOLVED]<a class="headerlink" href="#ag-plateau-rate-decoupling-from-collapsing-drawdown-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py#L518-L596">core/engine_surrogate/profile_generator_fast.py:518-596</a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L950-L990">core/engine_surrogate/surrogate_engine.py:950-990</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>_plateau_decline_profile</code> held an arbitrary constant rate bar for up to 11 years (<code>plateau_fraction = 0.79</code>), completely decoupled from a 65.7% collapse in reservoir driving drawdown.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Implemented two-way staggered deliverability coupling. Single-well deliverability is evaluated at each timestep via Composite Vogel-Darcy IPR clamped to dynamic pressure <span class="arithmatex">\(P_{\text{res}}(t)\)</span>. Decline curves emerge naturally from first principles.</li>
-</ul>
-<hr />
-<h3 id="ah-apparent-mass-balance-discrepancy-from-recycled-stream-double-counting-resolved">AH. Apparent Mass Balance Discrepancy from Recycled Stream Double-Counting [RESOLVED]<a class="headerlink" href="#ah-apparent-mass-balance-discrepancy-from-recycled-stream-double-counting-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/utils/run_exporter.py#L310-L335">utils/run_exporter.py:310-335</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>_build_run_manifest</code> compared <code>total_injected_tonne</code> (fresh purchased CO₂, 740,490 t) against <code>total_stored_tonne + total_produced_tonne + total_leakage_tonne</code> (1,452,195 t), reporting an apparent 50.99% closure (<span class="arithmatex">\(711,705.5\text{ t}\)</span> error, equal to cumulative recycled gas).</li>
-<li><strong>Resolution</strong>:</li>
-<li>Formulated closed-loop gross mass balance: <span class="arithmatex">\(\text{Gross Injected} = \text{Purchased} + \text{Recycled} = \text{Net Stored} + \text{Total Leakage} + \text{Gross Produced}\)</span>. Closure <span class="arithmatex">\(&gt; 99.9\%\)</span> verified.</li>
-</ul>
-<hr />
-<h3 id="ai-post-shut-in-unattenuated-co2-production-false-ecology-penalties-resolved">AI. Post Shut-In Unattenuated CO₂ Production &amp; False Ecology Penalties [RESOLVED]<a class="headerlink" href="#ai-post-shut-in-unattenuated-co2-production-false-ecology-penalties-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L1260-L1285">core/engine_surrogate/surrogate_engine.py:1260-1285</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li><code>_apply_shut_in_guard</code> only checked <code>"water_production_rate"</code> and <code>"hydrocarbon_gas_production_rate"</code>, ignoring <code>FastProfileGenerator</code> output keys <code>water_profile</code>, <code>co2_gas_profile</code>, and <code>solution_gas_profile</code>. CO₂ production continued flowing at full rate for 10+ years post-shut-in (<span class="arithmatex">\(444,672\text{ t}\)</span> unattenuated), incurring repeated hundreds of thousands of dollars in false ecology penalties.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Extended shut-in guards to taper and zero all phase streams: <code>water_profile</code>, <code>co2_gas_profile</code>, <code>solution_gas_profile</code>, <code>gas_profile</code>, and <code>injection_profile</code>.</li>
-</ul>
-<hr />
-<h3 id="aj-decline-curve-analysis-plateau-regression-breakdown-r2-314-resolved">AJ. Decline Curve Analysis Plateau Regression Breakdown (<span class="arithmatex">\(R^2 = -3.14\)</span>) [RESOLVED]<a class="headerlink" href="#aj-decline-curve-analysis-plateau-regression-breakdown-r2-314-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/decline_curve_analysis.py#L90-L130">analysis/decline_curve_analysis.py:90-130</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li>Arps equations were fitted directly across a 3-year flat plateau through the steep decline, causing mathematical regression breakdown (<span class="arithmatex">\(R^2 = -3.14\)</span>) and unphysical EUR overestimation (72% OOIP).</li>
-<li><strong>Resolution</strong>:</li>
-<li>Added decline onset detection (<span class="arithmatex">\(q(t) &lt; 0.95 \times q_{\text{peak}}\)</span>). Preserves historical plateau rates and fits Arps models strictly to the declining segment <span class="arithmatex">\((t - t_{\text{onset}})\)</span>, yielding <span class="arithmatex">\(R^2 &gt; 0.95\)</span> and physically bounded EUR forecasts.</li>
-</ul>
-<hr />
-<h3 id="ak-well-injector-1-role-inversion-via-ui-substring-default-matching-resolved">AK. Well-Injector-1 Role Inversion via UI Substring Default Matching [RESOLVED]<a class="headerlink" href="#ak-well-injector-1-role-inversion-via-ui-substring-default-matching-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/manual_well_dialog.py#L110-L125">ui/widgets/manual_well_dialog.py:110-125</a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1400-L1420">core/optimisation_engine.py:1400-1420</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li>Status check <code>if status in ["active", "inactive"]</code> failed on <code>"Producer (Active)"</code>, assigning default name <code>Well-Injector-1</code> while internal metadata saved <code>metadata["type"] = "producer"</code>. In <code>core/optimisation_engine.py</code>, injector detection partitioned wells improperly, resulting in 0 injectors in simulation runs.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Fixed combo text parsing, implemented bidirectional live typing synchronization between well name and role dropdown, and added explicit role partitioning (<code>injector_wells</code>, <code>producer_wells</code>).</li>
-</ul>
-<hr />
-<h3 id="al-plotly-vertical-bar-schedule-collapse-duplicate-legend-pollution-resolved">AL. Plotly Vertical Bar Schedule Collapse &amp; Duplicate Legend Pollution [RESOLVED]<a class="headerlink" href="#al-plotly-vertical-bar-schedule-collapse-duplicate-legend-pollution-resolved" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/plotting_manager.py#L780-L860">core/plotting_manager.py:plot_well_schedule</a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L4400-L4420">core/optimisation_engine.py:4400-4420</a>.</li>
-<li><strong>Previous Defect</strong>:</li>
-<li>Vertical bar geometry used <code>x=[duration_days]</code> and <code>base=[start_day]</code> with <code>barmode="stack"</code>, collapsing all operations to a 0.8-day sliver at Day 45, and appended duplicate legend traces for every operational cycle. Additionally, <code>_ops_standard_production</code> had an artificial 10-cycle cap (<code>max_cycles = 10</code>), prematurely halting continuous production after 450 days.</li>
-<li><strong>Resolution</strong>:</li>
-<li>Implemented true interval geometry (<code>x = start_day + duration/2</code>, <code>width = duration</code>, <code>base = 0</code>, <code>barmode = "overlay"</code>), legend deduplication (<code>added_legend_phases = set()</code>), zero-rate hatched pattern bars with diamond markers, and removed the 10-cycle cap.</li>
 </ul>
 <hr />
 <h3 id="am-decoupled-optimizer-pressure-vs-dynamic-tank-ode-pressure-1350-psi-disconnect">AM. Decoupled Optimizer Pressure vs. Dynamic Tank ODE Pressure (~1,350 psi Disconnect)<a class="headerlink" href="#am-decoupled-optimizer-pressure-vs-dynamic-tank-ode-pressure-1350-psi-disconnect" title="Permanent link">&para;</a></h3>
@@ -3526,7 +3604,177 @@
 <li><strong>Remediation</strong>: Replace the hard step failure penalty with a smooth, continuous penalty function or proper multi-well streamline transit time calculation.</li>
 </ul>
 <hr />
-<h2 id="2-verified-correct-modules-and-physical-formulations">2. Verified Correct Modules and Physical Formulations<a class="headerlink" href="#2-verified-correct-modules-and-physical-formulations" title="Permanent link">&para;</a></h2>
+<h2 id="2-master-resolved-discrepancies-archive">2. Master Resolved Discrepancies Archive<a class="headerlink" href="#2-master-resolved-discrepancies-archive" title="Permanent link">&para;</a></h2>
+<p>All 22 historical numerical errors, units explosions, and presentation bugs previously cataloged in this document have been fully resolved and migrated into <a href="../resolved_issues/"><strong><code>agent_wiki/audit/resolved_issues.md</code></strong></a>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Issue Title</th>
+<th style="text-align: left;">Location</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Full Post-Mortem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>SUSP-B</strong></td>
+<td style="text-align: left;">Unit Inconsistency in Reservoir Tank Pressure ODE</td>
+<td style="text-align: left;"><code>surrogate_engine.py:904</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-b-unit-inconsistency-in-reservoir-tank-pressure-ode">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-C</strong></td>
+<td style="text-align: left;">Recycled Gas Double-Subtraction in Material Balance</td>
+<td style="text-align: left;"><code>material_balance.py:216</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-c-recycled-gas-double-subtraction-in-material-balance">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-C2</strong></td>
+<td style="text-align: left;">35.3× OOIP Dimensional Unit Inconsistency</td>
+<td style="text-align: left;"><code>data_integration_engine.py:408</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-c2-353-ooip-dimensional-unit-inconsistency">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-F</strong></td>
+<td style="text-align: left;">12× Recovery Factor Discrepancy in Data Validation</td>
+<td style="text-align: left;"><code>data_validation.py:288</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-f-12-recovery-factor-discrepancy-in-data-validation">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-G</strong></td>
+<td style="text-align: left;">Recycled CO₂ Unit Explosion (21.2M Tonnes)</td>
+<td style="text-align: left;"><code>material_balance.py:108</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-g-recycled-co2-unit-explosion-212m-tonnes">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-H</strong></td>
+<td style="text-align: left;">180-Year Material Balance Time Vector Scaling</td>
+<td style="text-align: left;"><code>material_balance.py:632</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-h-180-year-material-balance-time-vector-scaling">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-I</strong></td>
+<td style="text-align: left;">15-Bar Production Profile Truncation</td>
+<td style="text-align: left;"><code>optimisation_engine.py:856</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-i-15-bar-production-profile-truncation">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-J</strong></td>
+<td style="text-align: left;">CO₂ Utilization Penalty 1,000,000.00 Key Mismatch</td>
+<td style="text-align: left;"><code>wrapper.py:105</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-j-co2-utilization-penalty-100000000-key-mismatch">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-K</strong></td>
+<td style="text-align: left;">Class E Artificial Storage Modifier Synthesis</td>
+<td style="text-align: left;"><code>wrapper.py:130</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-k-class-e-artificial-storage-modifier-synthesis">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-L</strong></td>
+<td style="text-align: left;">Penalty Dilution Multipliers (<em>0.1, </em>0.8) and Silent Bare Exceptions</td>
+<td style="text-align: left;"><code>optimisation_engine.py:1705</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-l-penalty-dilution-multipliers-01-08-and-silent-bare-exceptions">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-M</strong></td>
+<td style="text-align: left;">Plotly Dummy Mock Classes Swallowing Visualizations</td>
+<td style="text-align: left;"><code>material_balance.py:9</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-m-plotly-dummy-mock-classes-swallowing-visualizations">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-N</strong></td>
+<td style="text-align: left;">1000× Volumetric Downhole Velocity &amp; Dimensionless Number Error (<span class="arithmatex">\(N_c\)</span>, <span class="arithmatex">\(N_g\)</span>)</td>
+<td style="text-align: left;"><code>analytical_models.py:813</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-n-1000-volumetric-downhole-velocity--dimensionless-number-error-n_c-n_g">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-Y</strong></td>
+<td style="text-align: left;">Cronquist MMP Formula Uses Ad-Hoc <code>(55 - API)</code> Term</td>
+<td style="text-align: left;"><code>evaluation/mmp.py:111</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-y-cronquist-mmp-formula-uses-ad-hoc-55---api-term">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-AD</strong></td>
+<td style="text-align: left;">20× Produced CO₂ Shrinkage Bug</td>
+<td style="text-align: left;"><code>material_balance.py:172</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-ad-20-produced-co2-shrinkage-bug">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-AE</strong></td>
+<td style="text-align: left;">Hallucinated Caprock Leakage from Normal Wellbore Production</td>
+<td style="text-align: left;"><code>optimisation_engine.py:1458</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-ae-hallucinated-caprock-leakage-from-normal-wellbore-production">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-AF</strong></td>
+<td style="text-align: left;">Pressure Search Space Squeeze from Dimensional Mismatch on <span class="arithmatex">\(\Delta P_{\text{inj}}\)</span></td>
+<td style="text-align: left;"><code>optimisation_engine.py:1906</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-af-pressure-search-space-squeeze-from-dimensional-mismatch-on-delta-p_textinj">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-AG</strong></td>
+<td style="text-align: left;">Plateau Rate Decoupling from Collapsing Drawdown</td>
+<td style="text-align: left;"><code>profile_generator_fast.py:518</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-ag-plateau-rate-decoupling-from-collapsing-drawdown">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-AH</strong></td>
+<td style="text-align: left;">Apparent Mass Balance Discrepancy from Recycled Stream Double-Counting</td>
+<td style="text-align: left;"><code>utils/run_exporter.py:310</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-ah-apparent-mass-balance-discrepancy-from-recycled-stream-double-counting">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-AI</strong></td>
+<td style="text-align: left;">Post Shut-In Unattenuated CO₂ Production &amp; False Ecology Penalties</td>
+<td style="text-align: left;"><code>surrogate_engine.py:1260</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-ai-post-shut-in-unattenuated-co2-production--false-ecology-penalties">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-AJ</strong></td>
+<td style="text-align: left;">Decline Curve Analysis Plateau Regression Breakdown (<span class="arithmatex">\(R^2 = -3.14\)</span>)</td>
+<td style="text-align: left;"><code>decline_curve_analysis.py:90</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-aj-decline-curve-analysis-plateau-regression-breakdown-r2---314">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-AK</strong></td>
+<td style="text-align: left;">Well-Injector-1 Role Inversion via UI Substring Default Matching</td>
+<td style="text-align: left;"><code>manual_well_dialog.py:110</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-ak-well-injector-1-role-inversion-via-ui-substring-default-matching">View Record</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SUSP-AL</strong></td>
+<td style="text-align: left;">Plotly Vertical Bar Schedule Collapse &amp; Duplicate Legend Pollution</td>
+<td style="text-align: left;"><code>plotting_manager.py:780</code></td>
+<td style="text-align: left;">VERIFIED</td>
+<td style="text-align: left;"><a href="../resolved_issues/#susp-al-plotly-vertical-bar-schedule-collapse--duplicate-legend-pollution">View Record</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-verified-correct-modules-and-physical-formulations">3. Verified Correct Modules and Physical Formulations<a class="headerlink" href="#3-verified-correct-modules-and-physical-formulations" title="Permanent link">&para;</a></h2>
 <p>The following modules, functions, and mathematical derivations were rigorously reviewed and found to be scientifically, dimensionally, and mathematically sound:</p>
 <ol>
 <li><strong>Composite Vogel-Darcy Inflow Deliverability</strong> (<code>FastProfileGenerator.calculate_composite_ipr_deliverability</code>):</li>
@@ -3590,7 +3838,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../fallbacks/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Fallbacks">
+          <a href="../mathematical_flaws/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Mathematical Flaws">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -3600,20 +3848,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Fallbacks
+                Mathematical Flaws
               </div>
             </div>
           </a>
         
         
           
-          <a href="../hidden_calibration/" class="md-footer__link md-footer__link--next" aria-label="Next: Hidden Calibration">
+          <a href="../resolved_issues/" class="md-footer__link md-footer__link--next" aria-label="Next: Resolved Archive">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Hidden Calibration
+                Resolved Archive
               </div>
             </div>
             <div class="md-footer__button md-icon">
