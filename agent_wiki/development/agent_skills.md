@@ -69,6 +69,7 @@ This document records the specialized **Agent Skills** integrated into the CO₂
 - **Directionality**: Verify `--maximize` is passed for recovery factor and NPV.
 - **Job Reconciliation**: Ensure `completed + failed == total_jobs` to catch silent failures.
 - **Outlier Screening**: Apply Tukey 1.5× IQR outlier filtering on aggregated outputs.
+- **Simulation Run Audit Protocol**: Every parameter sweep or simulation evaluation must be logged in [`agent_wiki/audit/simulation_run_audits.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/simulation_run_audits.md) marked as `DD-MM-YYYY` with verdict, proposal, and relevant files.
 
 ---
 

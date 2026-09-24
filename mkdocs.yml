@@ -145,6 +145,7 @@ nav:
       - Extension Points: development/extension_points.md
       - Agent Skills: development/agent_skills.md
   - Audit Reports:
+      - Simulation Run Audits: audit/simulation_run_audits.md
       - Scientific Flaws: audit/scientific_flaws.md
       - Mathematical Flaws: audit/mathematical_flaws.md
       - Suspicious Logic: audit/suspicious_logic.md

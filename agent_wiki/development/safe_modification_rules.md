@@ -82,3 +82,13 @@ To prevent accidental breakage of scientific invariants or silent corruption of 
   5. **UI State Flush Before Save**: In `MainWindow._perform_project_save()`, always query `data_management_tab.get_current_project_data()` and `config_tab.get_all_configurations()` to synchronize active widget inputs before writing to disk.
   6. **Mandatory Test**: Run `pytest tests/test_project_save_load.py -v` whenever touching data models, serialization, or UI state.
 
+## 14. Simulation Run Audit Logging & Historical Tracking Protocol
+- **The Rule**: Every reservoir simulation run audit, parameter sweep evaluation, or benchmark run conducted by developers or AI agents must be recorded in [`agent_wiki/audit/simulation_run_audits.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/simulation_run_audits.md) with date format `DD-MM-YYYY`, explicit verdict, actionable proposal, and linked relevant files.
+- **Protocol**:
+  1. **Date Format**: Must strictly follow `DD-MM-YYYY` (e.g. `24-09-2026`).
+  2. **Verdict Requirement**: Assign one of the standard verdicts: `PASSED`, `ACCEPTABLE WITH CONDITIONS`, `FLAGGED`, or `FAILED`.
+  3. **Proposal Requirement**: Formulate a clear, actionable proposal detailing recommendations for model tuning, physical parameter adjustments, numerical stability thresholds, or operational strategies.
+  4. **Relevant Files**: Provide markdown links (`file:///...`) to input configuration files, engine modules, test scripts, generated profile outputs, and logs.
+  5. **Past Runs Index**: Append the entry to the Master Simulation Run Audits Index table so historical runs and recommendations can be audited across development sessions.
+
+

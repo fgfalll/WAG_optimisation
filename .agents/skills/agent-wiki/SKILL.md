@@ -13,6 +13,7 @@ Before running search tools (`grep_search`), terminal commands (`run_command`), 
 3. **Verify Physical Invariants & Traps**:
    - Check [`agent_wiki/development/common_pitfalls.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/development/common_pitfalls.md) (traps with unit conversions, NumPy 2.0, mass balance, Vogel IPR).
    - Check [`agent_wiki/development/safe_modification_rules.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/development/safe_modification_rules.md) for immutable invariants.
+4. **Log Simulation Run Audits**: Whenever running or evaluating simulation runs, parameter sweeps, or benchmarks, record the audit in [`agent_wiki/audit/simulation_run_audits.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/simulation_run_audits.md) marked as `DD-MM-YYYY` with verdict, proposal, and relevant files.
 
 ## Topic Navigation Map
 
@@ -20,6 +21,7 @@ Before running search tools (`grep_search`), terminal commands (`run_command`), 
 | :--- | :--- |
 | **Wiki Overview & Reading Order** | [`agent_wiki/README.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/README.md) |
 | **Active vs Dormant Engines** | [`agent_wiki/architecture/source_of_truth_map.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/architecture/source_of_truth_map.md) |
+| **Simulation Run Audits** | [`agent_wiki/audit/simulation_run_audits.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/simulation_run_audits.md) |
 | **Common Pitfalls & Gotchas** | [`agent_wiki/development/common_pitfalls.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/development/common_pitfalls.md) |
 | **Safe Modification Rules** | [`agent_wiki/development/safe_modification_rules.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/development/safe_modification_rules.md) |
 | **Risk Classification** | [`agent_wiki/development/change_safety_matrix.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/development/change_safety_matrix.md) |
