@@ -2016,6 +2016,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#7-remediation-resolution-status-completed-2026-09-24" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Remediation &amp; Resolution Status (Completed 2026-09-24)
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3604,6 +3613,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#7-remediation-resolution-status-completed-2026-09-24" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Remediation &amp; Resolution Status (Completed 2026-09-24)
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4147,6 +4165,99 @@
 <li>Move orphaned <code>ui/widgets/geomechanics_3d_view.py</code> (553 lines) to <code>deprecated/</code> or integrate into <code>ui/analysis_widget.py</code>.</li>
 <li>Clean up <code>LanguageChangeMixin</code> or apply it uniformly.</li>
 </ol>
+<hr />
+<h2 id="7-remediation-resolution-status-completed-2026-09-24">7. Remediation &amp; Resolution Status (Completed 2026-09-24)<a class="headerlink" href="#7-remediation-resolution-status-completed-2026-09-24" title="Permanent link">&para;</a></h2>
+<p>All issues identified in this audit report have been resolved:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Category</th>
+<th style="text-align: left;">Item</th>
+<th style="text-align: left;">Resolution</th>
+<th style="text-align: center;">Verified</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Retirements</strong></td>
+<td style="text-align: left;"><code>optimization_types</code></td>
+<td style="text-align: left;">Completely retired and removed (<code>ui/models/</code> purged; dead/unused code with zero production callers).</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Retirements</strong></td>
+<td style="text-align: left;"><code>geomechanics_3d_view</code></td>
+<td style="text-align: left;">Completely retired and removed (553 lines of orphaned/unreferenced PyVista code purged).</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Retirements</strong></td>
+<td style="text-align: left;"><code>language_change_mixin</code></td>
+<td style="text-align: left;">Completely retired and removed (orphaned mixin purged; widgets implement <code>changeEvent</code> directly).</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Retirements</strong></td>
+<td style="text-align: left;"><code>cmg_exporter</code></td>
+<td style="text-align: left;">Completely retired and removed (<code>utils/cmg_exporter.py</code> &amp; <code>simulator_exporter.py</code> purged).</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Connections</strong></td>
+<td style="text-align: left;">Tapered &amp; Pulsed Schemes</td>
+<td style="text-align: left;">Connected <code>TaperedInjectionParams</code> and <code>PulsedInjectionParams</code> in <code>core/data_integration_engine.py._create_eor_parameters</code>.</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Bug Fix</strong></td>
+<td style="text-align: left;">UQ Dialog Lifecycle</td>
+<td style="text-align: left;">Fixed <code>EditUQParameterDialog._populate_dist_params</code> by removing layout rows via <code>self.layout.removeRow(w)</code> rather than deleting dialog parent.</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Bug Fix</strong></td>
+<td style="text-align: left;">Report Section Keys</td>
+<td style="text-align: left;">Supported both <code>"project_summary"</code> / <code>"executive_summary"</code> and <code>"data_input_overview"</code> / <code>"input_parameters"</code> in <code>utils/report_generator.py</code>.</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Bug Fix</strong></td>
+<td style="text-align: left;">Duplicate DCA Generation</td>
+<td style="text-align: left;">Removed duplicate DCA section generation call in <code>utils/report_generator.py</code>.</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Bug Fix</strong></td>
+<td style="text-align: left;">HTML <code>&lt;style&gt;</code> Nesting</td>
+<td style="text-align: left;">Stripped redundant outer <code>&lt;style&gt;</code> tags in <code>ReportGenerator._get_css_styles</code>.</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Code Practice</strong></td>
+<td style="text-align: left;">Mutable Default</td>
+<td style="text-align: left;">Replaced <code>existing_names: List[str] = []</code> with <code>Optional[List[str]] = None</code> in <code>ui/widgets/manual_well_dialog.py</code>.</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Code Practice</strong></td>
+<td style="text-align: left;">Defensive Mock Fallbacks</td>
+<td style="text-align: left;">Replaced defensive try/except mock fallbacks with direct module imports in <code>manual_well_dialog.py</code>, <code>depth_profile_dialog.py</code>, <code>log_viewer_dialog.py</code>.</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Code Practice</strong></td>
+<td style="text-align: left;">List Values Mangling</td>
+<td style="text-align: left;">Prevented period-comma substitution on multi-value lists in <code>ParameterInputGroup</code> (<code>_create_input_widget</code>, <code>get_value</code>, <code>set_value</code>).</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Hygiene</strong></td>
+<td style="text-align: left;">Dead Variables &amp; Imports</td>
+<td style="text-align: left;">Cleaned unused imports and assigned-but-unused variables across <code>report_generator.py</code>, <code>preferences_dialog.py</code>, <code>injection_scheme_dialog.py</code>, <code>report_config_dialog.py</code>, <code>task_editor_dialog.py</code>, <code>pvt_editor_dialog.py</code>, <code>pvt_table_editor.py</code>, <code>multiprocess_logging.py</code>, <code>preferences_manager.py</code>, and <code>run_exporter.py</code>.</td>
+<td style="text-align: center;">[x]</td>
+</tr>
+</tbody>
+</table>
 
 
 
