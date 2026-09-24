@@ -145,7 +145,11 @@ nav:
       - Extension Points: development/extension_points.md
       - Agent Skills: development/agent_skills.md
   - Audit Reports:
-      - Simulation Run Audits: audit/simulation_run_audits.md
+      - Simulation Run Audits:
+          - Overview & Registry: audit/simulation_run_audits/index.md
+          - 24-09-2026 Baseline Run:
+              - Technical Audit: audit/simulation_run_audits/24-09-2026_single_simulation_baseline/audit.md
+              - Evaluation Report: audit/simulation_run_audits/24-09-2026_single_simulation_baseline/run_evaluation_report.md
       - Resolved Issues: audit/resolved_issues.md
       - Scientific Flaws: audit/scientific_flaws.md
       - Mathematical Flaws: audit/mathematical_flaws.md

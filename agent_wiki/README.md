@@ -14,7 +14,7 @@ This documentation is designed for **reservoir engineers, AI pair-programmers, s
 | [**Physics Models**](physics/reservoir_model.md) | Reservoir geometry, PVT, CO₂ properties, displacement, Koval, Todd-Longstaff |
 | [**Data & Parameters**](data/inputs.md) | Input/output schemas, parameter registry, field unit definitions |
 | [**Development Guide**](development/common_pitfalls.md) | Change safety matrix, common pitfalls, safe modification rules |
-| [**Audit Reports**](audit/technical_debt.md) | Dead code, hardcoded values, [**simulation run audits**](audit/simulation_run_audits.md), fallbacks, suspicious logic, [**resolved archive**](audit/resolved_issues.md) |
+| [**Audit Reports**](audit/technical_debt.md) | Dead code, hardcoded values, [**simulation run audits**](audit/simulation_run_audits/index.md), fallbacks, suspicious logic, [**resolved archive**](audit/resolved_issues.md) |
 | [**Verification**](verification/verification_strategy.md) | 7-level V&V hierarchy, conservation tests, convergence studies |
 | [**Validation**](validation/benchmarks.md) | SPE 5, CMG GEM reference benchmarks |
 | [**Decisions**](decisions/architecture_decisions.md) | Architecture & scientific rationale records (ADRs) |
@@ -81,7 +81,7 @@ Before reading or modifying any file in this repository, keep the following **co
     - **Verification Requirement**: Whenever data models or UI widgets are modified, agents must run `pytest tests/test_project_save_load.py -v`.
 
 14. **Simulation Run Audit Logging & Historical Tracking Protocol**:
-    Every reservoir simulation run audit, parameter sweep evaluation, or benchmark run conducted by developers or AI agents must be logged in [`agent_wiki/audit/simulation_run_audits.md`](audit/simulation_run_audits.md). Every audit entry must be marked with the date in `DD-MM-YYYY` format (e.g. `24-09-2026`) and must document:
+    Every reservoir simulation run audit, parameter sweep evaluation, or benchmark run conducted by developers or AI agents must be logged in [`agent_wiki/audit/simulation_run_audits/index.md`](audit/simulation_run_audits/index.md) within its dedicated date-stamped subfolder (`DD-MM-YYYY_<run_name>/audit.md`). Every audit entry must be marked with the date in `DD-MM-YYYY` format (e.g. `24-09-2026`) and must document:
     - **Verdict**: Clear evaluation status (`PASSED`, `ACCEPTABLE WITH CONDITIONS`, `FLAGGED`, or `FAILED`).
     - **Proposal**: Concrete actionable proposal (parameter updates, physics fixes, or operational guidelines).
     - **Relevant Files**: Markdown links to input configurations, engine modules, execution scripts, and output data.

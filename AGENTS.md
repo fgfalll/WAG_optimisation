@@ -33,11 +33,11 @@ The **Agent Wiki** (`agent_wiki/`) is the definitive, authoritative source of tr
 3. **Mass Conservation**: Cumulative recycled CO₂ cannot exceed cumulative produced CO₂ ($M_{\text{recycled}} \le M_{\text{produced}} \le M_{\text{injected}}$).
 4. **Geomechanical Safety**: Sandface injection pressure is strictly bounded by EPA Class VI UIC standards ($P_{\text{sandface}} \le 0.90 \times P_{\text{frac}}$).
 5. **Project Save/Load & State Persistence**: All user inputs, reservoir configurations, PVT models, well coordinates, manual overrides, and optimization results must cleanly serialize and deserialize to/from `.tphd` files via `utils/project_file_handler.py`. Never use recursive `dataclasses.asdict()` (it strips `_dataclass` tags on nested objects). Grid permeability loading must support scalar, 1D flattened, and 3D arrays. Whenever modifying data models or UI widgets, you MUST run `pytest tests/test_project_save_load.py -v`.
-6. **Simulation Run Audit Logging & Historical Tracking**: Every simulation run audit, parameter sweep evaluation, or benchmark run conducted by developers or AI agents MUST be recorded in [`agent_wiki/audit/simulation_run_audits.md`](agent_wiki/audit/simulation_run_audits.md). Every audit entry MUST be marked with the date in `DD-MM-YYYY` format (e.g. `24-09-2026`) and include:
-   - **Verdict**: Explicit status (`PASSED`, `ACCEPTABLE WITH CONDITIONS`, `FLAGGED`, or `FAILED`).
-   - **Proposal**: Concrete actionable proposal (parameter updates, physics fixes, or operational guidelines).
-   - **Relevant Files**: Markdown links to input configurations, engine modules, execution scripts, and output data.
-   - **Past Runs Tracking**: The entry must be indexed in the Master Simulation Run Audits table so historical runs and past proposals remain visible across sessions.
+6. **Simulation Run Audit Logging & Subfolder Workflow**: Every simulation run audit, parameter sweep evaluation, or benchmark run conducted by developers or AI agents MUST be recorded in a dedicated date-stamped subfolder under `agent_wiki/audit/simulation_run_audits/` (e.g. `agent_wiki/audit/simulation_run_audits/DD-MM-YYYY_<run_name>/`):
+   - **Date & Directory Naming**: Every subfolder MUST be prefixed with `DD-MM-YYYY` (e.g. `24-09-2026_single_simulation_baseline/`).
+   - **Artifacts Preservation**: Copy key plots (`*.png`), stream tables (`summary_*.csv`), and execution manifests (`run_manifest.json`) from `logs/` into the subfolder.
+   - **Audit Report (`audit.md`)**: Must contain explicit **Verdict** (`PASSED`, `ACCEPTABLE WITH CONDITIONS`, `FLAGGED`, or `FAILED`), concrete actionable **Proposal**, linked **Relevant Files**, and physical mass/geomechanics balance checks.
+   - **Master Index**: The run must be registered in the Master Simulation Run Audits table in [`agent_wiki/audit/simulation_run_audits/index.md`](agent_wiki/audit/simulation_run_audits/index.md) to preserve past runs and proposals across sessions.
 
 
 ## Build, Lint, and Test Commands
