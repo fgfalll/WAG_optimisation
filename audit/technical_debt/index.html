@@ -337,7 +337,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../scientific_flaws/" class="md-tabs__link">
+        <a href="../simulation_run_audits/" class="md-tabs__link">
           
   
     
@@ -1315,6 +1315,8 @@
       
         
       
+        
+      
     
     
       
@@ -1350,6 +1352,27 @@
             Audit Reports
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simulation_run_audits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simulation Run Audits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1517,9 +1540,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-pyprojecttoml-configuration-debt" class="md-nav__link">
+  <a href="#4-pyprojecttoml-configuration-debt-resolved" class="md-nav__link">
     <span class="md-ellipsis">
-      4. pyproject.toml Configuration Debt
+      4. pyproject.toml Configuration Debt: RESOLVED
     </span>
   </a>
   
@@ -2883,9 +2906,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-pyprojecttoml-configuration-debt" class="md-nav__link">
+  <a href="#4-pyprojecttoml-configuration-debt-resolved" class="md-nav__link">
     <span class="md-ellipsis">
-      4. pyproject.toml Configuration Debt
+      4. pyproject.toml Configuration Debt: RESOLVED
     </span>
   </a>
   
@@ -2949,15 +2972,14 @@
 - <code>data_processor.py</code> superseded by dedicated CLI tool <a href="file:///d:/rep/4.6/co2eor_optimizer/scripts/process_las_data.py">scripts/process_las_data.py</a>
 - Removed orphaned and dead files (<code>ui/workers/data_processing_worker.py</code>, <code>report.log</code>, <code>fixed_phd_class.txt</code>, <code>test_surrogate.py</code>, <code>core/engine_surrogate/analytical_models – копія.py</code>, and legacy scientific justification dialogs/HTML assets in <code>ui/dialogs/</code> and <code>ui/assets/docs/</code>).</p>
 <hr />
-<h2 id="4-pyprojecttoml-configuration-debt">4. <code>pyproject.toml</code> Configuration Debt<a class="headerlink" href="#4-pyprojecttoml-configuration-debt" title="Permanent link">&para;</a></h2>
-<ol>
-<li><strong>Django Plugin in Petroleum Engineering App</strong>:
-   <code>plugins = ["mypy_django_plugin.main"]</code>. This project has no Django components; this is a copied boilerplate artifact.</li>
-<li><strong>Missing Test Dependencies</strong>:
-   <code>hypothesis</code> and <code>h5py</code> are required by tests and <code>sr3_reader.py</code>, but omitted from <code>[project.optional-dependencies] dev</code>.</li>
-<li><strong>Deprecated Ruff Configuration Syntax</strong>:
-   Top-level options <code>ignore</code> and <code>select</code> should be nested under <code>[tool.ruff.lint]</code>.</li>
-</ol>
+<h2 id="4-pyprojecttoml-configuration-debt-resolved">4. <code>pyproject.toml</code> Configuration Debt: RESOLVED<a class="headerlink" href="#4-pyprojecttoml-configuration-debt-resolved" title="Permanent link">&para;</a></h2>
+<p>All historical configuration artifacts in <code>pyproject.toml</code> have been resolved:
+1. <strong>Django Plugin Removed</strong>:
+   Removed <code>plugins = ["mypy_django_plugin.main"]</code> from <code>[tool.mypy]</code>.
+2. <strong>Test Dependencies Added</strong>:
+   Added <code>hypothesis&gt;=6.80</code> and <code>pytest-benchmark&gt;=4.0</code> to <code>[project.optional-dependencies] dev</code> (<code>h5py&gt;=3.8</code> is already in core <code>dependencies</code>).
+3. <strong>Modernized Ruff Configuration Syntax</strong>:
+   Nested <code>select</code> and <code>ignore</code> under <code>[tool.ruff.lint]</code>.</p>
 <hr />
 <h2 id="5-ui-presentation-layer-defects-eradicated-36-f821-undefined-names-resolved">5. UI Presentation Layer Defects: ERADICATED (36 F821 Undefined Names Resolved)<a class="headerlink" href="#5-ui-presentation-layer-defects-eradicated-36-f821-undefined-names-resolved" title="Permanent link">&para;</a></h2>
 <p>All critical static analysis errors (<code>F821</code> undefined names, <code>E722</code> bare excepts, syntax errors) have been systematically resolved:</p>

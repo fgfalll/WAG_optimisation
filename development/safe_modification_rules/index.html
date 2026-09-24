@@ -337,7 +337,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../audit/scientific_flaws/" class="md-tabs__link">
+        <a href="../../audit/simulation_run_audits/" class="md-tabs__link">
           
   
     
@@ -1363,6 +1363,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#14-simulation-run-audit-logging-historical-tracking-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      14. Simulation Run Audit Logging &amp; Historical Tracking Protocol
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1475,6 +1484,8 @@
       
         
       
+        
+      
     
     
       
@@ -1509,6 +1520,27 @@
             Audit Reports
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simulation Run Audits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -3035,6 +3067,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#14-simulation-run-audit-logging-historical-tracking-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      14. Simulation Run Audit Logging &amp; Historical Tracking Protocol
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3144,6 +3185,16 @@
 <li><strong>Engine Results Accessor</strong>: <code>OptimizationEngine.results</code> must retain <code>@results.setter</code> so that restored optimization runs populate engine state and GUI graphs.</li>
 <li><strong>UI State Flush Before Save</strong>: In <code>MainWindow._perform_project_save()</code>, always query <code>data_management_tab.get_current_project_data()</code> and <code>config_tab.get_all_configurations()</code> to synchronize active widget inputs before writing to disk.</li>
 <li><strong>Mandatory Test</strong>: Run <code>pytest tests/test_project_save_load.py -v</code> whenever touching data models, serialization, or UI state.</li>
+</ul>
+<h2 id="14-simulation-run-audit-logging-historical-tracking-protocol">14. Simulation Run Audit Logging &amp; Historical Tracking Protocol<a class="headerlink" href="#14-simulation-run-audit-logging-historical-tracking-protocol" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>The Rule</strong>: Every reservoir simulation run audit, parameter sweep evaluation, or benchmark run conducted by developers or AI agents must be recorded in <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/simulation_run_audits.md"><code>agent_wiki/audit/simulation_run_audits.md</code></a> with date format <code>DD-MM-YYYY</code>, explicit verdict, actionable proposal, and linked relevant files.</li>
+<li><strong>Protocol</strong>:</li>
+<li><strong>Date Format</strong>: Must strictly follow <code>DD-MM-YYYY</code> (e.g. <code>24-09-2026</code>).</li>
+<li><strong>Verdict Requirement</strong>: Assign one of the standard verdicts: <code>PASSED</code>, <code>ACCEPTABLE WITH CONDITIONS</code>, <code>FLAGGED</code>, or <code>FAILED</code>.</li>
+<li><strong>Proposal Requirement</strong>: Formulate a clear, actionable proposal detailing recommendations for model tuning, physical parameter adjustments, numerical stability thresholds, or operational strategies.</li>
+<li><strong>Relevant Files</strong>: Provide markdown links (<code>file:///...</code>) to input configuration files, engine modules, test scripts, generated profile outputs, and logs.</li>
+<li><strong>Past Runs Index</strong>: Append the entry to the Master Simulation Run Audits Index table so historical runs and recommendations can be audited across development sessions.</li>
 </ul>
 
 

@@ -16,7 +16,7 @@
         <link rel="prev" href="../extension_points/">
       
       
-        <link rel="next" href="../../audit/scientific_flaws/">
+        <link rel="next" href="../../audit/simulation_run_audits/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -337,7 +337,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../audit/scientific_flaws/" class="md-tabs__link">
+        <a href="../../audit/simulation_run_audits/" class="md-tabs__link">
           
   
     
@@ -1466,6 +1466,8 @@
       
         
       
+        
+      
     
     
       
@@ -1500,6 +1502,27 @@
             Audit Reports
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simulation Run Audits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -3132,6 +3155,7 @@
 <li><strong>Directionality</strong>: Verify <code>--maximize</code> is passed for recovery factor and NPV.</li>
 <li><strong>Job Reconciliation</strong>: Ensure <code>completed + failed == total_jobs</code> to catch silent failures.</li>
 <li><strong>Outlier Screening</strong>: Apply Tukey 1.5× IQR outlier filtering on aggregated outputs.</li>
+<li><strong>Simulation Run Audit Protocol</strong>: Every parameter sweep or simulation evaluation must be logged in <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/simulation_run_audits.md"><code>agent_wiki/audit/simulation_run_audits.md</code></a> marked as <code>DD-MM-YYYY</code> with verdict, proposal, and relevant files.</li>
 </ul>
 <hr />
 <h2 id="4-physics-simulation-skill">4. <code>physics-simulation</code> Skill<a class="headerlink" href="#4-physics-simulation-skill" title="Permanent link">&para;</a></h2>
@@ -3213,13 +3237,13 @@
         
         
           
-          <a href="../../audit/scientific_flaws/" class="md-footer__link md-footer__link--next" aria-label="Next: Scientific Flaws">
+          <a href="../../audit/simulation_run_audits/" class="md-footer__link md-footer__link--next" aria-label="Next: Simulation Run Audits">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Scientific Flaws
+                Simulation Run Audits
               </div>
             </div>
             <div class="md-footer__button md-icon">
