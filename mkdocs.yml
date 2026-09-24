@@ -155,6 +155,9 @@ nav:
       - Mathematical Flaws: audit/mathematical_flaws.md
       - Suspicious Logic: audit/suspicious_logic.md
       - Technical Debt: audit/technical_debt.md
+      - Data Management: audit/data_management_audit.md
+      - Optimization Widget: audit/optimization_widget_audit.md
+      - Dialogs, Models, Utils & Widgets: audit/dialogs_models_utils_widgets_audit.md
       - Dead Code: audit/dead_code.md
       - Hardcoded Values: audit/hardcoded_values.md
       - Fallbacks: audit/fallbacks.md

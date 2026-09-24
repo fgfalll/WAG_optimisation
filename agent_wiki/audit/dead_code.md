@@ -70,3 +70,22 @@ s_wi = params.get("s_wi", 0.25) # UNUSED (F841)
 
 ---
 
+## 5. UI Data Management & Modal Subsystem Dead Code
+
+Detailed in [**Data Management Audit**](data_management_audit.md):
+
+1. **Dead PVT Table Operations (`ui/data_management_widget.py`)**:
+   - `_add_pvt_row()`, `_remove_pvt_row()`, and `_plot_pvt_data()` operate on non-existent `self.pvt_table`, raising `AttributeError` if invoked.
+2. **Dead Geostatistical Model Toggle & Crash Trap (`ui/data_management_widget.py`)**:
+   - `_toggle_geostatistical_model()` toggles non-existent `self.geostatistical_props_group`.
+   - `load_project_data()` attempts `self.use_geostatistical_model_checkbox.setChecked(True)`, crashing projects with geostatistical parameters.
+3. **Dead Well Creator (`ui/data_management_widget.py`)**:
+   - `_get_or_create_well()` is defined but never invoked across the repository.
+4. **Unpopulated 3D Canvas (`ui/data_management_widget.py`)**:
+   - `self.canvas_3d` and `self.ax_3d` are allocated and cleared, but never drawn to.
+5. **Unused Imports**:
+   - `ui/data_management_widget.py`: `get_origin`, `get_args`, `Union`, `UnionType`, `QLineEdit`, `QSizePolicy`, `QHeaderView`, `QComboBox`, `QPixmap`, `GeostatisticalParams`.
+   - `ui/widgets/pvt_editor_dialog.py`: `pyqtSignal`.
+   - `ui/widgets/pvt_table_editor.py`: `QIcon`.
+
+
