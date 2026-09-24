@@ -31,14 +31,15 @@ All loose Python modules in the root directory were reorganized into structured 
 
 ---
 
-## 4. `pyproject.toml` Configuration Debt
+## 4. `pyproject.toml` Configuration Debt: RESOLVED
 
-1. **Django Plugin in Petroleum Engineering App**:
-   `plugins = ["mypy_django_plugin.main"]`. This project has no Django components; this is a copied boilerplate artifact.
-2. **Missing Test Dependencies**:
-   `hypothesis` and `h5py` are required by tests and `sr3_reader.py`, but omitted from `[project.optional-dependencies] dev`.
-3. **Deprecated Ruff Configuration Syntax**:
-   Top-level options `ignore` and `select` should be nested under `[tool.ruff.lint]`.
+All historical configuration artifacts in `pyproject.toml` have been resolved:
+1. **Django Plugin Removed**:
+   Removed `plugins = ["mypy_django_plugin.main"]` from `[tool.mypy]`.
+2. **Test Dependencies Added**:
+   Added `hypothesis>=6.80` and `pytest-benchmark>=4.0` to `[project.optional-dependencies] dev` (`h5py>=3.8` is already in core `dependencies`).
+3. **Modernized Ruff Configuration Syntax**:
+   Nested `select` and `ignore` under `[tool.ruff.lint]`.
 
 ---
 
