@@ -90,7 +90,6 @@ logger = logging.getLogger(__name__)
 from core.plotting_manager import PlottingManager
 from core.objectives import ObjectiveFunctions
 from core.objectives.storage import calculate_geomechanical_containment_score
-from utils.cmg_exporter import SimulatorExporter
 
 
 INJECTION_SCHEMES = ["continuous", "wag", "tapered", "huff_n_puff", "swag", "pulsed"]
@@ -3901,8 +3900,8 @@ class OptimizationEngine:
             logger.error("No optimization results available for export.")
             return False
 
-        exporter = SimulatorExporter()
-        return exporter.export_to_cmg(self._results, filename)
+        logger.warning("export_to_cmg is deprecated; CMG exporter has been retired.")
+        return False
 
     def generate_summary_report(self, format: str = "csv") -> str:
         """
@@ -3917,8 +3916,33 @@ class OptimizationEngine:
         if not self._results:
             return "No optimization results available for report generation."
 
-        exporter = SimulatorExporter()
-        return exporter.generate_summary_report(self._results, format)
+        params = self._results.get("optimized_params_final_clipped", {})
+        metrics = self._results.get("final_metrics", {})
+        if format == "csv":
+            csv_lines = [
+                "Parameter,Value,Units",
+                f"Injection Rate,{params.get('rate', 0):.1f},STB/day",
+                f"Injection Pressure,{params.get('pressure', 0):.1f},psi",
+                f"WAG Ratio,{params.get('wag_ratio', 1.0):.2f},-",
+                f"Recovery Factor,{metrics.get('recovery_factor', 0):.4f},fraction",
+                f"NPV,{metrics.get('npv', 0):.0f},USD",
+                f"CO2 Utilization,{metrics.get('co2_utilization', 0):.2f},MSCF/STB",
+            ]
+            return "\n".join(csv_lines)
+        elif format == "json":
+            import json
+            return json.dumps(self._results, indent=2, default=str)
+        else:
+            return (
+                "CO2 EOR Optimization Results Summary\n"
+                "====================================\n"
+                f"Injection Rate: {params.get('rate', 0):.1f} STB/day\n"
+                f"Injection Pressure: {params.get('pressure', 0):.1f} psi\n"
+                f"WAG Ratio: {params.get('wag_ratio', 1.0):.2f}\n"
+                f"Recovery Factor: {metrics.get('recovery_factor', 0):.4f}\n"
+                f"NPV: ${metrics.get('npv', 0):.0f}\n"
+                f"CO2 Utilization: {metrics.get('co2_utilization', 0):.2f} MSCF/STB"
+            )
 
     def validate_physical_constraints(self, params: Dict[str, float]) -> List[str]:
         """

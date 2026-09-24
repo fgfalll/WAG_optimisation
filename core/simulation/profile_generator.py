@@ -1,13 +1,8 @@
 """
-Legacy profile generator module (Deprecated).
-Redirects to deprecated.core.simulation.profile_generator.
+Profile generator module.
+Routes to the active FastProfileGenerator in core.engine_surrogate.profile_generator_fast.
 """
 
-import warnings
-from deprecated.core.simulation.profile_generator import *
+from core.engine_surrogate.profile_generator_fast import FastProfileGenerator, FastProfileGenerator as ProfileGenerator
 
-warnings.warn(
-    "core.simulation.profile_generator is deprecated. Use core.engine_surrogate.profile_generator_fast instead.",
-    DeprecationWarning,
-    stacklevel=2,
-)
+__all__ = ["FastProfileGenerator", "ProfileGenerator"]

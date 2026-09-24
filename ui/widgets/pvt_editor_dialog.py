@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 
 import numpy as np
 import pandas as pd
@@ -26,7 +26,7 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QApplication,
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QEvent
+from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtGui import QIcon, QColor
 
 try:

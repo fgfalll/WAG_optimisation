@@ -91,9 +91,10 @@ class EditUQParameterDialog(QDialog):
 
     def _populate_dist_params(self, dist_type: str):
         for w in self.param_inputs.values():
-            w.parent().deleteLater()
+            self.layout.removeRow(w)
+            w.deleteLater()
         for l in self.param_labels.values():
-            l.parent().deleteLater()
+            l.deleteLater()
         self.param_inputs.clear()
         self.param_labels.clear()
 

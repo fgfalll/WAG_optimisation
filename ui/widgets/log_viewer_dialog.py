@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Dict
+from typing import List, Optional
 
 import numpy as np
 from PyQt6.QtWidgets import (
@@ -45,14 +45,7 @@ except ImportError:
     MATPLOTLIB_AVAILABLE = False
     logging.warning("Matplotlib not found. Log plotting will be disabled.")
 
-try:
-    from core.data_models import WellData
-except ImportError:
-
-    class WellData:
-        pass
-
-    logging.critical("LogViewerDialog: Could not import WellData model.")
+from core.data_models import WellData
 
 logger = logging.getLogger(__name__)
 

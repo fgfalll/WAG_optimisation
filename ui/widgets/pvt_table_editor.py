@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (
     QPushButton, QAbstractItemView, QHeaderView, QFileDialog, QMessageBox,
     QSizePolicy
 )
-from PyQt6.QtGui import QIcon, QColor
+from PyQt6.QtGui import QColor
 from PyQt6.QtCore import pyqtSignal, QEvent
 
 logger = logging.getLogger(__name__)
@@ -124,7 +124,7 @@ class PVTTableEditorWidget(QWidget):
                 self.data_changed.emit()
 
         except Exception as e:
-            logger.error(f"Unexpected error in _on_item_changed for table '{self.table_name}'.", exc_info=True)
+            logger.error(f"Unexpected error in _on_item_changed for table '{self.table_name}': {e}", exc_info=True)
         finally:
             self.table_widget.blockSignals(False)
 

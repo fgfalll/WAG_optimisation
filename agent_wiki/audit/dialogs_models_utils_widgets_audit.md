@@ -289,3 +289,26 @@ EmpiricalFittingParameters           12                 12                   0  
 1. Deprecate `ui/models/optimization_types.py` (verified 100% uncalled).
 2. Move orphaned `ui/widgets/geomechanics_3d_view.py` (553 lines) to `deprecated/` or integrate into `ui/analysis_widget.py`.
 3. Clean up `LanguageChangeMixin` or apply it uniformly.
+
+---
+
+## 7. Remediation & Resolution Status (Completed 2026-09-24)
+
+All issues identified in this audit report have been resolved:
+
+| Category | Item | Resolution | Verified |
+| :--- | :--- | :--- | :---: |
+| **Retirements** | `optimization_types` | Completely retired and removed (`ui/models/` purged; dead/unused code with zero production callers). | [x] |
+| **Retirements** | `geomechanics_3d_view` | Completely retired and removed (553 lines of orphaned/unreferenced PyVista code purged). | [x] |
+| **Retirements** | `language_change_mixin` | Completely retired and removed (orphaned mixin purged; widgets implement `changeEvent` directly). | [x] |
+| **Retirements** | `cmg_exporter` | Completely retired and removed (`utils/cmg_exporter.py` & `simulator_exporter.py` purged). | [x] |
+| **Connections** | Tapered & Pulsed Schemes | Connected `TaperedInjectionParams` and `PulsedInjectionParams` in `core/data_integration_engine.py._create_eor_parameters`. | [x] |
+| **Bug Fix** | UQ Dialog Lifecycle | Fixed `EditUQParameterDialog._populate_dist_params` by removing layout rows via `self.layout.removeRow(w)` rather than deleting dialog parent. | [x] |
+| **Bug Fix** | Report Section Keys | Supported both `"project_summary"` / `"executive_summary"` and `"data_input_overview"` / `"input_parameters"` in `utils/report_generator.py`. | [x] |
+| **Bug Fix** | Duplicate DCA Generation | Removed duplicate DCA section generation call in `utils/report_generator.py`. | [x] |
+| **Bug Fix** | HTML `<style>` Nesting | Stripped redundant outer `<style>` tags in `ReportGenerator._get_css_styles`. | [x] |
+| **Code Practice** | Mutable Default | Replaced `existing_names: List[str] = []` with `Optional[List[str]] = None` in `ui/widgets/manual_well_dialog.py`. | [x] |
+| **Code Practice** | Defensive Mock Fallbacks | Replaced defensive try/except mock fallbacks with direct module imports in `manual_well_dialog.py`, `depth_profile_dialog.py`, `log_viewer_dialog.py`. | [x] |
+| **Code Practice** | List Values Mangling | Prevented period-comma substitution on multi-value lists in `ParameterInputGroup` (`_create_input_widget`, `get_value`, `set_value`). | [x] |
+| **Hygiene** | Dead Variables & Imports | Cleaned unused imports and assigned-but-unused variables across `report_generator.py`, `preferences_dialog.py`, `injection_scheme_dialog.py`, `report_config_dialog.py`, `task_editor_dialog.py`, `pvt_editor_dialog.py`, `pvt_table_editor.py`, `multiprocess_logging.py`, `preferences_manager.py`, and `run_exporter.py`. | [x] |
+

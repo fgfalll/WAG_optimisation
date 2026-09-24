@@ -4,11 +4,10 @@ from typing import Optional, Dict, Any
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QTabWidget, QPushButton,
     QDialogButtonBox, QLabel, QComboBox, QSpinBox, QCheckBox, QGroupBox,
-    QFormLayout, QLineEdit, QListWidget, QListWidgetItem, QStackedWidget,
-    QScrollArea, QWidget, QSizePolicy, QMessageBox, QInputDialog
+    QFormLayout, QLineEdit, QListWidget, QListWidgetItem,
+    QScrollArea, QWidget, QMessageBox, QInputDialog
 )
-from PyQt6.QtCore import Qt, pyqtSignal, pyqtSlot, QEvent
-from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import Qt, pyqtSignal, QEvent
 
 from utils.preferences_manager import (
     PreferencesManager, UnitSystem, get_preferences_manager, AIPreferences

@@ -7,7 +7,6 @@ import logging
 import logging.handlers
 import multiprocessing
 import os
-import sys
 import threading
 import uuid
 from functools import partial
@@ -43,7 +42,7 @@ class SafeFileHandler(logging.FileHandler):
         """
         try:
             super().emit(record)
-        except (PermissionError, OSError) as e:
+        except (PermissionError, OSError):
             # Silently drop log records if file is locked or inaccessible
             # This prevents crashes during multiprocessing on Windows
             # The logs are lost, but the application continues to run
@@ -151,7 +150,7 @@ def _reset_all_loggers() -> None:
 
         # Create a list of items first to avoid RuntimeError during iteration
         loggers_to_reset = []
-        for name, logger_obj in logger_dict.items():
+        for logger_obj in logger_dict.values():
             if isinstance(logger_obj, logging.Logger):
                 loggers_to_reset.append(logger_obj)
 

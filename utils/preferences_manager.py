@@ -3,10 +3,9 @@ Preferences Manager for CO2 EOR Optimization App.
 Handles user preferences storage, retrieval, and management using QSettings.
 """
 import logging
-from typing import Any, Dict, Optional, List, Union
-from dataclasses import dataclass, field, asdict
+from typing import Dict, Optional, List
+from dataclasses import dataclass, field
 from enum import Enum
-from pathlib import Path
 
 from PyQt6.QtCore import QSettings, pyqtSignal, QObject
 

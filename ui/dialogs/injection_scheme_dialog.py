@@ -628,7 +628,7 @@ class InjectionSchemeDialog(QDialog):
             updated_params.update(current_params)
 
             # Validate the parameters
-            temp_eor = EORParameters(**updated_params)
+            _ = EORParameters(**updated_params)
 
             # Emit the updated parameters
             self.scheme_updated.emit(updated_params)
@@ -668,8 +668,6 @@ class InjectionSchemeDialog(QDialog):
             if engine_type != "surrogate":
                 logger.warning(f"Only surrogate engine is supported, got: {engine_type}")
                 return False
-
-            current_params = self._get_current_parameters()
 
             injection_rate = self.original_parameters.get("injection_rate", 0)
             if injection_rate <= 0:

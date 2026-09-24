@@ -2,9 +2,8 @@ import os
 import pdfkit
 from PyQt6.QtCore import QObject, pyqtSignal
 import datetime
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 import numpy as np
-import json
 import base64
 import io
 import plotly.graph_objects as go
@@ -12,18 +11,6 @@ from plotly.io import to_image
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 import logging
-
-from core.data_models import (
-    ReservoirData,
-    PVTProperties,
-    EORParameters,
-    EconomicParameters,
-    OperationalParameters,
-    ProfileParameters,
-    EOSModelParameters,
-    WellData,
-)
-from analysis.decline_curve_analysis import DeclineCurveAnalyzer, DCAResult
 
 
 class ReportGenerator(QObject):
@@ -167,55 +154,52 @@ class ReportGenerator(QObject):
 
     def _generate_html_content(self, report_data: Dict[str, Any], config: Dict[str, Any]) -> str:
         sections = []
+        sec_cfg = config.get("sections", {})
 
-        if config.get("sections", {}).get("executive_summary", True):
+        exec_summary_enabled = sec_cfg.get("executive_summary", sec_cfg.get("project_summary", True))
+        if exec_summary_enabled:
             sections.append(self._generate_cover_page(report_data))
 
         sections.append(self._generate_table_of_contents(config))
 
-        if config.get("sections", {}).get("executive_summary", True):
+        if exec_summary_enabled:
             sections.append(self._generate_executive_summary(report_data))
 
-        if config.get("sections", {}).get("input_parameters", True):
+        input_params_enabled = sec_cfg.get("input_parameters", sec_cfg.get("data_input_overview", True))
+        if input_params_enabled:
             sections.append(self._generate_input_parameters(report_data))
 
         if (
-            config.get("sections", {}).get("optimization_results", True)
+            sec_cfg.get("optimization_results", True)
             and "optimization_results" in report_data
         ):
             sections.append(self._generate_optimization_results(report_data, config))
 
         if (
-            config.get("sections", {}).get("sensitivity_analysis", True)
+            sec_cfg.get("sensitivity_analysis", True)
             and "sensitivity_results" in report_data
         ):
             sections.append(self._generate_sensitivity_analysis(report_data, config))
 
-        if config.get("sections", {}).get("uq_analysis", True) and "uq_results" in report_data:
+        if sec_cfg.get("uq_analysis", True) and "uq_results" in report_data:
             sections.append(self._generate_uncertainty_quantification(report_data, config))
 
-        if config.get("sections", {}).get("economic_assumptions", True):
+        if sec_cfg.get("economic_assumptions", True):
             sections.append(self._generate_economic_analysis(report_data, config))
 
         if (
-            config.get("sections", {}).get("decline_curve_analysis", True)
+            sec_cfg.get("decline_curve_analysis", True)
             and "dca_results" in report_data
         ):
             sections.append(self._generate_decline_curve_analysis(report_data, config))
 
         if (
-            config.get("sections", {}).get("decline_curve_analysis", True)
-            and "dca_results" in report_data
-        ):
-            sections.append(self._generate_decline_curve_analysis(report_data, config))
-
-        if (
-            config.get("sections", {}).get("validation_report", True)
+            sec_cfg.get("validation_report", True)
             and "validation_report" in report_data
         ):
             sections.append(self._generate_validation_report(report_data))
 
-        if config.get("sections", {}).get("appendices", True):
+        if sec_cfg.get("appendices", True):
             sections.append(self._generate_appendices(report_data))
 
         css_content = self._get_css_styles(config)
@@ -296,7 +280,6 @@ class ReportGenerator(QObject):
     def _generate_executive_summary(self, report_data: Dict[str, Any]) -> str:
         """Generate executive summary HTML"""
         optimization_results = report_data.get("optimization_results", {})
-        economic_data = report_data.get("economic_parameters", {})
 
         best_npv = optimization_results.get("final_metrics", {}).get("npv", 0)
         recovery_factor = optimization_results.get("final_metrics", {}).get("recovery_factor", 0)
@@ -820,7 +803,6 @@ class ReportGenerator(QObject):
         line_spacing = format_options.get("line_spacing", 1.0)
 
         return f"""
-        <style>
             body {{
                 font-family: "{font_family}", Times, serif;
                 font-size: {font_size}px;
@@ -996,7 +978,6 @@ class ReportGenerator(QObject):
                 padding: 10px;
                 background-color: white;
             }}
-        </style>
         """
 
     def _plotly_fig_to_base64(self, fig: go.Figure) -> str:

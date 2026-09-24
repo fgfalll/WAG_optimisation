@@ -484,6 +484,19 @@ class DataIntegrationEngine:
                 production_period_days=eor_data.get("huff_n_puff_production_period_days", 15),
                 max_cycles=eor_data.get("huff_n_puff_max_cycles", 10),
             )
+        elif injection_scheme == "tapered":
+            tapered_params = TaperedInjectionParams(
+                initial_rate_multiplier=eor_data.get("tapered_initial_rate_multiplier", 1.5),
+                final_rate_multiplier=eor_data.get("tapered_final_rate_multiplier", 0.5),
+                duration_years=eor_data.get("tapered_duration_years", 5.0),
+                function=eor_data.get("tapered_function", "linear"),
+            )
+        elif injection_scheme == "pulsed":
+            pulsed_params = PulsedInjectionParams(
+                pulse_duration_days=int(eor_data.get("pulsed_pulse_duration_days", 7)),
+                pause_duration_days=int(eor_data.get("pulsed_pause_duration_days", 14)),
+                intensity_multiplier=eor_data.get("pulsed_intensity_multiplier", 2.0),
+            )
 
         return EORParameters(
             injection_scheme=injection_scheme,

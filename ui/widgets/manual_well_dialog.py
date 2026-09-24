@@ -14,56 +14,15 @@ from PyQt6.QtWidgets import (
     QWidget,
     QFormLayout,
     QTableWidget,
-    QTableWidgetItem,
     QAbstractItemView,
     QComboBox,
 )
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QPointF, pyqtSignal, QEvent
 
-try:
-    from .parameter_input_group import ParameterInputGroup
-except ImportError:
-
-    class ParameterInputGroup(QWidget):
-        finalValueChanged = pyqtSignal(object)
-        param_name: str = ""
-
-        def __init__(self, param_name="", label_text="", input_type="", **kwargs):
-            super().__init__()
-
-        def get_value(self):
-            return ""
-
-        def set_value(self, v):
-            pass
-
-        def setEnabled(self, b):
-            pass
-
-        def setProperty(self, n, v):
-            pass
-
-        def property(self, n):
-            pass
-
-    logging.critical("ManualWellDialog: Failed to import ParameterInputGroup.")
-try:
-    from .depth_profile_dialog import DepthProfileDialog
-except ImportError:
-
-    class DepthProfileDialog(QDialog):
-        pass
-
-    logging.critical("ManualWellDialog: Failed to import DepthProfileDialog.")
-try:
-    from core.data_models import WellData
-except ImportError:
-
-    class WellData:
-        pass
-
-    logging.critical("ManualWellDialog: Could not import WellData model.")
+from .parameter_input_group import ParameterInputGroup
+from .depth_profile_dialog import DepthProfileDialog
+from core.data_models import WellData
 
 logger = logging.getLogger(__name__)
 
@@ -85,14 +44,14 @@ class ManualWellDialog(QDialog):
         ),
     }
 
-    def __init__(self, existing_names: List[str] = [], parent: Optional[QWidget] = None):
+    def __init__(self, existing_names: Optional[List[str]] = None, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setMinimumSize(600, 500)
 
         self.key_param_widgets: Dict[str, ParameterInputGroup] = {}
         self.key_param_values: Dict[str, Any] = {}
         self.well_path: List[QPointF] = []
-        self.existing_names = existing_names
+        self.existing_names = list(existing_names) if existing_names is not None else []
 
         main_layout = QVBoxLayout(self)
 

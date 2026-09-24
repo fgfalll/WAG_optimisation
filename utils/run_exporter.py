@@ -17,7 +17,6 @@ Artifacts Generated:
 10. Figure PNGs - High-resolution plots of convergence, production profiles, material balance, etc.
 """
 
-import os
 import io
 import json
 import logging
@@ -467,7 +466,6 @@ class RunDataExporter:
         kpis = manifest["key_performance_indicators"]
         safety = manifest["geomechanical_safety"]
         dvars = manifest["decision_variables"]
-        res_ctx = manifest["reservoir_context"]
 
         # 1. Geomechanical overpressure
         if safety["fracture_ceiling_violated"]:

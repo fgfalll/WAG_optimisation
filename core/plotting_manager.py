@@ -1623,7 +1623,7 @@ class PlottingManager:
     def plot_hybrid_model_analysis(self) -> go.Figure:
         """Generates a plot showing the interplay of miscible, immiscible, and hybrid recovery models."""
         try:
-            from deprecated.core.simulation.recovery_models import (
+            from core.simulation.recovery_models import (
                 MiscibleRecoveryModel,
                 ImmiscibleRecoveryModel,
                 SigmoidTransition,

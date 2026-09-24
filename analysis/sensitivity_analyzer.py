@@ -17,7 +17,6 @@ from core.data_models import (
     ProfileParameters,
     EOSModelParameters,
 )
-from core.simulation.recovery_models import recovery_factor
 from utils.config_manager import ConfigManager
 
 try:
@@ -320,9 +319,6 @@ class SensitivityAnalyzer:
         temp_model_param_overrides: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, float]:
         """Core evaluation function for a single sensitivity analysis point."""
-        if recovery_factor is None:
-            raise ImportError("The 'recovery_factor' function is not available.")
-
         eos_model_to_use = (
             temp_eos_params_override
             if temp_eos_params_override

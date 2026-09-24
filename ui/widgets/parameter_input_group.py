@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Optional, List
+from typing import Any, Optional
 
 from PyQt6.QtWidgets import (
     QWidget, QHBoxLayout, QLabel, QLineEdit, QComboBox, QPushButton, 
@@ -90,9 +90,12 @@ class ParameterInputGroup(QWidget):
             widget = QLineEdit()
             if "placeholder_text" in kwargs: widget.setPlaceholderText(kwargs["placeholder_text"])
             if default_value is not None:
-                if isinstance(default_value, list): text_value = ", ".join(map(str, default_value))
-                else: text_value = str(default_value)
-                widget.setText(text_value.replace('.', ','))
+                if isinstance(default_value, (list, tuple)):
+                    text_value = ", ".join(map(str, default_value))
+                    widget.setText(text_value)
+                else:
+                    text_value = str(default_value)
+                    widget.setText(text_value.replace('.', ','))
             widget.textChanged.connect(self._start_debounce)
         elif self.input_type == "combobox":
             widget = QComboBox()
@@ -194,7 +197,10 @@ class ParameterInputGroup(QWidget):
 
     def get_value(self) -> Any:
         if self.input_type in ["lineedit", "doublespinbox", "spinbox"]:
-            return self.input_widget.text().replace(',', '.')
+            text = self.input_widget.text()
+            if "," in text and (" " in text or text.count(",") > 1 or "(" in text):
+                return text
+            return text.replace(',', '.')
         if self.input_type == "combobox":
             data = self.input_widget.currentData()
             return data if data is not None else self.input_widget.currentText()
@@ -210,8 +216,12 @@ class ParameterInputGroup(QWidget):
         self.input_widget.blockSignals(True)
         try:
             if self.input_type in ["lineedit", "doublespinbox", "spinbox"]:
-                text_value = str(value) if value is not None else ""
-                self.input_widget.setText(text_value.replace('.', ','))
+                if isinstance(value, (list, tuple)):
+                    text_value = ", ".join(map(str, value))
+                    self.input_widget.setText(text_value)
+                else:
+                    text_value = str(value) if value is not None else ""
+                    self.input_widget.setText(text_value.replace('.', ','))
             elif self.input_type == "combobox":
                 idx = self.input_widget.findData(value)
                 if idx == -1: idx = self.input_widget.findText(str(value))
