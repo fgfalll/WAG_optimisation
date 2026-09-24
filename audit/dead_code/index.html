@@ -3140,6 +3140,10 @@
 
 
 <h1 id="dead-code-orphaned-modules-unused-logic-audit">Dead Code, Orphaned Modules &amp; Unused Logic Audit<a class="headerlink" href="#dead-code-orphaned-modules-unused-logic-audit" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>[!NOTE]
+This document catalogs <strong>only active, open items</strong>. For resolved flaws, historical post-mortems, and verification status, consult the <a href="../resolved_issues/"><strong>Resolved Issues &amp; Defect Resolution Archive</strong></a>.</p>
+</blockquote>
 <h2 id="1-executive-summary">1. Executive Summary<a class="headerlink" href="#1-executive-summary" title="Permanent link">&para;</a></h2>
 <p>Static analysis, reachability graphs, and ruff linting revealed significant volumes of orphaned code, abandoned engines, unused functions, and calculated variables that are discarded without consumption:
 - <strong>3 Entire Engine Subsystems</strong> (<code>compositional_engine</code>, <code>unified_engine</code>, <code>engine_simple</code>) are orphaned from the main simulation pipeline.
@@ -3236,28 +3240,6 @@
 - In <code>core/engine_surrogate/analytical_models.py</code>:
   - Line 30: <code>from core.simulation.recovery_models import (...)</code> triggers deprecation warnings upon import even when surrogate models do not call them.</p>
 <hr />
-<blockquote>
-<p>[!NOTE]
-<strong>5. Removed Root Artifacts &amp; Superseded Scripts [RESOLVED]</strong> has been archived to <a href="../resolved_issues/#dead-05"><code>resolved_issues.md</code></a>.</p>
-<p>[!NOTE]
-<strong>6. Removed Scientific Justification and Help Subsystems [RESOLVED]</strong> has been archived to <a href="../resolved_issues/#dead-06"><code>resolved_issues.md</code></a>.</p>
-<p>[!NOTE]
-<strong>7. Core Directory Architecture Audit &amp; Dead Code Removal [RESOLVED]</strong>
-- <strong>Phase 1 Deletions</strong>: Completely removed <code>core/validation/</code> (1,290 lines), <code>core/optimization_analysis.py</code> (886 lines), <code>core/objectives/base.py</code> &amp; <code>production.py</code> (136 lines), <code>core/exceptions.py</code> (32 lines), and <code>core/utils/</code> (36 lines).
-- <strong>Phase 2 Deprecations &amp; Relocations</strong>:
-  - <code>core/simulation/recovery_models.py</code> and <code>profile_generator.py</code> relocated to <code>deprecated/core/simulation/</code>.
-  - Uncalibrated <code>GeologyEngine</code> relocated to <code>deprecated/core/geology/geology_engine.py</code>.
-  - <code>SimulatorExporter</code> moved to <code>utils/cmg_exporter.py</code> with backward-compatible deprecation shim.
-  - Response surface machine learning prototypes relocated to <code>deprecated/core/engine_surrogate/</code>.
-- <strong>Phase 3 Internal Cleanups</strong>:
-  - <code>core/data_models.py</code>: Removed unused <code>GridType</code>, <code>GridBase</code>, <code>SimpleGrid</code>, <code>FullPhysicsGrid</code>, <code>ReservoirState</code>, <code>RockProperties</code>. Inlined pore volume calculation.
-  - <code>core/data_integration_engine.py</code>: Removed duplicate <code>DataValidator</code> and <code>UnitConverter</code>; uses <code>PhysicalConstants</code>.
-  - <code>core/objectives/storage.py</code>: Removed dead prototype functions; retained active containment and storage efficiency models.
-  - <code>core/engine_surrogate/analytical_models.py</code>: Removed dead <code>LiteratureBasedMMP</code>; fixed array truth value evaluation in Buckley-Leverett.
-- <strong>Phase 4 Optimisation Engine Decoupling</strong>:
-  - <code>core/optimisation_engine.py</code>: Removed unused <code>npv</code> fallback and breakthrough physics imports; updated physical constants; delegated GA, hybrid, and breakthrough plots directly to <code>PlottingManager</code>.
-- <strong>Verification</strong>: Full suite of 307 tests passes with 0 failures.</p>
-</blockquote>
 
 
 

@@ -1846,18 +1846,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-master-resolved-discrepancies-archive" class="md-nav__link">
+  <a href="#2-verified-correct-modules-and-physical-formulations" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Master Resolved Discrepancies Archive
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-verified-correct-modules-and-physical-formulations" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Verified Correct Modules and Physical Formulations
+      2. Verified Correct Modules and Physical Formulations
     </span>
   </a>
   
@@ -3392,18 +3383,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-master-resolved-discrepancies-archive" class="md-nav__link">
+  <a href="#2-verified-correct-modules-and-physical-formulations" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Master Resolved Discrepancies Archive
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-verified-correct-modules-and-physical-formulations" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Verified Correct Modules and Physical Formulations
+      2. Verified Correct Modules and Physical Formulations
     </span>
   </a>
   
@@ -3428,6 +3410,10 @@
 
 
 <h1 id="suspicious-logic-scientific-discrepancies-audit">Suspicious Logic &amp; Scientific Discrepancies Audit<a class="headerlink" href="#suspicious-logic-scientific-discrepancies-audit" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>[!NOTE]
+This document catalogs <strong>only active, open items</strong>. For resolved flaws, historical post-mortems, and verification status, consult the <a href="../resolved_issues/"><strong>Resolved Issues &amp; Defect Resolution Archive</strong></a>.</p>
+</blockquote>
 <p>This document catalogs logic, equations, and code paths that are mathematically or physically questionable, internally contradictory, or scientifically unvalidated.</p>
 <hr />
 <h2 id="1-top-critical-scientific-numerical-discrepancies">1. Top Critical Scientific &amp; Numerical Discrepancies<a class="headerlink" href="#1-top-critical-scientific-numerical-discrepancies" title="Permanent link">&para;</a></h2>
@@ -3786,177 +3772,7 @@
 <li><strong>Remediation</strong>: Replace the hard step failure penalty with a smooth, continuous penalty function or proper multi-well streamline transit time calculation.</li>
 </ul>
 <hr />
-<h2 id="2-master-resolved-discrepancies-archive">2. Master Resolved Discrepancies Archive<a class="headerlink" href="#2-master-resolved-discrepancies-archive" title="Permanent link">&para;</a></h2>
-<p>All 22 historical numerical errors, units explosions, and presentation bugs previously cataloged in this document have been fully resolved and migrated into <a href="../resolved_issues/"><strong><code>agent_wiki/audit/resolved_issues.md</code></strong></a>:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">ID</th>
-<th style="text-align: left;">Issue Title</th>
-<th style="text-align: left;">Location</th>
-<th style="text-align: left;">Status</th>
-<th style="text-align: left;">Full Post-Mortem</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>SUSP-B</strong></td>
-<td style="text-align: left;">Unit Inconsistency in Reservoir Tank Pressure ODE</td>
-<td style="text-align: left;"><code>surrogate_engine.py:904</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-b-unit-inconsistency-in-reservoir-tank-pressure-ode">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-C</strong></td>
-<td style="text-align: left;">Recycled Gas Double-Subtraction in Material Balance</td>
-<td style="text-align: left;"><code>material_balance.py:216</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-c-recycled-gas-double-subtraction-in-material-balance">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-C2</strong></td>
-<td style="text-align: left;">35.3× OOIP Dimensional Unit Inconsistency</td>
-<td style="text-align: left;"><code>data_integration_engine.py:408</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-c2-353-ooip-dimensional-unit-inconsistency">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-F</strong></td>
-<td style="text-align: left;">12× Recovery Factor Discrepancy in Data Validation</td>
-<td style="text-align: left;"><code>data_validation.py:288</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-f-12-recovery-factor-discrepancy-in-data-validation">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-G</strong></td>
-<td style="text-align: left;">Recycled CO₂ Unit Explosion (21.2M Tonnes)</td>
-<td style="text-align: left;"><code>material_balance.py:108</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-g-recycled-co2-unit-explosion-212m-tonnes">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-H</strong></td>
-<td style="text-align: left;">180-Year Material Balance Time Vector Scaling</td>
-<td style="text-align: left;"><code>material_balance.py:632</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-h-180-year-material-balance-time-vector-scaling">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-I</strong></td>
-<td style="text-align: left;">15-Bar Production Profile Truncation</td>
-<td style="text-align: left;"><code>optimisation_engine.py:856</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-i-15-bar-production-profile-truncation">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-J</strong></td>
-<td style="text-align: left;">CO₂ Utilization Penalty 1,000,000.00 Key Mismatch</td>
-<td style="text-align: left;"><code>wrapper.py:105</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-j-co2-utilization-penalty-100000000-key-mismatch">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-K</strong></td>
-<td style="text-align: left;">Class E Artificial Storage Modifier Synthesis</td>
-<td style="text-align: left;"><code>wrapper.py:130</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-k-class-e-artificial-storage-modifier-synthesis">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-L</strong></td>
-<td style="text-align: left;">Penalty Dilution Multipliers (<em>0.1, </em>0.8) and Silent Bare Exceptions</td>
-<td style="text-align: left;"><code>optimisation_engine.py:1705</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-l-penalty-dilution-multipliers-01-08-and-silent-bare-exceptions">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-M</strong></td>
-<td style="text-align: left;">Plotly Dummy Mock Classes Swallowing Visualizations</td>
-<td style="text-align: left;"><code>material_balance.py:9</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-m-plotly-dummy-mock-classes-swallowing-visualizations">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-N</strong></td>
-<td style="text-align: left;">1000× Volumetric Downhole Velocity &amp; Dimensionless Number Error (<span class="arithmatex">\(N_c\)</span>, <span class="arithmatex">\(N_g\)</span>)</td>
-<td style="text-align: left;"><code>analytical_models.py:813</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-n-1000-volumetric-downhole-velocity--dimensionless-number-error-n_c-n_g">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-Y</strong></td>
-<td style="text-align: left;">Cronquist MMP Formula Uses Ad-Hoc <code>(55 - API)</code> Term</td>
-<td style="text-align: left;"><code>evaluation/mmp.py:111</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-y-cronquist-mmp-formula-uses-ad-hoc-55---api-term">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-AD</strong></td>
-<td style="text-align: left;">20× Produced CO₂ Shrinkage Bug</td>
-<td style="text-align: left;"><code>material_balance.py:172</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-ad-20-produced-co2-shrinkage-bug">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-AE</strong></td>
-<td style="text-align: left;">Hallucinated Caprock Leakage from Normal Wellbore Production</td>
-<td style="text-align: left;"><code>optimisation_engine.py:1458</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-ae-hallucinated-caprock-leakage-from-normal-wellbore-production">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-AF</strong></td>
-<td style="text-align: left;">Pressure Search Space Squeeze from Dimensional Mismatch on <span class="arithmatex">\(\Delta P_{\text{inj}}\)</span></td>
-<td style="text-align: left;"><code>optimisation_engine.py:1906</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-af-pressure-search-space-squeeze-from-dimensional-mismatch-on-delta-p_textinj">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-AG</strong></td>
-<td style="text-align: left;">Plateau Rate Decoupling from Collapsing Drawdown</td>
-<td style="text-align: left;"><code>profile_generator_fast.py:518</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-ag-plateau-rate-decoupling-from-collapsing-drawdown">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-AH</strong></td>
-<td style="text-align: left;">Apparent Mass Balance Discrepancy from Recycled Stream Double-Counting</td>
-<td style="text-align: left;"><code>utils/run_exporter.py:310</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-ah-apparent-mass-balance-discrepancy-from-recycled-stream-double-counting">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-AI</strong></td>
-<td style="text-align: left;">Post Shut-In Unattenuated CO₂ Production &amp; False Ecology Penalties</td>
-<td style="text-align: left;"><code>surrogate_engine.py:1260</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-ai-post-shut-in-unattenuated-co2-production--false-ecology-penalties">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-AJ</strong></td>
-<td style="text-align: left;">Decline Curve Analysis Plateau Regression Breakdown (<span class="arithmatex">\(R^2 = -3.14\)</span>)</td>
-<td style="text-align: left;"><code>decline_curve_analysis.py:90</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-aj-decline-curve-analysis-plateau-regression-breakdown-r2---314">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-AK</strong></td>
-<td style="text-align: left;">Well-Injector-1 Role Inversion via UI Substring Default Matching</td>
-<td style="text-align: left;"><code>manual_well_dialog.py:110</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-ak-well-injector-1-role-inversion-via-ui-substring-default-matching">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SUSP-AL</strong></td>
-<td style="text-align: left;">Plotly Vertical Bar Schedule Collapse &amp; Duplicate Legend Pollution</td>
-<td style="text-align: left;"><code>plotting_manager.py:780</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#susp-al-plotly-vertical-bar-schedule-collapse--duplicate-legend-pollution">View Record</a></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="3-verified-correct-modules-and-physical-formulations">3. Verified Correct Modules and Physical Formulations<a class="headerlink" href="#3-verified-correct-modules-and-physical-formulations" title="Permanent link">&para;</a></h2>
+<h2 id="2-verified-correct-modules-and-physical-formulations">2. Verified Correct Modules and Physical Formulations<a class="headerlink" href="#2-verified-correct-modules-and-physical-formulations" title="Permanent link">&para;</a></h2>
 <p>The following modules, functions, and mathematical derivations were rigorously reviewed and found to be scientifically, dimensionally, and mathematically sound:</p>
 <ol>
 <li><strong>Composite Vogel-Darcy Inflow Deliverability</strong> (<code>FastProfileGenerator.calculate_composite_ipr_deliverability</code>):</li>

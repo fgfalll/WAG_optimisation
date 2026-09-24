@@ -3038,6 +3038,10 @@
 
 
 <h1 id="hardcoded-values-magic-numbers-audit">Hardcoded Values &amp; Magic Numbers Audit<a class="headerlink" href="#hardcoded-values-magic-numbers-audit" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>[!NOTE]
+This document catalogs <strong>only active, open items</strong>. For resolved flaws, historical post-mortems, and verification status, consult the <a href="../resolved_issues/"><strong>Resolved Issues &amp; Defect Resolution Archive</strong></a>.</p>
+</blockquote>
 <h2 id="1-executive-summary">1. Executive Summary<a class="headerlink" href="#1-executive-summary" title="Permanent link">&para;</a></h2>
 <p>An AST traversal targeting binary operations, comparison expressions, and function calls across active scientific computing modules identified <strong>1,965 non-trivial hardcoded numerical values</strong>.</p>
 <p>Every important value has been audited to determine its physical meaning, unit, configurability, and whether it has an established scientific origin or constitutes an uncalibrated constant.</p>
@@ -3172,15 +3176,6 @@
 <td style="text-align: center;">No</td>
 <td style="text-align: left;"><strong>UNKNOWN ORIGIN</strong></td>
 <td style="text-align: left;">Heuristic split between structural, residual, solubility, and mineral trapping.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py#L155-L186">core/objectives/wrapper.py:155-186</a></td>
-<td style="text-align: center;"><code>999999.0</code> / <code>1e6</code> [RESOLVED]</td>
-<td style="text-align: left;">Penalty value for missing profile data in CO₂ utilization</td>
-<td style="text-align: center;">factor</td>
-<td style="text-align: center;">No</td>
-<td style="text-align: left;">Arbitrary numerical penalty</td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Eradicated magic number. Missing profile data now evaluates to <code>float('nan')</code> and triggers <code>FAILURE_PENALTY</code> (-1e12) in GA without distorting scaling.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/simulation/recovery_models.py#L600-L601">core/simulation/recovery_models.py:600-601</a></td>

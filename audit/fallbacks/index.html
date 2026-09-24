@@ -1753,9 +1753,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-high-priority-fallback-audit-table" class="md-nav__link">
+  <a href="#3-high-priority-fallback-audit-status" class="md-nav__link">
     <span class="md-ellipsis">
-      3. High-Priority Fallback Audit Table
+      3. High-Priority Fallback Audit Status
     </span>
   </a>
   
@@ -3029,9 +3029,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-high-priority-fallback-audit-table" class="md-nav__link">
+  <a href="#3-high-priority-fallback-audit-status" class="md-nav__link">
     <span class="md-ellipsis">
-      3. High-Priority Fallback Audit Table
+      3. High-Priority Fallback Audit Status
     </span>
   </a>
   
@@ -3056,6 +3056,10 @@
 
 
 <h1 id="fallback-exception-swallowing-audit">Fallback &amp; Exception-Swallowing Audit<a class="headerlink" href="#fallback-exception-swallowing-audit" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>[!NOTE]
+This document catalogs <strong>only active, open items</strong>. For resolved flaws, historical post-mortems, and verification status, consult the <a href="../resolved_issues/"><strong>Resolved Issues &amp; Defect Resolution Archive</strong></a>.</p>
+</blockquote>
 <h2 id="1-executive-summary">1. Executive Summary<a class="headerlink" href="#1-executive-summary" title="Permanent link">&para;</a></h2>
 <p>An AST audit across active Python modules originally identified <strong>2,459 total fallbacks</strong>, comprising:
 - <strong>1,710</strong> dictionary <code>.get(key, default)</code> calls with implicit fallbacks
@@ -3099,181 +3103,14 @@
 <td style="text-align: left;">Documented industry baseline; acceptable if flagged.</td>
 <td style="text-align: left;">Active</td>
 </tr>
-<tr>
-<td style="text-align: left;"><strong>Class C: Implementation Fallbacks</strong></td>
-<td style="text-align: left;">Plotly dummy mock classes if plotting library is uninstalled</td>
-<td style="text-align: center;">0 (eliminated)</td>
-<td style="text-align: left;">LOW</td>
-<td style="text-align: left;"><strong>ERADICATED</strong>: Plotly enforced as mandatory dependency.</td>
-<td style="text-align: left;">Resolved</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Class D: Scientifically Dangerous Fallbacks</strong></td>
-<td style="text-align: left;">Catching calculation exceptions and returning uncalibrated guesses</td>
-<td style="text-align: center;">0 in math core</td>
-<td style="text-align: left;">HIGH</td>
-<td style="text-align: left;"><strong>ERADICATED</strong>: Replaced with specific exceptions + state variable logging.</td>
-<td style="text-align: left;">Resolved</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Class E: Artificial Result-Producing Fallbacks</strong></td>
-<td style="text-align: left;">Substituting artificial positive values to cheat optimizer penalties</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: left;">CRITICAL</td>
-<td style="text-align: left;"><strong>ERADICATED</strong>: Pruned with full mathematical penalties or <code>NaN</code>.</td>
-<td style="text-align: left;">Resolved</td>
-</tr>
 </tbody>
 </table>
 <hr />
-<h2 id="3-high-priority-fallback-audit-table">3. High-Priority Fallback Audit Table<a class="headerlink" href="#3-high-priority-fallback-audit-table" title="Permanent link">&para;</a></h2>
-<p>The following table catalogs the critical fallbacks in the codebase and their resolution status:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Location</th>
-<th style="text-align: left;">Triggering Condition</th>
-<th style="text-align: left;">Fallback Behavior</th>
-<th style="text-align: left;">Intended Original Behavior</th>
-<th style="text-align: left;">Scientific Consequence</th>
-<th style="text-align: center;">Class</th>
-<th style="text-align: left;">Severity</th>
-<th style="text-align: left;">Status &amp; Remediation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1700-L1725">core/optimisation_engine.py:1700-1725</a></td>
-<td style="text-align: left;">Total injected CO₂ is <span class="arithmatex">\(\le 0\)</span>, but <span class="arithmatex">\(RF &gt; 0.05\)</span>, or storage efficiency <span class="arithmatex">\(\le 10^{-6}\)</span></td>
-<td style="text-align: left;">Previously set <code>storage_efficiency = 0.3</code> or returned diluted <code>FAILURE_PENALTY * 0.1</code></td>
-<td style="text-align: left;">Evaluate true physical storage (<span class="arithmatex">\(0.0\)</span>) and prune invalid candidate</td>
-<td style="text-align: left;"><strong>Falsified physical reality</strong>; awarded 30% storage credit or softened penalties</td>
-<td style="text-align: center;"><strong>E</strong></td>
-<td style="text-align: left;"><strong>CRITICAL</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Eliminated override and dilution. Evaluates true storage efficiency (<span class="arithmatex">\(0.0\)</span> for primary depletion); unphysical candidates receive full <code>FAILURE_PENALTY</code> (<span class="arithmatex">\(-10^{12}\)</span>).</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py#L130-L137">core/objectives/wrapper.py:130-137</a></td>
-<td style="text-align: left;"><code>storage_params</code> or <code>profiles</code> missing in <code>_calculate_objective_functions</code></td>
-<td style="text-align: left;">Previously set <code>storage_efficiency = max(0.3, 0.5 * (RF / 0.35))</code></td>
-<td style="text-align: left;">Compute storage efficiency from injection/production profile</td>
-<td style="text-align: left;">Synthesized artificial storage efficiency from recovery factor alone</td>
-<td style="text-align: center;"><strong>E</strong></td>
-<td style="text-align: left;"><strong>CRITICAL</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Deleted Class E synthesis. Sets <code>storage_efficiency = float("nan")</code> and records <code>method="unphysical_or_missing_data"</code>. Chromosome is pruned with <code>FAILURE_PENALTY</code>.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py#L155-L186">core/objectives/wrapper.py:155-186</a></td>
-<td style="text-align: left;">Missing/empty CO₂ purchase or oil production profiles</td>
-<td style="text-align: left;">Previously returned magic number <code>results["co2_utilization"] = 1e6</code></td>
-<td style="text-align: left;">Accurately compute CO₂ utilization</td>
-<td style="text-align: left;">Masked missing simulation profiles with arbitrary magic number</td>
-<td style="text-align: center;"><strong>D</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Returns <code>float("nan")</code> on missing/empty arrays, triggering full <code>FAILURE_PENALTY</code> in GA.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L9-L50">analysis/material_balance.py:9-50</a></td>
-<td style="text-align: left;"><code>import plotly</code> fails</td>
-<td style="text-align: left;">Previously created dummy <code>go.Figure</code>, <code>go.Scatter</code>, <code>go.Bar</code> classes with no-op methods</td>
-<td style="text-align: left;">Render interactive HTML plots</td>
-<td style="text-align: left;">Silent failure of chart generation; prints text instead of raising missing dependency</td>
-<td style="text-align: center;"><strong>C</strong></td>
-<td style="text-align: left;"><strong>LOW</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Eradicated all dummy mock classes. Plotly is now imported directly and verified on startup in <code>main.py</code>.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L470-L482">core/optimisation_engine.py:470-482</a></td>
-<td style="text-align: left;">EOS calculation throws exception in <code>_get_co2_fraction_from_eos()</code></td>
-<td style="text-align: left;">Previously caught blind <code>except Exception:</code> and silently passed (<code>pass</code>)</td>
-<td style="text-align: left;">Compute phase split via cubic EOS</td>
-<td style="text-align: left;">Silently used static/uncalibrated gas fraction</td>
-<td style="text-align: center;"><strong>D</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Replaced with <code>except (RuntimeError, ValueError, ZeroDivisionError, ArithmeticError) as e:</code> and explicitly logs state variables: pressure (<span class="arithmatex">\(P\)</span>) and temperature (<span class="arithmatex">\(T\)</span>).</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/compositional_engine/flow/compositional_solver.py#L700-L720">core/compositional_engine/flow/compositional_solver.py:700-720</a></td>
-<td style="text-align: left;">Phase density calculation throws exception in gravity flux loop</td>
-<td style="text-align: left;">Previously caught <code>except Exception: pass</code></td>
-<td style="text-align: left;">Calculate inter-cell phase densities and gravity flux</td>
-<td style="text-align: left;">Silently swallowed numerical breakdown in fluid density</td>
-<td style="text-align: center;"><strong>D</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Replaced with specific exception tuple (<code>FloatingPointError</code>, <code>ZeroDivisionError</code>, <code>ValueError</code>, <code>IndexError</code>, <code>KeyError</code>, <code>RuntimeError</code>) and logs cell ID, <span class="arithmatex">\(P\)</span>, <span class="arithmatex">\(T\)</span>, <span class="arithmatex">\(S_o\)</span>, <span class="arithmatex">\(S_g\)</span>.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/compositional_engine/phase_behavior/flash_calculator.py#L285-L320">core/compositional_engine/phase_behavior/flash_calculator.py:285-320</a></td>
-<td style="text-align: left;">Rachford-Rice flash equation fails to solve</td>
-<td style="text-align: left;">Previously caught <code>except Exception: pass</code></td>
-<td style="text-align: left;">Solve vapor fraction and phase compositions</td>
-<td style="text-align: left;">Silently bypassed flash convergence failure</td>
-<td style="text-align: center;"><strong>D</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Replaced with specific numerical exceptions and logs <span class="arithmatex">\(P\)</span>, <span class="arithmatex">\(T\)</span>, and overall composition <span class="arithmatex">\(z\)</span>.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_simple/multiphase_flow_adapter.py#L455-L475">core/engine_simple/multiphase_flow_adapter.py:455-475</a></td>
-<td style="text-align: left;">MMP / miscible relative permeability adjustment fails</td>
-<td style="text-align: left;">Previously caught <code>except Exception: pass</code></td>
-<td style="text-align: left;">Adjust relative permeability near MMP</td>
-<td style="text-align: left;">Silently skipped miscibility corrections</td>
-<td style="text-align: center;"><strong>D</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Replaced with specific exceptions (<code>ValueError</code>, <code>TypeError</code>, <code>ZeroDivisionError</code>, <code>FloatingPointError</code>) and logs average <span class="arithmatex">\(P\)</span>, <span class="arithmatex">\(T\)</span>, <span class="arithmatex">\(\bar{S}_g\)</span>, <span class="arithmatex">\(\bar{S}_w\)</span>.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/simulation/recovery_models.py#L605-L615">core/simulation/recovery_models.py:605-615</a></td>
-<td style="text-align: left;"><code>scipy.optimize.fsolve</code> fails to solve Dykstra-Parsons WOR equation</td>
-<td style="text-align: left;">Previously caught blind <code>except Exception:</code>, executed heuristic power law</td>
-<td style="text-align: left;">Solve non-linear WOR balance</td>
-<td style="text-align: left;">Discarded numerical solver convergence failure without reporting</td>
-<td style="text-align: center;"><strong>D</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Replaced with <code>except (RuntimeError, ValueError, ArithmeticError) as e:</code> and logs <span class="arithmatex">\(V_{DP}\)</span>, mobility ratio <span class="arithmatex">\(M\)</span>, and solver diagnostic.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py#L127-L495">core/engine_surrogate/analytical_models.py:127-495</a></td>
-<td style="text-align: left;">Primary bounded calculation raises exception in analytical recovery models</td>
-<td style="text-align: left;">Previously caught blind <code>except Exception as e:</code> with generic warning</td>
-<td style="text-align: left;">Calculate model recovery</td>
-<td style="text-align: left;">Masked parameter-specific crashes</td>
-<td style="text-align: center;"><strong>D</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Replaced with specific exceptions (<code>ValueError</code>, <code>TypeError</code>, <code>ArithmeticError</code>, <code>RuntimeError</code>) and logs exact state variables (<span class="arithmatex">\(P, T, S_{wi}, S_o, \mu_o, V_{DP}, M\)</span>).</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/breakthrough_physics.py#L155-L165">analysis/breakthrough_physics.py:155-165</a></td>
-<td style="text-align: left;">Peng-Robinson EOS initialization fails</td>
-<td style="text-align: left;">Previously caught <code>except Exception:</code> and set <code>eos_model = None</code></td>
-<td style="text-align: left;">Initialize dynamic fluid EOS</td>
-<td style="text-align: left;">Silently disabled dynamic breakthrough fluid properties</td>
-<td style="text-align: center;"><strong>D</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Replaced with specific exceptions (<code>ImportError</code>, <code>TypeError</code>, <code>ValueError</code>, <code>RuntimeError</code>) and logs pressure and temperature.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/decline_curve_analysis.py#L110-L145">analysis/decline_curve_analysis.py:110-145</a></td>
-<td style="text-align: left;"><code>scipy.optimize.curve_fit</code> fails on hyperbolic decline curve</td>
-<td style="text-align: left;">Previously caught blind <code>except Exception as e:</code></td>
-<td style="text-align: left;">Fit hyperbolic b-factor</td>
-<td style="text-align: left;">Silently converted hyperbolic decline to exponential without reporting details</td>
-<td style="text-align: center;"><strong>D</strong></td>
-<td style="text-align: left;"><strong>MEDIUM</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Replaced with <code>except (RuntimeError, ValueError, TypeError) as e:</code> and logs data point count, peak rate, and curve fit status.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L235-L244">core/optimisation_engine.py:235-244</a></td>
-<td style="text-align: left;"><code>calculate_co2_fvf_rb_per_mscf</code> raises <code>TypeError</code> due to keyword <code>p_psia</code></td>
-<td style="text-align: left;">Previously caught exception and fell back to <code>B_GAS_RB_PER_MSCF = 5.0</code></td>
-<td style="text-align: left;">Evaluate dynamic PR-EOS CO₂ FVF</td>
-<td style="text-align: left;">Overestimated reservoir voidage of injected gas by 10× (<span class="arithmatex">\(B_g = 5.0\)</span> vs <span class="arithmatex">\(0.50\text{ RB/MSCF}\)</span>)</td>
-<td style="text-align: center;"><strong>D</strong></td>
-<td style="text-align: left;"><strong>CRITICAL</strong></td>
-<td style="text-align: left;"><strong>RESOLVED</strong>: Aligned method signature in <code>pvt_state.py</code> and call site; dynamic PR-EOS FVF evaluated cleanly with 0 fallbacks.</td>
-</tr>
-</tbody>
-</table>
+<h2 id="3-high-priority-fallback-audit-status">3. High-Priority Fallback Audit Status<a class="headerlink" href="#3-high-priority-fallback-audit-status" title="Permanent link">&para;</a></h2>
+<p>All high-risk <strong>Class C</strong> (dependency mock swallowers), <strong>Class D</strong> (silent calculation exceptions), and <strong>Class E</strong> (artificial result-producing fallbacks) have been eliminated from active production paths. The active codebase retains exclusively:
+- <strong>Class A numerical safety guards</strong> (e.g. <code>+ 1e-12</code> division protection and physical saturation clamps).
+- <strong>Class B engineering defaults</strong> (documented default compressibility and standard water salinity).</p>
+<p>Full historical remediation records and post-mortems for eradicated fallbacks are archived in <a href="../resolved_issues/"><strong><code>agent_wiki/audit/resolved_issues.md</code></strong></a>.</p>
 
 
 

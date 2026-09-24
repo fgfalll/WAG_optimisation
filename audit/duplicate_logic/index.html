@@ -1796,36 +1796,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#duplicate-2-profile-generation-wag-continuous" class="md-nav__link">
+  <a href="#duplicate-1-profile-generation-wag-continuous" class="md-nav__link">
     <span class="md-ellipsis">
-      Duplicate 2: Profile Generation (WAG &amp; Continuous)
+      Duplicate 1: Profile Generation (WAG &amp; Continuous)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#duplicate-3-analytical-recovery-models" class="md-nav__link">
+  <a href="#duplicate-2-analytical-recovery-models" class="md-nav__link">
     <span class="md-ellipsis">
-      Duplicate 3: Analytical Recovery Models
+      Duplicate 2: Analytical Recovery Models
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#duplicate-4-equation-of-state-eos-phase-behavior" class="md-nav__link">
+  <a href="#duplicate-3-equation-of-state-eos-phase-behavior" class="md-nav__link">
     <span class="md-ellipsis">
-      Duplicate 4: Equation of State (EOS) &amp; Phase Behavior
+      Duplicate 3: Equation of State (EOS) &amp; Phase Behavior
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#duplicate-5-co2-trapping-material-balance" class="md-nav__link">
+  <a href="#duplicate-4-co2-trapping-material-balance" class="md-nav__link">
     <span class="md-ellipsis">
-      Duplicate 5: CO₂ Trapping &amp; Material Balance
+      Duplicate 4: CO₂ Trapping &amp; Material Balance
     </span>
   </a>
   
@@ -1833,15 +1833,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-master-consolidated-duplicates-archive" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Master Consolidated Duplicates Archive
-    </span>
-  </a>
   
 </li>
       
@@ -3072,36 +3063,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#duplicate-2-profile-generation-wag-continuous" class="md-nav__link">
+  <a href="#duplicate-1-profile-generation-wag-continuous" class="md-nav__link">
     <span class="md-ellipsis">
-      Duplicate 2: Profile Generation (WAG &amp; Continuous)
+      Duplicate 1: Profile Generation (WAG &amp; Continuous)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#duplicate-3-analytical-recovery-models" class="md-nav__link">
+  <a href="#duplicate-2-analytical-recovery-models" class="md-nav__link">
     <span class="md-ellipsis">
-      Duplicate 3: Analytical Recovery Models
+      Duplicate 2: Analytical Recovery Models
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#duplicate-4-equation-of-state-eos-phase-behavior" class="md-nav__link">
+  <a href="#duplicate-3-equation-of-state-eos-phase-behavior" class="md-nav__link">
     <span class="md-ellipsis">
-      Duplicate 4: Equation of State (EOS) &amp; Phase Behavior
+      Duplicate 3: Equation of State (EOS) &amp; Phase Behavior
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#duplicate-5-co2-trapping-material-balance" class="md-nav__link">
+  <a href="#duplicate-4-co2-trapping-material-balance" class="md-nav__link">
     <span class="md-ellipsis">
-      Duplicate 5: CO₂ Trapping &amp; Material Balance
+      Duplicate 4: CO₂ Trapping &amp; Material Balance
     </span>
   </a>
   
@@ -3109,15 +3100,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-master-consolidated-duplicates-archive" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Master Consolidated Duplicates Archive
-    </span>
-  </a>
   
 </li>
       
@@ -3140,12 +3122,16 @@
 
 
 <h1 id="duplicate-implementation-subsystem-redundancy-audit">Duplicate Implementation &amp; Subsystem Redundancy Audit<a class="headerlink" href="#duplicate-implementation-subsystem-redundancy-audit" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>[!NOTE]
+This document catalogs <strong>only active, open items</strong>. For resolved flaws, historical post-mortems, and verification status, consult the <a href="../resolved_issues/"><strong>Resolved Issues &amp; Defect Resolution Archive</strong></a>.</p>
+</blockquote>
 <h2 id="1-overview">1. Overview<a class="headerlink" href="#1-overview" title="Permanent link">&para;</a></h2>
 <p>During the development of the CO₂ EOR Optimizer, several iterations of scientific models were added without fully removing or consolidating prior versions.</p>
-<p>This document details all <strong>5 major duplicated subsystems</strong>, highlighting code locations, differences, and why each duplicate exists.</p>
+<p>This document details the <strong>4 remaining active duplicate subsystems</strong>, highlighting code locations, differences, and why each duplicate exists.</p>
 <hr />
 <h2 id="2-inventory-of-active-duplicate-implementations">2. Inventory of Active Duplicate Implementations<a class="headerlink" href="#2-inventory-of-active-duplicate-implementations" title="Permanent link">&para;</a></h2>
-<h3 id="duplicate-2-profile-generation-wag-continuous">Duplicate 2: Profile Generation (WAG &amp; Continuous)<a class="headerlink" href="#duplicate-2-profile-generation-wag-continuous" title="Permanent link">&para;</a></h3>
+<h3 id="duplicate-1-profile-generation-wag-continuous">Duplicate 1: Profile Generation (WAG &amp; Continuous)<a class="headerlink" href="#duplicate-1-profile-generation-wag-continuous" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Implementation A</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/simulation/profile_generator.py">core/simulation/profile_generator.py</a> (<code>ProfileGenerator</code>)</li>
 <li><em>Details</em>: Original implementation. Uses explicit Python time loops, day-by-day stepping, and calls <code>injection_schemes.py</code>.</li>
@@ -3155,7 +3141,7 @@
 <li><strong>Recommendation</strong>: Mark <code>core/simulation/profile_generator.py</code> and <code>injection_schemes.py</code> as fully deprecated; do not use in new code.</li>
 </ul>
 <hr />
-<h3 id="duplicate-3-analytical-recovery-models">Duplicate 3: Analytical Recovery Models<a class="headerlink" href="#duplicate-3-analytical-recovery-models" title="Permanent link">&para;</a></h3>
+<h3 id="duplicate-2-analytical-recovery-models">Duplicate 2: Analytical Recovery Models<a class="headerlink" href="#duplicate-2-analytical-recovery-models" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Implementation A</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/simulation/recovery_models.py">core/simulation/recovery_models.py</a> (<code>KovalModel</code>, <code>DykstraParsonsModel</code>, <code>BuckleyLeverettModel</code>)</li>
 <li><em>Details</em>: Employs <code>scipy.optimize.fsolve</code> for producing water-oil ratio (WOR) and vertical sweep balances. Falls back to power law on solver failure.</li>
@@ -3165,7 +3151,7 @@
 <li><strong>Recommendation</strong>: Maintain <code>analytical_models.py</code> as source of truth; avoid modifying <code>core/simulation/recovery_models.py</code>.</li>
 </ul>
 <hr />
-<h3 id="duplicate-4-equation-of-state-eos-phase-behavior">Duplicate 4: Equation of State (EOS) &amp; Phase Behavior<a class="headerlink" href="#duplicate-4-equation-of-state-eos-phase-behavior" title="Permanent link">&para;</a></h3>
+<h3 id="duplicate-3-equation-of-state-eos-phase-behavior">Duplicate 3: Equation of State (EOS) &amp; Phase Behavior<a class="headerlink" href="#duplicate-3-equation-of-state-eos-phase-behavior" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Implementation A</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/unified_engine/physics/eos/">core/unified_engine/physics/eos/</a> (<code>PengRobinsonEOS</code>, <code>CubicEOS</code>, <code>ReservoirFluid</code>)</li>
 <li><em>Details</em>: Full Peng-Robinson EOS with Rachford-Rice flash calculation, binary interaction parameters (BIP), and component critical properties.</li>
@@ -3175,7 +3161,7 @@
 <li><strong>Recommendation</strong>: <code>core/unified_engine/physics/eos/</code> is the authoritative thermodynamic package.</li>
 </ul>
 <hr />
-<h3 id="duplicate-5-co2-trapping-material-balance">Duplicate 5: CO₂ Trapping &amp; Material Balance<a class="headerlink" href="#duplicate-5-co2-trapping-material-balance" title="Permanent link">&para;</a></h3>
+<h3 id="duplicate-4-co2-trapping-material-balance">Duplicate 4: CO₂ Trapping &amp; Material Balance<a class="headerlink" href="#duplicate-4-co2-trapping-material-balance" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Implementation A</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py">analysis/material_balance.py</a> (<code>MaterialBalanceTracker</code>)</li>
 <li><em>Details</em>: Post-run material balance calculation for UI charts. Contains the double-subtraction defect for recycled CO₂.</li>
@@ -3185,28 +3171,6 @@
 <li><strong>Recommendation</strong>: Correct <code>analysis/material_balance.py</code> to match the mass accounting of <code>surrogate_engine.py</code>.</li>
 </ul>
 <hr />
-<h2 id="3-master-consolidated-duplicates-archive">3. Master Consolidated Duplicates Archive<a class="headerlink" href="#3-master-consolidated-duplicates-archive" title="Permanent link">&para;</a></h2>
-<p>The following duplicate subsystems have been unified into a single source of truth, with full details archived in <a href="../resolved_issues/"><strong><code>agent_wiki/audit/resolved_issues.md</code></strong></a>:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">ID</th>
-<th style="text-align: left;">Duplicate Subsystem</th>
-<th style="text-align: left;">Status</th>
-<th style="text-align: left;">Single Source of Truth</th>
-<th style="text-align: left;">Full Post-Mortem</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>DUP-01</strong></td>
-<td style="text-align: left;">Minimum Miscibility Pressure (MMP) Correlations</td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><code>evaluation/mmp.py</code></td>
-<td style="text-align: left;"><a href="../resolved_issues/#dup-01-minimum-miscibility-pressure-mmp-correlations-duplication">View Record</a></td>
-</tr>
-</tbody>
-</table>
 
 
 

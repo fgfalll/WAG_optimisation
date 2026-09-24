@@ -1767,15 +1767,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#3-master-resolved-scientific-flaws-archive" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Master Resolved Scientific Flaws Archive
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -3310,15 +3301,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#3-master-resolved-scientific-flaws-archive" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Master Resolved Scientific Flaws Archive
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -3338,6 +3320,10 @@
 
 
 <h1 id="scientific-flaw-register">Scientific Flaw Register<a class="headerlink" href="#scientific-flaw-register" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>[!NOTE]
+This document catalogs <strong>only active, open items</strong>. For resolved flaws, historical post-mortems, and verification status, consult the <a href="../resolved_issues/"><strong>Resolved Issues &amp; Defect Resolution Archive</strong></a>.</p>
+</blockquote>
 <p>This document catalogs confirmed scientific flaws, unphysical equations, and thermodynamic contradictions in the CO₂ EOR Optimizer codebase.</p>
 <hr />
 <h2 id="master-scientific-flaw-summary">Master Scientific Flaw Summary<a class="headerlink" href="#master-scientific-flaw-summary" title="Permanent link">&para;</a></h2>
@@ -3360,22 +3346,6 @@
 <td style="text-align: left;">Buckley-Leverett / Koval Fractional Flow</td>
 <td style="text-align: left;">Inverts gas breakthrough: unfavorable mobility yields 10% gas, favorable yields 70%</td>
 <td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-02</strong></td>
-<td style="text-align: left;"><strong>CRITICAL</strong></td>
-<td style="text-align: left;"><code>data_integration_engine.py:370, 456</code></td>
-<td style="text-align: left;">Fluid Thermodynamics (Compressibility)</td>
-<td style="text-align: left;">Oil expands under pressure (<span class="arithmatex">\(\partial B_o / \partial P &gt; 0\)</span>, negative compressibility)</td>
-<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt"><strong>RESOLVED</strong></a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-03</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><code>data_integration_engine.py:372, 375</code></td>
-<td style="text-align: left;">Viscosity-Pressure Dependence</td>
-<td style="text-align: left;">Oil and supercritical CO₂ viscosities decrease exponentially with pressure</td>
-<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-03-inverted-pressure-viscosity-dependence"><strong>RESOLVED</strong></a></td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>SCI-FLAW-04</strong></td>
@@ -3450,14 +3420,6 @@
 <td style="text-align: left;">OPEN</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>SCI-FLAW-13</strong></td>
-<td style="text-align: left;"><strong>MEDIUM</strong></td>
-<td style="text-align: left;"><code>evaluation/mmp.py:111</code></td>
-<td style="text-align: left;">MMP Correlation Validity</td>
-<td style="text-align: left;">Non-standard Cronquist <span class="arithmatex">\((55 - API)\)</span> crashes on light oils (<span class="arithmatex">\(API &gt; 55^\circ\)</span>)</td>
-<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-13-non-standard-cronquist-55---api-correlation"><strong>RESOLVED</strong></a></td>
-</tr>
-<tr>
 <td style="text-align: left;"><strong>SCI-FLAW-14</strong></td>
 <td style="text-align: left;"><strong>HIGH</strong></td>
 <td style="text-align: left;"><code>analysis/material_balance.py:85-108</code></td>
@@ -3528,12 +3490,6 @@
 <li><strong>Status</strong>: OPEN.</li>
 </ul>
 <hr />
-<blockquote>
-<p>[!NOTE]
-<strong>SCI-FLAW-02: Negative Oil Compressibility in Synthetic PVT</strong> has been resolved and archived to <a href="../resolved_issues/#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt"><code>resolved_issues.md</code></a>.</p>
-<p>[!NOTE]
-<strong>SCI-FLAW-03: Inverted Pressure-Viscosity Dependence</strong> has been resolved and archived to <a href="../resolved_issues/#sci-flaw-03-inverted-pressure-viscosity-dependence"><code>resolved_issues.md</code></a>.</p>
-</blockquote>
 <h3 id="sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density">SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density<a class="headerlink" href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>ID</strong>: <code>SCI-FLAW-04</code></li>
@@ -3771,42 +3727,6 @@
 <li><strong>Status</strong>: OPEN.</li>
 </ul>
 <hr />
-<h2 id="3-master-resolved-scientific-flaws-archive">3. Master Resolved Scientific Flaws Archive<a class="headerlink" href="#3-master-resolved-scientific-flaws-archive" title="Permanent link">&para;</a></h2>
-<p>The following scientific flaws have been fully eliminated, with comprehensive post-mortems and verification proofs archived in <a href="../resolved_issues/"><strong><code>agent_wiki/audit/resolved_issues.md</code></strong></a>:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">ID</th>
-<th style="text-align: left;">Scientific Flaw Title</th>
-<th style="text-align: left;">Location</th>
-<th style="text-align: left;">Status</th>
-<th style="text-align: left;">Full Post-Mortem</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-02</strong></td>
-<td style="text-align: left;">Negative Oil Compressibility in Synthetic PVT</td>
-<td style="text-align: left;"><code>core/data_integration_engine.py:370, 456</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-02-negative-oil-compressibility-in-synthetic-pvt">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-03</strong></td>
-<td style="text-align: left;">Inverted Pressure-Viscosity Dependence</td>
-<td style="text-align: left;"><code>core/data_integration_engine.py:372, 375</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-03-inverted-pressure-viscosity-dependence">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-13</strong></td>
-<td style="text-align: left;">Non-Standard Cronquist <span class="arithmatex">\((55 - API)\)</span> Correlation</td>
-<td style="text-align: left;"><code>evaluation/mmp.py:111</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#sci-flaw-13-non-standard-cronquist-55---api-correlation">View Record</a></td>
-</tr>
-</tbody>
-</table>
 
 
 

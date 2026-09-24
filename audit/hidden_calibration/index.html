@@ -1788,15 +1788,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#3-master-resolved-calibrations-archive" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Master Resolved Calibrations Archive
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -3058,15 +3049,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#3-master-resolved-calibrations-archive" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Master Resolved Calibrations Archive
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -3086,6 +3068,10 @@
 
 
 <h1 id="hidden-calibration-artificial-fitting-audit">Hidden Calibration &amp; Artificial Fitting Audit<a class="headerlink" href="#hidden-calibration-artificial-fitting-audit" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>[!NOTE]
+This document catalogs <strong>only active, open items</strong>. For resolved flaws, historical post-mortems, and verification status, consult the <a href="../resolved_issues/"><strong>Resolved Issues &amp; Defect Resolution Archive</strong></a>.</p>
+</blockquote>
 <h2 id="1-executive-summary">1. Executive Summary<a class="headerlink" href="#1-executive-summary" title="Permanent link">&para;</a></h2>
 <p>A critical scientific finding of this audit is the presence of <strong>unstated calibrations, heuristic tuning multipliers, and empirical fittings</strong> embedded in the physics and profile generation layers.</p>
 <p>While some parameters are documented in <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/data/parameters.md#e-empiricalfittingparameters-line-2241"><code>agent_wiki/data/parameters.md</code></a> as calibration levers, several other adjustments previously operated silently without explicit notice. Recent refactorings have begun replacing crude heuristic steps with mass-conserving physical formulations.</p>
@@ -3102,42 +3088,6 @@
 <li><strong>Scientific Audit Verdict</strong>: Physically plausible mechanism, but acts as a manual tuning knob to force-match CMG or field breakthrough times without geologic crossflow verification.</li>
 </ul>
 <hr />
-<h2 id="3-master-resolved-calibrations-archive">3. Master Resolved Calibrations Archive<a class="headerlink" href="#3-master-resolved-calibrations-archive" title="Permanent link">&para;</a></h2>
-<p>The following empirical overrides and manual tuning adjustments have been fully eliminated or replaced with physics models, with complete post-mortems archived in <a href="../resolved_issues/"><strong><code>agent_wiki/audit/resolved_issues.md</code></strong></a>:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">ID</th>
-<th style="text-align: left;">Calibration Title</th>
-<th style="text-align: left;">Location</th>
-<th style="text-align: left;">Status</th>
-<th style="text-align: left;">Full Post-Mortem</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>CALIB-WAG</strong></td>
-<td style="text-align: left;">WAG Phase Mobility Buffering &amp; Mass Preservation</td>
-<td style="text-align: left;"><code>profile_generator_fast.py:309</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#calib-wag-wag-phase-mobility-buffering--mass-preservation">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>CALIB-MMP</strong></td>
-<td style="text-align: left;">Modified Cronquist MMP Formula (<code>55 - API</code>)</td>
-<td style="text-align: left;"><code>evaluation/mmp.py:111</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#calib-mmp-modified-cronquist-mmp-formula-55---api">View Record</a></td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>CALIB-STORAGE</strong></td>
-<td style="text-align: left;">Zero-Injection Storage Efficiency Override (Optimizer Cheat)</td>
-<td style="text-align: left;"><code>optimisation_engine.py:1708</code></td>
-<td style="text-align: left;">VERIFIED</td>
-<td style="text-align: left;"><a href="../resolved_issues/#calib-storage-zero-injection-storage-efficiency-override-optimizer-cheat">View Record</a></td>
-</tr>
-</tbody>
-</table>
 
 
 
