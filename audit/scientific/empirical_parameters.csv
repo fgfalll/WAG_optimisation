@@ -1,0 +1,9 @@
+parameter,file,line,value,target,equation,purpose,classification,status
+transverse_mixing,core/engine_surrogate/surrogate_engine.py,195,0.80,Heterogeneity Koval Factor H_k,H_k = 1 / (1 - V_DP * 0.80)**2,Scales Dykstra-Parsons heterogeneity to delay breakthrough to match CMG GEM,UNDOCUMENTED CALIBRATION,STRONG CONCERN
+wag_gas_bonus,core/engine_surrogate/profile_generator_fast.py,315,1.08,Oil production rate during gas cycle,q_oil *= 1.08,Heuristic +8% oil production boost during CO2 injection cycles,POSSIBLE FITTING,STRONG CONCERN
+wag_water_penalty,core/engine_surrogate/profile_generator_fast.py,322,0.96,Oil production rate during water cycle,q_oil *= 0.96,Heuristic -4% oil production depression during water cycles,POSSIBLE FITTING,STRONG CONCERN
+cronquist_c1,core/engine_surrogate/analytical_models.py,560,15.988,Cronquist MMP calculation,MMP = 15.988 * T**(0.7442 + 0.0011*T) * (55 - API)**0.279,Literature baseline correlation for CO2 MMP,DOCUMENTED CALIBRATION,VALIDATED
+api_subtrahend_55,core/engine_surrogate/analytical_models.py,560,55.0,API gravity term in Cronquist,(55.0 - gamma_API)**0.279,Forces inverse relationship between MMP and API gravity; singular if API >= 55,EMPIRICAL BUT NOT CALIBRATED,STRONG CONCERN
+rf_ceiling,core/engine_surrogate/analytical_models.py,205,0.80,Ultimate recovery factor,"rf = np.clip(rf, 0.05, 0.80)",Developer cap on maximum recovery to prevent unphysical optimizer explosions,EMPIRICAL BUT NOT CALIBRATED,POSSIBLE ISSUE
+rf_floor,core/engine_surrogate/analytical_models.py,205,0.05,Minimum recovery factor,"rf = np.clip(rf, 0.05, 0.80)",Developer floor preventing zero or negative recovery,EMPIRICAL BUT NOT CALIBRATED,POSSIBLE ISSUE
+b_gas_reservoir_factor,core/engine_surrogate/surrogate_engine.py,915,2.07,Tank Pressure ODE gas rate conversion,q_gas_rbd = q_gas_mscfd * 2.07,Converts MSCFD to reservoir barrels per day (Bg = 0.00207 RB/scf * 1000),DOCUMENTED CALIBRATION,VALIDATED

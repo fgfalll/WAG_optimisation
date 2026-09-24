@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/co2eor_optimizer.iml" filepath="$PROJECT_DIR$/.idea/co2eor_optimizer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/co2eor-optimizer.iml" filepath="$PROJECT_DIR$/.idea/co2eor-optimizer.iml" />
     </modules>
   </component>
 </project>

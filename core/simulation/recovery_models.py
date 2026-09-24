@@ -28,6 +28,8 @@ try:
 except ImportError:
     from ..data_models import LayerDefinition, PhysicalConstants
 
+from core.exceptions import RecoveryModelError
+
 import numpy as np
 from scipy.optimize import fsolve
 
@@ -605,7 +607,13 @@ class DykstraParsonsModel(RecoveryModel):
                 initial_guess = 1 - v_dp ** c_guess
                 (solution,) = fsolve(equation_to_solve, initial_guess)
                 vertical_sweep = np.clip(solution, 0.0, 1.0)
-            except Exception:
+            except (RuntimeError, ValueError, ArithmeticError) as e:
+                logger.warning(
+                    "Dykstra-Parsons fsolve failed for V_DP=%.3f, M=%.3f: %s. Using analytical approximation.",
+                    v_dp,
+                    mobility_ratio,
+                    e,
+                )
                 c = 0.5 + 0.05 * np.log(mobility_ratio) if mobility_ratio > 1 else 0.5
                 vertical_sweep = 1 - v_dp ** c
             return vertical_sweep
@@ -765,7 +773,7 @@ def recovery_factor(model: str, **kwargs) -> float:
 
             total_kh, total_pv = sum(layer_kh), sum(layer_pv)
             if total_kh < EPSILON or total_pv < EPSILON:
-                return 0.0
+                raise RecoveryModelError("Layered model: total_kh or total_pv is below epsilon threshold")
 
             rate_fractions = [kh / total_kh for kh in layer_kh]
             pv_fractions = [pv / total_pv for pv in layer_pv]
@@ -789,5 +797,4 @@ def recovery_factor(model: str, **kwargs) -> float:
         return model_instance._bounded_calculate(**kwargs)
 
     except (TypeError, ValueError, KeyError) as e:
-        logger.error(f"Error in recovery_factor model '{model}': {e}", exc_info=True)
-        return 0.0
+        raise RecoveryModelError(f"Recovery factor model '{model}' failed: {e}") from e

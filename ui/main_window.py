@@ -7,7 +7,7 @@ import traceback
 from dataclasses import asdict
 import numpy as np
 
-from path_utils import get_config_dir, get_ui_assets_dir
+from utils.path_utils import get_config_dir, get_ui_assets_dir
 
 import pandas as pd
 import base64
@@ -64,9 +64,8 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 try:
-    from config_manager import ConfigManager
+    from utils.config_manager import ConfigManager
     from utils.project_file_handler import save_project_to_tphd, load_project_from_tphd
-    from utils.units_manager import units_manager
     from utils.report_generator import ReportGenerator
     from ui.overview_page import OverviewPageWidget
     from ui.data_management_widget import DataManagementWidget
@@ -75,9 +74,6 @@ try:
     from ui.analysis_widget import AnalysisWidget
     from ui.ai_assistant_widget import AIAssistantWidget
     from ui.dialogs.report_config_dialog import ReportConfigDialog
-    from ui.dialogs.scientific_justification_dialog import ScientificJustificationWidget
-    from help_manager import HelpManager
-    from ui.dialogs.parameter_help_dialog import HelpPanel
     from core.data_models import (
         WellData,
         ReservoirData,
@@ -89,12 +85,13 @@ try:
         GeneticAlgorithmParams,
         BayesianOptimizationParams,
         AdvancedEngineParams,
+        CO2StorageParameters,
+        EmpiricalFittingParameters,
     )
     from core.optimisation_engine import OptimizationEngine
     from analysis.sensitivity_analyzer import SensitivityAnalyzer
     from analysis.uq_engine import UncertaintyQuantificationEngine
     from analysis.well_analysis import WellAnalysis
-    from utils.file_association import FileAssociationManager
     from utils.preferences_manager import get_preferences_manager
     from ui.dialogs.preferences_dialog import PreferencesDialog
     from ui.workers.ai_query_worker import AIQueryWorker
@@ -137,6 +134,8 @@ class MainWindow(QMainWindow):
     current_profile_params: ProfileParameters
     current_ga_params: GeneticAlgorithmParams
     current_bo_params: BayesianOptimizationParams
+    current_co2_storage_params: CO2StorageParameters
+    current_fitting_params: EmpiricalFittingParameters
 
     optimisation_engine_instance: Optional[OptimizationEngine] = None
     sensitivity_analyzer_instance: Optional[SensitivityAnalyzer] = None
@@ -146,13 +145,18 @@ class MainWindow(QMainWindow):
         self,
         app_settings: QSettings,
         preferences_manager=None,
-        startup_action: str = "show_overview",
+        startup_action: Optional[str] = None,
         qt_log_handler: Optional[Any] = None,
     ):
         super().__init__(None)
         self.app_settings = app_settings
         self.preferences_manager = preferences_manager
-        self.startup_action = startup_action
+        if startup_action is not None:
+            self.startup_action = startup_action
+        elif preferences_manager and hasattr(preferences_manager, "general"):
+            self.startup_action = getattr(preferences_manager.general, "startup_action", "show_overview")
+        else:
+            self.startup_action = "show_overview"
         self.auto_save_timer = None
         self.qt_log_handler = qt_log_handler
 
@@ -170,14 +174,13 @@ class MainWindow(QMainWindow):
             )
 
         self._initialize_project_data_and_configs()
-        self.report_generator = ReportGenerator(units_manager)
+        self.report_generator = ReportGenerator()
 
         self._setup_ui_structure()
         self._create_actions()
         self._create_menu_bar()
         self._create_status_bar()
         self._create_tool_bar()
-        self._create_help_system_connections()
         self.progress_updated.connect(self._update_report_progress)
         self.show_message.connect(self._show_message_box)
 
@@ -298,7 +301,13 @@ class MainWindow(QMainWindow):
                 self.current_advanced_engine_params = AdvancedEngineParams.from_config_dict(
                     self.default_config_loader.get_section("AdvancedEngineParamsDefaults") or {}
                 )
-                logger.info("Initialized PVT properties with default viscosities from config.")
+                self.current_co2_storage_params = CO2StorageParameters.from_config_dict(
+                    self.default_config_loader.get_section("CO2StorageParametersDefaults") or {}
+                )
+                self.current_fitting_params = EmpiricalFittingParameters.from_config_dict(
+                    self.default_config_loader.get_section("EmpiricalFittingParametersDefaults") or {}
+                )
+                logger.info("Initialized PVT properties and fitting parameters from config.")
 
             except Exception as e:
                 logger.critical(
@@ -358,22 +367,8 @@ class MainWindow(QMainWindow):
         main_app_widget = QWidget()
         main_app_layout = QHBoxLayout(main_app_widget)
         main_app_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.help_panel = HelpPanel(self)
-        self.help_panel.setMinimumWidth(250)
-        self.help_panel.setMaximumWidth(500)
-        self.main_splitter = QSplitter(self)
-        main_app_layout.addWidget(self.main_splitter)
-
         self._setup_main_app_tabs_container()
-
-        self.main_splitter.addWidget(self.main_tab_widget)
-        self.main_splitter.addWidget(self.help_panel)
-        self.main_splitter.setCollapsible(0, False)
-        self.main_splitter.setCollapsible(1, True)
-        self.main_splitter.setStretchFactor(0, 1)
-        self.main_splitter.setStretchFactor(1, 0)
-        self.help_panel.hide()
+        main_app_layout.addWidget(self.main_tab_widget)
 
         self.stacked_layout.addWidget(self.overview_page)
         self.stacked_layout.addWidget(main_app_widget)
@@ -427,7 +422,8 @@ class MainWindow(QMainWindow):
         )
         self.config_tab.help_requested.connect(self.request_help)
         # Connect engine selection signal from Config Widget (single source of truth)
-        self.config_tab.engine_selection_changed.connect(self._on_config_engine_changed)
+        if hasattr(self.config_tab, "engine_selection_changed"):
+            self.config_tab.engine_selection_changed.connect(self._on_config_engine_changed)
         self.main_tab_widget.addTab(self.config_tab, qta.icon("fa5s.cogs"), "")
 
         self.data_management_tab = DataManagementWidget(
@@ -477,8 +473,10 @@ class MainWindow(QMainWindow):
         else:
             # Fallback for screen geometry if primaryScreen() returns None
             screen_geometry = self.geometry()
-            logger.warning("QApplication.primaryScreen() returned None, using window geometry as fallback.")
-        
+            logger.warning(
+                "QApplication.primaryScreen() returned None, using window geometry as fallback."
+            )
+
         current_geometry = self.geometry()
         min_size = self.minimumSize()
 
@@ -487,13 +485,6 @@ class MainWindow(QMainWindow):
             f"Current: {current_geometry.width()}x{current_geometry.height()}, "
             f"Min: {min_size.width()}x{min_size.height()}"
         )
-
-        # Calculate splitter sizes that respect screen constraints
-        available_width = min(self.width(), screen_geometry.width())
-        help_panel_width = min(350, available_width - 400)  # Ensure minimum 400px for main content
-        main_content_width = available_width - help_panel_width
-
-        self.main_splitter.setSizes([main_content_width, help_panel_width])
 
         self.main_tab_widget.setCurrentIndex(focus_tab_index)
         self.save_project_action.setEnabled(True)
@@ -535,28 +526,6 @@ class MainWindow(QMainWindow):
         self.about_qt_action = QAction("", self)
         self.about_qt_action.triggered.connect(QApplication.aboutQt)
 
-        self.associate_phd_action = QAction(qta.icon("fa5s.link", color=icon_color), "", self)
-        self.associate_phd_action.triggered.connect(self._handle_associate_phd_files)
-        self.remove_association_action = QAction(
-            qta.icon("fa5s.unlink", color=icon_color), "", self
-        )
-        self.remove_association_action.triggered.connect(self._handle_remove_association)
-
-        self.scientific_justification_action = QAction(
-            qta.icon("fa5s.flask", color=icon_color), "", self
-        )
-        self.scientific_justification_action.triggered.connect(
-            self._show_scientific_justification_dialog
-        )
-
-    def _show_scientific_justification_dialog(self):
-        dialog = QDialog(self)
-        dialog.setWindowTitle(self.tr("Scientific Justification"))
-        layout = QVBoxLayout(dialog)
-        content = ScientificJustificationWidget(dialog)
-        layout.addWidget(content)
-        dialog.show()
-
     def _create_menu_bar(self):
         self.menu_bar = self.menuBar()
         self.file_menu = self.menu_bar.addMenu("")
@@ -575,33 +544,10 @@ class MainWindow(QMainWindow):
 
         self.tools_menu = self.menu_bar.addMenu("")
         self.tools_menu.addAction(self.generate_report_action)
-        self.tools_menu.addAction(self.associate_phd_action)
-        self.tools_menu.addAction(self.remove_association_action)
 
         self.help_menu = self.menu_bar.addMenu("")
-
-        icon_color = "#000000"
-
-        self.show_help_action = QAction(
-            qta.icon("fa5s.question-circle", color=icon_color), "", self
-        )
-        self.show_help_action.setCheckable(True)
-        self.show_help_action.triggered.connect(self._toggle_help_panel)
-        self.help_menu.addAction(self.show_help_action)
-        self.help_menu.addSeparator()
-        self.scientific_justification_action = QAction(
-            qta.icon("fa5s.flask", color=icon_color), "", self
-        )
-        self.scientific_justification_action.triggered.connect(
-            self._show_scientific_justification_dialog
-        )
-        self.help_menu.addAction(self.scientific_justification_action)
-        self.help_menu.addSeparator()
         self.help_menu.addAction(self.about_action)
         self.help_menu.addAction(self.about_qt_action)
-
-    def _toggle_help_panel(self):
-        self.help_panel.setVisible(not self.help_panel.isVisible())
 
     def _create_status_bar(self):
         self.status_bar = QStatusBar(self)
@@ -653,10 +599,6 @@ class MainWindow(QMainWindow):
         self.generate_report_action.setText(self.tr("&Generate Report..."))
         self.about_action.setText(self.tr("&About ") + QApplication.applicationName())
         self.about_qt_action.setText(self.tr("About &Qt"))
-        self.associate_phd_action.setText(self.tr("Associate .phd Files"))
-        self.remove_association_action.setText(self.tr("Remove .phd Association"))
-        self.show_help_action.setText(self.tr("Show Help Panel"))
-        self.scientific_justification_action.setText(self.tr("Scientific Justification"))
 
         # Menus
         self.file_menu.setTitle(self.tr("&File"))
@@ -715,21 +657,9 @@ class MainWindow(QMainWindow):
                 self.move(new_x, new_y)
                 logger.debug(f"Corrected window position during resize: {new_x}, {new_y}")
 
-    def _create_help_system_connections(self):
-        self.help_requested.connect(self.help_panel.show_help_for)
-        self.help_panel.closed.connect(self._on_help_panel_closed)
-
     @pyqtSlot(str)
     def request_help(self, key: str):
-        if self.main_splitter.sizes()[1] == 0:
-            self.main_splitter.setSizes([self.width() - 350, 350])
-        self.help_requested.emit(key)
-
-    @pyqtSlot()
-    def _on_help_panel_closed(self):
-        sizes = self.main_splitter.sizes()
-        if sizes[1] > 0:
-            self.main_splitter.setSizes([sum(sizes), 0])
+        pass
 
     def _update_resource_monitors(self):
         if PSUTIL_AVAILABLE:
@@ -841,6 +771,9 @@ class MainWindow(QMainWindow):
             self.current_bo_params = self._ensure_dataclass_instance(
                 project_data_dict.get("bo_parameters"), BayesianOptimizationParams
             )
+            self.current_fitting_params = self._ensure_dataclass_instance(
+                project_data_dict.get("fitting_parameters"), EmpiricalFittingParameters
+            )
 
             self._loaded_project_data = {
                 "configs": {
@@ -851,7 +784,9 @@ class MainWindow(QMainWindow):
                     GeneticAlgorithmParams.__name__: self.current_ga_params,
                     BayesianOptimizationParams.__name__: self.current_bo_params,
                 },
+                "manual_inputs": project_data_dict.get("manual_inputs", {}),
                 "uq_parameters": project_data_dict.get("uq_parameters", []),
+                "uq_results": project_data_dict.get("uq_results"),
                 "sensitivity_results": project_data_dict.get("sensitivity_results"),
                 "optimization_results": project_data_dict.get("optimization_results"),
                 "ui_state": project_data_dict.get("ui_state", {}),
@@ -872,14 +807,9 @@ class MainWindow(QMainWindow):
 
             QTimer.singleShot(0, self._update_ui_after_project_load)
 
-            if self.stacked_layout.currentIndex() == 1:
-                self._transition_to_main_app_view(
-                    focus_tab_index=current_tab_index if "current_tab_index" in locals() else 0
-                )
-            else:
-                self.stacked_layout.setCurrentIndex(
-                    stacked_layout_index if "stacked_layout_index" in locals() else 0
-                )
+            ui_state = project_data_dict.get("ui_state", {})
+            target_tab_index = ui_state.get("current_tab_index", 0) if isinstance(ui_state, dict) else 0
+            self._transition_to_main_app_view(focus_tab_index=target_tab_index)
 
             self.overview_page.add_recent_project(str(filepath))
             self.show_status_message(
@@ -923,6 +853,8 @@ class MainWindow(QMainWindow):
                     "reservoir_data": self.current_reservoir_data,
                     "pvt_properties": self.current_pvt_properties,
                     "well_data_list": self.current_well_data,
+                    "manual_inputs": data.get("manual_inputs", {}),
+                    "mmp_value": data.get("mmp_value"),
                 }
             )
             QApplication.processEvents()
@@ -948,7 +880,11 @@ class MainWindow(QMainWindow):
             self._update_graphs_after_load()
 
             if data.get("optimization_results"):
-                self._on_optimization_run_completed(data.get("optimization_results"))
+                self._on_optimization_run_completed(
+                    data.get("optimization_results"), from_project_load=True
+                )
+
+            self.set_project_modified(False)
 
         except Exception as e:
             logger.error(f"Error updating UI after project load: {e}", exc_info=True)
@@ -967,15 +903,17 @@ class MainWindow(QMainWindow):
             )
 
             optimization_results = data.get("optimization_results")
-            if optimization_results and self.optimisation_engine_instance:
-                self.optimisation_engine_instance.results = optimization_results
-                self.optimization_tab.current_results = optimization_results
-                logger.info("Manually set optimization results on engine and tab.")
+            if optimization_results:
+                if self.optimisation_engine_instance:
+                    self.optimisation_engine_instance.results = optimization_results
+                if hasattr(self, "optimization_tab") and self.optimization_tab:
+                    self.optimization_tab.current_results = optimization_results
+                logger.info("Set optimization results on engine and tab.")
 
             uq_results = data.get("uq_results")
-            if uq_results and self.analysis_tab.uq_engine:
+            if uq_results and hasattr(self, "analysis_tab") and self.analysis_tab.uq_engine:
                 self.analysis_tab.uq_engine.results = uq_results
-                logger.info("Manually set UQ results on UQEngine.")
+                logger.info("Set UQ results on UQEngine.")
 
         except Exception as e:
             logger.error(f"Error updating engines and tabs: {e}", exc_info=True)
@@ -983,19 +921,11 @@ class MainWindow(QMainWindow):
     def _restore_ui_state(self, data):
         """Restore UI state from loaded data."""
         try:
-            ui_state = data["ui_state"]
+            ui_state = data.get("ui_state", {})
             if ui_state:
                 current_tab_index = ui_state.get("current_tab_index", 0)
-                splitter_sizes = ui_state.get("splitter_sizes", [self.width(), 0])
-                help_panel_visible = ui_state.get("help_panel_visible", False)
                 stacked_layout_index = ui_state.get("stacked_layout_index", 1)
-
                 self.main_tab_widget.setCurrentIndex(current_tab_index)
-                self.main_splitter.setSizes(splitter_sizes)
-                if help_panel_visible:
-                    self.help_panel.show()
-                else:
-                    self.help_panel.hide()
                 self.stacked_layout.setCurrentIndex(stacked_layout_index)
         except Exception as e:
             logger.error(f"Error restoring UI state: {e}", exc_info=True)
@@ -1110,11 +1040,58 @@ class MainWindow(QMainWindow):
         )
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
-            optimization_results_to_save = self._prepare_results_for_saving(
-                self.optimisation_engine_instance.results
-                if self.optimisation_engine_instance
-                else None
-            )
+            # Synchronize latest data from data_management_tab
+            manual_inputs = {}
+            if hasattr(self, "data_management_tab") and self.data_management_tab:
+                try:
+                    dm_data = self.data_management_tab.get_current_project_data()
+                    if dm_data.get("reservoir_data") is not None:
+                        self.current_reservoir_data = dm_data["reservoir_data"]
+                    if dm_data.get("pvt_properties") is not None:
+                        self.current_pvt_properties = dm_data["pvt_properties"]
+                    if dm_data.get("well_data_list"):
+                        self.current_well_data = dm_data["well_data_list"]
+                    manual_inputs = dm_data.get("manual_inputs", {})
+                except Exception as e:
+                    logger.warning(f"Could not synchronize data from data_management_tab: {e}")
+
+            # Synchronize latest configs from config_tab
+            if hasattr(self, "config_tab") and self.config_tab:
+                try:
+                    current_configs = self.config_tab.get_current_config_data_instances()
+                    self.current_economic_params = current_configs.get(
+                        EconomicParameters.__name__, self.current_economic_params
+                    )
+                    self.current_eor_params = current_configs.get(
+                        EORParameters.__name__, self.current_eor_params
+                    )
+                    self.current_operational_params = current_configs.get(
+                        OperationalParameters.__name__, self.current_operational_params
+                    )
+                    self.current_profile_params = current_configs.get(
+                        ProfileParameters.__name__, self.current_profile_params
+                    )
+                    self.current_ga_params = current_configs.get(
+                        GeneticAlgorithmParams.__name__, self.current_ga_params
+                    )
+                    self.current_bo_params = current_configs.get(
+                        BayesianOptimizationParams.__name__, self.current_bo_params
+                    )
+                except Exception as e:
+                    logger.warning(f"Could not retrieve latest configs from config_tab: {e}")
+
+            opt_results = None
+            if self.optimisation_engine_instance and self.optimisation_engine_instance.results:
+                opt_results = self.optimisation_engine_instance.results
+            elif hasattr(self, "optimization_tab") and getattr(self.optimization_tab, "current_results", None):
+                opt_results = self.optimization_tab.current_results
+
+            optimization_results_to_save = self._prepare_results_for_saving(opt_results)
+
+            uq_results_to_save = None
+            if hasattr(self, "analysis_tab") and hasattr(self.analysis_tab, "uq_engine") and self.analysis_tab.uq_engine:
+                uq_results_to_save = getattr(self.analysis_tab.uq_engine, "results", None)
+
             data_to_save = {
                 "schema_version": "1.1",
                 "application_version": QApplication.applicationVersion(),
@@ -1122,6 +1099,7 @@ class MainWindow(QMainWindow):
                 "well_data_list": self.current_well_data,
                 "reservoir_data": self.current_reservoir_data,
                 "pvt_properties": self.current_pvt_properties,
+                "manual_inputs": manual_inputs,
                 "mmp_value": self.current_mmp_value,
                 "economic_parameters": self.current_economic_params,
                 "eor_parameters": self.current_eor_params,
@@ -1129,15 +1107,15 @@ class MainWindow(QMainWindow):
                 "profile_parameters": self.current_profile_params,
                 "ga_parameters": self.current_ga_params,
                 "bo_parameters": self.current_bo_params,
+                "fitting_parameters": self.current_fitting_params,
                 "optimization_results": optimization_results_to_save,
                 "sensitivity_results": self.sensitivity_analyzer_instance.sensitivity_run_data
                 if self.sensitivity_analyzer_instance
                 else None,
                 "uq_parameters": self.analysis_tab.get_uq_parameters(),
+                "uq_results": uq_results_to_save,
                 "ui_state": {
                     "current_tab_index": self.main_tab_widget.currentIndex(),
-                    "splitter_sizes": self.main_splitter.sizes(),
-                    "help_panel_visible": self.help_panel.isVisible(),
                     "stacked_layout_index": self.stacked_layout.currentIndex(),
                 },
                 "recent_projects": self.overview_page.get_recent_projects(),
@@ -1605,7 +1583,7 @@ class MainWindow(QMainWindow):
             report_data["sensitivity_results"] = last_run["df"]
             df = last_run["df"]
             objective_col = last_run["context"].get("objective", "npv")
-            charts["sensitivity_tornado"] = self._plotly_fig_to_base64(
+            report_charts["sensitivity_tornado"] = self._plotly_fig_to_base64(
                 self.sensitivity_analyzer_instance.plot_tornado_chart(df, objective_col)
             )
 
@@ -1619,7 +1597,7 @@ class MainWindow(QMainWindow):
             mc_results_df = self.analysis_tab.uq_engine.results.get("mc_results_df")
             if mc_results_df is not None:
                 objective_col = self.analysis_tab.uq_engine.objective_column or "npv"
-                charts["uq_distribution"] = self._plotly_fig_to_base64(
+                report_charts["uq_distribution"] = self._plotly_fig_to_base64(
                     self.analysis_tab.uq_engine.plot_mc_results(mc_results_df, objective_col)
                 )
 
@@ -1628,7 +1606,7 @@ class MainWindow(QMainWindow):
                 self.analysis_tab.dca_results
             ).generate_dca_report_data()
 
-        report_data["charts"] = charts
+        report_data["charts"] = report_charts
 
         return report_data
 
@@ -1669,27 +1647,45 @@ class MainWindow(QMainWindow):
                 f"MainWindow - Updated EOR parameters with override: {list(eor_params_override.keys())}"
             )
 
-        # Handle operational parameters from data management widget
-        operational_params_from_widget = project_data_dict.get("operational_parameters")
-        if operational_params_from_widget and self.current_operational_params:
-            # Update current operational parameters with values from widget
-            for key, value in operational_params_from_widget.__dict__.items():
-                if hasattr(self.current_operational_params, key):
-                    setattr(self.current_operational_params, key, value)
-            logger.info(
-                f"MainWindow - Updated operational parameters from widget"
+        # Handle fitting parameters from data management widget
+        fitting_params_from_widget = project_data_dict.get("fitting_parameters")
+        if fitting_params_from_widget:
+            self.current_fitting_params = self._ensure_dataclass_instance(
+                fitting_params_from_widget, EmpiricalFittingParameters
             )
+            logger.info("MainWindow - Updated fitting parameters from widget")
 
-        # Handle economic parameters from data management widget
-        economic_params_from_widget = project_data_dict.get("economic_parameters")
-        if economic_params_from_widget and self.current_economic_params:
-            # Update current economic parameters with values from widget
-            for key, value in economic_params_from_widget.__dict__.items():
-                if hasattr(self.current_economic_params, key):
-                    setattr(self.current_economic_params, key, value)
-            logger.info(
-                f"MainWindow - Updated economic parameters from widget"
-            )
+        # Handle MMP value from data management widget
+        if "mmp_value" in project_data_dict and project_data_dict["mmp_value"] is not None:
+            self.current_mmp_value = float(project_data_dict["mmp_value"])
+            logger.info(f"MainWindow - Updated current_mmp_value: {self.current_mmp_value:.1f} psia")
+
+        # Handle operational and economic parameters (only if explicitly from project file load)
+        is_project_file_load = project_data_dict.get("is_project_file_load", False)
+        if is_project_file_load:
+            operational_params_from_widget = project_data_dict.get("operational_parameters")
+            if operational_params_from_widget and self.current_operational_params:
+                items = (
+                    operational_params_from_widget.__dict__.items()
+                    if hasattr(operational_params_from_widget, "__dict__")
+                    else operational_params_from_widget.items()
+                )
+                for key, value in items:
+                    if hasattr(self.current_operational_params, key):
+                        setattr(self.current_operational_params, key, value)
+                logger.info("MainWindow - Loaded operational parameters from project file")
+
+            economic_params_from_widget = project_data_dict.get("economic_parameters")
+            if economic_params_from_widget and self.current_economic_params:
+                items = (
+                    economic_params_from_widget.__dict__.items()
+                    if hasattr(economic_params_from_widget, "__dict__")
+                    else economic_params_from_widget.items()
+                )
+                for key, value in items:
+                    if hasattr(self.current_economic_params, key):
+                        setattr(self.current_economic_params, key, value)
+                logger.info("MainWindow - Loaded economic parameters from project file")
 
         is_data_finalization = project_data_dict.get("is_data_finalization", False)
         self._reinitialize_engines_and_analysis_tabs(skip_calculations=is_data_finalization)
@@ -1715,12 +1711,15 @@ class MainWindow(QMainWindow):
         self.current_bo_params = new_configs.get(
             BayesianOptimizationParams.__name__, self.current_bo_params
         )
+        self.current_co2_storage_params = new_configs.get(
+            CO2StorageParameters.__name__, self.current_co2_storage_params
+        )
         # DEBUG: Log the received EOR parameters
         eor_params = new_configs.get(EORParameters.__name__)
         if eor_params:
             logger.info(
                 f"MainWindow - Received EOR Parameters - Injection Scheme: '{eor_params.injection_scheme}', "
-                f"WAG Ratio: {eor_params.WAG_ratio}"
+                f"WAG Ratio: {eor_params.wag_ratio}"
             )
 
         self._reinitialize_engines_and_analysis_tabs()
@@ -1749,18 +1748,19 @@ class MainWindow(QMainWindow):
         try:
             logger.info(f"Engine type change requested: {engine_type}")
 
-            # Validate engine type
-            valid_types = ["simple", "detailed", "surrogate"]
+            # Validate engine type - only surrogate is available
+            valid_types = ["surrogate"]
             if engine_type not in valid_types:
-                raise ValueError(f"Invalid engine type: {engine_type}. Must be one of {valid_types}")
+                raise ValueError(
+                    f"Invalid engine type: {engine_type}. Must be one of {valid_types}"
+                )
 
             # Update the current advanced engine params
-            if not hasattr(self, 'current_advanced_engine_params'):
+            if not hasattr(self, "current_advanced_engine_params"):
                 from core.data_models import AdvancedEngineParams
+
                 self.current_advanced_engine_params = AdvancedEngineParams()
 
-            # Set both old (for backward compat) and new fields
-            self.current_advanced_engine_params.use_simple_physics = (engine_type == "simple")
             self.current_advanced_engine_params.engine_type = engine_type
 
             # Reinitialize engines with new settings
@@ -1768,8 +1768,7 @@ class MainWindow(QMainWindow):
 
             # Show status message
             self.show_status_message(
-                f"Engine switched to {engine_type}. Optimization engine recreated.",
-                5000
+                f"Engine switched to {engine_type}. Optimization engine recreated.", 5000
             )
 
             logger.info(f"Engine successfully switched to {engine_type}")
@@ -1784,33 +1783,34 @@ class MainWindow(QMainWindow):
         """Handle engine type change from Config Widget (single source of truth).
 
         This is called when the user changes the engine selection in the Config Widget.
-        The Config Widget is now the authoritative location for engine selection.
+        Only surrogate engine is available.
         """
         try:
             logger.info(f"Engine type changed from Config Widget: {engine_type}")
 
-            # Validate engine type
-            valid_types = ["simple", "detailed", "surrogate"]
+            # Validate engine type - only surrogate is available
+            valid_types = ["surrogate"]
             if engine_type not in valid_types:
-                raise ValueError(f"Invalid engine type: {engine_type}. Must be one of {valid_types}")
+                raise ValueError(
+                    f"Invalid engine type: {engine_type}. Must be one of {valid_types}"
+                )
 
             # Update the current advanced engine params
-            if not hasattr(self, 'current_advanced_engine_params'):
+            if not hasattr(self, "current_advanced_engine_params"):
                 from core.data_models import AdvancedEngineParams
+
                 self.current_advanced_engine_params = AdvancedEngineParams()
 
-            # Set both old (for backward compat) and new fields
-            self.current_advanced_engine_params.use_simple_physics = (engine_type == "simple")
             self.current_advanced_engine_params.engine_type = engine_type
 
             # Update data management widget (disable/enable fields based on engine)
-            if hasattr(self, 'data_management_tab'):
+            if hasattr(self, "data_management_tab") and hasattr(self.data_management_tab, "set_engine_type"):
                 self.data_management_tab.set_engine_type(engine_type)
 
             # Update optimization widget - notify of engine change
             # Note: OptimizationWidget no longer has its own engine selection UI
             # It reads from MainWindow.current_advanced_engine_params
-            if hasattr(self, 'optimization_tab'):
+            if hasattr(self, "optimization_tab"):
                 self.optimization_tab.on_engine_type_changed(engine_type)
 
             # Reinitialize engines if data is loaded
@@ -1819,8 +1819,7 @@ class MainWindow(QMainWindow):
 
             # Show status message
             self.show_status_message(
-                f"Engine switched to {engine_type}. All widgets updated.",
-                5000
+                f"Engine switched to {engine_type}. All widgets updated.", 5000
             )
 
             logger.info(f"Engine successfully switched to {engine_type} from Config Widget")
@@ -1866,7 +1865,9 @@ class MainWindow(QMainWindow):
                     operational_params_instance=deepcopy(self.current_operational_params),
                     profile_params_instance=deepcopy(self.current_profile_params),
                     advanced_engine_params_instance=deepcopy(self.current_advanced_engine_params),
+                    co2_storage_params_instance=deepcopy(self.current_co2_storage_params),
                     well_data_list=self.current_well_data,
+                    fitting_params_instance=deepcopy(self.current_fitting_params),
                     mmp_init_override=self.current_mmp_value,
                 )
 
@@ -1874,7 +1875,7 @@ class MainWindow(QMainWindow):
                 if self.current_eor_params:
                     logger.info(
                         f"MainWindow - Engine Initialized with EOR Parameters - Injection Scheme: '{self.current_eor_params.injection_scheme}', "
-                        f"WAG Ratio: {self.current_eor_params.WAG_ratio}"
+                        f"WAG Ratio: {self.current_eor_params.wag_ratio}"
                     )
 
                 logger.info("OptimizationEngine instance created.")
@@ -1926,11 +1927,21 @@ class MainWindow(QMainWindow):
         self.main_tab_widget.setCurrentIndex(0)
         self.show_status_message(self.tr("Configuration panel opened."), 3000)
 
-    @pyqtSlot(dict)
-    def _on_optimization_run_completed(self, results: Dict[str, Any]):
+    def _on_optimization_run_completed(
+        self, results: Dict[str, Any], from_project_load: bool = False
+    ):
         logger.info("MainWindow: Optimization run completed.")
-        self.set_project_modified(True)
-        self.show_status_message(self.tr("Optimization complete."), 5000)
+        if not from_project_load:
+            self.set_project_modified(True)
+            self.show_status_message(self.tr("Optimization complete."), 5000)
+
+        if self.optimisation_engine_instance:
+            if not self.optimisation_engine_instance.results and results:
+                self.optimisation_engine_instance.results = results
+        if hasattr(self, "optimization_tab") and self.optimization_tab and results:
+            if not getattr(self.optimization_tab, "current_results", None):
+                self.optimization_tab.current_results = results
+
         if self.optimisation_engine_instance and self.optimisation_engine_instance.results:
             try:
                 self.sensitivity_analyzer_instance = SensitivityAnalyzer(
@@ -1970,7 +1981,7 @@ class MainWindow(QMainWindow):
 
                         field_well_data = WellData(
                             name="Field (Optimized)",
-                            depths=np.array([]),
+                            depths=np.array([0.0]),
                             properties={"time": time_years, "rate": rate_stb_per_year},
                             units={"time": "years", "rate": "STB/year"},
                             metadata={"source": "Optimization"},
@@ -2022,7 +2033,6 @@ class MainWindow(QMainWindow):
     def save_window_settings(self):
         self.app_settings.setValue("MainWindow/geometry", self.saveGeometry())
         self.app_settings.setValue("MainWindow/state", self.saveState())
-        self.app_settings.setValue("MainWindow/splitterSizes", self.main_splitter.saveState())
         logger.debug("Window settings saved.")
 
     def load_window_settings(self):
@@ -2067,23 +2077,20 @@ class MainWindow(QMainWindow):
                     f"Correcting window geometry from {current_geometry.width()}x{current_geometry.height()} to {new_width}x{new_height}"
                 )
                 self.setGeometry(new_x, new_y, new_width, new_height)
+        else:
+            screen = QApplication.primaryScreen()
+            if screen:
+                geom = screen.availableGeometry()
+                self.setGeometry(
+                    int(geom.width() * 0.1),
+                    int(geom.height() * 0.1),
+                    int(geom.width() * 0.8),
+                    int(geom.height() * 0.8),
+                )
+                logger.info("Setting default window geometry for first launch.")
 
         if state := self.app_settings.value("MainWindow/state"):
             self.restoreState(state)
-
-        if splitter_state := self.app_settings.value("MainWindow/splitterSizes"):
-            self.main_splitter.restoreState(splitter_state)
-        else:
-            # Set reasonable default splitter sizes
-            screen_width = QApplication.primaryScreen().availableGeometry().width()
-            main_content_width = max(
-                800, screen_width - 350
-            )  # Ensure minimum 800px for main content
-            help_panel_width = min(350, screen_width - 800)
-            self.main_splitter.setSizes([main_content_width, help_panel_width])
-
-        if self.stacked_layout.currentIndex() == 0:
-            self.help_panel.hide()
 
         logger.debug("Window settings loaded with enhanced geometry validation.")
 
@@ -2094,66 +2101,3 @@ class MainWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
-
-    def _handle_associate_phd_files(self) -> None:
-        try:
-            executable_path = Path(sys.executable)
-            icon_path = get_ui_assets_dir() / "main_ico.ico"
-
-            manager = FileAssociationManager()
-            success = manager.associate_phd_files(executable_path, icon_path)
-
-            if success:
-                QMessageBox.information(
-                    self,
-                    self.tr("File Association"),
-                    self.tr("Successfully associated .phd files with this application."),
-                )
-            else:
-                QMessageBox.warning(
-                    self,
-                    self.tr("File Association"),
-                    self.tr(
-                        "Failed to associate .phd files. This feature is only available on Windows."
-                    ),
-                )
-
-        except Exception as e:
-            logger.error(f"Error associating .phd files: {e}")
-            QMessageBox.critical(
-                self,
-                self.tr("File Association Error"),
-                self.tr("An error occurred while trying to associate .phd files:\n\n{e}").format(
-                    e=e
-                ),
-            )
-
-    def _handle_remove_association(self) -> None:
-        try:
-            manager = FileAssociationManager()
-            success = manager.remove_association()
-
-            if success:
-                QMessageBox.information(
-                    self,
-                    self.tr("File Association"),
-                    self.tr("Successfully removed .phd file association."),
-                )
-            else:
-                QMessageBox.warning(
-                    self,
-                    self.tr("File Association"),
-                    self.tr(
-                        "Failed to remove .phd file association. This feature is only available on Windows."
-                    ),
-                )
-
-        except Exception as e:
-            logger.error(f"Error removing .phd file association: {e}")
-            QMessageBox.critical(
-                self,
-                self.tr("File Association Error"),
-                self.tr(
-                    "An error occurred while trying to remove .phd file association:\n\n{e}"
-                ).format(e=e),
-            )

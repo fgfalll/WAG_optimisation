@@ -4,17 +4,15 @@ from typing import Optional, Dict, Any
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QTabWidget, QPushButton,
     QDialogButtonBox, QLabel, QComboBox, QSpinBox, QCheckBox, QGroupBox,
-    QFormLayout, QLineEdit, QListWidget, QListWidgetItem, QStackedWidget,
-    QScrollArea, QWidget, QSizePolicy, QMessageBox, QInputDialog
+    QFormLayout, QLineEdit, QListWidget, QListWidgetItem,
+    QScrollArea, QWidget, QMessageBox, QInputDialog
 )
-from PyQt6.QtCore import Qt, pyqtSignal, pyqtSlot, QEvent
-from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import Qt, pyqtSignal, QEvent
 
 from utils.preferences_manager import (
     PreferencesManager, UnitSystem, get_preferences_manager, AIPreferences
 )
 from utils.i18n_manager import I18nManager
-from utils.units_manager import units_manager
 
 logger = logging.getLogger(__name__)
 
@@ -86,9 +84,6 @@ class PreferencesDialog(QDialog):
         self.language_tab.language_combo.currentIndexChanged.connect(self._set_dirty)
         self.advanced_tab.log_level_combo.currentIndexChanged.connect(self._set_dirty)
         self.ai_tab.active_service_combo.currentIndexChanged.connect(self._set_dirty)
-        # self.ai_tab.service_name_edit.textChanged.connect(self._set_dirty)
-        # self.ai_tab.api_key_edit.textChanged.connect(self._set_dirty)
-        # self.ai_tab.base_url_edit.textChanged.connect(self._set_dirty)
 
     def _set_dirty(self):
         """Mark the dialog as dirty and enable the Apply button."""
@@ -382,13 +377,13 @@ class UnitsPreferencesTab(QWidget):
         self.overrides_group = QGroupBox()
         self.overrides_layout = QFormLayout(self.overrides_group)
         
-        categories = units_manager.get_all_categories()
+        categories = self.pref_manager.get_all_unit_categories()
         self.unit_combos = {}
         self.unit_labels = {}
         
         for category in categories:
             combo = QComboBox()
-            available_units = units_manager.get_available_units_for_category(category)
+            available_units = self.pref_manager.get_available_units_for_category(category)
             for unit in available_units:
                 combo.addItem(unit, unit)
             

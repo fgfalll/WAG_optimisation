@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 
 import numpy as np
 import pandas as pd
@@ -26,7 +26,7 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QApplication,
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QEvent
+from PyQt6.QtCore import Qt, QEvent
 from PyQt6.QtGui import QIcon, QColor
 
 try:
@@ -87,10 +87,13 @@ PETROLEUM_COMPONENTS = sorted(
 )
 
 from .pvt_table_editor import PVTTableEditorWidget
-from core.unified_engine.physics.eos import CubicEOS, ReservoirFluid
+try:
+    from core.engine_surrogate.pvt_state import SolventExtendedPVTEngine
+    PHYSICS_ENGINE_AVAILABLE = True
+except ImportError:
+    SolventExtendedPVTEngine = None
+    PHYSICS_ENGINE_AVAILABLE = False
 from core.data_models import EOSModelParameters
-
-PHYSICS_ENGINE_AVAILABLE = True
 
 logger = logging.getLogger(__name__)
 
@@ -579,20 +582,30 @@ class PVTEditorDialog(QDialog):
 
         try:
             T_test = float(self.ref_temp_edit.text())
-            if PHYSICS_ENGINE_AVAILABLE and CubicEOS:
-                # Use ReservoirFluid wrapper which properly converts EOSModelParameters to EOSParameters
-                model = ReservoirFluid(eos_params).eos_model
+            if PHYSICS_ENGINE_AVAILABLE and SolventExtendedPVTEngine:
+                pvt_engine = SolventExtendedPVTEngine(
+                    reservoir_temperature_f=T_test,
+                    initial_pressure_psi=float(np.mean(pressures)) if len(pressures) > 0 else 3000.0,
+                )
             else:
-                # Fallback when physics engine is not available
                 logging.warning("Physics engine not available, skipping PVT calculation")
                 return
 
             self.update_validation_status(self.tr("Calculating PVT properties..."), "info")
             QApplication.processEvents()
 
-            calculated_results = [
-                model.calculate_properties(p, T_test) | {"pressure": p} for p in pressures
-            ]
+            calculated_results = []
+            for p in pressures:
+                p_float = float(p)
+                props = {
+                    "pressure": p_float,
+                    "oil_fvf_rb_stb": pvt_engine.calculate_oil_fvf_rb_per_stb(p_float, x_co2=0.15),
+                    "solution_gor_scf_stb": pvt_engine.calculate_hydrocarbon_solution_gor(p_float),
+                    "oil_viscosity_cp": pvt_engine.calculate_oil_viscosity_cp(p_float, x_co2=0.15),
+                    "gas_fvf_rcf_scf": pvt_engine.calculate_co2_fvf_rb_per_mscf(p_float) * 5.615 / 1000.0,
+                    "gas_viscosity_cp": pvt_engine.calculate_pure_co2_viscosity_cp(p_float),
+                }
+                calculated_results.append(props)
             self.last_calculated_data = pd.DataFrame(calculated_results)
 
             if (

@@ -1,0 +1,60 @@
+# ── Python ─────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual environments ────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Testing & coverage ──────────────────────────────────────
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.hypothesis/
+
+# ── MkDocs build output ─────────────────────────────────────
+site/
+
+# ── IDE / editor ────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+
+# ── OS artifacts ────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Project-specific exclusions ─────────────────────────────
+/logs/
+/backup/
+/disertacia/
+/audit/runtime/
+*.log
+*.bak
+*.dat
+*.las
+*.tphd
+nul
+
+# ── Linter / formatter caches ───────────────────────────────
+.ruff_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Sensitive configs kept local ────────────────────────────
+/.claude/
+/.todo/
+
+# ── Large generated call graph (do not track in Git) ────────
+agent_wiki/architecture/call_graph.txt

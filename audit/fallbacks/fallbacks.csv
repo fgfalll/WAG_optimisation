@@ -1,0 +1,525 @@
+Module,Line,Exception Type,Body Length
+analysis/breakthrough_physics.py,154,"(ImportError, TypeError, ValueError, RuntimeError)",2
+analysis/decline_curve_analysis.py,118,"(RuntimeError, ValueError, TypeError)",3
+analysis/decline_curve_analysis.py,144,"(RuntimeError, ValueError, TypeError)",2
+analysis/decline_curve_analysis.py,315,"(RuntimeError, ValueError, TypeError, FloatingPointError)",2
+analysis/material_balance.py,21,ImportError,3
+analysis/material_balance.py,378,Exception,2
+analysis/material_balance.py,111,Exception,1
+analysis/profiler.py,57,Exception,1
+analysis/profiler.py,366,Exception,1
+analysis/profiler_refactored.py,69,Exception,2
+analysis/sensitivity_analyzer.py,31,ImportError,2
+analysis/sensitivity_analyzer.py,64,Exception,2
+analysis/sensitivity_analyzer.py,298,"(AttributeError, KeyError, ValueError, IndexError)",2
+analysis/sensitivity_analyzer.py,413,ValueError,1
+analysis/sensitivity_analyzer.py,567,"(ValueError, AttributeError)",1
+analysis/sensitivity_analyzer.py,683,"(ValueError, AttributeError)",1
+analysis/sensitivity_analyzer.py,765,Exception,2
+analysis/sensitivity_analyzer.py,200,Exception,1
+analysis/sensitivity_analyzer.py,243,Exception,2
+analysis/sensitivity_analyzer.py,329,Exception,1
+analysis/sensitivity_analyzer.py,660,Exception,2
+analysis/sensitivity_analyzer.py,533,Exception,2
+analysis/uq_engine.py,23,ImportError,4
+analysis/uq_engine.py,209,IndexError,1
+analysis/uq_engine.py,213,Exception,1
+analysis/uq_engine.py,271,ImportError,3
+analysis/uq_engine.py,345,Exception,3
+analysis/uq_engine.py,355,Exception,2
+analysis/uq_engine.py,187,"(ValueError, TypeError)",1
+analysis/well_analysis.py,71,Exception,2
+analysis/well_analysis.py,156,Exception,2
+audit/__main__.py,23,Exception,4
+audit/pipeline.py,65,Exception,1
+audit/pipeline.py,138,Exception,1
+audit/pipeline.py,178,Exception,1
+co2eor_optimizer/analysis/sensitivity_analyzer.py,19,NameError,2
+co2eor_optimizer/analysis/sensitivity_analyzer.py,34,ImportError,4
+co2eor_optimizer/analysis/sensitivity_analyzer.py,47,ImportError,2
+co2eor_optimizer/analysis/sensitivity_analyzer.py,236,ValueError,1
+co2eor_optimizer/analysis/sensitivity_analyzer.py,374,"(ValueError, AttributeError)",1
+co2eor_optimizer/analysis/sensitivity_analyzer.py,451,"(ValueError, AttributeError)",1
+co2eor_optimizer/analysis/sensitivity_analyzer.py,519,Exception,2
+co2eor_optimizer/analysis/sensitivity_analyzer.py,176,Exception,1
+co2eor_optimizer/analysis/sensitivity_analyzer.py,188,Exception,1
+co2eor_optimizer/analysis/sensitivity_analyzer.py,414,Exception,2
+co2eor_optimizer/analysis/sensitivity_analyzer.py,438,Exception,2
+co2eor_optimizer/analysis/sensitivity_analyzer.py,279,Exception,2
+co2eor_optimizer/analysis/sensitivity_analyzer.py,345,Exception,2
+co2eor_optimizer/analysis/uq_engine.py,19,NameError,2
+co2eor_optimizer/analysis/uq_engine.py,33,ImportError,4
+co2eor_optimizer/analysis/uq_engine.py,162,Exception,2
+co2eor_optimizer/analysis/uq_engine.py,337,"(ValueError, IndexError)",1
+co2eor_optimizer/analysis/uq_engine.py,401,Exception,2
+co2eor_optimizer/analysis/uq_engine.py,433,Exception,2
+co2eor_optimizer/analysis/uq_engine.py,446,Exception,1
+co2eor_optimizer/analysis/uq_engine.py,99,Exception,1
+co2eor_optimizer/analysis/uq_engine.py,118,Exception,2
+co2eor_optimizer/analysis/uq_engine.py,151,TypeError,1
+co2eor_optimizer/analysis/uq_engine.py,297,Exception,2
+co2eor_optimizer/analysis/well_analysis.py,71,Exception,2
+co2eor_optimizer/analysis/well_analysis.py,156,Exception,2
+co2eor_optimizer/config_manager.py,176,"(KeyError, TypeError, IndexError)",1
+co2eor_optimizer/config_manager.py,45,FileNotFoundError,1
+co2eor_optimizer/config_manager.py,51,Exception,2
+co2eor_optimizer/config_manager.py,122,json.JSONDecodeError,1
+co2eor_optimizer/config_manager.py,124,Exception,1
+co2eor_optimizer/core/data_models.py,488,TypeError,1
+co2eor_optimizer/core/eos_models.py,19,ImportError,4
+co2eor_optimizer/core/eos_models.py,29,ImportError,2
+co2eor_optimizer/core/eos_models.py,146,"(ValueError, RuntimeError)",1
+co2eor_optimizer/core/eos_models.py,199,Exception,2
+co2eor_optimizer/core/eos_models.py,217,Exception,2
+co2eor_optimizer/core/eos_models.py,266,Exception,2
+co2eor_optimizer/core/optimisation_engine.py,13,ImportError,2
+co2eor_optimizer/core/optimisation_engine.py,45,ImportError,3
+co2eor_optimizer/core/optimisation_engine.py,304,Exception,2
+co2eor_optimizer/core/optimisation_engine.py,956,Exception,2
+co2eor_optimizer/core/optimisation_engine.py,182,Exception,2
+co2eor_optimizer/core/optimisation_engine.py,297,Exception,1
+co2eor_optimizer/core/optimisation_engine.py,340,Exception,1
+co2eor_optimizer/core/optimisation_engine.py,260,"(ValueError, TypeError)",1
+co2eor_optimizer/core/recovery_models.py,345,ValueError,2
+co2eor_optimizer/data_processor.py,49,EclipseParserError,2
+co2eor_optimizer/data_processor.py,68,Exception,2
+co2eor_optimizer/data_processor.py,166,Exception,2
+co2eor_optimizer/evaluation/mmp.py,10,ImportError,1
+co2eor_optimizer/evaluation/mmp.py,306,Exception,1
+co2eor_optimizer/help_manager.py,47,"(FileNotFoundError, yaml.YAMLError)",2
+co2eor_optimizer/help_manager.py,58,"(KeyError, IndexError, AttributeError)",2
+co2eor_optimizer/help_manager.py,93,FileNotFoundError,3
+co2eor_optimizer/help_manager.py,97,"(KeyError, IndexError, AttributeError)",2
+co2eor_optimizer/help_manager.py,100,Exception,2
+co2eor_optimizer/main.py,22,NameError,3
+co2eor_optimizer/main.py,55,OSError,2
+co2eor_optimizer/main.py,131,Exception,1
+co2eor_optimizer/main.py,174,Exception,3
+co2eor_optimizer/main.py,208,Exception,3
+co2eor_optimizer/parsers/eclipse_parser.py,278,"(FileNotFoundError, EclipseParserError, DimensionError, Exception)",3
+co2eor_optimizer/parsers/eclipse_parser.py,69,ValueError,1
+co2eor_optimizer/parsers/eclipse_parser.py,83,ValueError,1
+co2eor_optimizer/parsers/eclipse_parser.py,115,"(ValueError, IndexError)",1
+co2eor_optimizer/parsers/eclipse_parser.py,132,"(ValueError, IndexError)",1
+co2eor_optimizer/parsers/eclipse_parser.py,201,"(ValueError, TypeError)",1
+co2eor_optimizer/parsers/eclipse_parser.py,212,"(ValueError, TypeError)",1
+co2eor_optimizer/parsers/eclipse_parser.py,245,IOError,1
+co2eor_optimizer/parsers/eclipse_parser.py,141,"(ValueError, IndexError)",1
+co2eor_optimizer/parsers/las_parser.py,60,lasio.LASHeaderError,2
+co2eor_optimizer/parsers/las_parser.py,64,Exception,2
+co2eor_optimizer/parsers/las_parser.py,84,Exception,1
+co2eor_optimizer/parsers/las_parser.py,162,KeyError,1
+co2eor_optimizer/parsers/las_parser.py,121,"(ValueError, TypeError)",1
+co2eor_optimizer/parsers/las_parser.py,148,ValueError,1
+co2eor_optimizer/ui/config_widget.py,29,ImportError,3
+co2eor_optimizer/ui/config_widget.py,239,"(ValueError, TypeError)",2
+co2eor_optimizer/ui/config_widget.py,520,Exception,1
+co2eor_optimizer/ui/config_widget.py,536,Exception,1
+co2eor_optimizer/ui/config_widget.py,223,"(ValueError, TypeError)",2
+co2eor_optimizer/ui/config_widget.py,553,ValueError,1
+co2eor_optimizer/ui/config_widget.py,199,"(ValueError, TypeError)",2
+co2eor_optimizer/ui/config_widget.py,208,"(ValueError, TypeError)",2
+co2eor_optimizer/ui/data_management_widget.py,23,ImportError,5
+co2eor_optimizer/ui/data_management_widget.py,33,ImportError,7
+co2eor_optimizer/ui/data_management_widget.py,225,"(ValueError, TypeError)",1
+co2eor_optimizer/ui/data_management_widget.py,236,"(ValueError, TypeError)",2
+co2eor_optimizer/ui/data_management_widget.py,272,Exception,2
+co2eor_optimizer/ui/data_management_widget.py,294,Exception,1
+co2eor_optimizer/ui/dialogs/scenario_editor_dialog.py,17,ImportError,1
+co2eor_optimizer/ui/dialogs/scenario_editor_dialog.py,27,ImportError,2
+co2eor_optimizer/ui/dialogs/scenario_editor_dialog.py,172,"(ValueError, TypeError)",1
+co2eor_optimizer/ui/logging_widget.py,118,Exception,2
+co2eor_optimizer/ui/main_window.py,20,ImportError,2
+co2eor_optimizer/ui/main_window.py,27,ImportError,2
+co2eor_optimizer/ui/main_window.py,64,ImportError,5
+co2eor_optimizer/ui/main_window.py,332,Exception,4
+co2eor_optimizer/ui/main_window.py,363,Exception,3
+co2eor_optimizer/ui/main_window.py,146,Exception,3
+co2eor_optimizer/ui/main_window.py,277,Exception,1
+co2eor_optimizer/ui/main_window.py,416,Exception,2
+co2eor_optimizer/ui/main_window.py,429,Exception,1
+co2eor_optimizer/ui/mmp_well_analysis_widget.py,22,ImportError,6
+co2eor_optimizer/ui/mmp_well_analysis_widget.py,307,Exception,2
+co2eor_optimizer/ui/optimization_widget.py,289,Exception,3
+co2eor_optimizer/ui/optimization_widget.py,422,Exception,2
+co2eor_optimizer/ui/sensitivity_widget.py,29,ImportError,1
+co2eor_optimizer/ui/sensitivity_widget.py,36,ImportError,1
+co2eor_optimizer/ui/sensitivity_widget.py,260,ValueError,2
+co2eor_optimizer/ui/sensitivity_widget.py,207,Exception,3
+co2eor_optimizer/ui/sensitivity_widget.py,378,Exception,2
+co2eor_optimizer/ui/sensitivity_widget.py,394,Exception,2
+co2eor_optimizer/ui/uq_widget.py,20,ImportError,2
+co2eor_optimizer/ui/widgets/depth_profile_dialog.py,10,ImportError,1
+co2eor_optimizer/ui/widgets/log_viewer_dialog.py,19,ImportError,5
+co2eor_optimizer/ui/widgets/log_viewer_dialog.py,28,ImportError,2
+co2eor_optimizer/ui/widgets/log_viewer_dialog.py,226,ValueError,1
+co2eor_optimizer/ui/widgets/manual_well_dialog.py,14,ImportError,2
+co2eor_optimizer/ui/widgets/manual_well_dialog.py,27,ImportError,2
+co2eor_optimizer/ui/widgets/manual_well_dialog.py,32,ImportError,2
+co2eor_optimizer/ui/widgets/manual_well_dialog.py,136,"(ValueError, TypeError)",1
+co2eor_optimizer/ui/widgets/manual_well_dialog.py,151,"(ValueError, TypeError)",1
+co2eor_optimizer/ui/widgets/manual_well_dialog.py,232,Exception,2
+co2eor_optimizer/ui/widgets/manual_well_dialog.py,124,"(ValueError, TypeError)",1
+co2eor_optimizer/ui/widgets/manual_well_dialog.py,220,"(AttributeError, ValueError)",1
+co2eor_optimizer/ui/widgets/pvt_editor_dialog.py,19,ImportError,4
+co2eor_optimizer/ui/widgets/pvt_editor_dialog.py,29,ImportError,3
+co2eor_optimizer/ui/widgets/pvt_editor_dialog.py,253,"(ValueError, TypeError)",1
+co2eor_optimizer/ui/widgets/pvt_editor_dialog.py,255,"(ValueError, TypeError)",1
+co2eor_optimizer/ui/widgets/pvt_editor_dialog.py,290,"(ValueError, TypeError)",2
+co2eor_optimizer/ui/widgets/pvt_table_editor.py,82,Exception,1
+co2eor_optimizer/ui/widgets/pvt_table_editor.py,233,Exception,1
+co2eor_optimizer/ui/widgets/pvt_table_editor.py,247,Exception,1
+co2eor_optimizer/ui/widgets/pvt_table_editor.py,110,ValueError,3
+co2eor_optimizer/ui/widgets/pvt_table_editor.py,144,ValueError,1
+co2eor_optimizer/ui/widgets/pvt_table_editor.py,220,"(ValueError, TypeError)",1
+co2eor_optimizer/ui/workers/ai_query_worker.py,81,ValueError,2
+co2eor_optimizer/ui/workers/ai_query_worker.py,85,Exception,2
+co2eor_optimizer/ui/workers/data_processing_worker.py,70,Exception,2
+co2eor_optimizer/ui/workers/optimization_worker.py,73,AttributeError,3
+co2eor_optimizer/ui/workers/optimization_worker.py,77,Exception,2
+co2eor_optimizer/ui/workers/sensitivity_analysis_worker.py,48,AttributeError,3
+co2eor_optimizer/ui/workers/sensitivity_analysis_worker.py,52,Exception,2
+co2eor_optimizer/ui/workers/uq_worker.py,46,AttributeError,3
+co2eor_optimizer/ui/workers/uq_worker.py,50,Exception,2
+co2eor_optimizer/ui/workers/well_analysis_worker.py,87,Exception,2
+co2eor_optimizer/utils/grdecl_writer.py,162,IOError,2
+co2eor_optimizer/utils/grdecl_writer.py,165,Exception,2
+co2eor_optimizer/utils/grdecl_writer.py,46,ValueError,2
+co2eor_optimizer/utils/i18n_manager.py,65,Exception,1
+co2eor_optimizer/utils/project_file_handler.py,115,TypeError,1
+co2eor_optimizer/utils/project_file_handler.py,117,IOError,1
+co2eor_optimizer/utils/project_file_handler.py,119,Exception,1
+co2eor_optimizer/utils/project_file_handler.py,149,gzip.BadGzipFile,2
+co2eor_optimizer/utils/project_file_handler.py,161,json.JSONDecodeError,1
+co2eor_optimizer/utils/project_file_handler.py,163,IOError,1
+co2eor_optimizer/utils/project_file_handler.py,165,Exception,1
+co2eor_optimizer/utils/project_file_handler.py,237,ImportError,1
+co2eor_optimizer/utils/project_file_handler.py,239,Exception,1
+co2eor_optimizer/utils/project_file_handler.py,60,Exception,2
+co2eor_optimizer/utils/project_file_handler.py,85,"(ImportError, AttributeError, TypeError)",2
+co2eor_optimizer/utils/project_file_handler.py,157,json.JSONDecodeError,1
+co2eor_optimizer/utils/project_file_handler.py,159,Exception,1
+co2eor_optimizer/utils/report_generator.py,39,bare_except,1
+co2eor_optimizer/utils/report_generator.py,83,Exception,3
+co2eor_optimizer/validation_manager.py,37,"(FileNotFoundError, yaml.YAMLError)",2
+co2eor_optimizer/validation_manager.py,51,"(IndexError, AttributeError)",1
+co2eor_optimizer/validation_manager.py,77,"(ValueError, TypeError)",1
+core/data_integration_engine.py,148,Exception,2
+core/data_integration_engine.py,194,Exception,3
+core/data_integration_engine.py,601,Exception,3
+core/data_integration_engine.py,808,Exception,2
+core/data_models.py,144,"(IndexError, ValueError)",1
+core/engine_surrogate/analytical_models.py,41,ImportError,3
+core/engine_surrogate/analytical_models.py,130,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
+core/engine_surrogate/analytical_models.py,252,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
+core/engine_surrogate/analytical_models.py,379,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
+core/engine_surrogate/analytical_models.py,521,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
+core/engine_surrogate/feature_transformer.py,20,ImportError,2
+core/engine_surrogate/response_surfaces.py,22,ImportError,3
+core/engine_surrogate/surrogate_engine.py,712,Exception,2
+core/engine_surrogate/surrogate_engine.py,861,Exception,1
+core/engine_surrogate/surrogate_models.py,553,Exception,2
+core/engine_surrogate/surrogate_models.py,668,ImportError,2
+core/engine_surrogate/surrogate_models.py,792,Exception,2
+core/engine_surrogate/training_data.py,20,ImportError,2
+core/engine_surrogate/training_data.py,133,Exception,2
+core/geology/geostatistical_modeling.py,173,Exception,2
+core/geology/geostatistical_modeling.py,287,Exception,2
+core/geology/geostatistical_modeling.py,470,Exception,4
+core/geology/geostatistical_modeling.py,615,Exception,2
+core/geology/geostatistical_modeling.py,140,Exception,3
+core/geology/geostatistical_modeling.py,256,Exception,2
+core/geology/geostatistical_modeling.py,159,ValueError,3
+core/geology/geostatistical_modeling.py,561,ValueError,2
+core/geology/geostatistical_modeling.py,252,ValueError,2
+core/objectives/economic.py,11,ImportError,2
+core/objectives/production.py,16,ImportError,1
+core/objectives/storage.py,99,"(TypeError, ValueError)",1
+core/objectives/storage.py,104,"(TypeError, ValueError)",1
+core/objectives/wrapper.py,130,Exception,1
+core/optimisation_engine.py,26,ImportError,1
+core/optimisation_engine.py,40,ImportError,2
+core/optimisation_engine.py,55,ImportError,6
+core/optimisation_engine.py,242,Exception,2
+core/optimisation_engine.py,278,ImportError,3
+core/optimisation_engine.py,282,Exception,3
+core/optimisation_engine.py,352,"(RuntimeError, AttributeError)",1
+core/optimisation_engine.py,373,"(RuntimeError, ValueError, ZeroDivisionError, ArithmeticError)",1
+core/optimisation_engine.py,448,Exception,2
+core/optimisation_engine.py,1124,Exception,1
+core/optimisation_engine.py,1570,Exception,2
+core/optimisation_engine.py,2100,Exception,1
+core/optimisation_engine.py,3712,Exception,2
+core/optimisation_engine.py,4409,Exception,2
+core/optimisation_engine.py,635,ValueError,1
+core/optimisation_engine.py,901,Exception,1
+core/optimisation_engine.py,924,ValueError,1
+core/optimisation_engine.py,2907,"(OSError, IOError, ValueError)",1
+core/optimisation_engine.py,3587,"(ImportError, AttributeError)",1
+core/optimisation_engine.py,3658,Exception,1
+core/optimisation_engine.py,4232,Exception,2
+core/optimisation_engine.py,584,Exception,1
+core/optimisation_engine.py,2162,Exception,1
+core/optimization_analysis.py,858,Exception,2
+core/optimization_analysis.py,882,Exception,2
+core/optimization_analysis.py,119,Exception,1
+core/optimization_analysis.py,296,Exception,2
+core/optimization_analysis.py,358,Exception,2
+core/optimization_analysis.py,428,Exception,2
+core/optimization_analysis.py,536,Exception,2
+core/optimization_analysis.py,609,Exception,2
+core/optimization_analysis.py,692,Exception,2
+core/optimization_analysis.py,765,Exception,2
+core/optimization_analysis.py,833,Exception,2
+core/plotting_manager.py,620,ImportError,2
+core/plotting_manager.py,644,ImportError,2
+core/plotting_manager.py,666,ImportError,2
+core/plotting_manager.py,688,ImportError,2
+core/plotting_manager.py,1054,Exception,1
+core/plotting_manager.py,418,Exception,1
+core/simulation/__init__.py,9,ImportError,1
+core/simulation/profile_generator.py,22,ImportError,11
+core/simulation/profile_generator.py,78,Exception,1
+core/simulation/profile_generator.py,297,Exception,1
+core/simulation/profile_generator.py,307,Exception,3
+core/simulation/recovery_models.py,28,ImportError,1
+core/simulation/recovery_models.py,799,"(TypeError, ValueError, KeyError)",1
+core/simulation/recovery_models.py,610,"(RuntimeError, ValueError, ArithmeticError)",3
+core/simulation/simulator_exporter.py,55,Exception,2
+core/utils/profiler_utils.py,16,ImportError,2
+core/validation/data_quality_validator.py,149,Exception,2
+core/validation/data_quality_validator.py,240,Exception,2
+core/validation/data_quality_validator.py,318,Exception,2
+core/validation/data_quality_validator.py,381,Exception,2
+core/validation/data_quality_validator.py,427,Exception,2
+evaluation/mmp.py,12,ImportError,1
+evaluation/mmp.py,370,Exception,1
+evaluation/mmp.py,332,"(ValueError, TypeError)",1
+evaluation/mmp.py,344,"(ValueError, TypeError, ZeroDivisionError)",1
+evaluation/mmp.py,427,Exception,1
+main.py,53,OSError,2
+main.py,219,Exception,2
+main.py,266,Exception,1
+main.py,328,Exception,3
+main.py,375,Exception,4
+main.py,126,ImportError,2
+main.py,171,ImportError,2
+main.py,179,ImportError,2
+parsers/las_parser.py,60,lasio.LASHeaderError,2
+parsers/las_parser.py,64,Exception,2
+parsers/las_parser.py,84,Exception,1
+parsers/las_parser.py,162,KeyError,1
+parsers/las_parser.py,121,"(ValueError, TypeError)",1
+parsers/las_parser.py,148,ValueError,1
+scripts/archive_resolved_wiki_issues.py,23,Exception,1
+scripts/audit_generator.py,59,Exception,1
+scripts/audit_generator.py,108,Exception,1
+scripts/audit_generator.py,228,Exception,1
+scripts/parse_coverage.py,25,ValueError,1
+scripts/process_las_data.py,82,Exception,2
+tests/conftest.py,20,Exception,1
+tests/core/test_fitness_function.py,294,Exception,1
+tests/core/test_fitness_function.py,321,Exception,1
+tests/core/test_fitness_function.py,348,Exception,1
+tests/core/test_fitness_function.py,376,Exception,1
+tests/core/test_fitness_function.py,407,Exception,1
+tests/core/test_fitness_function.py,437,Exception,1
+tests/core/test_fitness_function.py,467,Exception,1
+tests/core/test_surrogate_engine_reference.py,265,Exception,2
+tests/test_cmg_surrogate_validation.py,339,ImportError,1
+tests/validation/cmg_output_parser.py,167,Exception,1
+tests/validation/cmg_output_parser.py,288,Exception,2
+tests/validation/cmg_output_parser.py,352,Exception,1
+tests/validation/cmg_output_parser.py,102,Exception,2
+tests/validation/cmg_output_parser.py,110,Exception,2
+tests/validation/cmg_output_parser.py,228,bare_except,1
+tests/validation/cmg_output_parser.py,345,ValueError,1
+tests/validation/cmg_runner.py,135,subprocess.TimeoutExpired,3
+tests/validation/cmg_runner.py,146,Exception,3
+tests/validation/cmg_runner.py,174,Exception,2
+tests/validation/cmg_runner.py,191,Exception,1
+tests/validation/combined_cmg_parser.py,22,ImportError,2
+tests/validation/combined_cmg_parser.py,111,Exception,2
+tests/validation/combined_cmg_parser.py,141,Exception,2
+tests/validation/empirical_engine_validation.py,171,Exception,2
+tests/validation/empirical_engine_validation.py,461,Exception,1
+tests/validation/extract_sr3_reference.py,109,Exception,4
+tests/validation/sr3_parser.py,20,ImportError,1
+tests/validation/sr3_parser.py,23,ImportError,3
+tests/validation/sr3_parser.py,195,Exception,4
+tests/validation/sr3_parser.py,254,Exception,1
+tests/validation/sr3_parser.py,29,ImportError,3
+tests/validation/sr3_reader.py,127,bare_except,1
+tests/validation/sr3_reader.py,155,bare_except,3
+tests/validation/sr3_reader.py,384,bare_except,1
+tests/validation/sr3_reader.py,585,ValueError,1
+tests/validation/sr3_reader.py,227,bare_except,1
+tests/validation/sr3_reader.py,458,bare_except,1
+tests/validation/sr3_reader.py,528,bare_except,1
+tests/validation/sr3_reader.py,533,bare_except,1
+ui/analysis_widget.py,58,ImportError,1
+ui/analysis_widget.py,65,ImportError,1
+ui/config_widget.py,64,ImportError,3
+ui/config_widget.py,401,"(ValueError, TypeError)",2
+ui/config_widget.py,1113,Exception,1
+ui/config_widget.py,1144,Exception,1
+ui/config_widget.py,1241,Exception,3
+ui/config_widget.py,1267,Exception,3
+ui/config_widget.py,358,"(ValueError, TypeError)",2
+ui/config_widget.py,1173,ValueError,1
+ui/config_widget.py,1180,Exception,1
+ui/config_widget.py,330,"(ValueError, TypeError)",2
+ui/config_widget.py,339,"(ValueError, TypeError)",2
+ui/data_management_widget.py,26,ImportError,3
+ui/data_management_widget.py,36,ImportError,5
+ui/data_management_widget.py,54,ImportError,2
+ui/data_management_widget.py,741,Exception,2
+ui/data_management_widget.py,756,"(ValueError, TypeError)",1
+ui/data_management_widget.py,769,"(ValueError, TypeError)",2
+ui/data_management_widget.py,1101,Exception,2
+ui/data_management_widget.py,1396,Exception,2
+ui/data_management_widget.py,1553,"(TypeError, KeyError, ZeroDivisionError)",1
+ui/data_management_widget.py,1636,"(KeyError, ZeroDivisionError, TypeError, ValueError)",3
+ui/data_management_widget.py,1698,Exception,2
+ui/data_management_widget.py,1821,Exception,2
+ui/data_management_widget.py,1878,Exception,2
+ui/data_management_widget.py,1936,Exception,2
+ui/data_management_widget.py,176,Exception,1
+ui/data_management_widget.py,185,Exception,1
+ui/data_management_widget.py,845,"(TypeError, ValueError, KeyError)",1
+ui/data_management_widget.py,952,Exception,9
+ui/data_management_widget.py,1586,Exception,1
+ui/data_management_widget.py,802,"(ValueError, AttributeError)",1
+ui/data_management_widget.py,1077,"(ValueError, AttributeError)",1
+ui/data_management_widget.py,1390,Exception,1
+ui/data_management_widget.py,1574,"(ValueError, AttributeError)",1
+ui/data_management_widget.py,656,Exception,1
+ui/data_management_widget.py,893,Exception,1
+ui/dialogs/injection_scheme_dialog.py,637,Exception,3
+ui/dialogs/injection_scheme_dialog.py,682,Exception,2
+ui/dialogs/preferences_dialog.py,153,Exception,2
+ui/main_window.py,45,ImportError,1
+ui/main_window.py,52,ImportError,2
+ui/main_window.py,60,ImportError,2
+ui/main_window.py,100,ImportError,5
+ui/main_window.py,811,Exception,4
+ui/main_window.py,872,Exception,1
+ui/main_window.py,899,Exception,1
+ui/main_window.py,909,Exception,1
+ui/main_window.py,918,Exception,1
+ui/main_window.py,932,Exception,1
+ui/main_window.py,1065,Exception,3
+ui/main_window.py,1124,"(FileNotFoundError, json.JSONDecodeError)",2
+ui/main_window.py,1461,Exception,2
+ui/main_window.py,1683,Exception,3
+ui/main_window.py,1734,Exception,3
+ui/main_window.py,302,Exception,3
+ui/main_window.py,661,Exception,1
+ui/main_window.py,1190,Exception,3
+ui/main_window.py,1355,Exception,1
+ui/main_window.py,1804,Exception,2
+ui/main_window.py,1896,Exception,1
+ui/main_window.py,326,Exception,2
+ui/main_window.py,1439,Exception,2
+ui/optimization_widget.py,68,ImportError,6
+ui/optimization_widget.py,974,Exception,1
+ui/optimization_widget.py,998,Exception,3
+ui/optimization_widget.py,1594,Exception,5
+ui/optimization_widget.py,1884,Exception,3
+ui/optimization_widget.py,2007,Exception,4
+ui/optimization_widget.py,2077,Exception,2
+ui/optimization_widget.py,2390,Exception,2
+ui/optimization_widget.py,1058,Exception,1
+ui/optimization_widget.py,1437,Exception,2
+ui/optimization_widget.py,993,bare_except,1
+ui/sensitivity_widget.py,20,ImportError,3
+ui/sensitivity_widget.py,27,ImportError,2
+ui/sensitivity_widget.py,396,ValueError,2
+ui/sensitivity_widget.py,511,Exception,2
+ui/sensitivity_widget.py,359,Exception,5
+ui/widgets/context_bubble.py,14,TypeError,1
+ui/widgets/context_bubble.py,38,TypeError,1
+ui/widgets/depth_profile_dialog.py,10,ImportError,1
+ui/widgets/geomechanics_3d_view.py,25,ImportError,2
+ui/widgets/geomechanics_3d_view.py,389,Exception,2
+ui/widgets/geomechanics_3d_view.py,544,Exception,2
+ui/widgets/geomechanics_3d_view.py,282,Exception,2
+ui/widgets/geomechanics_3d_view.py,511,Exception,2
+ui/widgets/geomechanics_3d_view.py,436,Exception,1
+ui/widgets/log_viewer_dialog.py,35,ImportError,5
+ui/widgets/log_viewer_dialog.py,49,ImportError,2
+ui/widgets/log_viewer_dialog.py,374,ValueError,1
+ui/widgets/manual_well_dialog.py,26,ImportError,2
+ui/widgets/manual_well_dialog.py,53,ImportError,2
+ui/widgets/manual_well_dialog.py,61,ImportError,2
+ui/widgets/manual_well_dialog.py,250,"(ValueError, TypeError)",1
+ui/widgets/manual_well_dialog.py,267,"(ValueError, TypeError)",1
+ui/widgets/manual_well_dialog.py,393,Exception,2
+ui/widgets/manual_well_dialog.py,234,"(ValueError, TypeError)",1
+ui/widgets/manual_well_dialog.py,357,"(AttributeError, ValueError)",1
+ui/widgets/parameter_input_group.py,145,"(ValueError, TypeError)",1
+ui/widgets/pvt_editor_dialog.py,37,ImportError,4
+ui/widgets/pvt_editor_dialog.py,54,ImportError,2
+ui/widgets/pvt_editor_dialog.py,93,ImportError,2
+ui/widgets/pvt_editor_dialog.py,508,Exception,1
+ui/widgets/pvt_editor_dialog.py,645,Exception,2
+ui/widgets/pvt_editor_dialog.py,748,Exception,2
+ui/widgets/pvt_editor_dialog.py,782,Exception,1
+ui/widgets/pvt_editor_dialog.py,853,"(ValueError, AttributeError)",1
+ui/widgets/pvt_editor_dialog.py,908,"(ValueError, TypeError)",2
+ui/widgets/pvt_editor_dialog.py,916,Exception,2
+ui/widgets/pvt_editor_dialog.py,940,"(ValueError, TypeError)",1
+ui/widgets/pvt_editor_dialog.py,825,"(ValueError, IndexError)",1
+ui/widgets/pvt_table_editor.py,126,Exception,1
+ui/widgets/pvt_table_editor.py,279,Exception,1
+ui/widgets/pvt_table_editor.py,298,Exception,1
+ui/widgets/pvt_table_editor.py,151,ValueError,4
+ui/widgets/pvt_table_editor.py,182,ValueError,1
+ui/widgets/pvt_table_editor.py,259,"(ValueError, TypeError)",2
+ui/workers/ai_query_worker.py,13,ImportError,3
+ui/workers/ai_query_worker.py,20,ImportError,4
+ui/workers/ai_query_worker.py,102,"(ValueError, ImportError)",2
+ui/workers/ai_query_worker.py,106,Exception,2
+ui/workers/ai_query_worker.py,134,PermissionDenied,1
+ui/workers/ai_query_worker.py,136,GoogleAPICallError,1
+ui/workers/ai_query_worker.py,164,AuthenticationError,1
+ui/workers/ai_query_worker.py,166,RateLimitError,1
+ui/workers/ai_query_worker.py,168,APIError,1
+ui/workers/base_worker.py,41,Exception,2
+ui/workers/dca_worker.py,34,Exception,1
+ui/workers/model_list_worker.py,36,httpx.RequestError,2
+ui/workers/model_list_worker.py,39,httpx.HTTPStatusError,2
+ui/workers/model_list_worker.py,42,Exception,2
+ui/workers/optimization_worker.py,54,Exception,2
+ui/workers/sensitivity_analysis_worker.py,67,AttributeError,3
+ui/workers/sensitivity_analysis_worker.py,72,Exception,2
+ui/workers/uq_worker.py,46,AttributeError,3
+ui/workers/uq_worker.py,50,Exception,2
+ui/workers/well_analysis_worker.py,87,Exception,2
+utils/config_manager.py,137,"(KeyError, TypeError, IndexError)",1
+utils/config_manager.py,28,Exception,1
+utils/config_manager.py,36,FileNotFoundError,1
+utils/config_manager.py,42,Exception,2
+utils/config_manager.py,95,json.JSONDecodeError,1
+utils/config_manager.py,97,Exception,1
+utils/i18n_manager.py,65,Exception,1
+utils/multiprocess_logging.py,43,"(PermissionError, OSError)",1
+utils/multiprocess_logging.py,48,Exception,1
+utils/multiprocess_logging.py,61,"(EOFError, BrokenPipeError, OSError)",1
+utils/multiprocess_logging.py,193,Exception,1
+utils/multiprocess_logging.py,248,Exception,1
+utils/multiprocess_logging.py,161,Exception,1
+utils/project_file_handler.py,73,"(TypeError, IOError)",2
+utils/project_file_handler.py,90,"(IOError, json.JSONDecodeError)",2
+utils/project_file_handler.py,45,Exception,2
+utils/report_generator.py,84,Exception,2
+utils/report_generator.py,105,Exception,1
+utils/report_generator.py,152,Exception,4
+utils/report_generator.py,1007,Exception,2
+utils/report_generator.py,1019,Exception,2
+utils/report_generator.py,162,Exception,1
+utils/run_exporter.py,1518,"(TypeError, OverflowError, ValueError)",1
+utils/run_exporter.py,1528,Exception,1
+utils/run_exporter.py,588,Exception,1
+utils/run_exporter.py,1423,Exception,1
+utils/run_exporter.py,1487,Exception,1

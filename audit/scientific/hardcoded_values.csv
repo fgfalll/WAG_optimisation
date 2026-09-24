@@ -1,0 +1,90 @@
+variable,file,line,value,unit,meaning,origin,configurable,empirical,scientific_impact
+g_ft_day2,analysis/breakthrough_physics.py,310,240000000000.0,deg F,Temperature parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+g_ft_day2,analysis/breakthrough_physics.py,357,240000000000.0,deg F,Temperature parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+breakthrough_threshold,analysis/breakthrough_physics.py,564,0.05,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+bg,analysis/breakthrough_physics.py,191,0.5,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+dt,analysis/data_validation.py,335,30.4375,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+dt,analysis/data_validation.py,337,91.3125,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+dt,analysis/data_validation.py,339,365.25,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+di_guess,analysis/decline_curve_analysis.py,107,0.1,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+di_guess,analysis/decline_curve_analysis.py,134,0.1,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+p_res,analysis/material_balance.py,192,2000.0,psi,Pressure parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+p_frac,analysis/material_balance.py,196,5500.0,psi,Pressure parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+safety_factor,analysis/material_balance.py,197,0.9,multiplier,Empirical heuristic tuning multiplier,CALIBRATION,False,True,Directly impacts simulation/optimization outcome
+breakthrough_gor_threshold,analysis/material_balance.py,26,800.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+recycling_efficiency,analysis/material_balance.py,27,0.9,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+co2_frac,analysis/material_balance.py,89,0.8,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+vapor_frac,analysis/material_balance.py,87,0.05,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+recycling_efficiency[i],analysis/material_balance.py,333,0.1,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+FT3_PER_BBL,analysis/profiler.py,17,5.61458,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+mu_w,analysis/profiler.py,285,0.5,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+k_rw[k_rw < 1e-09],analysis/profiler.py,291,1e-09,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+c_oil,analysis/profiler.py,354,1e-05,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+c_gas,analysis/profiler.py,355,0.001,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+c_water,analysis/profiler.py,356,3e-06,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+B_oil,analysis/profiler.py,357,1.2,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+B_gas,analysis/profiler.py,359,5.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+water_inj_rate_bpd,analysis/profiler.py,899,0.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+min_scaling_factor,analysis/profiler.py,488,0.01,multiplier,Empirical heuristic tuning multiplier,CALIBRATION,False,True,Directly impacts simulation/optimization outcome
+ramp_up_days,analysis/profiler.py,597,90,psi,Pressure parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+min_production_factor,analysis/profiler.py,604,0.05,multiplier,Empirical heuristic tuning multiplier,CALIBRATION,False,True,Directly impacts simulation/optimization outcome
+base_efficiency,analysis/profiler.py,665,0.5,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+improvement_rate,analysis/profiler.py,666,0.15,deg F,Temperature parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+co2_cut_aggressiveness,analysis/profiler.py,692,0.8,deg F,Temperature parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+STD_TEMP_F,analysis/well_analysis.py,18,60.0,psi,Pressure parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+STD_PRESS_PSIA,analysis/well_analysis.py,19,14.696,psi,Pressure parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+weighted_api_sum,analysis/well_analysis.py,238,0,deg API,Oil gravity,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+weighted_temp_sum,analysis/well_analysis.py,239,0,psi,Pressure parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+r_const,core/data_models.py,1140,8.314,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+m_gas,core/data_models.py,1141,0.016,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+EPSILON,core/engine_surrogate/analytical_models.py,29,1e-10,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+CO2_DENSITY_TONNE_PER_MSCF,core/engine_surrogate/analytical_models.py,37,0.053,lb/cu ft,Density,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+S_GC_CRITICAL,core/engine_surrogate/analytical_models.py,44,0.05,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+S_OR_BASE,core/engine_surrogate/analytical_models.py,45,0.25,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+S_WI_CONNATE,core/engine_surrogate/analytical_models.py,46,0.25,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+TODD_LONGSTAFF_OMEGA,core/engine_surrogate/analytical_models.py,50,0.7,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+beta,core/engine_surrogate/analytical_models.py,459,20.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+phi_ref,core/engine_surrogate/analytical_models.py,681,0.15,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+N_c_ref,core/engine_surrogate/analytical_models.py,753,1e-05,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+h_rel,core/engine_surrogate/analytical_models.py,842,0.001,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+h_abs,core/engine_surrogate/analytical_models.py,843,0.01,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+self.p_crit_fault,core/engine_surrogate/geomechanics_fault.py,134,1000000.0,psi,Pressure parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+EPSILON,core/engine_surrogate/profile_generator_fast.py,18,1e-10,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+s_ref,core/engine_surrogate/profile_generator_fast.py,953,0.4,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+cycle_length,core/engine_surrogate/profile_generator_fast.py,772,90.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+inj_period,core/engine_surrogate/profile_generator_fast.py,773,30.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+soak_period,core/engine_surrogate/profile_generator_fast.py,774,15.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+prod_period,core/engine_surrogate/profile_generator_fast.py,775,45.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+cycle_length,core/engine_surrogate/profile_generator_fast.py,1159,97.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+inj_period,core/engine_surrogate/profile_generator_fast.py,1160,30.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+soak_period,core/engine_surrogate/profile_generator_fast.py,1161,7.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+prod_period,core/engine_surrogate/profile_generator_fast.py,1162,60.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+cycle_length,core/engine_surrogate/profile_generator_fast.py,1272,30.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+pulse_days,core/engine_surrogate/profile_generator_fast.py,1273,15.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+P_SC_PSIA,core/engine_surrogate/pvt_state.py,31,14.696,psi,Pressure parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+T_SC_RANKINE,core/engine_surrogate/pvt_state.py,32,519.67,deg F,Temperature parameter,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+R_GAS_FIELD,core/engine_surrogate/pvt_state.py,33,10.7316,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+R_GAS_SI,core/engine_surrogate/pvt_state.py,34,8.314462,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+MW_CO2,core/engine_surrogate/pvt_state.py,37,44.01,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+TC_CO2_K,core/engine_surrogate/pvt_state.py,38,304.13,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+PC_CO2_PA,core/engine_surrogate/pvt_state.py,39,7376000.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+OMEGA_CO2,core/engine_surrogate/pvt_state.py,40,0.225,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+RHO_CO2_SC_KG_M3,core/engine_surrogate/pvt_state.py,41,1.838,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+CO2_TONNE_PER_MSCF,core/engine_surrogate/pvt_state.py,42,0.05295,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+MW_CH4,core/engine_surrogate/pvt_state.py,46,16.04,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+GAMMA_G_DEFAULT,core/engine_surrogate/pvt_state.py,47,0.65,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+c_o,core/engine_surrogate/pvt_state.py,303,1.2e-05,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+bo,core/engine_surrogate/surrogate_engine.py,803,1.2,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+nominal_drawdown,core/engine_surrogate/surrogate_engine.py,352,500.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+tolerance_window,core/engine_surrogate/surrogate_engine.py,379,50.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+leakage_rate_profile[i],core/engine_surrogate/surrogate_engine.py,279,0.0,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+CO2_DENSITY_TONNE_PER_MSCF,core/engine_surrogate/surrogate_models.py,26,0.053,lb/cu ft,Density,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+S_GC_CRITICAL,core/engine_surrogate/surrogate_models.py,31,0.05,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+S_OR_BASE,core/engine_surrogate/surrogate_models.py,32,0.25,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+N_CRIT,core/engine_surrogate/surrogate_models.py,35,1e-05,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+EPSILON,core/engine_surrogate/surrogate_models.py,301,1e-10,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+EPSILON,core/optimisation_engine.py,86,1e-10,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+MAX_OBJECTIVE_VALUE,core/optimisation_engine.py,1542,1e+20,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+prod_days,core/optimisation_engine.py,2450,365.25,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome
+base_penalty,core/optimisation_engine.py,1220,1000.0,multiplier,Empirical heuristic tuning multiplier,CALIBRATION,False,True,Directly impacts simulation/optimization outcome
+max_threads,core/optimisation_engine.py,31,4,dimensionless,Numerical constant,ENGINEERING CORRELATION,False,True,Directly impacts simulation/optimization outcome

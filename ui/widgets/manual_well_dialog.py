@@ -14,56 +14,15 @@ from PyQt6.QtWidgets import (
     QWidget,
     QFormLayout,
     QTableWidget,
-    QTableWidgetItem,
     QAbstractItemView,
     QComboBox,
 )
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QPointF, pyqtSignal, QEvent
 
-try:
-    from .parameter_input_group import ParameterInputGroup
-except ImportError:
-
-    class ParameterInputGroup(QWidget):
-        finalValueChanged = pyqtSignal(object)
-        param_name: str = ""
-
-        def __init__(self, param_name="", label_text="", input_type="", **kwargs):
-            super().__init__()
-
-        def get_value(self):
-            return ""
-
-        def set_value(self, v):
-            pass
-
-        def setEnabled(self, b):
-            pass
-
-        def setProperty(self, n, v):
-            pass
-
-        def property(self, n):
-            pass
-
-    logging.critical("ManualWellDialog: Failed to import ParameterInputGroup.")
-try:
-    from .depth_profile_dialog import DepthProfileDialog
-except ImportError:
-
-    class DepthProfileDialog(QDialog):
-        pass
-
-    logging.critical("ManualWellDialog: Failed to import DepthProfileDialog.")
-try:
-    from core.data_models import WellData
-except ImportError:
-
-    class WellData:
-        pass
-
-    logging.critical("ManualWellDialog: Could not import WellData model.")
+from .parameter_input_group import ParameterInputGroup
+from .depth_profile_dialog import DepthProfileDialog
+from core.data_models import WellData
 
 logger = logging.getLogger(__name__)
 
@@ -85,14 +44,14 @@ class ManualWellDialog(QDialog):
         ),
     }
 
-    def __init__(self, existing_names: List[str] = [], parent: Optional[QWidget] = None):
+    def __init__(self, existing_names: Optional[List[str]] = None, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setMinimumSize(600, 500)
 
         self.key_param_widgets: Dict[str, ParameterInputGroup] = {}
         self.key_param_values: Dict[str, Any] = {}
         self.well_path: List[QPointF] = []
-        self.existing_names = existing_names
+        self.existing_names = list(existing_names) if existing_names is not None else []
 
         main_layout = QVBoxLayout(self)
 
@@ -116,9 +75,9 @@ class ManualWellDialog(QDialog):
             self.key_param_widgets[name] = widget
             params_form_layout.addRow(widget)
 
-        self.status_label = QLabel(self.tr("Status:"))
+        self.status_label = QLabel(self.tr("Well Role:"))
         self.status_combo = QComboBox()
-        self.status_combo.addItems(["Active", "Inactive", "Injector"])
+        self.status_combo.addItems(["Producer (Active)", "Producer (Inactive)", "Injector"])
         params_form_layout.addRow(self.status_label, self.status_combo)
 
         self.edit_path_btn = QPushButton()
@@ -157,6 +116,7 @@ class ManualWellDialog(QDialog):
         self.perf_table.model().rowsInserted.connect(self._update_ui_state)
         self.perf_table.model().rowsRemoved.connect(self._update_ui_state)
         self.status_combo.currentIndexChanged.connect(self._update_well_name)
+        self.well_name_edit.textEdited.connect(self._on_well_name_edited)
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
 
@@ -164,18 +124,34 @@ class ManualWellDialog(QDialog):
         self.retranslateUi()
         self._update_well_name()
 
+    def _on_well_name_edited(self, text: str):
+        text_lower = text.strip().lower()
+        if "injector" in text_lower or text_lower.startswith("inj"):
+            idx = self.status_combo.findText("Injector")
+            if idx >= 0 and self.status_combo.currentIndex() != idx:
+                self.status_combo.blockSignals(True)
+                self.status_combo.setCurrentIndex(idx)
+                self.status_combo.blockSignals(False)
+        elif "producer" in text_lower or text_lower.startswith("prod"):
+            idx = self.status_combo.findText("Producer (Active)")
+            if idx >= 0 and self.status_combo.currentIndex() != idx:
+                self.status_combo.blockSignals(True)
+                self.status_combo.setCurrentIndex(idx)
+                self.status_combo.blockSignals(False)
+
     def _update_well_name(self):
         self.well_name_edit.setText(self._generate_default_name())
 
     def _generate_default_name(self) -> str:
         status = self.status_combo.currentText().lower()
-        if status in ["active", "inactive"]:
-            well_type = "producer"
-        else:
+        if "injector" in status:
             well_type = "injector"
+        else:
+            well_type = "producer"
 
+        existing_lower = [n.lower() for n in self.existing_names]
         count = 1
-        while f"well-{well_type}-{count}" in self.existing_names:
+        while f"well-{well_type}-{count}" in existing_lower:
             count += 1
         return f"Well-{well_type.capitalize()}-{count}"
 
@@ -346,16 +322,22 @@ class ManualWellDialog(QDialog):
 
             final_metadata = self.key_param_values.copy()
             status = self.status_combo.currentText()
-            final_metadata["status"] = status
-            # Explicitly set well type for integration engine
-            final_metadata["type"] = "injector" if status.lower() == "injector" else "producer"
+            status_lower = status.lower()
+            name_lower = well_name.lower()
+
+            if "injector" in status_lower or "injector" in name_lower or name_lower.startswith("inj"):
+                final_metadata["type"] = "injector"
+                final_metadata["status"] = "Injector"
+            else:
+                final_metadata["type"] = "producer"
+                final_metadata["status"] = status
             
             if not perfs:
                 final_metadata["perforations_treatment"] = "entire_wellbore"
 
             well_props = {
-                "WellboreRadius": [self.key_param_values.get("WellboreRadius", 0.35)],
-                "SkinFactor": [self.key_param_values.get("SkinFactor", 0.0)],
+                "WellboreRadius": np.array([self.key_param_values.get("WellboreRadius", 0.35)]),
+                "SkinFactor": np.array([self.key_param_values.get("SkinFactor", 0.0)]),
             }
 
             return WellData(
@@ -366,6 +348,9 @@ class ManualWellDialog(QDialog):
                 metadata=final_metadata,
                 properties=well_props,
                 units={},
+                skin_factor=float(self.key_param_values.get("SkinFactor", 0.0)),
+                wellbore_radius_ft=float(self.key_param_values.get("WellboreRadius", 0.354)),
+                perforations=[[p["top"], p["bottom"]] for p in perfs],
             )
         except Exception as e:
             QMessageBox.critical(

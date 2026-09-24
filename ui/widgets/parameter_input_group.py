@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Optional, List
+from typing import Any, Optional
 
 from PyQt6.QtWidgets import (
     QWidget, QHBoxLayout, QLabel, QLineEdit, QComboBox, QPushButton, 
@@ -7,8 +7,6 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import pyqtSignal, QTimer, Qt, QEvent
 from PyQt6.QtGui import QCursor
-
-from validation_manager import ValidationManager 
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +24,9 @@ class ParameterInputGroup(QWidget):
         self.input_type = input_type.lower()
         self.tooltip_text = kwargs.get("help_text", "")
         
-        # Instantiate the manager
-        self.validator = ValidationManager()
+        # Store validation constraints
+        self.min_val = kwargs.get("min_val", kwargs.get("min"))
+        self.max_val = kwargs.get("max_val", kwargs.get("max"))
 
         self._debounce_timer = QTimer(self)
         self._debounce_timer.setSingleShot(True)
@@ -91,9 +90,12 @@ class ParameterInputGroup(QWidget):
             widget = QLineEdit()
             if "placeholder_text" in kwargs: widget.setPlaceholderText(kwargs["placeholder_text"])
             if default_value is not None:
-                if isinstance(default_value, list): text_value = ", ".join(map(str, default_value))
-                else: text_value = str(default_value)
-                widget.setText(text_value.replace('.', ','))
+                if isinstance(default_value, (list, tuple)):
+                    text_value = ", ".join(map(str, default_value))
+                    widget.setText(text_value)
+                else:
+                    text_value = str(default_value)
+                    widget.setText(text_value.replace('.', ','))
             widget.textChanged.connect(self._start_debounce)
         elif self.input_type == "combobox":
             widget = QComboBox()
@@ -117,43 +119,58 @@ class ParameterInputGroup(QWidget):
     def _start_debounce(self): self._debounce_timer.start()
     
     def _emit_debounced_value(self):
-        self.validate()
-        self.finalValueChanged.emit(self.get_value())
+        try:
+            self.validate()
+            self.finalValueChanged.emit(self.get_value())
+        except (RuntimeError, AttributeError):
+            pass
 
     def _request_help(self):
         self.help_requested.emit(self.param_name)
 
     def validate(self):
-        """Checks the input value using the central ValidationManager."""
+        """Validates the input value against configured min/max constraints."""
         if not self.is_checked():
             self.clear_error()
             return
             
         value = self.get_value()
-        if isinstance(value, str) and not value.strip():
+        if value is None or (isinstance(value, str) and not value.strip()):
             self.clear_error()
             return
 
-        validation_result = self.validator.validate(self.param_name, value)
+        if self.min_val is not None or self.max_val is not None:
+            try:
+                num_val = float(value)
+                if self.min_val is not None and num_val < self.min_val:
+                    self.show_error(f"Value must be ≥ {self.min_val}")
+                    return
+                if self.max_val is not None and num_val > self.max_val:
+                    self.show_error(f"Value must be ≤ {self.max_val}")
+                    return
+            except (ValueError, TypeError):
+                pass
 
-        if validation_result:
-            level, message = validation_result
-            if level == 'error': self.show_error(message)
-            elif level == 'warn': self.show_warning(message)
-        else:
-            self.clear_error()
+        self.clear_error()
 
     def _set_feedback(self, message: str, level: Optional[str]):
-        if not level:
-            self.feedback_label.setVisible(False)
-            self.input_row_widget.setProperty("feedbackLevel", "none")
-        else:
-            self.feedback_label.setText(message)
-            self.feedback_label.setVisible(True)
-            self.input_row_widget.setProperty("feedbackLevel", level)
-        
-        self.input_row_widget.style().polish(self.input_row_widget)
-        self.feedback_label.style().polish(self.feedback_label)
+        try:
+            if not level:
+                self.feedback_label.setVisible(False)
+                self.input_row_widget.setProperty("feedbackLevel", "none")
+            else:
+                self.feedback_label.setText(message)
+                self.feedback_label.setVisible(True)
+                self.input_row_widget.setProperty("feedbackLevel", level)
+            
+            st_row = getattr(self.input_row_widget, "style", lambda: None)()
+            if st_row:
+                st_row.polish(self.input_row_widget)
+            st_fb = getattr(self.feedback_label, "style", lambda: None)()
+            if st_fb:
+                st_fb.polish(self.feedback_label)
+        except (RuntimeError, AttributeError):
+            pass
 
     def clear_error(self): self._set_feedback("", None)
     def show_error(self, message: str): self._set_feedback(message, "error")
@@ -190,7 +207,10 @@ class ParameterInputGroup(QWidget):
 
     def get_value(self) -> Any:
         if self.input_type in ["lineedit", "doublespinbox", "spinbox"]:
-            return self.input_widget.text().replace(',', '.')
+            text = self.input_widget.text()
+            if "," in text and (" " in text or text.count(",") > 1 or "(" in text):
+                return text
+            return text.replace(',', '.')
         if self.input_type == "combobox":
             data = self.input_widget.currentData()
             return data if data is not None else self.input_widget.currentText()
@@ -206,8 +226,12 @@ class ParameterInputGroup(QWidget):
         self.input_widget.blockSignals(True)
         try:
             if self.input_type in ["lineedit", "doublespinbox", "spinbox"]:
-                text_value = str(value) if value is not None else ""
-                self.input_widget.setText(text_value.replace('.', ','))
+                if isinstance(value, (list, tuple)):
+                    text_value = ", ".join(map(str, value))
+                    self.input_widget.setText(text_value)
+                else:
+                    text_value = str(value) if value is not None else ""
+                    self.input_widget.setText(text_value.replace('.', ','))
             elif self.input_type == "combobox":
                 idx = self.input_widget.findData(value)
                 if idx == -1: idx = self.input_widget.findText(str(value))

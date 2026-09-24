@@ -2,20 +2,14 @@
 Fast Surrogate Engine for CO2 EOR Optimization
 ==============================================
 
-This module provides ultra-fast surrogate models for optimization screening.
-Uses analytical models and response surfaces instead of numerical simulation.
-
-Performance Targets:
-- Evaluation time: < 1ms per scenario
-- Accuracy: < 10% relative error vs simple engine
-- Memory: < 100MB for trained models
-- Speedup: 1000x faster than simple engine
+Physics-informed intermediate reservoir simulation engine for CO2 EOR.
 """
 
 from .surrogate_models import (
     BaseSurrogateModel,
     AnalyticalSurrogate,
-    ResponseSurfaceSurrogate,
+    create_surrogate_model,
+    get_available_surrogate_models,
 )
 from .surrogate_engine import SurrogateEngine, SurrogateEngineWrapper
 from .analytical_models import (
@@ -24,38 +18,32 @@ from .analytical_models import (
     MiscibleSurrogate,
     ImmiscibleSurrogate,
     HybridSurrogate,
+    PhDHybridSurrogate,
 )
-from .response_surfaces import (
-    PolynomialResponseSurface,
-    RBFResponseSurface,
-)
-from .model_factory import create_surrogate_model, get_available_surrogate_models
-from .feature_transformer import FeatureTransformer
+from .profile_generator_fast import FastProfileGenerator
+from .pvt_state import SolventExtendedPVTEngine
+from .geomechanics_fault import GeomechanicsFaultModel
 
 __all__ = [
-    # Base classes
+    # Base and Surrogate Models
     "BaseSurrogateModel",
     "AnalyticalSurrogate",
-    "ResponseSurfaceSurrogate",
-    # Main engine
+    "create_surrogate_model",
+    "get_available_surrogate_models",
+    # Main Engine
     "SurrogateEngine",
     "SurrogateEngineWrapper",
-    # Analytical models
+    # Physics Engines
+    "FastProfileGenerator",
+    "SolventExtendedPVTEngine",
+    "GeomechanicsFaultModel",
+    # Analytical Recovery Models
     "AnalyticalRecoveryModel",
     "BuckleyLeverettSurrogate",
     "MiscibleSurrogate",
     "ImmiscibleSurrogate",
     "HybridSurrogate",
-    # Response surfaces
-    "PolynomialResponseSurface",
-    "RBFResponseSurface",
-    # Factory
-    "create_surrogate_model",
-    "get_available_surrogate_models",
-    # Utilities
-    "FeatureTransformer",
+    "PhDHybridSurrogate",
 ]
 
-# Version info
-__version__ = "0.1.0"
-__author__ = "CO2 EOR Optimizer Team"
+__version__ = "0.8.5"

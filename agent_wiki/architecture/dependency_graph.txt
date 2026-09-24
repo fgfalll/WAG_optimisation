@@ -1,0 +1,39 @@
+# Active Simulation Pipeline Call Trace
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant UI as ui/optimization_widget.py
+    participant Opt as core/optimisation_engine.py
+    participant Factory as core/engine_factory.py
+    participant Wrap as SurrogateEngineWrapper
+    participant Surv as core/engine_surrogate/surrogate_engine.py
+    participant MMP as evaluation/mmp.py
+    participant Hybrid as PhDHybridRecoveryModel
+    participant PGF as core/engine_surrogate/profile_generator_fast.py
+    participant ODE as scipy.integrate.solve_ivp
+    participant Obj as core/objectives/wrapper.py
+
+    UI->>Opt: run_optimization(config, reservoir_data)
+    loop Every Generation / Trial
+        Opt->>Factory: create_engine("surrogate")
+        Factory-->>Opt: SurrogateEngineWrapper instance
+        Opt->>Wrap: evaluate_scenario(params, reservoir_data)
+        Wrap->>Surv: evaluate_scenario(...)
+        Surv->>MMP: calculate_mmp(pvt_props, method="auto")
+        MMP-->>Surv: MMP value (psi)
+        Surv->>Hybrid: calculate_recovery_factor(params, mmp, p_avg)
+        Hybrid-->>Surv: Ultimate Recovery Factor (RF)
+        Surv->>PGF: generate_profiles(eor_params, rf, operational_params)
+        PGF-->>Surv: oil, water, gas rate profiles
+        Surv->>ODE: solve_ivp(tank_pressure_ode, y0=p_init)
+        ODE-->>Surv: pressure_profile (psi)
+        Surv->>Surv: _calculate_co2_purchased_recycled(injection, gas_prod)
+        Surv->>Surv: _calculate_engine_npv(profiles, econ_params)
+        Surv-->>Wrap: SimulationResults(profiles, npv, rf, stored_co2)
+        Wrap-->>Opt: SimulationResults
+        Opt->>Obj: evaluate_fitness(results, constraints)
+        Obj-->>Opt: Objective Score (Fitness)
+    end
+    Opt-->>UI: Best Candidate & Pareto Front
+```
