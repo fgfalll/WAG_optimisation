@@ -2083,6 +2083,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sft-12-single-integrated-shared-earth-model-reservoir-evaluation-workstation-upgrade" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-12] Single Integrated Shared Earth Model &amp; Reservoir Evaluation Workstation Upgrade
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4037,6 +4046,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sft-12-single-integrated-shared-earth-model-reservoir-evaluation-workstation-upgrade" class="md-nav__link">
+    <span class="md-ellipsis">
+      [SFT-12] Single Integrated Shared Earth Model &amp; Reservoir Evaluation Workstation Upgrade
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4433,6 +4451,14 @@
 <td style="text-align: left;">Project Save/Load Failure &amp; State Serialization Breakdown</td>
 <td style="text-align: left;">Software Defect</td>
 <td style="text-align: left;"><code>technical_debt.md</code></td>
+<td style="text-align: left;">2026-09-24</td>
+<td style="text-align: left;"><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SFT-12</strong></td>
+<td style="text-align: left;">Single Integrated Shared Earth Model &amp; Reservoir Evaluation Workstation Upgrade</td>
+<td style="text-align: left;">Architectural &amp; Scientific Upgrade</td>
+<td style="text-align: left;"><code>data_management_audit.md</code></td>
 <td style="text-align: left;">2026-09-24</td>
 <td style="text-align: left;"><strong>VERIFIED</strong></td>
 </tr>
@@ -5249,6 +5275,33 @@
 <li><code>ui/main_window.py</code>: Unconditionally transitioned to the main app view via <code>_transition_to_main_app_view()</code>. Flushed UI state before saving and persisted <code>manual_inputs</code> and <code>uq_results</code>.</li>
 <li><code>tests/test_project_save_load.py</code>: Created a comprehensive test suite asserting roundtrip serialization, legacy compatibility with <code>test.tphd</code>, UI flush &amp; restoration with 1D arrays, and results adoption.</li>
 <li><strong>Verification</strong>: <code>tests/test_project_save_load.py</code> passed 5/5 tests; full regression suite passed 31/31 tests.</li>
+</ul>
+<hr />
+<h3 id="sft-12-single-integrated-shared-earth-model-reservoir-evaluation-workstation-upgrade">[SFT-12] Single Integrated Shared Earth Model &amp; Reservoir Evaluation Workstation Upgrade<a class="headerlink" href="#sft-12-single-integrated-shared-earth-model-reservoir-evaluation-workstation-upgrade" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ID</strong>: <code>SFT-12</code></li>
+<li><strong>Category</strong>: Architectural &amp; Scientific Upgrade</li>
+<li><strong>Original Document</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/data_management_audit.md"><code>agent_wiki/audit/data_management_audit.md</code></a></li>
+<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/reservoir_state_manager.py"><code>core/reservoir_state_manager.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py"><code>ui/data_management_widget.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/data_models.py"><code>core/data_models.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py"><code>core/engine_surrogate/surrogate_engine.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/model_evaluation_dashboard.py"><code>ui/widgets/model_evaluation_dashboard.py</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/ui/dialogs/pre_flight_audit_dialog.py"><code>ui/dialogs/pre_flight_audit_dialog.py</code></a></li>
+<li><strong>Severity</strong>: CRITICAL</li>
+<li><strong>Status</strong>: RESOLVED</li>
+<li><strong>Date Resolved</strong>: 2026-09-24</li>
+<li><strong>Previous Defect</strong>:</li>
+<li><code>DataManagementWidget</code> operated as disconnected, blind input textboxes without physical cross-domain coupling.</li>
+<li>Layered reservoir models, relative permeability curves, and geostatistical parameters did not dynamically drive active simulation.</li>
+<li>Well deliverability was hardcoded to a flat productivity index (<span class="arithmatex">\(PI = 5.0\)</span>), ignoring skin damage (<span class="arithmatex">\(S\)</span>), wellbore radius (<span class="arithmatex">\(r_w\)</span>), and anisotropic horizontal grid geometry.</li>
+<li>Minimum Miscibility Pressure (MMP) was disconnected between Data Management and Optimization tabs.</li>
+<li>The 3D view canvas was unpopulated and permanently blank.</li>
+<li>No pre-flight physical validation gate existed to catch unphysical or geomechanically dangerous inputs before simulation runs.</li>
+<li><strong>Resolution Details</strong>:</li>
+<li><strong>Shared Earth State Manager</strong>: Created <code>ReservoirStateManager</code> uniting Geology, Petrophysics, PVT, Wells, and Geomechanics into a dynamically coupled in-memory reactive model.</li>
+<li><strong>3D Well Mechanics &amp; Peaceman WI</strong>: Integrated anisotropic Peaceman well productivity and injectivity calculation (<span class="arithmatex">\(WI\)</span>) in <code>WellData</code> and <code>SurrogateEngineWrapper</code> coupled with drawdown bounds and EPA Class VI geomechanical shut-in.</li>
+<li><strong>SCAL &amp; MMP Diagnostics</strong>: Deployed dual-panel relative permeability canvas with Corey exponents, wettability crossover calculations, and an interactive MMP correlation engine with dynamic miscibility status badges.</li>
+<li><strong>Real-Time 3D Subsurface Model Canvas</strong>: Rendered 3D well trajectories, wellhead markers, perforation intervals, drainage footprints, geological strata, and 3D fault planes with inverted TVD depth axis.</li>
+<li><strong>Geostatistics &amp; Variogram QC</strong>: Added GSTools analytical theoretical semivariograms and 2D/3D permeability spatial realization canvases.</li>
+<li><strong>Pre-Flight Physical Audit Gate &amp; Multi-Domain Evaluation Workstation</strong>: Built <code>PreFlightAuditDialog</code> (verifying all 5 pillars with traffic-light status) and <code>ModelEvaluationDashboard</code> (multi-tab domain diagnostics).</li>
+<li><strong>Parameter Safety</strong>: Added <code>_safe_attr</code> and <code>_safe_float</code> helpers to eliminate <code>NoneType</code> <code>TypeError</code> crashes across surrogate engine evaluations.</li>
+<li><strong>Verification</strong>: <code>pytest tests/test_project_save_load.py tests/test_physics_validation.py tests/core/test_single_simulation.py tests/test_optimization_widget_export_parameters.py tests/test_geomechanics_fault_caprock.py tests/test_closed_loop_and_well_roles.py -v</code> passed all 60 tests.</li>
 </ul>
 
 
