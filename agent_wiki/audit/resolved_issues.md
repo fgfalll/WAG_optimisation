@@ -73,6 +73,7 @@ All issue entries across the wiki follow this machine-readable section schema to
 | **SFT-09** | Application Entry Point (`main.py`) Modernization & Multiprocess Logging Decoupling | Architectural Refactoring | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
 | **SFT-10** | Data Models (`core/data_models.py`) Type Safety Hardening & Fault/Fluid Separation | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
 | **SFT-11** | Project Save/Load Failure & State Serialization Breakdown | Software Defect | `technical_debt.md` | 2026-09-24 | **VERIFIED** |
+| **SFT-12** | Single Integrated Shared Earth Model & Reservoir Evaluation Workstation Upgrade | Architectural & Scientific Upgrade | `data_management_audit.md` | 2026-09-24 | **VERIFIED** |
 
 ---
 
@@ -884,6 +885,34 @@ All issue entries across the wiki follow this machine-readable section schema to
   - `ui/main_window.py`: Unconditionally transitioned to the main app view via `_transition_to_main_app_view()`. Flushed UI state before saving and persisted `manual_inputs` and `uq_results`.
   - `tests/test_project_save_load.py`: Created a comprehensive test suite asserting roundtrip serialization, legacy compatibility with `test.tphd`, UI flush & restoration with 1D arrays, and results adoption.
 - **Verification**: `tests/test_project_save_load.py` passed 5/5 tests; full regression suite passed 31/31 tests.
+
+---
+
+### [SFT-12] Single Integrated Shared Earth Model & Reservoir Evaluation Workstation Upgrade
+- **ID**: `SFT-12`
+- **Category**: Architectural & Scientific Upgrade
+- **Original Document**: [`agent_wiki/audit/data_management_audit.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/data_management_audit.md)
+- **Location**: [`core/reservoir_state_manager.py`](file:///d:/rep/4.6/co2eor_optimizer/core/reservoir_state_manager.py), [`ui/data_management_widget.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py), [`core/data_models.py`](file:///d:/rep/4.6/co2eor_optimizer/core/data_models.py), [`core/engine_surrogate/surrogate_engine.py`](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py), [`ui/widgets/model_evaluation_dashboard.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/model_evaluation_dashboard.py), [`ui/dialogs/pre_flight_audit_dialog.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/dialogs/pre_flight_audit_dialog.py)
+- **Severity**: CRITICAL
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-24
+- **Previous Defect**:
+  - `DataManagementWidget` operated as disconnected, blind input textboxes without physical cross-domain coupling.
+  - Layered reservoir models, relative permeability curves, and geostatistical parameters did not dynamically drive active simulation.
+  - Well deliverability was hardcoded to a flat productivity index ($PI = 5.0$), ignoring skin damage ($S$), wellbore radius ($r_w$), and anisotropic horizontal grid geometry.
+  - Minimum Miscibility Pressure (MMP) was disconnected between Data Management and Optimization tabs.
+  - The 3D view canvas was unpopulated and permanently blank.
+  - No pre-flight physical validation gate existed to catch unphysical or geomechanically dangerous inputs before simulation runs.
+- **Resolution Details**:
+  - **Shared Earth State Manager**: Created `ReservoirStateManager` uniting Geology, Petrophysics, PVT, Wells, and Geomechanics into a dynamically coupled in-memory reactive model.
+  - **3D Well Mechanics & Peaceman WI**: Integrated anisotropic Peaceman well productivity and injectivity calculation ($WI$) in `WellData` and `SurrogateEngineWrapper` coupled with drawdown bounds and EPA Class VI geomechanical shut-in.
+  - **SCAL & MMP Diagnostics**: Deployed dual-panel relative permeability canvas with Corey exponents, wettability crossover calculations, and an interactive MMP correlation engine with dynamic miscibility status badges.
+  - **Real-Time 3D Subsurface Model Canvas**: Rendered 3D well trajectories, wellhead markers, perforation intervals, drainage footprints, geological strata, and 3D fault planes with inverted TVD depth axis.
+  - **Geostatistics & Variogram QC**: Added GSTools analytical theoretical semivariograms and 2D/3D permeability spatial realization canvases.
+  - **Pre-Flight Physical Audit Gate & Multi-Domain Evaluation Workstation**: Built `PreFlightAuditDialog` (verifying all 5 pillars with traffic-light status) and `ModelEvaluationDashboard` (multi-tab domain diagnostics).
+  - **Parameter Safety**: Added `_safe_attr` and `_safe_float` helpers to eliminate `NoneType` `TypeError` crashes across surrogate engine evaluations.
+- **Verification**: `pytest tests/test_project_save_load.py tests/test_physics_validation.py tests/core/test_single_simulation.py tests/test_optimization_widget_export_parameters.py tests/test_geomechanics_fault_caprock.py tests/test_closed_loop_and_well_roles.py -v` passed all 60 tests.
+
 
 
 

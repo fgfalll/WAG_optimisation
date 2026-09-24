@@ -68,6 +68,13 @@ def project_decoder(data: Dict[str, Any]) -> Any:
                             data['geostatistical_params'] = geo_cls(**data['geostatistical_params'])
                     except Exception as e:
                         logger.warning(f"Failed to deserialize geostatistical_params in ReservoirData: {e}")
+                if isinstance(data.get('geomechanics_params'), dict) and '_dataclass' not in data['geomechanics_params']:
+                    try:
+                        gm_cls = getattr(data_models, 'GeomechanicsParameters', None)
+                        if gm_cls:
+                            data['geomechanics_params'] = gm_cls(**data['geomechanics_params'])
+                    except Exception as e:
+                        logger.warning(f"Failed to deserialize geomechanics_params in ReservoirData: {e}")
 
             # The from_config_dict method is available on many of the dataclasses
             # and is designed to safely construct an instance from a dictionary.

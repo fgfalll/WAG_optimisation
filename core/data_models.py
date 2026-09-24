@@ -69,6 +69,47 @@ class WellData:
     metadata: Dict[str, Any] = dataclasses.field(default_factory=dict)
     perforation_properties: List[Dict[str, float]] = dataclasses.field(default_factory=list)
     well_path: Optional[np.ndarray] = None
+    skin_factor: float = 0.0
+    wellbore_radius_ft: float = 0.354
+    perforations: List[List[float]] = dataclasses.field(default_factory=list)
+
+    def calculate_peaceman_index(
+        self,
+        k_mD: float,
+        h_ft: float,
+        dx_ft: float,
+        dy_ft: float,
+        mu_cp: float = 1.0,
+    ) -> float:
+        """
+        Calculate Peaceman productivity/injectivity index in field units (RB/d/psi or STB/d/psi).
+
+        Equivalent wellblock radius r_o:
+            r_o = 0.198 * sqrt(dx^2 + dy^2)  (isotropic block)
+
+        Well Index WI:
+            WI = (0.00708 * k * h_perf) / (mu * (ln(r_o / r_w) + S))
+        """
+        if k_mD <= 0 or h_ft <= 0 or dx_ft <= 0 or dy_ft <= 0:
+            return 1.0
+
+        h_perf = h_ft
+        if self.perforations:
+            perf_len = sum(abs(p[1] - p[0]) for p in self.perforations if len(p) >= 2)
+            if perf_len > 0:
+                h_perf = min(perf_len, h_ft * 2.0)
+        elif self.perforation_properties:
+            perf_len = sum(abs(p.get("bottom", 0.0) - p.get("top", 0.0)) for p in self.perforation_properties)
+            if perf_len > 0:
+                h_perf = min(perf_len, h_ft * 2.0)
+
+        r_w = max(self.wellbore_radius_ft, 0.05)
+        r_o = 0.198 * np.sqrt(dx_ft**2 + dy_ft**2)
+        denom = np.log(max(r_o / r_w, 1.01)) + self.skin_factor
+        denom = max(denom, 0.1)
+        mu = max(mu_cp, 0.01)
+        wi = (0.00708 * k_mD * h_perf) / (mu * denom)
+        return float(max(wi, 1e-4))
 
     def validate(self) -> bool:
         if not hasattr(self.depths, "size") or self.depths.size == 0:
@@ -251,6 +292,10 @@ class ReservoirData:
     layer_definitions: Optional[List[LayerDefinition]] = None
     geostatistical_params: Optional["GeostatisticalParams"] = None
     geostatistical_grid: Optional[np.ndarray] = None
+    v_dp_coefficient: Optional[float] = 0.0
+    geomechanics_params: Optional[Any] = None
+    fault_properties: Optional[Dict[str, Any]] = None
+    schema_version: str = "2.0"
 
     def validate(self, physics_based_model: bool = False, tolerance: float = 0.1) -> None:
         self._validate_basic_parameters()

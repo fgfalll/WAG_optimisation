@@ -41,6 +41,27 @@ from .geomechanics_fault import GeomechanicsFaultModel
 _PHYS_CONSTANTS = PhysicalConstants()
 
 
+def _safe_float(val: Any, default: float = 0.0) -> float:
+    if val is None:
+        return float(default)
+    try:
+        return float(val)
+    except (ValueError, TypeError):
+        return float(default)
+
+
+def _safe_attr(obj: Any, attr: str, default: float = 0.0) -> float:
+    if obj is None:
+        return float(default)
+    val = getattr(obj, attr, None)
+    if val is None:
+        return float(default)
+    try:
+        return float(val)
+    except (ValueError, TypeError):
+        return float(default)
+
+
 class SurrogateEngine:
     """
     Fast surrogate engine using analytical models and response surfaces.
@@ -180,40 +201,40 @@ class SurrogateEngine:
             self.total_evaluation_time += evaluation_time
 
             # Initialize Solvent-Extended Compositional PVT & Geomechanics Engines
-            initial_pressure = float(getattr(reservoir_data, 'initial_pressure', 3000.0))
-            target_pressure = float(eor_params.target_pressure_psi)
+            initial_pressure = _safe_attr(reservoir_data, 'initial_pressure', 3000.0)
+            target_pressure = _safe_attr(eor_params, 'target_pressure_psi', 3200.0)
             time_vector = profile_result["time_vector"]
             dt = np.diff(time_vector, prepend=0)
 
             pvt_engine = SolventExtendedPVTEngine(
-                reservoir_temperature_f=float(getattr(reservoir_data, "temperature", 150.0)),
+                reservoir_temperature_f=_safe_attr(reservoir_data, "temperature", _safe_attr(eor_params, "reservoir_temperature_f", 150.0)),
                 initial_pressure_psi=initial_pressure,
-                api_gravity=float(getattr(reservoir_data, "api_gravity", 35.0)),
-                dead_oil_viscosity_cp=float(getattr(eor_params, "default_oil_viscosity_cp", 2.0)),
-                c7_plus_fraction=float(getattr(eor_params, "c7_plus_fraction", 0.35)),
+                api_gravity=_safe_attr(reservoir_data, "api_gravity", 35.0),
+                dead_oil_viscosity_cp=_safe_attr(eor_params, "default_oil_viscosity_cp", 2.0),
+                c7_plus_fraction=_safe_attr(eor_params, "c7_plus_fraction", 0.35),
             )
 
             geomech_model = GeomechanicsFaultModel(
-                depth_ft=float(getattr(reservoir_data, "depth_ft", getattr(eor_params, "reservoir_depth_ft", 5000.0))),
+                depth_ft=_safe_attr(reservoir_data, "depth_ft", _safe_attr(eor_params, "reservoir_depth_ft", 5000.0)),
                 initial_pressure_psi=initial_pressure,
-                overburden_gradient_psi_per_ft=float(getattr(eor_params, "overburden_gradient_psi_per_ft", 1.0)),
-                horizontal_stress_ratio_k0=float(getattr(eor_params, "horizontal_stress_ratio_k0", 0.75)),
-                poissons_ratio=float(getattr(eor_params, "poissons_ratio", 0.25)),
-                biot_coefficient=float(getattr(eor_params, "biot_coefficient", 0.80)),
-                caprock_fracture_pressure_psi=float(getattr(eor_params, "caprock_fracture_pressure_psi", 5500.0)),
-                caprock_tensile_strength_psi=float(getattr(eor_params, "caprock_tensile_strength_psi", 200.0)),
-                caprock_cohesion_psi=float(getattr(eor_params, "caprock_cohesion_psi", 400.0)),
-                caprock_friction_angle_deg=float(getattr(eor_params, "caprock_friction_angle_deg", 30.0)),
-                caprock_safety_factor=float(getattr(eor_params, "caprock_safety_factor", 0.90)),
-                fault_dip_deg=float(getattr(eor_params, "default_fault_dip", getattr(eor_params, "fault_dip_deg", 60.0))),
-                fault_strike_deg=float(getattr(eor_params, "default_fault_strike", getattr(eor_params, "fault_strike_deg", 0.0))),
-                fault_friction_coefficient=float(getattr(eor_params, "default_fault_friction_coefficient", getattr(eor_params, "fault_friction_coefficient", 0.60))),
-                fault_cohesion_psi=float(getattr(eor_params, "default_fault_cohesion", getattr(eor_params, "fault_cohesion_psi", 0.0))),
+                overburden_gradient_psi_per_ft=_safe_attr(eor_params, "overburden_gradient_psi_per_ft", 1.0),
+                horizontal_stress_ratio_k0=_safe_attr(eor_params, "horizontal_stress_ratio_k0", 0.75),
+                poissons_ratio=_safe_attr(eor_params, "poissons_ratio", 0.25),
+                biot_coefficient=_safe_attr(eor_params, "biot_coefficient", 0.80),
+                caprock_fracture_pressure_psi=_safe_attr(eor_params, "caprock_fracture_pressure_psi", 5500.0),
+                caprock_tensile_strength_psi=_safe_attr(eor_params, "caprock_tensile_strength_psi", 200.0),
+                caprock_cohesion_psi=_safe_attr(eor_params, "caprock_cohesion_psi", 400.0),
+                caprock_friction_angle_deg=_safe_attr(eor_params, "caprock_friction_angle_deg", 30.0),
+                caprock_safety_factor=_safe_attr(eor_params, "caprock_safety_factor", 0.90),
+                fault_dip_deg=_safe_attr(eor_params, "default_fault_dip", _safe_attr(eor_params, "fault_dip_deg", 60.0)),
+                fault_strike_deg=_safe_attr(eor_params, "default_fault_strike", _safe_attr(eor_params, "fault_strike_deg", 0.0)),
+                fault_friction_coefficient=_safe_attr(eor_params, "default_fault_friction_coefficient", _safe_attr(eor_params, "fault_friction_coefficient", 0.60)),
+                fault_cohesion_psi=_safe_attr(eor_params, "default_fault_cohesion", _safe_attr(eor_params, "fault_cohesion_psi", 0.0)),
             )
 
             if len(time_vector) > 0:
-                ooip = float(getattr(reservoir_data, 'ooip_stb', 1e6))
-                swi = float(getattr(reservoir_data, 'connate_water_saturation', getattr(reservoir_data, 'initial_water_saturation', 0.25)))
+                ooip = _safe_attr(reservoir_data, 'ooip_stb', 1e6)
+                swi = _safe_attr(reservoir_data, 'connate_water_saturation', _safe_attr(reservoir_data, 'initial_water_saturation', 0.25))
                 
                 # Dynamic reference FVF and pore volume
                 bo_init = pvt_engine.calculate_oil_fvf_rb_per_stb(initial_pressure, 0.0)
@@ -242,11 +263,58 @@ class SurrogateEngine:
                 y_co2_profile = np.zeros(len(time_vector))
                 leakage_rate_profile = np.zeros(len(time_vector))
 
+                # Calculate Peaceman well index base parameters
+                nx_cells = _safe_float(params.get("nx"), 50.0)
+                ny_cells = _safe_float(params.get("ny"), 50.0)
+                length_val = _safe_attr(reservoir_data, "length_ft", _safe_float(params.get("length_ft"), 2000.0))
+                area_val = _safe_attr(reservoir_data, "area_acres", _safe_float(params.get("area_acres"), 100.0))
+                thickness_val = _safe_attr(reservoir_data, "thickness_ft", _safe_float(params.get("thickness_ft"), 50.0))
+                avg_perm_val = _safe_attr(reservoir_data, "average_permeability", _safe_float(params.get("perm"), 100.0))
+
+                dx_block = length_val / max(nx_cells, 1.0)
+                width_val = (area_val * 43560.0) / max(length_val, 1.0)
+                dy_block = width_val / max(ny_cells, 1.0)
+
+                well_list = params.get("well_data_list") or getattr(reservoir_data, "well_data_list", None)
+                if not well_list and hasattr(self, "well_data_list"):
+                    well_list = self.well_data_list
+
+                j_peaceman_prod_base = 0.0
+                j_peaceman_inj_base = 0.0
+
+                if well_list:
+                    for well in well_list:
+                        w_type = ""
+                        if hasattr(well, "metadata") and isinstance(well.metadata, dict):
+                            w_type = str(well.metadata.get("type", "")).lower()
+                            if not w_type:
+                                w_type = str(well.metadata.get("status", "")).lower()
+                        if not w_type and hasattr(well, "name"):
+                            w_type = "injector" if "inj" in well.name.lower() else "producer"
+
+                        is_inj = "inj" in w_type
+                        if hasattr(well, "calculate_peaceman_index"):
+                            wi = well.calculate_peaceman_index(
+                                k_mD=avg_perm_val,
+                                h_ft=thickness_val,
+                                dx_ft=dx_block,
+                                dy_ft=dy_block,
+                                mu_cp=1.0,
+                            )
+                        else:
+                            r_o = 0.198 * np.sqrt(dx_block**2 + dy_block**2)
+                            wi = (0.00708 * avg_perm_val * thickness_val) / max(np.log(max(r_o / 0.354, 1.01)), 0.1)
+
+                        if is_inj:
+                            j_peaceman_inj_base += wi
+                        else:
+                            j_peaceman_prod_base += wi
+
                 current_p = initial_pressure
-                p_min = float(params.get("bhp_prod", 1000.0))
-                c_o = float(params.get("compressibility_oil", 1.0e-5))
-                c_w = float(params.get("compressibility_water", 3.0e-6))
-                c_f = float(params.get("compressibility_rock", getattr(reservoir_data, "rock_compressibility", 4.0e-6)))
+                p_min = _safe_float(params.get("bhp_prod"), 1000.0)
+                c_o = _safe_float(params.get("compressibility_oil"), 1.0e-5)
+                c_w = _safe_float(params.get("compressibility_water"), 3.0e-6)
+                c_f = _safe_float(params.get("compressibility_rock"), _safe_attr(reservoir_data, "rock_compressibility", 4.0e-6))
 
                 cum_oil_stb = 0.0
                 cum_water_prod_bbl = 0.0
@@ -350,8 +418,19 @@ class SurrogateEngine:
 
                     # 6. Deliverability Coupling & Containment Constraints
                     nominal_drawdown = 500.0
-                    J_inj = q_inj_step_rb / nominal_drawdown
-                    J_prod = q_prod_step_rb / nominal_drawdown
+                    J_inj_nominal = q_inj_step_rb / nominal_drawdown
+                    J_prod_nominal = q_prod_step_rb / nominal_drawdown
+
+                    if j_peaceman_prod_base > 0:
+                        J_prod = max(j_peaceman_prod_base / max(mu_o_dynamic, 0.05), J_prod_nominal * 0.1)
+                    else:
+                        J_prod = J_prod_nominal
+
+                    if j_peaceman_inj_base > 0:
+                        mu_inj_eff = 0.05 if water_inj_bpd <= 0 else 0.50
+                        J_inj = max(j_peaceman_inj_base / mu_inj_eff, J_inj_nominal * 0.1)
+                    else:
+                        J_inj = J_inj_nominal
 
                     prod_drawdown = max(0.0, current_p - p_min)
                     actual_q_prod = min(q_prod_step_rb, J_prod * prod_drawdown)
@@ -488,9 +567,9 @@ class SurrogateEngine:
             annual_fault_leakage_tonne = np.zeros(n_years)
             annual_caprock_leakage_tonne = np.zeros(n_years)
 
-            q_comp_max_annual_mscf = float(getattr(eor_params, "recycle_compressor_capacity_mscfd", 50000.0)) * 365.25 * float(getattr(eor_params, "facility_availability", 0.95))
-            recycle_loss_frac = float(getattr(eor_params, "co2_recycle_loss_fraction", 0.05))
-            co2_recycle_eff = min(float(params.get("co2_recycling_efficiency", 0.95)), 1.0 - recycle_loss_frac)
+            q_comp_max_annual_mscf = _safe_attr(eor_params, "recycle_compressor_capacity_mscfd", 50000.0) * 365.25 * _safe_attr(eor_params, "facility_availability", 0.95)
+            recycle_loss_frac = _safe_attr(eor_params, "co2_recycle_loss_fraction", 0.05)
+            co2_recycle_eff = min(_safe_float(params.get("co2_recycling_efficiency"), 0.95), 1.0 - recycle_loss_frac)
 
             if len(time_vector) > 1:
                 t_mids = 0.5 * (time_vector[:-1] + time_vector[1:])
@@ -524,7 +603,7 @@ class SurrogateEngine:
             cum_vol_wag_ratio = cum_water_inj_bbl / max(cum_inj_mscf * b_co2_init, 1e-4)
 
             # Daily rates and profiles
-            q_comp_max_daily_mscfd = float(getattr(eor_params, "recycle_compressor_capacity_mscfd", 50000.0)) * float(getattr(eor_params, "facility_availability", 0.95))
+            q_comp_max_daily_mscfd = _safe_attr(eor_params, "recycle_compressor_capacity_mscfd", 50000.0) * _safe_attr(eor_params, "facility_availability", 0.95)
             co2_recycled_rate = np.minimum(co2_prod_rate * co2_recycle_eff, np.minimum(q_comp_max_daily_mscfd, inj_rate))
             co2_purchased_rate = np.maximum(0.0, inj_rate - co2_recycled_rate)
             cum_oil_profile = np.cumsum(oil_rate * dt_days)

@@ -25,8 +25,8 @@ class ParameterInputGroup(QWidget):
         self.tooltip_text = kwargs.get("help_text", "")
         
         # Store validation constraints
-        self.min_val = kwargs.get("min_val")
-        self.max_val = kwargs.get("max_val")
+        self.min_val = kwargs.get("min_val", kwargs.get("min"))
+        self.max_val = kwargs.get("max_val", kwargs.get("max"))
 
         self._debounce_timer = QTimer(self)
         self._debounce_timer.setSingleShot(True)
@@ -119,8 +119,11 @@ class ParameterInputGroup(QWidget):
     def _start_debounce(self): self._debounce_timer.start()
     
     def _emit_debounced_value(self):
-        self.validate()
-        self.finalValueChanged.emit(self.get_value())
+        try:
+            self.validate()
+            self.finalValueChanged.emit(self.get_value())
+        except (RuntimeError, AttributeError):
+            pass
 
     def _request_help(self):
         self.help_requested.emit(self.param_name)
@@ -151,16 +154,23 @@ class ParameterInputGroup(QWidget):
         self.clear_error()
 
     def _set_feedback(self, message: str, level: Optional[str]):
-        if not level:
-            self.feedback_label.setVisible(False)
-            self.input_row_widget.setProperty("feedbackLevel", "none")
-        else:
-            self.feedback_label.setText(message)
-            self.feedback_label.setVisible(True)
-            self.input_row_widget.setProperty("feedbackLevel", level)
-        
-        self.input_row_widget.style().polish(self.input_row_widget)
-        self.feedback_label.style().polish(self.feedback_label)
+        try:
+            if not level:
+                self.feedback_label.setVisible(False)
+                self.input_row_widget.setProperty("feedbackLevel", "none")
+            else:
+                self.feedback_label.setText(message)
+                self.feedback_label.setVisible(True)
+                self.input_row_widget.setProperty("feedbackLevel", level)
+            
+            st_row = getattr(self.input_row_widget, "style", lambda: None)()
+            if st_row:
+                st_row.polish(self.input_row_widget)
+            st_fb = getattr(self.feedback_label, "style", lambda: None)()
+            if st_fb:
+                st_fb.polish(self.feedback_label)
+        except (RuntimeError, AttributeError):
+            pass
 
     def clear_error(self): self._set_feedback("", None)
     def show_error(self, message: str): self._set_feedback(message, "error")

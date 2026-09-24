@@ -631,3 +631,53 @@ def calculate_variogram(field: np.ndarray, max_lag: Optional[int] = None) -> Tup
         gamma[i] = np.mean(diff_sq) / 2.0
     
     return lags, gamma
+
+
+def theoretical_variogram(
+    lags: np.ndarray,
+    variogram_type: str = "spherical",
+    sill: float = 1.0,
+    range_val: float = 1000.0,
+    nugget: float = 0.0,
+) -> np.ndarray:
+    """
+    Calculate theoretical semivariogram gamma(h) for given lag distances.
+
+    Args:
+        lags: Array of lag distances (ft or cells)
+        variogram_type: 'spherical', 'exponential', 'gaussian', 'cubic', or 'matern'
+        sill: Total variance (contribution)
+        range_val: Spatial correlation length / practical range
+        nugget: Nugget variance at h=0
+
+    Returns:
+        Array of gamma(h) semivariance values
+    """
+    h = np.asarray(lags, dtype=float)
+    a = max(float(range_val), 1e-4)
+    c = max(float(sill), 0.0)
+    c0 = max(float(nugget), 0.0)
+    vtype = str(variogram_type).lower()
+
+    if vtype == "spherical":
+        hr = h / a
+        gamma = np.where(
+            hr <= 1.0,
+            c0 + c * (1.5 * hr - 0.5 * (hr**3)),
+            c0 + c
+        )
+    elif vtype == "exponential":
+        gamma = c0 + c * (1.0 - np.exp(-3.0 * h / a))
+    elif vtype == "gaussian":
+        gamma = c0 + c * (1.0 - np.exp(-3.0 * (h / a)**2))
+    elif vtype == "cubic":
+        hr = np.clip(h / a, 0.0, 1.0)
+        gamma = np.where(
+            h <= a,
+            c0 + c * (7.0 * (hr**2) - (35.0 / 4.0) * (hr**3) + (7.0 / 2.0) * (hr**5) - (3.0 / 4.0) * (hr**7)),
+            c0 + c
+        )
+    else:  # fallback exponential
+        gamma = c0 + c * (1.0 - np.exp(-3.0 * h / a))
+
+    return np.maximum(gamma, 0.0)

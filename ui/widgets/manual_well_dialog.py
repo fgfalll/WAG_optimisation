@@ -348,6 +348,9 @@ class ManualWellDialog(QDialog):
                 metadata=final_metadata,
                 properties=well_props,
                 units={},
+                skin_factor=float(self.key_param_values.get("SkinFactor", 0.0)),
+                wellbore_radius_ft=float(self.key_param_values.get("WellboreRadius", 0.354)),
+                perforations=[[p["top"], p["bottom"]] for p in perfs],
             )
         except Exception as e:
             QMessageBox.critical(

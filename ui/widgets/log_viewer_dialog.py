@@ -183,8 +183,6 @@ class WellViewerDialog(QDialog):
         self.perforations_layout.addWidget(self.perforations_table)
         self.right_tabs.addTab(self.perforations_group, self.tr("Perforations"))
 
-        splitter.addWidget(self.logs_group)
-
         splitter.setSizes([200, 800])
         main_layout.addWidget(splitter, 1)
 

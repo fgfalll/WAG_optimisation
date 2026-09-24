@@ -86,6 +86,7 @@ try:
         BayesianOptimizationParams,
         AdvancedEngineParams,
         CO2StorageParameters,
+        EmpiricalFittingParameters,
     )
     from core.optimisation_engine import OptimizationEngine
     from analysis.sensitivity_analyzer import SensitivityAnalyzer
@@ -134,6 +135,7 @@ class MainWindow(QMainWindow):
     current_ga_params: GeneticAlgorithmParams
     current_bo_params: BayesianOptimizationParams
     current_co2_storage_params: CO2StorageParameters
+    current_fitting_params: EmpiricalFittingParameters
 
     optimisation_engine_instance: Optional[OptimizationEngine] = None
     sensitivity_analyzer_instance: Optional[SensitivityAnalyzer] = None
@@ -302,7 +304,10 @@ class MainWindow(QMainWindow):
                 self.current_co2_storage_params = CO2StorageParameters.from_config_dict(
                     self.default_config_loader.get_section("CO2StorageParametersDefaults") or {}
                 )
-                logger.info("Initialized PVT properties with default viscosities from config.")
+                self.current_fitting_params = EmpiricalFittingParameters.from_config_dict(
+                    self.default_config_loader.get_section("EmpiricalFittingParametersDefaults") or {}
+                )
+                logger.info("Initialized PVT properties and fitting parameters from config.")
 
             except Exception as e:
                 logger.critical(
@@ -766,6 +771,9 @@ class MainWindow(QMainWindow):
             self.current_bo_params = self._ensure_dataclass_instance(
                 project_data_dict.get("bo_parameters"), BayesianOptimizationParams
             )
+            self.current_fitting_params = self._ensure_dataclass_instance(
+                project_data_dict.get("fitting_parameters"), EmpiricalFittingParameters
+            )
 
             self._loaded_project_data = {
                 "configs": {
@@ -846,6 +854,7 @@ class MainWindow(QMainWindow):
                     "pvt_properties": self.current_pvt_properties,
                     "well_data_list": self.current_well_data,
                     "manual_inputs": data.get("manual_inputs", {}),
+                    "mmp_value": data.get("mmp_value"),
                 }
             )
             QApplication.processEvents()
@@ -1098,6 +1107,7 @@ class MainWindow(QMainWindow):
                 "profile_parameters": self.current_profile_params,
                 "ga_parameters": self.current_ga_params,
                 "bo_parameters": self.current_bo_params,
+                "fitting_parameters": self.current_fitting_params,
                 "optimization_results": optimization_results_to_save,
                 "sensitivity_results": self.sensitivity_analyzer_instance.sensitivity_run_data
                 if self.sensitivity_analyzer_instance
@@ -1637,23 +1647,45 @@ class MainWindow(QMainWindow):
                 f"MainWindow - Updated EOR parameters with override: {list(eor_params_override.keys())}"
             )
 
-        # Handle operational parameters from data management widget
-        operational_params_from_widget = project_data_dict.get("operational_parameters")
-        if operational_params_from_widget and self.current_operational_params:
-            # Update current operational parameters with values from widget
-            for key, value in operational_params_from_widget.__dict__.items():
-                if hasattr(self.current_operational_params, key):
-                    setattr(self.current_operational_params, key, value)
-            logger.info(f"MainWindow - Updated operational parameters from widget")
+        # Handle fitting parameters from data management widget
+        fitting_params_from_widget = project_data_dict.get("fitting_parameters")
+        if fitting_params_from_widget:
+            self.current_fitting_params = self._ensure_dataclass_instance(
+                fitting_params_from_widget, EmpiricalFittingParameters
+            )
+            logger.info("MainWindow - Updated fitting parameters from widget")
 
-        # Handle economic parameters from data management widget
-        economic_params_from_widget = project_data_dict.get("economic_parameters")
-        if economic_params_from_widget and self.current_economic_params:
-            # Update current economic parameters with values from widget
-            for key, value in economic_params_from_widget.__dict__.items():
-                if hasattr(self.current_economic_params, key):
-                    setattr(self.current_economic_params, key, value)
-            logger.info(f"MainWindow - Updated economic parameters from widget")
+        # Handle MMP value from data management widget
+        if "mmp_value" in project_data_dict and project_data_dict["mmp_value"] is not None:
+            self.current_mmp_value = float(project_data_dict["mmp_value"])
+            logger.info(f"MainWindow - Updated current_mmp_value: {self.current_mmp_value:.1f} psia")
+
+        # Handle operational and economic parameters (only if explicitly from project file load)
+        is_project_file_load = project_data_dict.get("is_project_file_load", False)
+        if is_project_file_load:
+            operational_params_from_widget = project_data_dict.get("operational_parameters")
+            if operational_params_from_widget and self.current_operational_params:
+                items = (
+                    operational_params_from_widget.__dict__.items()
+                    if hasattr(operational_params_from_widget, "__dict__")
+                    else operational_params_from_widget.items()
+                )
+                for key, value in items:
+                    if hasattr(self.current_operational_params, key):
+                        setattr(self.current_operational_params, key, value)
+                logger.info("MainWindow - Loaded operational parameters from project file")
+
+            economic_params_from_widget = project_data_dict.get("economic_parameters")
+            if economic_params_from_widget and self.current_economic_params:
+                items = (
+                    economic_params_from_widget.__dict__.items()
+                    if hasattr(economic_params_from_widget, "__dict__")
+                    else economic_params_from_widget.items()
+                )
+                for key, value in items:
+                    if hasattr(self.current_economic_params, key):
+                        setattr(self.current_economic_params, key, value)
+                logger.info("MainWindow - Loaded economic parameters from project file")
 
         is_data_finalization = project_data_dict.get("is_data_finalization", False)
         self._reinitialize_engines_and_analysis_tabs(skip_calculations=is_data_finalization)
@@ -1835,6 +1867,7 @@ class MainWindow(QMainWindow):
                     advanced_engine_params_instance=deepcopy(self.current_advanced_engine_params),
                     co2_storage_params_instance=deepcopy(self.current_co2_storage_params),
                     well_data_list=self.current_well_data,
+                    fitting_params_instance=deepcopy(self.current_fitting_params),
                     mmp_init_override=self.current_mmp_value,
                 )
 

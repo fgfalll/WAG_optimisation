@@ -9,13 +9,15 @@ from PyQt6.QtWidgets import (
     QPushButton, QTabWidget, QFileDialog, QMessageBox, QLineEdit,
     QDialog, QListWidget, QListWidgetItem,
     QSizePolicy, QCheckBox, QTableWidget, QTableWidgetItem,
-    QRadioButton, QHeaderView, QApplication, QSplitter, QComboBox, QFormLayout
+    QRadioButton, QHeaderView, QApplication, QSplitter, QComboBox, QFormLayout,
+    QDoubleSpinBox
 )
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtCore import pyqtSignal, Qt, QLocale, QEvent
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 import plotly.graph_objects as go
 from PyQt6.QtWebEngineWidgets import QWebEngineView
@@ -41,11 +43,12 @@ except ImportError as e:
         def clear_error(self): pass
         def show_error(self, msg: str): pass
     class PVTEditorDialog(QDialog): pass
-    class LogViewerDialog(QDialog): pass
+    class WellViewerDialog(QDialog): pass
     class ManualWellDialog(QDialog): pass
     logging.critical(f"DataManagementWidget: Failed to import critical UI components: {e}")
 
-from core.data_models import WellData, ReservoirData, EOSModelParameters, PVTProperties, GeostatisticalParams, LayerDefinition
+from core.data_models import WellData, ReservoirData, EOSModelParameters, PVTProperties, GeostatisticalParams, LayerDefinition, EmpiricalFittingParameters
+from core.reservoir_state_manager import ReservoirStateManager
 
 # Data integration for engine compatibility
 try:
@@ -164,6 +167,7 @@ class DataManagementWidget(QWidget):
         self.reservoir_data: Optional[ReservoirData] = None
         self.pvt_properties: Optional[PVTProperties] = None
         self.detailed_pvt_data: Optional[Dict[str, Any]] = None
+        self.state_manager = ReservoirStateManager(self)
 
         self.preferences_manager = preferences_manager
         self.config_manager = config_manager
@@ -202,6 +206,10 @@ class DataManagementWidget(QWidget):
         self._toggle_ooip_mode()
         self._calculate_and_display_ooip()
         self._update_calculated_eor_params()
+        self.calculated_mmp_value: Optional[float] = None
+        self._calculate_and_display_mmp()
+        self._plot_rel_perm_curves(switch_tab=False)
+        self._render_3d_subsurface_view()
 
         self.use_detailed_pvt_checkbox.setChecked(False)
         self._toggle_detailed_pvt_button(False)
@@ -237,6 +245,7 @@ class DataManagementWidget(QWidget):
         self.import_las_btn.clicked.connect(self._import_las_file)
         self.remove_well_btn.clicked.connect(self._remove_selected_well)
         self.view_well_btn.clicked.connect(self._view_selected_well)
+        self.right_tab_widget.currentChanged.connect(self._on_right_tab_changed)
 
 
 
@@ -330,11 +339,18 @@ class DataManagementWidget(QWidget):
         self.main_tab_widget.addTab(self.wells_tab, QIcon.fromTheme("view-list-tree"), "Wells")
         self.main_tab_widget.addTab(self.surrogate_tuning_tab, QIcon.fromTheme("sliders"), "Surrogate Tuning")
 
-        layout.addWidget(self.main_tab_widget)
-        
+        btn_action_layout = QHBoxLayout()
+        self.pre_flight_audit_btn = QPushButton(QIcon.fromTheme("system-run"), "Pre-Flight Physical Audit")
+        self.pre_flight_audit_btn.clicked.connect(self._launch_pre_flight_audit)
+        self.model_workstation_btn = QPushButton(QIcon.fromTheme("applications-science"), "Model Workstation")
+        self.model_workstation_btn.clicked.connect(self._launch_model_workstation)
+        btn_action_layout.addWidget(self.pre_flight_audit_btn)
+        btn_action_layout.addWidget(self.model_workstation_btn)
+        layout.addLayout(btn_action_layout)
+
         self.generate_data_btn = QPushButton(QIcon.fromTheme("go-jump"), "Generate Project Data")
         layout.addWidget(self.generate_data_btn)
-        
+
         return panel
 
     def _create_right_panel(self) -> QWidget:
@@ -348,15 +364,36 @@ class DataManagementWidget(QWidget):
         plot_view_layout = QVBoxLayout(self.plot_view_widget)
         self.plot_view = QWebEngineView()
         plot_view_layout.addWidget(self.plot_view)
-        self.right_tab_widget.addTab(self.plot_view_widget, "2D Plot")
+        self.right_tab_widget.addTab(self.plot_view_widget, "2D Diagnostics")
+
+        # Relative Permeability Tab
+        self.relperm_tab_widget = QWidget()
+        relperm_tab_layout = QVBoxLayout(self.relperm_tab_widget)
+        self.relperm_fig = Figure(figsize=(7, 4), tight_layout=True)
+        self.relperm_canvas = FigureCanvas(self.relperm_fig)
+        self.ax_water_oil = self.relperm_fig.add_subplot(121)
+        self.ax_gas_oil = self.relperm_fig.add_subplot(122)
+        relperm_tab_layout.addWidget(self.relperm_canvas)
+        self.right_tab_widget.addTab(self.relperm_tab_widget, "Relative Permeability")
         
         # 3D View
         self.view_3d_widget = QWidget()
         view_3d_layout = QVBoxLayout(self.view_3d_widget)
-        self.canvas_3d = FigureCanvas(plt.figure())
-        self.ax_3d = self.canvas_3d.figure.add_subplot(111, projection='3d')
+        self.fig_3d = Figure(figsize=(6, 5))
+        self.canvas_3d = FigureCanvas(self.fig_3d)
+        self.ax_3d = self.fig_3d.add_subplot(111, projection='3d')
         view_3d_layout.addWidget(self.canvas_3d)
-        self.right_tab_widget.addTab(self.view_3d_widget, "3D View")
+        self.right_tab_widget.addTab(self.view_3d_widget, "3D Subsurface View")
+
+        # Geostatistics & Spatial Tab
+        self.geostat_tab_widget = QWidget()
+        geostat_tab_layout = QVBoxLayout(self.geostat_tab_widget)
+        self.geostat_fig = Figure(figsize=(7, 4), tight_layout=True)
+        self.geostat_canvas = FigureCanvas(self.geostat_fig)
+        self.ax_variogram = self.geostat_fig.add_subplot(121)
+        self.ax_spatial_field = self.geostat_fig.add_subplot(122)
+        geostat_tab_layout.addWidget(self.geostat_canvas)
+        self.right_tab_widget.addTab(self.geostat_tab_widget, "Geostatistics & Spatial")
         
         layout.addWidget(self.right_tab_widget)
         
@@ -526,6 +563,47 @@ class DataManagementWidget(QWidget):
         self.calc_pvt_btn = QPushButton(QIcon.fromTheme("calculator"), "Estimate PVT from Correlations (Standing/Beggs)")
         self.calc_pvt_btn.clicked.connect(self._calculate_pvt_properties)
         pvt_main_layout.addWidget(self.calc_pvt_btn)
+
+        # Minimum Miscibility Pressure (MMP) Analysis & Fluid Miscibility Group
+        self.mmp_analysis_group = QGroupBox("Minimum Miscibility Pressure (MMP) & Fluid Miscibility")
+        mmp_layout = QVBoxLayout(self.mmp_analysis_group)
+
+        mmp_controls_layout = QHBoxLayout()
+        mmp_method_label = QLabel("Correlation Method:")
+        self.mmp_method_combo = QComboBox()
+        self.mmp_method_combo.addItem("Auto-Select (Best Fit)", "auto")
+        self.mmp_method_combo.addItem("Cronquist (DOE Standard)", "cronquist")
+        self.mmp_method_combo.addItem("Yellig-Metcalfe", "yellig_metcalfe")
+        self.mmp_method_combo.addItem("Lee Correlation", "lee")
+        self.mmp_method_combo.addItem("Alston et al.", "alston")
+        self.mmp_method_combo.addItem("Holm-Josendal", "holm_josendal")
+
+        self.calc_mmp_btn = QPushButton(QIcon.fromTheme("system-run"), "Calculate MMP")
+        self.calc_mmp_btn.clicked.connect(self._calculate_and_display_mmp)
+
+        mmp_controls_layout.addWidget(mmp_method_label)
+        mmp_controls_layout.addWidget(self.mmp_method_combo, 1)
+        mmp_controls_layout.addWidget(self.calc_mmp_btn)
+        mmp_layout.addLayout(mmp_controls_layout)
+
+        mmp_results_layout = QHBoxLayout()
+        self.mmp_value_label = QLabel("Calculated MMP: -- psia")
+        self.mmp_value_label.setStyleSheet("font-size: 13px; font-weight: bold; color: #1e3d59;")
+        self.mmp_status_badge = QLabel("Miscibility Status: Uncalculated")
+        self.mmp_status_badge.setStyleSheet(
+            "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #6c757d; color: white;"
+        )
+        self.mmp_status_badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        mmp_results_layout.addWidget(self.mmp_value_label)
+        mmp_results_layout.addStretch()
+        mmp_results_layout.addWidget(self.mmp_status_badge)
+        mmp_layout.addLayout(mmp_results_layout)
+
+        self.mmp_comparison_label = QLabel("Initial Reservoir Pressure vs MMP: --")
+        self.mmp_comparison_label.setStyleSheet("font-size: 11px; color: #555;")
+        mmp_layout.addWidget(self.mmp_comparison_label)
+
+        pvt_main_layout.addWidget(self.mmp_analysis_group)
         
         pvt_main_layout.addStretch()
         return tab_panel
@@ -781,6 +859,10 @@ class DataManagementWidget(QWidget):
             sender.show_error(str(e))
             if param_name in self.manual_inputs_values: del self.manual_inputs_values[param_name]
         self._update_calculated_eor_params()
+        if param_name in ['s_wc', 's_orw', 's_gc', 'n_w', 'n_ow', 'n_o', 'n_g', 'k_ro_0', 'k_rg_0', 'k_rw_0']:
+            self._plot_rel_perm_curves(switch_tab=False)
+        if param_name in ['nx', 'ny', 'nz', 'length', 'area', 'thickness', 'perm']:
+            self._render_3d_subsurface_view()
 
 
     def _create_reservoir_data_from_ui(self) -> ReservoirData:
@@ -832,6 +914,41 @@ class DataManagementWidget(QWidget):
                     grid['PERMY'][:, :, current_z:current_z+layer_thickness_cells] = perm
                     grid['PERMZ'][:, :, current_z:current_z+layer_thickness_cells] = perm * self.manual_inputs_values.get('kv_kh_ratio', 0.1)
                     current_z += layer_thickness_cells
+        elif hasattr(self, 'use_geostatistical_model_checkbox') and self.use_geostatistical_model_checkbox.isChecked():
+            # Geostatistical model with variogram realization
+            geostat_params = GeostatisticalParams(
+                variogram_type=self.geostat_variogram_combo.currentText(),
+                range=float(self.geostat_range_spin.value()),
+                sill=float(self.geostat_sill_spin.value()),
+                nugget=float(self.geostat_nugget_spin.value()),
+                anisotropy_ratio=float(self.geostat_aniso_spin.value()),
+                grid_resolution=(nx, ny)
+            )
+            try:
+                from core.geology.geostatistical_modeling import create_geostatistical_grid
+                base_poro = float(self.manual_inputs_values.get('poro', 0.2))
+                base_perm = float(self.manual_inputs_values.get('perm', 100.0))
+                norm_grid = create_geostatistical_grid((nx, ny), {
+                    'variogram_type': self.geostat_variogram_combo.currentText(),
+                    'range': float(self.geostat_range_spin.value()),
+                    'sill': float(self.geostat_sill_spin.value()),
+                    'nugget': float(self.geostat_nugget_spin.value()),
+                    'anisotropy_ratio': float(self.geostat_aniso_spin.value()),
+                })
+                k_2d = base_perm * np.exp(2.0 * (norm_grid - 0.5))
+                poro_2d = np.clip(base_poro * (k_2d / max(base_perm, 1e-3))**0.25, 0.05, 0.40)
+                grid['PORO'] = np.repeat(poro_2d[:, :, np.newaxis], nz, axis=2)
+                grid['PERMX'] = np.repeat(k_2d[:, :, np.newaxis], nz, axis=2)
+                grid['PERMY'] = grid['PERMX'] / max(float(self.geostat_aniso_spin.value()), 0.1)
+                grid['PERMZ'] = grid['PERMX'] * float(self.manual_inputs_values.get('kv_kh_ratio', 0.1))
+                avg_perm = float(np.mean(k_2d))
+                k_flat = np.sort(k_2d.flatten())
+                k_50 = float(np.percentile(k_flat, 50))
+                k_84_1 = float(np.percentile(k_flat, 15.9))
+                if k_50 > 0:
+                    v_dp = float(np.clip((k_50 - k_84_1) / k_50, 0.0, 0.95))
+            except Exception as e:
+                logger.error(f"Error creating geostatistical grid: {e}", exc_info=True)
         else:
             # Uniform model
             poro = self.manual_inputs_values.get('poro', 0.2)
@@ -856,6 +973,23 @@ class DataManagementWidget(QWidget):
             except (TypeError, ValueError, KeyError):
                 pass # Keep default if calculation fails
 
+        avg_perm = float(self.manual_inputs_values.get('perm', 100.0))
+        v_dp = 0.0
+        if layer_definitions:
+            total_thickness = sum(layer.thickness for layer in layer_definitions if layer.thickness > 0)
+            if total_thickness > 0:
+                weighted_k = sum((layer.permeability_multiplier * avg_perm) * layer.thickness for layer in layer_definitions if layer.thickness > 0)
+                avg_perm = float(weighted_k / total_thickness)
+                k_values = [layer.permeability_multiplier * avg_perm for layer in layer_definitions if layer.thickness > 0]
+                if len(k_values) >= 3:
+                    sorted_k = sorted(k_values, reverse=True)
+                    k_50 = float(np.percentile(sorted_k, 50))
+                    k_84_1 = float(np.percentile(sorted_k, 15.9))
+                    v_dp = float(np.clip((k_50 - k_84_1) / max(k_50, 1e-5), 0.0, 0.95))
+                elif len(k_values) == 2:
+                    k_max, k_min = max(k_values), min(k_values)
+                    v_dp = float(np.clip((k_max - k_min) / max(k_max, 1e-5), 0.0, 0.95))
+
         reservoir_data = ReservoirData(
             grid=grid,
             pvt_tables=self.detailed_pvt_data if self.detailed_pvt_data else {},
@@ -867,7 +1001,8 @@ class DataManagementWidget(QWidget):
             area_acres=self.manual_inputs_values.get('area'),
             thickness_ft=self.manual_inputs_values.get('thickness'),
             average_porosity=self.manual_inputs_values.get('poro'),
-            average_permeability=self.manual_inputs_values.get('perm', 100.0),
+            average_permeability=avg_perm,
+            v_dp_coefficient=v_dp,
             initial_water_saturation=self.manual_inputs_values.get('swi'),
             oil_fvf=self.manual_inputs_values.get('boi'),
             rock_type=self.manual_inputs_values.get('rock_type'),
@@ -879,6 +1014,9 @@ class DataManagementWidget(QWidget):
             layer_definitions=layer_definitions,
             geostatistical_params=geostat_params,
         )
+
+        if hasattr(self, 'state_manager') and self.state_manager:
+            self.state_manager.set_reservoir_data(reservoir_data, notify=False)
 
         eos_composition_data = self.config_manager.get_section("eos_composition")
         if eos_composition_data:
@@ -1024,9 +1162,10 @@ class DataManagementWidget(QWidget):
             oil_viscosity = pvto_data[:, 3] if pvto_data.size > 0 and pvto_data.shape[1] > 3 else np.array([])
 
             gas_fvf = pvtg_data[:, 1] if pvtg_data.size > 0 and pvtg_data.shape[1] > 1 else np.array([])
-            co2_viscosity = np.array([self.manual_inputs_values.get('co2_visc', 0.02)] * len(pressure_points)) if pressure_points.size > 0 else np.array([])
+            gas_visc = self.manual_inputs_values.get('gas_viscosity_cp', self.manual_inputs_values.get('co2_visc', 0.02))
+            co2_viscosity = np.array([gas_visc] * len(pressure_points)) if pressure_points.size > 0 else np.array([])
 
-            return PVTProperties(
+            pvt_props = PVTProperties(
                 pressure_points=pressure_points,
                 oil_fvf=oil_fvf,
                 oil_viscosity=oil_viscosity,
@@ -1039,10 +1178,10 @@ class DataManagementWidget(QWidget):
                 api_gravity=self.manual_inputs_values.get('api_gravity', 35.0),
                 c7_plus_fraction=self.manual_inputs_values.get('c7_plus_fraction', 0.35),
                 co2_solubility_scm_per_bbl=self.manual_inputs_values.get('co2_solubility_scm_per_bbl', 200.0),
-                oil_viscosity_cp=self.manual_inputs_values.get('oil_visc', 0.8),
+                oil_viscosity_cp=self.manual_inputs_values.get('oil_viscosity_cp', self.manual_inputs_values.get('oil_visc', 0.8)),
             )
         else:
-            return PVTProperties(
+            pvt_props = PVTProperties(
                 pressure_points=np.array([]),
                 oil_fvf=np.array([]),
                 oil_viscosity=np.array([]),
@@ -1063,59 +1202,10 @@ class DataManagementWidget(QWidget):
                 gas_fvf_simple=self.manual_inputs_values.get('gas_fvf_simple', 0.01),
             )
 
-    def _add_pvt_row(self):
-        row_position = self.pvt_table.rowCount()
-        self.pvt_table.insertRow(row_position)
+        if hasattr(self, 'state_manager') and self.state_manager:
+            self.state_manager.set_pvt_properties(pvt_props, notify=False)
 
-    def _remove_pvt_row(self):
-        current_row = self.pvt_table.currentRow()
-        if current_row >= 0:
-            self.pvt_table.removeRow(current_row)
-
-    def _plot_pvt_data(self):
-        try:
-            pressure_points = []
-            oil_fvf = []
-            oil_viscosity = []
-            gas_fvf = []
-            co2_viscosity = []
-            rs = []
-
-            for row in range(self.pvt_table.rowCount()):
-                try:
-                    pressure_points.append(float(self.pvt_table.item(row, 0).text()))
-                    oil_fvf.append(float(self.pvt_table.item(row, 1).text()))
-                    oil_viscosity.append(float(self.pvt_table.item(row, 2).text()))
-                    gas_fvf.append(float(self.pvt_table.item(row, 3).text()))
-                    co2_viscosity.append(float(self.pvt_table.item(row, 4).text()))
-                    rs.append(float(self.pvt_table.item(row, 5).text()))
-                except (ValueError, AttributeError):
-                    # Skip rows with invalid data
-                    pass
-
-            if not pressure_points:
-                QMessageBox.warning(self, "No Data", "No valid PVT data to plot.")
-                return
-
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=pressure_points, y=oil_fvf, mode='lines+markers', name='Oil FVF'))
-            fig.add_trace(go.Scatter(x=pressure_points, y=oil_viscosity, mode='lines+markers', name='Oil Viscosity'))
-            fig.add_trace(go.Scatter(x=pressure_points, y=gas_fvf, mode='lines+markers', name='Gas FVF'))
-            fig.add_trace(go.Scatter(x=pressure_points, y=co2_viscosity, mode='lines+markers', name='CO2 Viscosity'))
-            fig.add_trace(go.Scatter(x=pressure_points, y=rs, mode='lines+markers', name='Rs'))
-
-            fig.update_layout(
-                title="PVT Properties",
-                xaxis_title="Pressure",
-                yaxis_title="Value",
-            )
-
-            self.plot_view.setHtml(fig.to_html(include_plotlyjs='cdn'))
-            self.right_tab_widget.setCurrentIndex(0)
-
-        except Exception as e:
-            QMessageBox.critical(self, "Plotting Error", f"Could not plot PVT data:\n{e}")
-            logger.error(f"Error plotting PVT data: {e}", exc_info=True)
+        return pvt_props
 
     def _process_manual_data(self):
         try:
@@ -1266,6 +1356,7 @@ class DataManagementWidget(QWidget):
                 "pvt_properties": pvt_properties,
                 "well_data_list": self.well_data_list,
                 "detailed_pvt_data": self.detailed_pvt_data,
+                "mmp_value": getattr(self, "calculated_mmp_value", self.manual_inputs_values.get("mmp_value")),
             }
 
             # Process data through integration engine if available for engine compatibility
@@ -1330,23 +1421,38 @@ class DataManagementWidget(QWidget):
                             "default_oil_viscosity_cp": self.manual_inputs_values.get('oil_viscosity_cp', 1.0),
                             "default_co2_viscosity_cp": self.manual_inputs_values.get('gas_viscosity_cp', 0.02),
                             "enforce_step_flash": bool(getattr(self, 'enforce_step_flash_checkbox', None) and self.enforce_step_flash_checkbox.isChecked()),
+                            "s_gc": self.manual_inputs_values.get('s_gc', 0.05),
+                            "s_wc": self.manual_inputs_values.get('s_wc', 0.20),
+                            "s_orw": self.manual_inputs_values.get('s_orw', 0.25),
+                            "n_w": self.manual_inputs_values.get('n_w', 2.0),
+                            "n_ow": self.manual_inputs_values.get('n_ow', 2.0),
+                            "n_o": self.manual_inputs_values.get('n_o', 2.0),
+                            "n_g": self.manual_inputs_values.get('n_g', 2.0),
                         },
-                        "operational_parameters": {
-                            "project_lifetime_years": 15,  # Default project lifetime - will be set by optimization widget
-                            "recovery_model_selection": "phd_hybrid",
-                        },
-                        "economic_parameters": {
-                            "oil_price_usd_per_bbl": 70.0,  # Default from config
-                            "co2_purchase_cost_usd_per_tonne": 50.0,  # Default from config
-                            "co2_recycle_cost_usd_per_tonne": 15.0,  # Default
-                            "co2_storage_credit_usd_per_tonne": 25.0,  # Default
-                            "water_injection_cost_usd_per_bbl": 1.0,  # Default
-                            "water_disposal_cost_usd_per_bbl": 2.0,  # Default
-                            "discount_rate_fraction": 0.10,  # Default
-                            "capex_usd": 5_000_000.0,  # Default
-                            "fixed_opex_usd_per_year": 200_000.0,  # Default
-                            "variable_opex_usd_per_bbl": 5.0,  # Default
-                        },
+                        "operational_parameters": (
+                            self.config_manager.get_section("OperationalParametersDefaults")
+                            if hasattr(self, "config_manager") and self.config_manager and self.config_manager.get_section("OperationalParametersDefaults")
+                            else {
+                                "project_lifetime_years": 15,
+                                "recovery_model_selection": "phd_hybrid",
+                            }
+                        ),
+                        "economic_parameters": (
+                            self.config_manager.get_section("EconomicParametersDefaults")
+                            if hasattr(self, "config_manager") and self.config_manager and self.config_manager.get_section("EconomicParametersDefaults")
+                            else {
+                                "oil_price_usd_per_bbl": 70.0,
+                                "co2_purchase_cost_usd_per_tonne": 50.0,
+                                "co2_recycle_cost_usd_per_tonne": 15.0,
+                                "co2_storage_credit_usd_per_tonne": 25.0,
+                                "water_injection_cost_usd_per_bbl": 1.0,
+                                "water_disposal_cost_usd_per_bbl": 2.0,
+                                "discount_rate_fraction": 0.10,
+                                "capex_usd": 5_000_000.0,
+                                "fixed_opex_usd_per_year": 200_000.0,
+                                "variable_opex_usd_per_bbl": 5.0,
+                            }
+                        ),
                         "fitting_parameters": {
                             "c7_plus_fraction": self.manual_inputs_values.get('c7_plus_fraction', 0.35),
                             "alpha_base": self.manual_inputs_values.get('alpha_base', 1.0),
@@ -1357,7 +1463,7 @@ class DataManagementWidget(QWidget):
                             "transverse_mixing_calibration": self.manual_inputs_values.get('transverse_mixing_calibration', 0.5),
                             "omega_tl": self.manual_inputs_values.get('omega_tl', 0.6),
                             "k_ro_0": self.manual_inputs_values.get('k_ro_0', 0.8),
-                            "k_rg_0": self.manual_inputs_values.get('k_rg_0', 1.0),
+                            "k_rg_0": self.manual_inputs_values.get('k_rg_0', 0.3),
                             "n_o": self.manual_inputs_values.get('n_o', 2.0),
                             "n_g": self.manual_inputs_values.get('n_g', 2.0),
                         },
@@ -1400,6 +1506,14 @@ class DataManagementWidget(QWidget):
                         project_data["operational_parameters"] = engine_data.get("operational_parameters")
                         project_data["economic_parameters"] = engine_data.get("economic_parameters")
                         project_data["well_data_list"] = engine_data.get("well_data", [])
+                        project_data["fitting_parameters"] = engine_data.get("fitting_parameters")
+                        project_data["mmp_value"] = getattr(self, "calculated_mmp_value", self.manual_inputs_values.get("mmp_value"))
+                        if hasattr(self, 'state_manager') and self.state_manager:
+                            self.state_manager.set_well_data_list(self.well_data_list, notify=False)
+                            if engine_data.get("eor_parameters"):
+                                self.state_manager.set_eor_parameters(engine_data.get("eor_parameters"), notify=False)
+                            if engine_data.get("fitting_parameters"):
+                                self.state_manager.set_fitting_parameters(engine_data.get("fitting_parameters"), notify=False)
                         logger.info("Data successfully processed for surrogate engine")
 
                 except Exception as e:
@@ -1466,6 +1580,7 @@ class DataManagementWidget(QWidget):
         self.status_message_updated.emit(self.tr("Removed selected well(s)."), 3000)
         self._update_calculated_eor_params()
         self._update_well_info_label()
+        self._render_3d_subsurface_view()
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -1513,6 +1628,16 @@ class DataManagementWidget(QWidget):
             self.pvt_properties = None
             self.detailed_pvt_data = None
             self.manual_inputs_values.clear()
+            self.calculated_mmp_value = None
+
+            # Reset MMP labels if initialized
+            if hasattr(self, 'mmp_value_label'):
+                self.mmp_value_label.setText("Calculated MMP: -- psia")
+                self.mmp_status_badge.setText("Miscibility Status: Uncalculated")
+                self.mmp_status_badge.setStyleSheet(
+                    "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #6c757d; color: white;"
+                )
+                self.mmp_comparison_label.setText("Initial Reservoir Pressure vs MMP: --")
 
             # Clear UI elements
             self.well_list_widget.clear()
@@ -1664,55 +1789,416 @@ class DataManagementWidget(QWidget):
     def _toggle_layered_model(self, checked):
         self.layered_props_group.setVisible(checked)
         self.uniform_props_group.setVisible(not checked)
+        if hasattr(self, 'use_geostatistical_model_checkbox'):
+            self.use_geostatistical_model_checkbox.setEnabled(not checked)
+        self._render_3d_subsurface_view()
 
     def _toggle_geostatistical_model(self, checked):
-        self.geostatistical_props_group.setVisible(checked)
-        # Hide other property groups if geostat is selected
+        if hasattr(self, 'geostatistical_props_group'):
+            self.geostatistical_props_group.setVisible(checked)
         self.uniform_props_group.setVisible(not checked)
         self.layered_props_group.setVisible(not checked)
         self.use_layered_model_checkbox.setEnabled(not checked)
+        if checked:
+            self._plot_geostatistics_diagnostics()
 
     def _remove_selected_layer(self):
         current_row = self.layers_table.currentRow()
         if current_row >= 0:
             self.layers_table.removeRow(current_row)
 
-    def _plot_rel_perm_curves(self):
+    def _plot_rel_perm_curves(self, switch_tab=True):
         try:
-            s_wc = self.manual_inputs_values.get('s_wc', 0.2)
-            s_orw = self.manual_inputs_values.get('s_orw', 0.2)
-            n_o = self.manual_inputs_values.get('n_o', 2.0)
-            n_w = self.manual_inputs_values.get('n_w', 2.0)
-            
-            if not all(isinstance(v, (int, float)) for v in [s_wc, s_orw, n_o, n_w]):
-                raise TypeError("All parameters must be numbers.")
+            s_wc = float(self.manual_inputs_values.get('s_wc', 0.20))
+            s_orw = float(self.manual_inputs_values.get('s_orw', 0.25))
+            s_gc = float(self.manual_inputs_values.get('s_gc', 0.05))
+            n_w = float(self.manual_inputs_values.get('n_w', 2.0))
+            n_ow = float(self.manual_inputs_values.get('n_ow', 2.0))
+            n_o = float(self.manual_inputs_values.get('n_o', 2.0))
+            n_g = float(self.manual_inputs_values.get('n_g', 2.0))
+            k_ro0 = float(self.manual_inputs_values.get('k_ro_0', 0.8))
+            k_rg0 = float(self.manual_inputs_values.get('k_rg_0', 0.3))
+            k_rw0 = float(self.manual_inputs_values.get('k_rw_0', 0.3))
 
-            s_w = np.linspace(s_wc, 1 - s_orw, 100)
-            
-            # Water relative permeability
-            k_rw = ((s_w - s_wc) / (1 - s_wc - s_orw))**n_w
-            
-            # Oil relative permeability
-            s_o = 1 - s_w
-            k_ro = ((s_o - s_orw) / (1 - s_wc - s_orw))**n_o
-            
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=s_w, y=k_rw, mode='lines', name='krw'))
-            fig.add_trace(go.Scatter(x=s_w, y=k_ro, mode='lines', name='kro'))
-            
-            fig.update_layout(
-                title="Relative Permeability Curves (Water-Oil)",
-                xaxis_title="Water Saturation (Sw)",
-                yaxis_title="Relative Permeability",
-                yaxis_range=[0, 1]
+            # --- 1. Matplotlib Dual-Panel Rendering ---
+            if hasattr(self, 'relperm_fig') and self.relperm_fig is not None:
+                self.ax_water_oil.clear()
+                self.ax_gas_oil.clear()
+
+                # Left Panel: Water-Oil System
+                s_w = np.linspace(0.0, 1.0, 200)
+                denom_wo = max(1.0 - s_wc - s_orw, 1e-4)
+                s_wn = np.clip((s_w - s_wc) / denom_wo, 0.0, 1.0)
+                krw = np.where(s_w < s_wc, 0.0, np.where(s_w > 1.0 - s_orw, k_rw0, k_rw0 * (s_wn ** n_w)))
+                krow = np.where(s_w < s_wc, k_ro0, np.where(s_w > 1.0 - s_orw, 0.0, k_ro0 * ((1.0 - s_wn) ** n_ow)))
+
+                self.ax_water_oil.plot(s_w, krw, label=r"$k_{rw}$ (Water)", color="#1f77b4", linewidth=2.2)
+                self.ax_water_oil.plot(s_w, krow, label=r"$k_{row}$ (Oil in Water)", color="#2ca02c", linewidth=2.2)
+                self.ax_water_oil.axvline(s_wc, color="#1f77b4", linestyle="--", alpha=0.7, label=f"$S_{{wc}}={s_wc:.2f}$")
+                self.ax_water_oil.axvline(1.0 - s_orw, color="#2ca02c", linestyle="--", alpha=0.7, label=f"$1-S_{{orw}}={1.0 - s_orw:.2f}$")
+
+                # Crossover point (wettability indication)
+                valid_mask = (s_w >= s_wc) & (s_w <= 1.0 - s_orw)
+                if np.any(valid_mask):
+                    diff = np.abs(krw - krow)
+                    cross_idx = np.argmin(np.where(valid_mask, diff, 1e9))
+                    cross_sw = s_w[cross_idx]
+                    cross_k = krw[cross_idx]
+                    wetting = "Water-Wet" if cross_sw > 0.5 else "Oil-Wet"
+                    self.ax_water_oil.plot(cross_sw, cross_k, "ko", markersize=6)
+                    self.ax_water_oil.annotate(
+                        f"Cross: {cross_sw:.2f}\n({wetting})",
+                        xy=(cross_sw, cross_k),
+                        xytext=(cross_sw - 0.15, cross_k + 0.15),
+                        arrowprops=dict(arrowstyle="->", color="black", lw=1),
+                        fontsize=8,
+                        fontweight="bold",
+                    )
+
+                self.ax_water_oil.set_title("Water-Oil System (Corey)", fontsize=11, fontweight="bold")
+                self.ax_water_oil.set_xlabel("Water Saturation ($S_w$)", fontsize=10)
+                self.ax_water_oil.set_ylabel("Relative Permeability", fontsize=10)
+                self.ax_water_oil.set_xlim(0, 1)
+                self.ax_water_oil.set_ylim(0, 1.05)
+                self.ax_water_oil.grid(True, linestyle=":", alpha=0.6)
+                self.ax_water_oil.legend(loc="upper right", fontsize=8)
+
+                # Right Panel: Gas-Liquid / CO2 System
+                s_g = np.linspace(0.0, 1.0, 200)
+                denom_go = max(1.0 - s_wc - s_gc, 1e-4)
+                s_gn = np.clip((s_g - s_gc) / denom_go, 0.0, 1.0)
+                krg = np.where(s_g < s_gc, 0.0, np.where(s_g > 1.0 - s_wc, k_rg0, k_rg0 * (s_gn ** n_g)))
+                krog = np.where(s_g < s_gc, k_ro0, np.where(s_g > 1.0 - s_wc, 0.0, k_ro0 * ((1.0 - s_gn) ** n_o)))
+
+                self.ax_gas_oil.plot(s_g, krg, label=r"$k_{rg}$ (CO$_2$/Gas)", color="#d62728", linewidth=2.2)
+                self.ax_gas_oil.plot(s_g, krog, label=r"$k_{rog}$ (Oil in Gas)", color="#17becf", linewidth=2.2)
+                self.ax_gas_oil.axvline(s_gc, color="#d62728", linestyle="--", alpha=0.7, label=f"$S_{{gc}}={s_gc:.2f}$")
+                self.ax_gas_oil.set_title("Gas-Oil System (Corey)", fontsize=11, fontweight="bold")
+                self.ax_gas_oil.set_xlabel("Gas Saturation ($S_g$)", fontsize=10)
+                self.ax_gas_oil.set_ylabel("Relative Permeability", fontsize=10)
+                self.ax_gas_oil.set_xlim(0, 1)
+                self.ax_gas_oil.set_ylim(0, 1.05)
+                self.ax_gas_oil.grid(True, linestyle=":", alpha=0.6)
+                self.ax_gas_oil.legend(loc="upper right", fontsize=8)
+
+                self.relperm_fig.tight_layout()
+                self.relperm_canvas.draw()
+
+            # --- 2. Plotly Interactive Diagnostics Rendering ---
+            from plotly.subplots import make_subplots
+            fig = make_subplots(
+                rows=1, cols=2,
+                subplot_titles=("Water-Oil System", "Gas-Oil System"),
+                horizontal_spacing=0.12
             )
-            
+            fig.add_trace(go.Scatter(x=s_w, y=krw, mode='lines', name='krw (Water)', line=dict(color='#1f77b4', width=2)), row=1, col=1)
+            fig.add_trace(go.Scatter(x=s_w, y=krow, mode='lines', name='krow (Oil)', line=dict(color='#2ca02c', width=2)), row=1, col=1)
+            fig.add_trace(go.Scatter(x=s_g, y=krg, mode='lines', name='krg (CO2)', line=dict(color='#d62728', width=2)), row=1, col=2)
+            fig.add_trace(go.Scatter(x=s_g, y=krog, mode='lines', name='krog (Oil)', line=dict(color='#17becf', width=2)), row=1, col=2)
+
+            fig.update_xaxes(title_text="Water Saturation (Sw)", range=[0, 1], row=1, col=1)
+            fig.update_yaxes(title_text="Relative Permeability", range=[0, 1.05], row=1, col=1)
+            fig.update_xaxes(title_text="Gas Saturation (Sg)", range=[0, 1], row=1, col=2)
+            fig.update_yaxes(title_text="Relative Permeability", range=[0, 1.05], row=1, col=2)
+            fig.update_layout(
+                title_text="Dual-Panel Relative Permeability Diagnostics (Corey 3-Phase)",
+                height=450,
+                margin=dict(l=40, r=40, t=50, b=40),
+            )
+
             self.plot_view.setHtml(fig.to_html(include_plotlyjs='cdn'))
-            self.right_tab_widget.setCurrentIndex(0)
+
+            if switch_tab and hasattr(self, 'relperm_tab_widget'):
+                idx = self.right_tab_widget.indexOf(self.relperm_tab_widget)
+                if idx >= 0:
+                    self.right_tab_widget.setCurrentIndex(idx)
 
         except Exception as e:
             QMessageBox.critical(self, "Plotting Error", f"Could not plot relative permeability curves:\n{e}")
             logger.error(f"Error plotting rel perm curves: {e}", exc_info=True)
+
+    def _calculate_and_display_mmp(self):
+        try:
+            from evaluation.mmp import calculate_mmp
+            pvt_props = self._create_pvt_properties_from_ui()
+            method = self.mmp_method_combo.currentData() or "auto"
+            mmp_val = calculate_mmp(pvt_props, method=method)
+            self.calculated_mmp_value = float(mmp_val)
+
+            p_res = float(self.manual_inputs_values.get("initial_pressure", 4000.0))
+            self.mmp_value_label.setText(f"Calculated MMP: {mmp_val:.1f} psia ({method.upper()})")
+
+            delta_p = p_res - mmp_val
+            if delta_p >= 0:
+                self.mmp_status_badge.setText(f"MISCIBLE (+{delta_p:.0f} psi margin)")
+                self.mmp_status_badge.setStyleSheet(
+                    "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #28a745; color: white;"
+                )
+                self.mmp_comparison_label.setText(
+                    f"Reservoir pressure ({p_res:.0f} psia) >= MMP ({mmp_val:.1f} psia). Full solvent miscibility achieved."
+                )
+            else:
+                self.mmp_status_badge.setText(f"IMMISCIBLE (Deficit: {abs(delta_p):.0f} psi)")
+                self.mmp_status_badge.setStyleSheet(
+                    "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #d9534f; color: white;"
+                )
+                self.mmp_comparison_label.setText(
+                    f"Reservoir pressure ({p_res:.0f} psia) < MMP ({mmp_val:.1f} psia). Displacement will be immiscible/multiphase unless repressurized."
+                )
+
+            # Update manual inputs values
+            self.manual_inputs_values["mmp_value"] = float(mmp_val)
+            self.manual_inputs_values["default_mmp_fallback"] = float(mmp_val)
+            logger.info(f"DataManagementWidget: Calculated MMP = {mmp_val:.1f} psia (P_res = {p_res:.1f} psia, Miscible = {delta_p >= 0})")
+            self.status_message_updated.emit(f"Calculated MMP: {mmp_val:.1f} psia ({'Miscible' if delta_p >= 0 else 'Immiscible'})", 4000)
+
+        except Exception as e:
+            logger.error(f"Error calculating MMP in DataManagementWidget: {e}", exc_info=True)
+            QMessageBox.warning(self, self.tr("MMP Calculation Error"), f"Could not calculate MMP:\n{e}")
+
+    def _on_right_tab_changed(self, index: int):
+        widget = self.right_tab_widget.widget(index)
+        if widget == getattr(self, 'view_3d_widget', None):
+            self._render_3d_subsurface_view()
+        elif widget == getattr(self, 'relperm_tab_widget', None):
+            self._plot_rel_perm_curves(switch_tab=False)
+        elif widget == getattr(self, 'geostat_tab_widget', None):
+            self._plot_geostatistics_diagnostics()
+
+    def _launch_pre_flight_audit(self):
+        from ui.dialogs.pre_flight_audit_dialog import PreFlightAuditDialog
+        proj_data = self.get_current_project_data()
+        dialog = PreFlightAuditDialog(proj_data, parent=self)
+        dialog.exec()
+
+    def _launch_model_workstation(self):
+        from ui.widgets.model_evaluation_dashboard import ModelEvaluationDashboard
+        from PyQt6.QtWidgets import QDialog, QVBoxLayout
+        proj_data = self.get_current_project_data()
+        dlg = QDialog(self)
+        dlg.setWindowTitle(self.tr("Model Evaluation Workstation — Single Integrated Shared Earth Model"))
+        dlg.setMinimumSize(950, 650)
+        lay = QVBoxLayout(dlg)
+        dashboard = ModelEvaluationDashboard(proj_data, parent=dlg)
+        lay.addWidget(dashboard)
+        dlg.exec()
+
+    def _render_3d_subsurface_view(self):
+        """
+        Renders an interactive 3D Shared Earth Subsurface Model:
+        - 3D reservoir bounding box / formation block
+        - Geological layers (if layered model active)
+        - 3D wellbore trajectories with wellhead markers and name tags
+        - Perforation intervals highlighted in gold along the trajectory
+        - Well drainage area cylinders / boundary radiuses
+        - Structural fault planes with dip/strike (if configured)
+        - Depth inverted (Z increasing downwards) per petroleum engineering convention
+        """
+        try:
+            if not hasattr(self, 'ax_3d') or self.ax_3d is None:
+                return
+
+            self.ax_3d.clear()
+
+            length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
+            area_acres = float(self.manual_inputs_values.get('area', 100.0) or 100.0)
+            thickness_ft = float(self.manual_inputs_values.get('thickness', 50.0) or 50.0)
+            width_ft = (area_acres * 43560.0) / max(length_ft, 1.0)
+
+            top_depth = 5000.0
+            if self.well_data_list:
+                for w in self.well_data_list:
+                    if w.depths is not None and len(w.depths) > 0:
+                        top_depth = float(w.depths[0])
+                        break
+            base_depth = top_depth + thickness_ft
+
+            # Reservoir Bounding Box Wireframe
+            corners = np.array([
+                [0, 0, top_depth], [length_ft, 0, top_depth],
+                [length_ft, width_ft, top_depth], [0, width_ft, top_depth],
+                [0, 0, base_depth], [length_ft, 0, base_depth],
+                [length_ft, width_ft, base_depth], [0, width_ft, base_depth]
+            ])
+            edges = [
+                (0, 1), (1, 2), (2, 3), (3, 0),
+                (4, 5), (5, 6), (6, 7), (7, 4),
+                (0, 4), (1, 5), (2, 6), (3, 7)
+            ]
+            for e in edges:
+                p1, p2 = corners[e[0]], corners[e[1]]
+                self.ax_3d.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]],
+                                color="#555555", linestyle="--", linewidth=1.0, alpha=0.6)
+
+            xx, yy = np.meshgrid(np.linspace(0, length_ft, 8), np.linspace(0, width_ft, 8))
+            self.ax_3d.plot_surface(xx, yy, np.full_like(xx, top_depth), alpha=0.10, color="#17a2b8")
+            self.ax_3d.plot_surface(xx, yy, np.full_like(xx, base_depth), alpha=0.10, color="#6c757d")
+
+            # Layers if active
+            if self.use_layered_model_checkbox.isChecked() and self.layers_table.rowCount() > 0:
+                current_z = top_depth
+                for row in range(self.layers_table.rowCount()):
+                    try:
+                        th = float(self.layers_table.item(row, 3).text())
+                        k_fac = float(self.layers_table.item(row, 1).text())
+                        current_z += th
+                        if current_z < base_depth:
+                            color_layer = "#28a745" if k_fac >= 1.0 else "#fd7e14"
+                            self.ax_3d.plot_surface(xx, yy, np.full_like(xx, current_z), alpha=0.15, color=color_layer)
+                    except Exception:
+                        pass
+
+            # 3D Wells
+            z_min_well = top_depth
+            z_max_well = base_depth
+            n_wells = max(len(self.well_data_list), 1)
+            drainage_radius = min(np.sqrt((area_acres * 43560.0) / (np.pi * n_wells)), length_ft * 0.4)
+
+            for well in self.well_data_list:
+                w_type = str(well.metadata.get("type", "")).lower()
+                if not w_type:
+                    w_type = "injector" if "inj" in well.name.lower() or "injector" in str(well.metadata.get("status", "")).lower() else "producer"
+                is_inj = "inj" in w_type
+                well_color = "#007bff" if is_inj else "#dc3545"
+                well_marker = "^" if is_inj else "o"
+                role_label = "INJ" if is_inj else "PROD"
+
+                if well.well_path is not None and len(well.well_path) > 0:
+                    wp = np.asarray(well.well_path)
+                    wx, wy = wp[:, 0], wp[:, 1]
+                    wz = wp[:, 2] if wp.shape[1] > 2 else np.linspace(top_depth, base_depth, len(wp))
+                elif well.depths is not None and len(well.depths) > 0:
+                    wz = well.depths
+                    sx = float(well.metadata.get("SurfaceX", length_ft * 0.5))
+                    sy = float(well.metadata.get("SurfaceY", width_ft * 0.5))
+                    wx = np.full_like(wz, sx)
+                    wy = np.full_like(wz, sy)
+                else:
+                    sx = float(well.metadata.get("SurfaceX", length_ft * 0.5))
+                    sy = float(well.metadata.get("SurfaceY", width_ft * 0.5))
+                    wx, wy = np.array([sx, sx]), np.array([sy, sy])
+                    wz = np.array([top_depth, base_depth])
+
+                z_min_well = min(z_min_well, float(np.min(wz)))
+                z_max_well = max(z_max_well, float(np.max(wz)))
+
+                self.ax_3d.plot(wx, wy, wz, color=well_color, linewidth=2.8, label=f"{well.name} ({role_label})")
+                self.ax_3d.scatter([wx[0]], [wy[0]], [wz[0]], color=well_color, s=70, marker=well_marker, edgecolors="black", linewidths=1.2)
+                self.ax_3d.text(wx[0], wy[0], wz[0] - 10.0, f" {well.name}", color=well_color, fontsize=8, fontweight="bold")
+
+                perfs = getattr(well, "perforations", []) or [
+                    [p.get("top", 0), p.get("bottom", 0)] for p in getattr(well, "perforation_properties", [])
+                ]
+                for p in perfs:
+                    if len(p) >= 2:
+                        p_top, p_bot = p[0], p[1]
+                        perf_mask = (wz >= p_top) & (wz <= p_bot)
+                        if np.any(perf_mask):
+                            self.ax_3d.plot(wx[perf_mask], wy[perf_mask], wz[perf_mask], color="#ffc107", linewidth=6.0, alpha=0.85)
+
+                theta = np.linspace(0, 2 * np.pi, 30)
+                cx = wx[-1] + drainage_radius * np.cos(theta)
+                cy = wy[-1] + drainage_radius * np.sin(theta)
+                cz = np.full_like(cx, wz[-1])
+                self.ax_3d.plot(cx, cy, cz, color=well_color, linestyle=":", linewidth=1.2, alpha=0.5)
+
+            # Fault plane if present
+            fault_props = None
+            if hasattr(self, "state_manager") and self.state_manager:
+                fault_props = getattr(self.state_manager, "fault_properties", None)
+            if not fault_props and hasattr(self, "reservoir_data") and self.reservoir_data:
+                fault_props = getattr(self.reservoir_data, "fault_properties", None)
+            if fault_props and isinstance(fault_props, dict) and fault_props.get("fault_present", False):
+                mx, my = length_ft * 0.5, width_ft * 0.5
+                fx = np.array([[0, length_ft], [0, length_ft]])
+                fy = np.array([[my - 0.2 * width_ft, my + 0.2 * width_ft], [my - 0.4 * width_ft, my]])
+                fz = np.array([[top_depth, top_depth], [base_depth, base_depth]])
+                self.ax_3d.plot_surface(fx, fy, fz, color="#e83e8c", alpha=0.35)
+                self.ax_3d.text(mx, my, top_depth, " Fault Plane", color="#e83e8c", fontweight="bold")
+
+            self.ax_3d.set_title("3D Shared Earth Subsurface Model", fontsize=11, fontweight="bold")
+            self.ax_3d.set_xlabel("X Length (ft)", fontsize=9)
+            self.ax_3d.set_ylabel("Y Width (ft)", fontsize=9)
+            self.ax_3d.set_zlabel("TVD Depth (ft)", fontsize=9)
+            z_padding = max(thickness_ft * 0.2, 20.0)
+            self.ax_3d.set_zlim(z_max_well + z_padding, max(0.0, z_min_well - z_padding))
+            self.ax_3d.grid(True, linestyle=":", alpha=0.5)
+            self.canvas_3d.setVisible(True)
+            self.canvas_3d.draw()
+
+        except Exception as e:
+            logger.error(f"Error rendering 3D Subsurface View: {e}", exc_info=True)
+
+    def _plot_geostatistics_diagnostics(self):
+        try:
+            if not hasattr(self, 'ax_variogram') or self.ax_variogram is None:
+                return
+
+            self.ax_variogram.clear()
+            self.ax_spatial_field.clear()
+
+            from core.geology.geostatistical_modeling import (
+                create_geostatistical_grid, calculate_variogram, theoretical_variogram
+            )
+
+            nx = self.manual_inputs_values.get('nx', 50)
+            ny = self.manual_inputs_values.get('ny', 50)
+            base_perm = float(self.manual_inputs_values.get('perm', 100.0) or 100.0)
+
+            vtype = self.geostat_variogram_combo.currentText()
+            range_val = self.geostat_range_spin.value()
+            sill_val = self.geostat_sill_spin.value()
+            nugget_val = self.geostat_nugget_spin.value()
+            aniso_val = self.geostat_aniso_spin.value()
+
+            norm_field = create_geostatistical_grid((nx, ny), {
+                'variogram_type': vtype,
+                'range': range_val,
+                'sill': sill_val,
+                'nugget': nugget_val,
+                'anisotropy_ratio': aniso_val,
+            })
+            k_field = base_perm * np.exp(2.0 * (norm_field - 0.5))
+
+            lags, exp_gamma = calculate_variogram(norm_field)
+            h_dense = np.linspace(0.1, max(float(np.max(lags)), 1.0), 100)
+            theo_gamma = theoretical_variogram(h_dense, vtype, sill_val, range_val / 20.0, nugget_val)
+
+            self.ax_variogram.plot(lags, exp_gamma, "ko", markersize=5, label=r"Experimental $\hat{\gamma}(h)$")
+            self.ax_variogram.plot(h_dense, theo_gamma, "b-", lw=2, label=f"Theoretical ({vtype.capitalize()})")
+            self.ax_variogram.axhline(sill_val + nugget_val, color="red", linestyle="--", alpha=0.7, label=f"Sill ({sill_val + nugget_val:.2f})")
+            self.ax_variogram.set_title("Semivariogram Model Fit", fontsize=10, fontweight="bold")
+            self.ax_variogram.set_xlabel("Lag Distance $h$ (cells)", fontsize=9)
+            self.ax_variogram.set_ylabel(r"Semivariance $\gamma(h)$", fontsize=9)
+            self.ax_variogram.grid(True, linestyle=":", alpha=0.6)
+            self.ax_variogram.legend(fontsize=8)
+
+            self.ax_spatial_field.imshow(k_field.T, origin="lower", cmap="viridis", aspect="auto")
+            self.ax_spatial_field.set_title(f"Permeability Realization ({nx}x{ny})", fontsize=10, fontweight="bold")
+            self.ax_spatial_field.set_xlabel("Grid X (cells)", fontsize=9)
+            self.ax_spatial_field.set_ylabel("Grid Y (cells)", fontsize=9)
+
+            length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
+            area_acres = float(self.manual_inputs_values.get('area', 100.0) or 100.0)
+            width_ft = (area_acres * 43560.0) / max(length_ft, 1.0)
+
+            for well in self.well_data_list:
+                is_inj = "inj" in str(getattr(well, "name", "")).lower() or "injector" in str(getattr(well, "metadata", {}).get("type", "")).lower()
+                color = "#00ffff" if is_inj else "#ff0055"
+                marker = "^" if is_inj else "o"
+                sx = float(getattr(well, "metadata", {}).get("SurfaceX", length_ft * 0.5))
+                sy = float(getattr(well, "metadata", {}).get("SurfaceY", width_ft * 0.5))
+                cell_x = int(np.clip(sx / max(length_ft, 1.0) * nx, 0, nx - 1))
+                cell_y = int(np.clip(sy / max(width_ft, 1.0) * ny, 0, ny - 1))
+                self.ax_spatial_field.scatter(cell_x, cell_y, color=color, s=80, marker=marker, edgecolors="white", linewidths=1.5)
+                self.ax_spatial_field.text(cell_x + 1, cell_y + 1, well.name, color="white", fontsize=8, fontweight="bold")
+
+            self.geostat_fig.tight_layout()
+            self.geostat_canvas.draw()
+            self.right_tab_widget.setCurrentWidget(self.geostat_tab_widget)
+
+        except Exception as e:
+            logger.error(f"Error plotting geostatistical diagnostics: {e}", exc_info=True)
 
     def _open_pvt_editor(self):
         if not self.detailed_pvt_data:
@@ -1732,6 +2218,7 @@ class DataManagementWidget(QWidget):
             if well_data:
                 self.well_data_list.append(well_data)
                 self._add_well_to_ui(well_data)
+                self._render_3d_subsurface_view()
 
     def _import_las_file(self):
         filepath, _ = QFileDialog.getOpenFileName(
@@ -1751,6 +2238,7 @@ class DataManagementWidget(QWidget):
                     return
                 self.well_data_list.append(well_data)
                 self._add_well_to_ui(well_data)
+                self._render_3d_subsurface_view()
                 self.status_message_updated.emit(self.tr(f"Loaded LAS well '{well_data.name}'."), 3000)
             else:
                 QMessageBox.warning(
@@ -1760,25 +2248,6 @@ class DataManagementWidget(QWidget):
             logger.error(f"Error parsing LAS file '{filepath}': {e}", exc_info=True)
             QMessageBox.critical(self, self.tr("LAS Parse Error"), self.tr(f"Could not load LAS file:\n\n{e}"))
 
-
-    def _get_or_create_well(self, well_name: str) -> WellData:
-        well_data = next((w for w in self.well_data_list if w.name == well_name), None)
-        if not well_data:
-            is_inj = "inj" in well_name.lower()
-            w_type = "injector" if is_inj else "producer"
-            w_status = "Injector" if is_inj else "Producer"
-            # Create a default WellData matching the dataclass in core/data_models.py
-            well_data = WellData(
-                name=well_name,
-                depths=np.array([0.0, 1000.0]),
-                properties={},
-                units={},
-                metadata={"status": w_status, "type": w_type},
-                well_path=np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 1000.0]])
-            )
-            self.well_data_list.append(well_data)
-            self._add_well_to_ui(well_data)
-        return well_data
 
     def _view_selected_well(self):
         selected_items = self.well_list_widget.selectedItems()
@@ -1954,6 +2423,7 @@ class DataManagementWidget(QWidget):
             "well_data_list": list(self.well_data_list),
             "detailed_pvt_data": self.detailed_pvt_data,
             "manual_inputs": dict(self.manual_inputs_values),
+            "mmp_value": getattr(self, "calculated_mmp_value", self.manual_inputs_values.get("mmp_value")),
         }
 
     def load_project_data(self, project_data: Dict[str, Any]):
@@ -1964,6 +2434,9 @@ class DataManagementWidget(QWidget):
             self.pvt_properties = project_data.get('pvt_properties')
             self.well_data_list = list(project_data.get('well_data_list', []))
             self.detailed_pvt_data = project_data.get('detailed_pvt_data')
+            if project_data.get('mmp_value') is not None:
+                self.calculated_mmp_value = float(project_data['mmp_value'])
+                self.manual_inputs_values['mmp_value'] = self.calculated_mmp_value
 
             all_defs = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS, **self.SURROGATE_TUNING_DEFS}
 
@@ -2048,7 +2521,7 @@ class DataManagementWidget(QWidget):
                         thick = layer.thickness if hasattr(layer, 'thickness') else (layer.get('thickness', 10.0) if isinstance(layer, dict) else 10.0)
                         self._add_layer_row(pv_frac=0, perm_factor=perm_fac, poro=poro, thickness=thick)
 
-                if self.reservoir_data.geostatistical_params:
+                if self.reservoir_data.geostatistical_params and hasattr(self, 'use_geostatistical_model_checkbox'):
                     self.use_geostatistical_model_checkbox.setChecked(True)
 
             # 3. Restore PVT data into UI
@@ -2076,6 +2549,31 @@ class DataManagementWidget(QWidget):
 
             self._update_calculated_eor_params()
             self._calculate_and_display_ooip()
+            self._render_3d_subsurface_view()
+            if getattr(self, 'calculated_mmp_value', None) is not None:
+                p_res = float(self.manual_inputs_values.get("initial_pressure", 4000.0))
+                mmp_val = self.calculated_mmp_value
+                self.mmp_value_label.setText(f"Calculated MMP: {mmp_val:.1f} psia")
+                delta_p = p_res - mmp_val
+                if delta_p >= 0:
+                    self.mmp_status_badge.setText(f"MISCIBLE (+{delta_p:.0f} psi margin)")
+                    self.mmp_status_badge.setStyleSheet(
+                        "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #28a745; color: white;"
+                    )
+                    self.mmp_comparison_label.setText(
+                        f"Reservoir pressure ({p_res:.0f} psia) >= MMP ({mmp_val:.1f} psia). Full solvent miscibility achieved."
+                    )
+                else:
+                    self.mmp_status_badge.setText(f"IMMISCIBLE (Deficit: {abs(delta_p):.0f} psi)")
+                    self.mmp_status_badge.setStyleSheet(
+                        "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #d9534f; color: white;"
+                    )
+                    self.mmp_comparison_label.setText(
+                        f"Reservoir pressure ({p_res:.0f} psia) < MMP ({mmp_val:.1f} psia). Displacement will be immiscible/multiphase unless repressurized."
+                    )
+            else:
+                self._calculate_and_display_mmp()
+            self._plot_rel_perm_curves(switch_tab=False)
             self.status_message_updated.emit(self.tr("Project data loaded successfully."), 5000)
 
         except Exception as e:

@@ -10,7 +10,7 @@ This documentation is designed for **reservoir engineers, AI pair-programmers, s
 
 | Section | Purpose |
 |---|---|
-| [**Architecture**](architecture/overview.md) | Engine routing, module map, execution flow, dependency graph |
+| [**Architecture**](architecture/overview.md) | Engine routing, module map, execution flow, dependency graph, [**Shared Earth Workstation**](architecture/shared_earth_workstation.md) |
 | [**Physics Models**](physics/reservoir_model.md) | Reservoir geometry, PVT, CO₂ properties, displacement, Koval, Todd-Longstaff |
 | [**Data & Parameters**](data/inputs.md) | Input/output schemas, parameter registry, field unit definitions |
 | [**Development Guide**](development/common_pitfalls.md) | Change safety matrix, common pitfalls, safe modification rules |
