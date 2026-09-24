@@ -336,6 +336,12 @@
   
     
     
+      
+  
+  
+  
+    
+    
       <li class="md-tabs__item">
         <a href="../../audit/simulation_run_audits/" class="md-tabs__link">
           
@@ -346,6 +352,9 @@
 
         </a>
       </li>
+    
+  
+
     
   
 
@@ -1364,9 +1373,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#14-simulation-run-audit-logging-historical-tracking-protocol" class="md-nav__link">
+  <a href="#14-simulation-run-audit-logging-subfolder-workflow" class="md-nav__link">
     <span class="md-ellipsis">
-      14. Simulation Run Audit Logging &amp; Historical Tracking Protocol
+      14. Simulation Run Audit Logging &amp; Subfolder Workflow
     </span>
   </a>
   
@@ -1527,16 +1536,161 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../audit/simulation_run_audits/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../audit/simulation_run_audits/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     Simulation Run Audits
   </span>
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            Simulation Run Audits
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_1_2" id="__nav_6_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    24-09-2026 Baseline Run
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            24-09-2026 Baseline Run
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/24-09-2026_single_simulation_baseline/audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Technical Audit
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/24-09-2026_single_simulation_baseline/run_evaluation_report/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluation Report
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3068,9 +3222,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#14-simulation-run-audit-logging-historical-tracking-protocol" class="md-nav__link">
+  <a href="#14-simulation-run-audit-logging-subfolder-workflow" class="md-nav__link">
     <span class="md-ellipsis">
-      14. Simulation Run Audit Logging &amp; Historical Tracking Protocol
+      14. Simulation Run Audit Logging &amp; Subfolder Workflow
     </span>
   </a>
   
@@ -3186,15 +3340,16 @@
 <li><strong>UI State Flush Before Save</strong>: In <code>MainWindow._perform_project_save()</code>, always query <code>data_management_tab.get_current_project_data()</code> and <code>config_tab.get_all_configurations()</code> to synchronize active widget inputs before writing to disk.</li>
 <li><strong>Mandatory Test</strong>: Run <code>pytest tests/test_project_save_load.py -v</code> whenever touching data models, serialization, or UI state.</li>
 </ul>
-<h2 id="14-simulation-run-audit-logging-historical-tracking-protocol">14. Simulation Run Audit Logging &amp; Historical Tracking Protocol<a class="headerlink" href="#14-simulation-run-audit-logging-historical-tracking-protocol" title="Permanent link">&para;</a></h2>
+<h2 id="14-simulation-run-audit-logging-subfolder-workflow">14. Simulation Run Audit Logging &amp; Subfolder Workflow<a class="headerlink" href="#14-simulation-run-audit-logging-subfolder-workflow" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>The Rule</strong>: Every reservoir simulation run audit, parameter sweep evaluation, or benchmark run conducted by developers or AI agents must be recorded in <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/simulation_run_audits.md"><code>agent_wiki/audit/simulation_run_audits.md</code></a> with date format <code>DD-MM-YYYY</code>, explicit verdict, actionable proposal, and linked relevant files.</li>
+<li><strong>The Rule</strong>: Every reservoir simulation run audit, parameter sweep evaluation, or benchmark run conducted by developers or AI agents must be recorded in a dedicated subfolder under <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/simulation_run_audits/index.md"><code>agent_wiki/audit/simulation_run_audits/</code></a> (<code>DD-MM-YYYY_&lt;run_name&gt;/</code>) with date format <code>DD-MM-YYYY</code>, explicit verdict, actionable proposal, diagnostic artifacts, and linked relevant files.</li>
 <li><strong>Protocol</strong>:</li>
-<li><strong>Date Format</strong>: Must strictly follow <code>DD-MM-YYYY</code> (e.g. <code>24-09-2026</code>).</li>
-<li><strong>Verdict Requirement</strong>: Assign one of the standard verdicts: <code>PASSED</code>, <code>ACCEPTABLE WITH CONDITIONS</code>, <code>FLAGGED</code>, or <code>FAILED</code>.</li>
-<li><strong>Proposal Requirement</strong>: Formulate a clear, actionable proposal detailing recommendations for model tuning, physical parameter adjustments, numerical stability thresholds, or operational strategies.</li>
+<li><strong>Date &amp; Directory Naming</strong>: Every subfolder MUST be prefixed with <code>DD-MM-YYYY</code> (e.g. <code>24-09-2026_single_simulation_baseline/</code>).</li>
+<li><strong>Preserve Run Artifacts</strong>: Copy key diagnostic plots (<code>*.png</code>), stream tables (<code>summary_*.csv</code>), and execution manifests (<code>run_manifest.json</code>) from <code>logs/</code> into the subfolder.</li>
+<li><strong>Verdict Requirement</strong>: Assign one of the standard verdicts in <code>audit.md</code>: <code>PASSED</code>, <code>ACCEPTABLE WITH CONDITIONS</code>, <code>FLAGGED</code>, or <code>FAILED</code>.</li>
+<li><strong>Proposal Requirement</strong>: Formulate a clear, actionable proposal detailing recommendations for model tuning, physical parameter adjustments, search bound updates, or operational strategies.</li>
 <li><strong>Relevant Files</strong>: Provide markdown links (<code>file:///...</code>) to input configuration files, engine modules, test scripts, generated profile outputs, and logs.</li>
-<li><strong>Past Runs Index</strong>: Append the entry to the Master Simulation Run Audits Index table so historical runs and recommendations can be audited across development sessions.</li>
+<li><strong>Past Runs Index</strong>: Register the entry in the Master Simulation Run Audits Index table in <a href="file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/simulation_run_audits/index.md"><code>index.md</code></a> so historical runs and recommendations can be audited across development sessions.</li>
 </ul>
 
 

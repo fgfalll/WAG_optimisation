@@ -65,10 +65,6 @@
          <lastmod>2026-09-24</lastmod>
     </url>
     <url>
-         <loc>https://fgfalll.github.io/WAG_optimisation/audit/simulation_run_audits/</loc>
-         <lastmod>2026-09-24</lastmod>
-    </url>
-    <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/suspicious_logic/</loc>
          <lastmod>2026-09-24</lastmod>
     </url>
@@ -78,6 +74,18 @@
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/verification_gaps/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://fgfalll.github.io/WAG_optimisation/audit/simulation_run_audits/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://fgfalll.github.io/WAG_optimisation/audit/simulation_run_audits/24-09-2026_single_simulation_baseline/audit/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://fgfalll.github.io/WAG_optimisation/audit/simulation_run_audits/24-09-2026_single_simulation_baseline/run_evaluation_report/</loc>
          <lastmod>2026-09-24</lastmod>
     </url>
     <url>
