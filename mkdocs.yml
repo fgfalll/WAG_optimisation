@@ -146,10 +146,10 @@ nav:
       - Agent Skills: development/agent_skills.md
   - Audit Reports:
       - Simulation Run Audits: audit/simulation_run_audits.md
+      - Resolved Issues: audit/resolved_issues.md
       - Scientific Flaws: audit/scientific_flaws.md
       - Mathematical Flaws: audit/mathematical_flaws.md
       - Suspicious Logic: audit/suspicious_logic.md
-      - Resolved Archive: audit/resolved_issues.md
       - Technical Debt: audit/technical_debt.md
       - Dead Code: audit/dead_code.md
       - Hardcoded Values: audit/hardcoded_values.md
