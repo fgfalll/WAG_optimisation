@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/audit/scientific_flaws/">
+        <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/audit/dialogs_models_utils_widgets_audit/">
       
       
-        <link rel="prev" href="../resolved_issues/">
+        <link rel="prev" href="../optimization_widget_audit/">
       
       
-        <link rel="next" href="../mathematical_flaws/">
+        <link rel="next" href="../dead_code/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Scientific Flaws - CO₂ EOR Optimizer — Technical Documentation</title>
+        <title>Dialogs, Models, Utils & Widgets - CO₂ EOR Optimizer — Technical Documentation</title>
       
     
     
@@ -92,7 +92,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#scientific-flaw-register" class="md-skip">
+        <a href="#comprehensive-audit-report-dialogs-models-utils-and-widgets" class="md-skip">
           Skip to content
         </a>
       
@@ -128,7 +128,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Scientific Flaws
+              Dialogs, Models, Utils & Widgets
             
           </span>
         </div>
@@ -1564,30 +1564,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Scientific Flaws
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../scientific_flaws/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1596,187 +1576,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#master-scientific-flaw-summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      Master Scientific Flaw Summary
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#detailed-scientific-flaw-records" class="md-nav__link">
-    <span class="md-ellipsis">
-      Detailed Scientific Flaw Records
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Detailed Scientific Flaw Records">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-01-inverted-co2-fractional-flow-in-profile-generator" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-01: Inverted CO₂ Fractional Flow in Profile Generator
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-05-single-well-point-drainage-anomaly" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-05: Single-Well Point Drainage Anomaly
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-06-decoupled-decision-variable-pressure-vs-tank-ode-pressure" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-06: Decoupled Decision Variable Pressure vs Tank ODE Pressure
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-07-unphysical-co2-net-utilization-factor" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-07: Unphysical CO₂ Net Utilization Factor
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-08-inverted-phase-state-classification-in-cubic-eos" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-08: Inverted Phase State Classification in Cubic EOS
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-09-interfacial-tension-constant-at-maximum-immiscible-value-at-mmp" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-09: Interfacial Tension Constant at Maximum Immiscible Value at MMP
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-10-immiscible-recovery-model-vanishes-without-capillary-desaturation" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-10: Immiscible Recovery Model Vanishes Without Capillary Desaturation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-11-arbitrary-recovery-factor-cap-of-080" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-11: Arbitrary Recovery Factor Cap of 0.80
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-12-supercritical-b_g-discrepancy-across-active-vs-legacy-modules" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-12: Supercritical \(B_g\) Discrepancy Across Active vs Legacy Modules
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-14-heuristic-vapor-fraction-in-material-balance" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-14: Heuristic Vapor Fraction in Material Balance
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-15-instantaneous-co2-production-decoupled-from-in-situ-mobile-storage" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-15: Instantaneous CO₂ Production Decoupled from In-Situ Mobile Storage
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-16-discontinuous-cliff-in-craig-areal-sweep-at-unit-mobility" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-16: Discontinuous Cliff in Craig Areal Sweep at Unit Mobility
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-17-inverted-critical-gas-saturation-trapping-formulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-17: Inverted Critical Gas Saturation Trapping Formulation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-18-corrupted-peng-robinson-mixture-fugacity-formulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-18: Corrupted Peng-Robinson Mixture Fugacity Formulation
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1891,10 +1690,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../dialogs_models_utils_widgets_audit/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Dialogs, Models, Utils & Widgets
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1903,6 +1722,304 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Executive Summary
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Executive Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#subsystem-summary-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subsystem Summary Table
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-legacy-code-dormantorphan-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Legacy Code &amp; Dormant/Orphan Modules
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Legacy Code & Dormant/Orphan Modules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-uimodels-optimization_typespy-__init__py-100-dead-legacy-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 ui/models/ (optimization_types.py &amp; __init__.py) — 100% Dead Legacy Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-uiwidgetsgeomechanics_3d_viewpy-553-lines-of-orphaned-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 ui/widgets/geomechanics_3d_view.py — 553 Lines of Orphaned Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-uiwidgetslanguage_change_mixinpy-100-orphan-mixin" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 ui/widgets/language_change_mixin.py — 100% Orphan Mixin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-coresimulationsimulator_exporterpy-legacy-shim" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 core/simulation/simulator_exporter.py — Legacy Shim
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-unused-imports-dead-variables-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Unused Imports &amp; Dead Variables Audit
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-bad-code-practices-architectural-anti-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Bad Code Practices &amp; Architectural Anti-Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Bad Code Practices & Architectural Anti-Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-critical-ui-destruction-bug-in-edituqparameterdialog" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Critical UI Destruction Bug in EditUQParameterDialog
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-python-mutable-default-argument-in-manualwelldialog-ruff-b006" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Python Mutable Default Argument in ManualWellDialog (Ruff B006)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-duplicate-code-execution-bug-in-reportgenerator" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 Duplicate Code Execution Bug in ReportGenerator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-invalid-html-stylestylestylestyle-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4 Invalid HTML &lt;style&gt;&lt;style&gt;...&lt;/style&gt;&lt;/style&gt; Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-defensive-mock-fallbacks-masking-broken-imports" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5 Defensive Mock Fallbacks Masking Broken Imports
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-mangled-list-values-in-parameterinputgroup" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6 Mangled List Values in ParameterInputGroup
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-disconnected-values-simulationoptimization-parameters-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Disconnected Values &amp; Simulation/Optimization Parameters Audit
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Disconnected Values & Simulation/Optimization Parameters Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-data-models-field-usage-breakdown-coredata_modelspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Data Models Field Usage Breakdown (core/data_models.py)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1 Data Models Field Usage Breakdown (core/data_models.py)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#detailed-findings-by-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detailed Findings by Model:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-disconnected-dialog-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Disconnected Dialog Inputs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 Disconnected Dialog Inputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-dropped-injection-schemes-in-dataintegrationengine" class="md-nav__link">
+    <span class="md-ellipsis">
+      A. Dropped Injection Schemes in DataIntegrationEngine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-section-key-mismatch-between-reportconfigdialog-and-reportgenerator" class="md-nav__link">
+    <span class="md-ellipsis">
+      B. Section Key Mismatch Between ReportConfigDialog and ReportGenerator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-phantom-ai-features-in-reportconfigdialog" class="md-nav__link">
+    <span class="md-ellipsis">
+      C. Phantom AI Features in ReportConfigDialog
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-phantom-si-units-preference-cmg-exporter-trap" class="md-nav__link">
+    <span class="md-ellipsis">
+      D. Phantom "SI Units" Preference &amp; CMG Exporter Trap
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-augmentation-remediation-execution-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Augmentation &amp; Remediation Execution Plan
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Augmentation & Remediation Execution Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#immediate-high-value-code-connections-zero-risk" class="md-nav__link">
+    <span class="md-ellipsis">
+      Immediate High-Value Code Connections (Zero Risk):
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deprecation-pruning-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deprecation / Pruning Recommendations:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -3212,154 +3329,271 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#master-scientific-flaw-summary" class="md-nav__link">
+  <a href="#1-executive-summary" class="md-nav__link">
     <span class="md-ellipsis">
-      Master Scientific Flaw Summary
+      1. Executive Summary
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Executive Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#subsystem-summary-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subsystem Summary Table
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-legacy-code-dormantorphan-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Legacy Code &amp; Dormant/Orphan Modules
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Legacy Code & Dormant/Orphan Modules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-uimodels-optimization_typespy-__init__py-100-dead-legacy-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 ui/models/ (optimization_types.py &amp; __init__.py) — 100% Dead Legacy Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-uiwidgetsgeomechanics_3d_viewpy-553-lines-of-orphaned-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 ui/widgets/geomechanics_3d_view.py — 553 Lines of Orphaned Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-uiwidgetslanguage_change_mixinpy-100-orphan-mixin" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 ui/widgets/language_change_mixin.py — 100% Orphan Mixin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-coresimulationsimulator_exporterpy-legacy-shim" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 core/simulation/simulator_exporter.py — Legacy Shim
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-unused-imports-dead-variables-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Unused Imports &amp; Dead Variables Audit
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#detailed-scientific-flaw-records" class="md-nav__link">
+  <a href="#4-bad-code-practices-architectural-anti-patterns" class="md-nav__link">
     <span class="md-ellipsis">
-      Detailed Scientific Flaw Records
+      4. Bad Code Practices &amp; Architectural Anti-Patterns
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Detailed Scientific Flaw Records">
+    <nav class="md-nav" aria-label="4. Bad Code Practices & Architectural Anti-Patterns">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-01-inverted-co2-fractional-flow-in-profile-generator" class="md-nav__link">
+  <a href="#41-critical-ui-destruction-bug-in-edituqparameterdialog" class="md-nav__link">
     <span class="md-ellipsis">
-      SCI-FLAW-01: Inverted CO₂ Fractional Flow in Profile Generator
+      4.1 Critical UI Destruction Bug in EditUQParameterDialog
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" class="md-nav__link">
+  <a href="#42-python-mutable-default-argument-in-manualwelldialog-ruff-b006" class="md-nav__link">
     <span class="md-ellipsis">
-      SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density
+      4.2 Python Mutable Default Argument in ManualWellDialog (Ruff B006)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-05-single-well-point-drainage-anomaly" class="md-nav__link">
+  <a href="#43-duplicate-code-execution-bug-in-reportgenerator" class="md-nav__link">
     <span class="md-ellipsis">
-      SCI-FLAW-05: Single-Well Point Drainage Anomaly
+      4.3 Duplicate Code Execution Bug in ReportGenerator
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-06-decoupled-decision-variable-pressure-vs-tank-ode-pressure" class="md-nav__link">
+  <a href="#44-invalid-html-stylestylestylestyle-generation" class="md-nav__link">
     <span class="md-ellipsis">
-      SCI-FLAW-06: Decoupled Decision Variable Pressure vs Tank ODE Pressure
+      4.4 Invalid HTML &lt;style&gt;&lt;style&gt;...&lt;/style&gt;&lt;/style&gt; Generation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-07-unphysical-co2-net-utilization-factor" class="md-nav__link">
+  <a href="#45-defensive-mock-fallbacks-masking-broken-imports" class="md-nav__link">
     <span class="md-ellipsis">
-      SCI-FLAW-07: Unphysical CO₂ Net Utilization Factor
+      4.5 Defensive Mock Fallbacks Masking Broken Imports
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-08-inverted-phase-state-classification-in-cubic-eos" class="md-nav__link">
+  <a href="#46-mangled-list-values-in-parameterinputgroup" class="md-nav__link">
     <span class="md-ellipsis">
-      SCI-FLAW-08: Inverted Phase State Classification in Cubic EOS
+      4.6 Mangled List Values in ParameterInputGroup
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-disconnected-values-simulationoptimization-parameters-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Disconnected Values &amp; Simulation/Optimization Parameters Audit
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Disconnected Values & Simulation/Optimization Parameters Audit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-data-models-field-usage-breakdown-coredata_modelspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Data Models Field Usage Breakdown (core/data_models.py)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1 Data Models Field Usage Breakdown (core/data_models.py)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#detailed-findings-by-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detailed Findings by Model:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-disconnected-dialog-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Disconnected Dialog Inputs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 Disconnected Dialog Inputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-dropped-injection-schemes-in-dataintegrationengine" class="md-nav__link">
+    <span class="md-ellipsis">
+      A. Dropped Injection Schemes in DataIntegrationEngine
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-09-interfacial-tension-constant-at-maximum-immiscible-value-at-mmp" class="md-nav__link">
+  <a href="#b-section-key-mismatch-between-reportconfigdialog-and-reportgenerator" class="md-nav__link">
     <span class="md-ellipsis">
-      SCI-FLAW-09: Interfacial Tension Constant at Maximum Immiscible Value at MMP
+      B. Section Key Mismatch Between ReportConfigDialog and ReportGenerator
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-10-immiscible-recovery-model-vanishes-without-capillary-desaturation" class="md-nav__link">
+  <a href="#c-phantom-ai-features-in-reportconfigdialog" class="md-nav__link">
     <span class="md-ellipsis">
-      SCI-FLAW-10: Immiscible Recovery Model Vanishes Without Capillary Desaturation
+      C. Phantom AI Features in ReportConfigDialog
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-11-arbitrary-recovery-factor-cap-of-080" class="md-nav__link">
+  <a href="#d-phantom-si-units-preference-cmg-exporter-trap" class="md-nav__link">
     <span class="md-ellipsis">
-      SCI-FLAW-11: Arbitrary Recovery Factor Cap of 0.80
+      D. Phantom "SI Units" Preference &amp; CMG Exporter Trap
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-augmentation-remediation-execution-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Augmentation &amp; Remediation Execution Plan
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Augmentation & Remediation Execution Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#immediate-high-value-code-connections-zero-risk" class="md-nav__link">
+    <span class="md-ellipsis">
+      Immediate High-Value Code Connections (Zero Risk):
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sci-flaw-12-supercritical-b_g-discrepancy-across-active-vs-legacy-modules" class="md-nav__link">
+  <a href="#deprecation-pruning-recommendations" class="md-nav__link">
     <span class="md-ellipsis">
-      SCI-FLAW-12: Supercritical \(B_g\) Discrepancy Across Active vs Legacy Modules
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-14-heuristic-vapor-fraction-in-material-balance" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-14: Heuristic Vapor Fraction in Material Balance
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-15-instantaneous-co2-production-decoupled-from-in-situ-mobile-storage" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-15: Instantaneous CO₂ Production Decoupled from In-Situ Mobile Storage
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-16-discontinuous-cliff-in-craig-areal-sweep-at-unit-mobility" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-16: Discontinuous Cliff in Craig Areal Sweep at Unit Mobility
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-17-inverted-critical-gas-saturation-trapping-formulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-17: Inverted Critical Gas Saturation Trapping Formulation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sci-flaw-18-corrupted-peng-robinson-mixture-fugacity-formulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      SCI-FLAW-18: Corrupted Peng-Robinson Mixture Fugacity Formulation
+      Deprecation / Pruning Recommendations:
     </span>
   </a>
   
@@ -3388,414 +3622,531 @@
   
 
 
-<h1 id="scientific-flaw-register">Scientific Flaw Register<a class="headerlink" href="#scientific-flaw-register" title="Permanent link">&para;</a></h1>
+<h1 id="comprehensive-audit-report-dialogs-models-utils-and-widgets">Comprehensive Audit Report: Dialogs, Models, Utils, and Widgets<a class="headerlink" href="#comprehensive-audit-report-dialogs-models-utils-and-widgets" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>[!NOTE]
-This document catalogs <strong>only active, open items</strong>. For resolved flaws, historical post-mortems, and verification status, consult the <a href="../resolved_issues/"><strong>Resolved Issues &amp; Defect Resolution Archive</strong></a>.</p>
+<strong>Audit Date</strong>: 2026-09-24<br />
+<strong>Target Subsystems</strong>: <code>ui/dialogs/</code>, <code>models</code> (<code>ui/models/</code>, <code>core/data_models.py</code>), <code>utils/</code> &amp; <code>ui/utils/</code>, <code>ui/widgets/</code><br />
+<strong>Focus</strong>: Legacy / dead code, unused imports, bad code practices, parameters &amp; inputs disconnected from simulation/optimization, and actionable remediations.</p>
 </blockquote>
-<p>This document catalogs confirmed scientific flaws, unphysical equations, and thermodynamic contradictions in the CO₂ EOR Optimizer codebase.</p>
 <hr />
-<h2 id="master-scientific-flaw-summary">Master Scientific Flaw Summary<a class="headerlink" href="#master-scientific-flaw-summary" title="Permanent link">&para;</a></h2>
+<h2 id="1-executive-summary">1. Executive Summary<a class="headerlink" href="#1-executive-summary" title="Permanent link">&para;</a></h2>
+<p>A comprehensive static analysis and architectural audit was performed across the user interface dialogs, data models, utility packages, and custom widgets of the CO₂ EOR Optimizer codebase. The audit evaluated:
+1. <strong>Dormant and Legacy Code</strong>: Modules, classes, and methods preserved or abandoned across previous iterations.
+2. <strong>Unused Imports &amp; Dead Variables</strong>: Code hygiene issues flagged via static AST analysis and Ruff linting.
+3. <strong>Bad Code Practices &amp; Anti-Patterns</strong>: Mutable defaults, UI lifecycle bugs, unsafe exception handling, and hardcoded logic.
+4. <strong>Disconnected Parameters</strong>: User inputs and data model fields collected or stored that never influence reservoir simulation or optimization runs.</p>
+<h3 id="subsystem-summary-table">Subsystem Summary Table<a class="headerlink" href="#subsystem-summary-table" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">ID</th>
-<th style="text-align: left;">Severity</th>
-<th style="text-align: left;">Model / Location</th>
-<th style="text-align: left;">Physical Principle Violated</th>
-<th style="text-align: left;">Scientific Impact</th>
-<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Subsystem</th>
+<th style="text-align: left;">Primary Files Audited</th>
+<th style="text-align: left;">Total Lines</th>
+<th style="text-align: left;">Dead Code / Orphan Status</th>
+<th style="text-align: left;">Key Findings</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>SCI-FLAW-01</strong></td>
-<td style="text-align: left;"><strong>CRITICAL</strong></td>
-<td style="text-align: left;"><code>profile_generator_fast.py:895-901</code></td>
-<td style="text-align: left;">Buckley-Leverett / Koval Fractional Flow</td>
-<td style="text-align: left;">Inverts gas breakthrough: unfavorable mobility yields 10% gas, favorable yields 70%</td>
-<td style="text-align: left;">OPEN</td>
+<td style="text-align: left;"><strong>Dialogs</strong></td>
+<td style="text-align: left;"><code>ui/dialogs/*.py</code><br><code>ui/widgets/*_dialog.py</code></td>
+<td style="text-align: left;">~2,500</td>
+<td style="text-align: left;">Medium</td>
+<td style="text-align: left;">Section key mismatch in <code>ReportConfigDialog</code>; <code>ai_features</code> disconnected; unused variables in <code>injection_scheme_dialog.py</code>.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>SCI-FLAW-04</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><code>unified_engine/co2_properties.py:140</code></td>
-<td style="text-align: left;">Isobaric Thermal Expansion</td>
-<td style="text-align: left;">Supercritical CO₂ density increases with temperature (<span class="arithmatex">\(\partial\rho/\partial T &gt; 0\)</span>)</td>
-<td style="text-align: left;">OPEN</td>
+<td style="text-align: left;"><strong>Models</strong></td>
+<td style="text-align: left;"><code>ui/models/*.py</code><br><code>core/data_models.py</code></td>
+<td style="text-align: left;">~2,150</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;"><code>ui/models/</code> is 100% dead legacy code; <code>core/data_models.py</code> has 99/242 dead fields in <code>EORParameters</code> and 100% unused <code>TuningParams</code>.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>SCI-FLAW-05</strong></td>
-<td style="text-align: left;"><strong>CRITICAL</strong></td>
-<td style="text-align: left;"><code>optimisation_engine.py:1410</code>, <code>profile_generator_fast.py:501</code></td>
-<td style="text-align: left;">Darcy Inflow &amp; Pattern Interference</td>
-<td style="text-align: left;">Single producer drains 1,354 acres at 7,270 BOPD flat plateau for 6.4 years</td>
-<td style="text-align: left;">OPEN</td>
+<td style="text-align: left;"><strong>Utils</strong></td>
+<td style="text-align: left;"><code>utils/*.py</code><br><code>ui/utils/*.py</code></td>
+<td style="text-align: left;">~2,800</td>
+<td style="text-align: left;">Medium</td>
+<td style="text-align: left;"><code>cmg_exporter.py</code> hardcodes fake fluid components and lacks WAG/Tapered schedule; <code>report_generator.py</code> duplicates DCA generation and generates invalid nested <code>&lt;style&gt;</code> tags.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>SCI-FLAW-06</strong></td>
-<td style="text-align: left;"><strong>CRITICAL</strong></td>
-<td style="text-align: left;"><code>optimisation_engine.py:3215</code>, <code>surrogate_engine.py:948</code></td>
-<td style="text-align: left;">Thermodynamic State Consistency</td>
-<td style="text-align: left;">Optimizer surrogate evaluated at 4,450 psia, while reservoir tank ODE is at 3,100 psia</td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-07</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><code>core/objectives/wrapper.py:212</code>, <code>surrogate_models.py:465</code></td>
-<td style="text-align: left;">EOR Fluid Displacement Accounting</td>
-<td style="text-align: left;">Net CO₂ utilization reported as 0.665 MSCF/STB (deflated by 10× vs DOE benchmark)</td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-08</strong></td>
-<td style="text-align: left;"><strong>CRITICAL</strong></td>
-<td style="text-align: left;"><code>unified_engine/physics/eos/__init__.py:195</code></td>
-<td style="text-align: left;">Cubic EOS Phase Identification</td>
-<td style="text-align: left;">Inverted phase label: <span class="arithmatex">\(Z &lt; 0.8\)</span> labeled Vapor, <span class="arithmatex">\(Z \ge 0.8\)</span> labeled Liquid</td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-09</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><code>simulation/recovery_models.py:197-202</code></td>
-<td style="text-align: left;">Miscibility Thermodynamics (<span class="arithmatex">\(\sigma \to 0\)</span>)</td>
-<td style="text-align: left;">IFT at MMP remains at maximum immiscible value (<span class="arithmatex">\(20\text{ mN/m}\)</span>)</td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-10</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><code>simulation/recovery_models.py:498-501</code></td>
-<td style="text-align: left;">Fractional Flow Displacement</td>
-<td style="text-align: left;">Immiscible recovery models only capillary desaturation <span class="arithmatex">\(\Delta S_{or}\)</span>, predicting 1-2% RF</td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-11</strong></td>
-<td style="text-align: left;"><strong>MEDIUM</strong></td>
-<td style="text-align: left;"><code>analytical_models.py:205</code></td>
-<td style="text-align: left;">Conservation &amp; Ultimate Recovery</td>
-<td style="text-align: left;">Silent 80% recovery factor ceiling erases optimization gradients</td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-12</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><code>optimisation_engine.py:98</code>, <code>surrogate_engine.py:201</code></td>
-<td style="text-align: left;">Gas Volumetric Factor (<span class="arithmatex">\(B_g\)</span>)</td>
-<td style="text-align: left;">10× discrepancy in <span class="arithmatex">\(B_g\)</span> (<span class="arithmatex">\(0.50\)</span> vs <span class="arithmatex">\(5.0\text{ RB/MSCF}\)</span>) between engine and optimizer</td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-14</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><code>analysis/material_balance.py:85-108</code></td>
-<td style="text-align: left;">Thermodynamic Vapor-Liquid Equilibrium</td>
-<td style="text-align: left;">Heuristic vapor fraction formula <span class="arithmatex">\(V = 1 - Z + 0.2\)</span> has zero physical basis</td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-15</strong></td>
-<td style="text-align: left;"><strong>MEDIUM</strong></td>
-<td style="text-align: left;"><code>profile_generator_fast.py:983-986</code></td>
-<td style="text-align: left;">Reservoir Material Balance</td>
-<td style="text-align: left;">Produced CO₂ tied directly to instantaneous injection; shut-in zeroes production</td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-16</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><code>core/engine_surrogate/surrogate_models.py:164-182</code></td>
-<td style="text-align: left;">Areal Sweep Continuity</td>
-<td style="text-align: left;">Discontinuous 48% cliff in Craig areal sweep correlation at <span class="arithmatex">\(M = 1.0\)</span></td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-17</strong></td>
-<td style="text-align: left;"><strong>HIGH</strong></td>
-<td style="text-align: left;"><code>core/engine_surrogate/surrogate_models.py:238-241</code></td>
-<td style="text-align: left;">Capillary Trapping Inversion</td>
-<td style="text-align: left;">Trapping calculated as <span class="arithmatex">\(1.0 - S_{gc}\)</span>; higher critical gas reduces trapping</td>
-<td style="text-align: left;">OPEN</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>SCI-FLAW-18</strong></td>
-<td style="text-align: left;"><strong>CRITICAL</strong></td>
-<td style="text-align: left;"><code>core/unified_engine/physics/eos/__init__.py:206, 257-270</code></td>
-<td style="text-align: left;">Peng-Robinson Fugacity Formulation</td>
-<td style="text-align: left;">Corrupted PR fugacity equation omits <span class="arithmatex">\(2\sqrt{2}B\)</span> denominator and partial derivatives</td>
-<td style="text-align: left;">OPEN</td>
+<td style="text-align: left;"><strong>Widgets</strong></td>
+<td style="text-align: left;"><code>ui/widgets/*.py</code></td>
+<td style="text-align: left;">~2,300</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;"><code>geomechanics_3d_view.py</code> (553 lines) and <code>language_change_mixin.py</code> are 100% unreferenced orphan files; <code>edit_uq_parameter_dialog.py</code> has a critical <code>parent().deleteLater()</code> bug.</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="detailed-scientific-flaw-records">Detailed Scientific Flaw Records<a class="headerlink" href="#detailed-scientific-flaw-records" title="Permanent link">&para;</a></h2>
-<h3 id="sci-flaw-01-inverted-co2-fractional-flow-in-profile-generator">SCI-FLAW-01: Inverted CO₂ Fractional Flow in Profile Generator<a class="headerlink" href="#sci-flaw-01-inverted-co2-fractional-flow-in-profile-generator" title="Permanent link">&para;</a></h3>
+<h2 id="2-legacy-code-dormantorphan-modules">2. Legacy Code &amp; Dormant/Orphan Modules<a class="headerlink" href="#2-legacy-code-dormantorphan-modules" title="Permanent link">&para;</a></h2>
+<h3 id="21-uimodels-optimization_typespy-__init__py-100-dead-legacy-code">2.1 <code>ui/models/</code> (<code>optimization_types.py</code> &amp; <code>__init__.py</code>) — 100% Dead Legacy Code<a class="headerlink" href="#21-uimodels-optimization_typespy-__init__py-100-dead-legacy-code" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-01</code></li>
-<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py#L895-L901"><code>core/engine_surrogate/profile_generator_fast.py:895-901</code></a></li>
-<li><strong>Model</strong>: Koval (1963) / Buckley-Leverett Gas Fractional Flow</li>
-<li><strong>Observation</strong>: In calculating post-breakthrough CO₂ fractional flow, the effective viscosity ratio <span class="arithmatex">\(E\)</span> is divided by the mobility ratio <span class="arithmatex">\(M\)</span>, and <span class="arithmatex">\((M - 1) \times 0.5\)</span> is added to the denominator.</li>
-<li><strong>Equation</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">E</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.78</span> <span class="o">+</span> <span class="mf">0.22</span> <span class="o">*</span> <span class="p">(</span><span class="n">mobility_ratio</span> <span class="o">**</span> <span class="mf">0.25</span><span class="p">))</span> <span class="o">**</span> <span class="mi">4</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">koval_factor</span> <span class="o">=</span> <span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">mobility_ratio</span><span class="p">)</span> <span class="o">*</span> <span class="n">koval_mult</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">koval_factor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">koval_factor</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">frac_flow_co2</span> <span class="o">=</span> <span class="n">koval_factor</span> <span class="o">/</span> <span class="p">(</span><span class="n">koval_factor</span> <span class="o">+</span> <span class="p">(</span><span class="n">mobility_ratio</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">frac_flow_co2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">frac_flow_co2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">))</span>
+<li><strong>Files</strong>: <code>ui/models/optimization_types.py</code> (34 lines), <code>ui/models/__init__.py</code> (3 lines)</li>
+<li><strong>Status</strong>: Completely orphaned.</li>
+<li><strong>Investigation</strong>: The module defines <code>OptimizationObjective</code> and <code>OptimizationConstraints</code>. Static grep across the entire codebase confirms that zero production modules import or instantiate these classes. All active optimization routing evaluates objectives through <code>core/objectives/wrapper.py</code> and parameter bounds through <code>core/data_models.py</code> and <code>core/optimisation_engine.py</code>.</li>
+<li><strong>Recommendation</strong>: Safe to deprecate and remove, or keep strictly as an archive.</li>
+</ul>
+<h3 id="22-uiwidgetsgeomechanics_3d_viewpy-553-lines-of-orphaned-code">2.2 <code>ui/widgets/geomechanics_3d_view.py</code> — 553 Lines of Orphaned Code<a class="headerlink" href="#22-uiwidgetsgeomechanics_3d_viewpy-553-lines-of-orphaned-code" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>File</strong>: <code>ui/widgets/geomechanics_3d_view.py</code> (553 lines, 18.8 KB)</li>
+<li><strong>Status</strong>: Completely unreferenced in production.</li>
+<li><strong>Investigation</strong>: Contains an entire PyVista-based 3D visualization widget (<code>Geomechanics3DView</code>) for structured grids, stress tensors, and well trajectories. However, no widget, dialog, or main window script in <code>ui/</code> ever imports or instantiates <code>Geomechanics3DView</code>.</li>
+<li><strong>Recommendation</strong>:</li>
+<li><em>Option A (Augment &amp; Connect)</em>: Integrate into <code>ui/analysis_widget.py</code> or <code>ui/data_management_widget.py</code> as an interactive 3D geomechanics visualization tab.</li>
+<li><em>Option B (Deprecate)</em>: Move to <code>deprecated/ui/geomechanics_3d_view.py</code> to reduce maintenance surface.</li>
+</ul>
+<h3 id="23-uiwidgetslanguage_change_mixinpy-100-orphan-mixin">2.3 <code>ui/widgets/language_change_mixin.py</code> — 100% Orphan Mixin<a class="headerlink" href="#23-uiwidgetslanguage_change_mixinpy-100-orphan-mixin" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>File</strong>: <code>ui/widgets/language_change_mixin.py</code> (10 lines)</li>
+<li><strong>Status</strong>: Orphaned helper.</li>
+<li><strong>Investigation</strong>: Defines <code>LanguageChangeMixin</code> to intercept <code>QEvent.Type.LanguageChange</code> and call <code>self.retranslateUi()</code>. However, not a single widget or dialog inherits from it; every widget implements <code>changeEvent</code> directly.</li>
+<li><strong>Recommendation</strong>: Either adopt this mixin across all custom widgets to eliminate boilerplates, or remove it.</li>
+</ul>
+<h3 id="24-coresimulationsimulator_exporterpy-legacy-shim">2.4 <code>core/simulation/simulator_exporter.py</code> — Legacy Shim<a class="headerlink" href="#24-coresimulationsimulator_exporterpy-legacy-shim" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>File</strong>: <code>core/simulation/simulator_exporter.py</code> (15 lines)</li>
+<li><strong>Status</strong>: Backward-compatibility redirect shim.</li>
+<li><strong>Investigation</strong>: Re-exports <code>SimulatorExporter</code> from <code>utils.cmg_exporter</code>. Marked as deprecated in the Source of Truth Map.</li>
+</ul>
+<hr />
+<h2 id="3-unused-imports-dead-variables-audit">3. Unused Imports &amp; Dead Variables Audit<a class="headerlink" href="#3-unused-imports-dead-variables-audit" title="Permanent link">&para;</a></h2>
+<p>The following table itemizes the exact unused imports and assigned-but-unused variables identified across the audited files:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">File</th>
+<th style="text-align: left;">Line(s)</th>
+<th style="text-align: left;">Category</th>
+<th style="text-align: left;">Identifier / Issue</th>
+<th style="text-align: left;">Actionable Remediation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>ui/dialogs/injection_scheme_dialog.py</code></td>
+<td style="text-align: left;">626</td>
+<td style="text-align: left;">Dead Variable</td>
+<td style="text-align: left;"><code>temp_eor = EORParameters(**updated_params)</code> unused</td>
+<td style="text-align: left;">Remove temporary assignment or use for validation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/dialogs/injection_scheme_dialog.py</code></td>
+<td style="text-align: left;">689</td>
+<td style="text-align: left;">Dead Variable</td>
+<td style="text-align: left;"><code>current_params = self._get_current_parameters()</code> unused</td>
+<td style="text-align: left;">Remove dead assignment</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/dialogs/preferences_dialog.py</code></td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>PyQt6.QtWidgets.QStackedWidget</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/dialogs/preferences_dialog.py</code></td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>PyQt6.QtWidgets.QSizePolicy</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/dialogs/preferences_dialog.py</code></td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>PyQt6.QtCore.pyqtSlot</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/dialogs/preferences_dialog.py</code></td>
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>PyQt6.QtGui.QIcon</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/dialogs/report_config_dialog.py</code></td>
+<td style="text-align: left;">128</td>
+<td style="text-align: left;">Unused Loop Var</td>
+<td style="text-align: left;"><code>display_name</code> unused in loop</td>
+<td style="text-align: left;">Replace with <code>_</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/dialogs/task_editor_dialog.py</code></td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>import json</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/widgets/log_viewer_dialog.py</code></td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>typing.Dict</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/widgets/manual_well_dialog.py</code></td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>PyQt6.QtWidgets.QTableWidgetItem</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/widgets/parameter_input_group.py</code></td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>typing.List</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/widgets/pvt_editor_dialog.py</code></td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>typing.List</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/widgets/pvt_editor_dialog.py</code></td>
+<td style="text-align: left;">29</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>PyQt6.QtCore.pyqtSignal</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/widgets/pvt_table_editor.py</code></td>
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>PyQt6.QtGui.QIcon</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/widgets/pvt_table_editor.py</code></td>
+<td style="text-align: left;">126</td>
+<td style="text-align: left;">Dead Variable</td>
+<td style="text-align: left;"><code>e</code> in exception clause unused</td>
+<td style="text-align: left;">Remove unused variable</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/widgets/geomechanics_3d_view.py</code></td>
+<td style="text-align: left;">12, 15, 16</td>
+<td style="text-align: left;">Unused Imports</td>
+<td style="text-align: left;"><code>QFrame</code>, <code>QSize</code>, <code>QIcon</code>, <code>QAction</code></td>
+<td style="text-align: left;">Remove imports</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/cmg_exporter.py</code></td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>typing.List</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/cmg_exporter.py</code></td>
+<td style="text-align: left;">73</td>
+<td style="text-align: left;">Dead Variable</td>
+<td style="text-align: left;"><code>profiles = results.get("optimized_profiles", {})</code> unused</td>
+<td style="text-align: left;">Remove dead assignment</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/multiprocess_logging.py</code></td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>import sys</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/multiprocess_logging.py</code></td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">Dead Variable</td>
+<td style="text-align: left;"><code>e</code> in exception clause unused</td>
+<td style="text-align: left;">Remove unused variable</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/multiprocess_logging.py</code></td>
+<td style="text-align: left;">154</td>
+<td style="text-align: left;">Unused Loop Var</td>
+<td style="text-align: left;"><code>name</code> in loop unused</td>
+<td style="text-align: left;">Replace with <code>_</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/preferences_manager.py</code></td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">Unused Imports</td>
+<td style="text-align: left;"><code>typing.Any</code>, <code>typing.Union</code></td>
+<td style="text-align: left;">Remove imports</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/preferences_manager.py</code></td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>dataclasses.asdict</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/preferences_manager.py</code></td>
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>pathlib.Path</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/report_generator.py</code></td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>typing.List</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/report_generator.py</code></td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>import json</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/report_generator.py</code></td>
+<td style="text-align: left;">16–25</td>
+<td style="text-align: left;">Unused Imports</td>
+<td style="text-align: left;"><code>ReservoirData</code>, <code>PVTProperties</code>, <code>EORParameters</code>, <code>EconomicParameters</code>, <code>OperationalParameters</code>, <code>ProfileParameters</code>, <code>EOSModelParameters</code>, <code>WellData</code></td>
+<td style="text-align: left;">Remove unused data model imports</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/report_generator.py</code></td>
+<td style="text-align: left;">26</td>
+<td style="text-align: left;">Unused Imports</td>
+<td style="text-align: left;"><code>DeclineCurveAnalyzer</code>, <code>DCAResult</code></td>
+<td style="text-align: left;">Remove unused DCA imports</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/report_generator.py</code></td>
+<td style="text-align: left;">299</td>
+<td style="text-align: left;">Dead Variable</td>
+<td style="text-align: left;"><code>economic_data</code> assigned but never read</td>
+<td style="text-align: left;">Remove unused variable</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/run_exporter.py</code></td>
+<td style="text-align: left;">20</td>
+<td style="text-align: left;">Unused Import</td>
+<td style="text-align: left;"><code>import os</code></td>
+<td style="text-align: left;">Remove import</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>utils/run_exporter.py</code></td>
+<td style="text-align: left;">470</td>
+<td style="text-align: left;">Dead Variable</td>
+<td style="text-align: left;"><code>res_ctx = manifest["reservoir_context"]</code> unused</td>
+<td style="text-align: left;">Remove unused variable</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-bad-code-practices-architectural-anti-patterns">4. Bad Code Practices &amp; Architectural Anti-Patterns<a class="headerlink" href="#4-bad-code-practices-architectural-anti-patterns" title="Permanent link">&para;</a></h2>
+<h3 id="41-critical-ui-destruction-bug-in-edituqparameterdialog">4.1 Critical UI Destruction Bug in <code>EditUQParameterDialog</code><a class="headerlink" href="#41-critical-ui-destruction-bug-in-edituqparameterdialog" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Location</strong>: <code>ui/widgets/edit_uq_parameter_dialog.py</code>, lines 93–96:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">_populate_dist_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_inputs</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="n">w</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_labels</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="n">l</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
 </span></code></pre></div></li>
-<li><strong>Expected Behavior</strong>: As mobility ratio worsens (<span class="arithmatex">\(M = \mu_o / \mu_g \gg 1\)</span>), viscous fingering intensifies, causing higher gas fractional flow (<span class="arithmatex">\(F_{\text{CO2}} \to 1.0\)</span>).</li>
-<li><strong>Actual Behavior</strong>:</li>
-<li>At <span class="arithmatex">\(M = 1.0\)</span> (favorable piston displacement): <code>frac_flow_co2 = 0.70</code> (maximum gas breakthrough).</li>
-<li>At <span class="arithmatex">\(M = 10.0\)</span> (severe viscous fingering): <code>frac_flow_co2 = 0.10</code> (minimum gas breakthrough).</li>
-<li><strong>Evidence</strong>: Mathematical limits of the code expression above.</li>
-<li><strong>Scientific Consequence</strong>: Inverts the core physics of gas breakthrough and GOR development. Heavy oils with severe fingering produce negligible gas, while light oils with stable displacement produce maximum gas.</li>
-<li><strong>Numerical Consequence</strong>: Distorts objective function scoring, misdirects WAG ratio optimization, and reverses genetic algorithm selection pressure.</li>
-<li><strong>Affected Outputs</strong>: <code>gas_profile</code>, <code>co2_gas_profile</code>, <code>annual_co2_produced_mscf</code>, <code>annual_co2_recycled_mscf</code>, <code>co2_utilization</code>.</li>
-<li><strong>Confidence</strong>: 100% (Direct analytical proof).</li>
-<li><strong>Recommended Investigation</strong>: Replace with authentic Koval (1963) fractional flow: <span class="arithmatex">\(K = H_k \cdot E \ge 1.0\)</span>, and <span class="arithmatex">\(F_{\text{CO2}}(S) = \frac{K S}{1 + S(K - 1)}\)</span>.</li>
-<li><strong>Status</strong>: OPEN.</li>
+<li><strong>Defect</strong>: When rows are added via <code>self.layout.insertRow(insert_row, label, widget)</code>, <code>label</code> and <code>widget</code> become children of the dialog (<code>self</code>). Calling <code>w.parent().deleteLater()</code> targets <code>self</code> (the <code>EditUQParameterDialog</code> instance), queueing the entire dialog for destruction when the distribution type changes!</li>
+<li><strong>Remediation</strong>: Use <code>self.layout.removeRow(widget)</code> and invoke <code>w.deleteLater()</code> on the widget itself, never on its parent.</li>
 </ul>
-<hr />
-<h3 id="sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density">SCI-FLAW-04: Inverted Thermal Expansion in Empirical CO₂ Density<a class="headerlink" href="#sci-flaw-04-inverted-thermal-expansion-in-empirical-co2-density" title="Permanent link">&para;</a></h3>
+<h3 id="42-python-mutable-default-argument-in-manualwelldialog-ruff-b006">4.2 Python Mutable Default Argument in <code>ManualWellDialog</code> (Ruff B006)<a class="headerlink" href="#42-python-mutable-default-argument-in-manualwelldialog-ruff-b006" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-04</code></li>
-<li><strong>Severity</strong>: <strong>HIGH</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/unified_engine/physics/co2_properties.py#L140"><code>core/unified_engine/physics/co2_properties.py:140</code></a></li>
-<li><strong>Model</strong>: Empirical CO₂ Density Correlation</li>
-<li><strong>Equation</strong>:
-  $<span class="arithmatex">\(\rho[\text{g/cm}^3] = 1.01 + 0.0109 \cdot P_{\text{MPa}} - 1.25\times 10^{-5} \cdot P_{\text{MPa}}^2 + 0.0023 \cdot T_{^\circ\text{C}}\)</span>$</li>
-<li><strong>Expected Behavior</strong>: Thermal expansion causes density to decrease as temperature rises: <span class="arithmatex">\(\frac{\partial\rho}{\partial T} &lt; 0\)</span>.</li>
-<li><strong>Actual Behavior</strong>: The temperature coefficient is <span class="arithmatex">\(+0.0023 &gt; 0\)</span>, causing hot CO₂ to be denser than cold CO₂. Furthermore, at <span class="arithmatex">\(10\text{ MPa}\)</span> (<span class="arithmatex">\(1,450\text{ psi}\)</span>) and <span class="arithmatex">\(50^\circ\text{C}\)</span>, the formula yields <span class="arithmatex">\(1,232\text{ kg/m}^3\)</span> (NIST reference is <span class="arithmatex">\(384\text{ kg/m}^3\)</span>, an error of <span class="arithmatex">\(+220\%\)</span>).</li>
-<li><strong>Scientific Consequence</strong>: Massive overestimation of downhole CO₂ density; fluid is modeled as denser than water.</li>
-<li><strong>Affected Outputs</strong>: <code>CO2Properties.density(method="empirical")</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-05-single-well-point-drainage-anomaly">SCI-FLAW-05: Single-Well Point Drainage Anomaly<a class="headerlink" href="#sci-flaw-05-single-well-point-drainage-anomaly" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-05</code></li>
-<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L1410-L1425"><code>core/optimisation_engine.py:1410-1425</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py#L501-L516"><code>core/engine_surrogate/profile_generator_fast.py:501-516</code></a></li>
-<li><strong>Model</strong>: Well Schedule and Field Rate Synthesis</li>
-<li><strong>Observation</strong>: When optimization scenarios do not define explicit pattern wells, the system assigns the entire recovery of a multi-million-barrel field (<span class="arithmatex">\(48.5\text{ MMSTB}\)</span> OOIP, <span class="arithmatex">\(1,354\text{ acres}\)</span>) to a single producer (<code>Well-Producer-1</code>).</li>
-<li><strong>Equation / Implementation</strong>: <code>peak_rate_estimate = ultimate_recovery / plateau_time / 365.25</code>, resulting in <span class="arithmatex">\(q_o = 7,270\text{ STB/day}\)</span> sustained for 6.4 years from one vertical wellbore.</li>
-<li><strong>Expected Behavior</strong>: Single-well inflow is constrained by Darcy drawdown (<span class="arithmatex">\(q = J \cdot (P_{res} - P_{wf}) \le 300 - 800\text{ BOPD}\)</span>). Draining <span class="arithmatex">\(1,354\text{ acres}\)</span> requires 30–35 pattern wells.</li>
-<li><strong>Scientific Consequence</strong>: Complete circumvention of well spacing physics, pattern interference, and capital expenditure scaling. Optimizers harvest field-scale reserves with single-well CAPEX/OPEX.</li>
-<li><strong>Affected Outputs</strong>: Well schedules, field cash flows, capital expenditure, NPV.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-06-decoupled-decision-variable-pressure-vs-tank-ode-pressure">SCI-FLAW-06: Decoupled Decision Variable Pressure vs Tank ODE Pressure<a class="headerlink" href="#sci-flaw-06-decoupled-decision-variable-pressure-vs-tank-ode-pressure" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-06</code></li>
-<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L3215-L3222"><code>core/optimisation_engine.py:3215-3222</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L948-L965"><code>core/engine_surrogate/surrogate_engine.py:948-965</code></a></li>
-<li><strong>Model</strong>: Surrogate Evaluation vs Dynamic Tank Material Balance</li>
-<li><strong>Observation</strong>: The optimizer treats <code>pressure</code> as an unconstrained decision variable, pegging it to the upper search bound (<span class="arithmatex">\(4,450\text{ psia}\)</span>). This phantom pressure is passed directly to <code>AnalyticalSurrogate.predict()</code>, maximizing ultimate recovery (<span class="arithmatex">\(RF = 41.5\%\)</span>) and driving miscibility weight <span class="arithmatex">\(\omega \to 1.0\)</span>.</li>
-<li><strong>Actual Behavior</strong>: The coupled 0D material balance tank ODE (<code>_solve_pressure_ode_stiff</code>) calculates in-situ reservoir pressure independently, simulating dynamic pressures between <span class="arithmatex">\(3,080\text{ psia}\)</span> and <span class="arithmatex">\(3,335\text{ psia}\)</span> across the 15-year life. At no point does the reservoir reach <span class="arithmatex">\(4,450\text{ psia}\)</span>.</li>
-<li><strong>Scientific Consequence</strong>: Simulation outputs and recovery factors are calculated under a fictitious high-pressure thermodynamic regime that is physically disconnected by <span class="arithmatex">\(\sim 1,350\text{ psi}\)</span> from the reservoir depletion state.</li>
-<li><strong>Affected Outputs</strong>: <code>recovery_factor</code>, <code>npv</code>, <code>miscibility_degree</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-07-unphysical-co2-net-utilization-factor">SCI-FLAW-07: Unphysical CO₂ Net Utilization Factor<a class="headerlink" href="#sci-flaw-07-unphysical-co2-net-utilization-factor" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-07</code></li>
-<li><strong>Severity</strong>: <strong>HIGH</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py#L212"><code>core/objectives/wrapper.py:212</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_models.py#L465-L495"><code>core/engine_surrogate/surrogate_models.py:465-495</code></a></li>
-<li><strong>Model</strong>: EOR Project Carbon Utilization Metric</li>
-<li><strong>Equation</strong>:
-  $<span class="arithmatex">\(\text{Utilization} = \frac{\sum M_{\text{CO2,purchased}}}{\sum N_{p,\text{total}}}\)</span>$</li>
-<li><strong>Expected Behavior</strong>: Net utilization in petroleum engineering is defined relative to <em>incremental EOR oil</em> attributable to CO₂ injection (<span class="arithmatex">\(N_{p,\text{EOR}} = N_{p,\text{total}} - N_{p,\text{primary}}\)</span>), with typical field values of <span class="arithmatex">\(5.0 - 12.0\text{ MSCF/STB}\)</span> (<span class="arithmatex">\(0.25 - 0.60\text{ tonne/STB}\)</span>).</li>
-<li><strong>Actual Behavior</strong>: Total field cumulative oil (including primary depletion and secondary waterflood) is placed in the denominator. This deflates reported utilization to <span class="arithmatex">\(0.665\text{ MSCF/STB}\)</span> (<span class="arithmatex">\(0.0352\text{ tonne/STB}\)</span>).</li>
-<li><strong>Scientific Consequence</strong>: A net utilization of <span class="arithmatex">\(0.665\text{ MSCF/STB}\)</span> implies that injecting only <span class="arithmatex">\(1.38\text{ RB}\)</span> of CO₂ produces <span class="arithmatex">\(1.0\text{ STB}\)</span> (<span class="arithmatex">\(1.30\text{ RB}\)</span>) of oil, which is physically impossible given connate water, residual oil, and phase dissolution. The optimizer exploits this by driving injection rates to the lower boundary to minimize gas purchase costs while harvesting full field recovery.</li>
-<li><strong>Affected Outputs</strong>: <code>co2_utilization</code>, <code>net_utilization_mscf_per_stb</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-08-inverted-phase-state-classification-in-cubic-eos">SCI-FLAW-08: Inverted Phase State Classification in Cubic EOS<a class="headerlink" href="#sci-flaw-08-inverted-phase-state-classification-in-cubic-eos" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-08</code></li>
-<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/unified_engine/physics/eos/__init__.py#L195"><code>core/unified_engine/physics/eos/__init__.py:195</code></a></li>
-<li><strong>Model</strong>: Cubic Equation of State Phase Identification</li>
-<li><strong>Equation</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="s2">"phase"</span><span class="p">:</span> <span class="s2">"V"</span> <span class="k">if</span> <span class="n">Z</span> <span class="o">&lt;</span> <span class="mf">0.8</span> <span class="k">else</span> <span class="s2">"L"</span>
+<li><strong>Location</strong>: <code>ui/widgets/manual_well_dialog.py</code>, line 88:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QWidget</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 </span></code></pre></div></li>
-<li><strong>Expected Behavior</strong>: Liquid compressibility factor <span class="arithmatex">\(Z_L\)</span> is small (<span class="arithmatex">\(Z_L \approx 0.05 - 0.30\)</span>). Vapor compressibility factor <span class="arithmatex">\(Z_V\)</span> is near unity (<span class="arithmatex">\(Z_V \approx 0.80 - 1.05\)</span>). Therefore, <span class="arithmatex">\(Z &lt; 0.8\)</span> represents Liquid and <span class="arithmatex">\(Z \ge 0.8\)</span> represents Vapor.</li>
-<li><strong>Actual Behavior</strong>: The code inverts the logic: <span class="arithmatex">\(Z &lt; 0.8\)</span> is classified as Vapor ('V'), and <span class="arithmatex">\(Z \ge 0.8\)</span> is classified as Liquid ('L').</li>
-<li><strong>Scientific Consequence</strong>: Dense liquid oil/condensate is labeled as gas vapor, while low-pressure gas is labeled as liquid. Flash calculations and phase routing across the compositional engine are completely compromised.</li>
-<li><strong>Affected Outputs</strong>: <code>get_properties_si()["phase"]</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
+<li><strong>Defect</strong>: Default argument <code>existing_names</code> is a mutable list that persists state across separate dialog instantiations.</li>
+<li><strong>Remediation</strong>: Change signature to <code>existing_names: Optional[List[str]] = None</code> and initialize <code>self.existing_names = existing_names or []</code>.</li>
 </ul>
-<hr />
-<h3 id="sci-flaw-09-interfacial-tension-constant-at-maximum-immiscible-value-at-mmp">SCI-FLAW-09: Interfacial Tension Constant at Maximum Immiscible Value at MMP<a class="headerlink" href="#sci-flaw-09-interfacial-tension-constant-at-maximum-immiscible-value-at-mmp" title="Permanent link">&para;</a></h3>
+<h3 id="43-duplicate-code-execution-bug-in-reportgenerator">4.3 Duplicate Code Execution Bug in <code>ReportGenerator</code><a class="headerlink" href="#43-duplicate-code-execution-bug-in-reportgenerator" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-09</code></li>
-<li><strong>Severity</strong>: <strong>HIGH</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/simulation/recovery_models.py#L197-L202"><code>core/simulation/recovery_models.py:197-202</code></a></li>
-<li><strong>Model</strong>: IFT vs Pressure Model</li>
-<li><strong>Equation</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">if</span> <span class="n">pressure_psi</span> <span class="o">&gt;=</span> <span class="n">mmp_psi</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma_0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lambda_ift</span> <span class="o">*</span> <span class="p">(</span><span class="n">pressure_psi</span> <span class="o">-</span> <span class="n">mmp_psi</span><span class="p">))</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">else</span><span class="p">:</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma_0</span>
+<li><strong>Location</strong>: <code>utils/report_generator.py</code>, lines 200–211:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">if</span> <span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sections"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"decline_curve_analysis"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"dca_results"</span> <span class="ow">in</span> <span class="n">report_data</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_decline_curve_analysis</span><span class="p">(</span><span class="n">report_data</span><span class="p">,</span> <span class="n">config</span><span class="p">))</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">if</span> <span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sections"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"decline_curve_analysis"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"dca_results"</span> <span class="ow">in</span> <span class="n">report_data</span><span class="p">):</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_decline_curve_analysis</span><span class="p">(</span><span class="n">report_data</span><span class="p">,</span> <span class="n">config</span><span class="p">))</span>
 </span></code></pre></div></li>
-<li><strong>Expected Behavior</strong>: In CO₂-oil systems, interfacial tension approaches zero as pressure approaches MMP (<span class="arithmatex">\(\lim_{P \to MMP} \sigma(P) = 0\)</span>).</li>
-<li><strong>Actual Behavior</strong>: For all <span class="arithmatex">\(P &lt; MMP\)</span>, <span class="arithmatex">\(\sigma = \sigma_0 = 20\text{ mN/m}\)</span>. At <span class="arithmatex">\(P = MMP\)</span>, <span class="arithmatex">\(\sigma\)</span> is still <span class="arithmatex">\(20\text{ mN/m}\)</span> (maximum immiscible value), only decaying exponentially at pressures <em>above</em> MMP.</li>
-<li><strong>Scientific Consequence</strong>: Near-miscible fluids are treated as fully immiscible with high IFT, suppressing capillary desaturation.</li>
-<li><strong>Affected Outputs</strong>: <code>interfacial_tension</code>, <code>capillary_number</code>, <code>residual_oil_saturation</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
+<li><strong>Defect</strong>: Verbatim duplicate <code>if</code> block causes the DCA report section and associated SVG/PNG plots to be rendered and appended <strong>twice</strong> into the output HTML/PDF report.</li>
+<li><strong>Remediation</strong>: Delete the duplicate second block.</li>
 </ul>
-<hr />
-<h3 id="sci-flaw-10-immiscible-recovery-model-vanishes-without-capillary-desaturation">SCI-FLAW-10: Immiscible Recovery Model Vanishes Without Capillary Desaturation<a class="headerlink" href="#sci-flaw-10-immiscible-recovery-model-vanishes-without-capillary-desaturation" title="Permanent link">&para;</a></h3>
+<h3 id="44-invalid-html-stylestylestylestyle-generation">4.4 Invalid HTML <code>&lt;style&gt;&lt;style&gt;...&lt;/style&gt;&lt;/style&gt;</code> Generation<a class="headerlink" href="#44-invalid-html-stylestylestylestyle-generation" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-10</code></li>
-<li><strong>Severity</strong>: <strong>HIGH</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/simulation/recovery_models.py#L498-L501"><code>core/simulation/recovery_models.py:498-501</code></a></li>
-<li><strong>Model</strong>: Immiscible CO₂ Recovery Factor</li>
-<li><strong>Equation</strong>:
-  $<span class="arithmatex">\(E_d = \frac{S_{or,\text{base}} - S_{or}^*}{1 - S_{wi}}\)</span>$
-  $<span class="arithmatex">\(RF_{\text{im}} = E_d \cdot E_A \cdot E_V\)</span>$</li>
-<li><strong>Expected Behavior</strong>: An immiscible gas drive recovers mobile oil by viscous displacement (<span class="arithmatex">\(S_{oi} \to S_{or}\)</span>). A typical immiscible water/gas flood yields <span class="arithmatex">\(20\% - 45\%\)</span> recovery.</li>
-<li><strong>Actual Behavior</strong>: The code defines displacement efficiency solely as the capillary-induced reduction from <span class="arithmatex">\(S_{or,\text{base}}\)</span> to <span class="arithmatex">\(S_{or}^*\)</span>. In the absence of extreme capillary numbers (<span class="arithmatex">\(N_c \le 10^{-5}\)</span>), <span class="arithmatex">\(S_{or}^* \approx S_{or,\text{base}}\)</span>, resulting in <span class="arithmatex">\(E_d \approx 0.03 - 0.05\)</span> and <span class="arithmatex">\(RF_{\text{im}} \approx 1\% - 2\%\)</span>.</li>
-<li><strong>Scientific Consequence</strong>: Massive discrepancy between <code>simulation/recovery_models.py</code> (<span class="arithmatex">\(RF_{\text{im}} \approx 2\%\)</span>) and <code>analytical_models.py</code> (<span class="arithmatex">\(RF_{\text{im}} \approx 35\%\)</span>).</li>
-<li><strong>Affected Outputs</strong>: <code>ImmiscibleRecoveryModel.calculate()</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-11-arbitrary-recovery-factor-cap-of-080">SCI-FLAW-11: Arbitrary Recovery Factor Cap of 0.80<a class="headerlink" href="#sci-flaw-11-arbitrary-recovery-factor-cap-of-080" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-11</code></li>
-<li><strong>Severity</strong>: <strong>MEDIUM</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/analytical_models.py#L205"><code>core/engine_surrogate/analytical_models.py:205</code></a></li>
-<li><strong>Model</strong>: Miscible Displacement Surrogate</li>
-<li><strong>Equation</strong>: <code>return float(np.clip(rf, 0.05, 0.80))</code></li>
-<li><strong>Expected Behavior</strong>: The upper physical bound on recovery is determined by connate water and minimum residual oil: <span class="arithmatex">\(RF_{\max} = 1 - S_{wi} - S_{or,\min}\)</span>. In clean homogeneous sands, recovery can exceed 85%.</li>
-<li><strong>Actual Behavior</strong>: Recovery is hard-capped at 80% with no warning or logger notification.</li>
-<li><strong>Scientific Consequence</strong>: Artificially flattens objective fitness landscapes and destroys gradient information when <span class="arithmatex">\(RF \ge 0.80\)</span>.</li>
-<li><strong>Affected Outputs</strong>: <code>recovery_factor</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-12-supercritical-b_g-discrepancy-across-active-vs-legacy-modules">SCI-FLAW-12: Supercritical <span class="arithmatex">\(B_g\)</span> Discrepancy Across Active vs Legacy Modules<a class="headerlink" href="#sci-flaw-12-supercritical-b_g-discrepancy-across-active-vs-legacy-modules" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-12</code></li>
-<li><strong>Severity</strong>: <strong>HIGH</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/optimisation_engine.py#L98"><code>core/optimisation_engine.py:98</code></a>, <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L201"><code>core/engine_surrogate/surrogate_engine.py:201</code></a></li>
-<li><strong>Model</strong>: PVT Formation Volume Factor Conversion</li>
-<li><strong>Observation</strong>:</li>
-<li><code>surrogate_engine.py:201</code>: <span class="arithmatex">\(B_g \approx 0.50\text{ RB/MSCF}\)</span> (<span class="arithmatex">\(0.0005\text{ RB/SCF}\)</span>).</li>
-<li><code>optimisation_engine.py:98</code>: <code>B_GAS_RB_PER_MSCF = 5.0</code> (<span class="arithmatex">\(0.005\text{ RB/SCF}\)</span>).</li>
-<li><strong>Scientific Consequence</strong>: A factor of <span class="arithmatex">\(10\times\)</span> discrepancy exists between modules regarding the reservoir volume occupied by injected gas.</li>
-<li><strong>Affected Outputs</strong>: Downhole voidage replacement, reservoir pressure calculations, rate conversions.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-14-heuristic-vapor-fraction-in-material-balance">SCI-FLAW-14: Heuristic Vapor Fraction in Material Balance<a class="headerlink" href="#sci-flaw-14-heuristic-vapor-fraction-in-material-balance" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-14</code></li>
-<li><strong>Severity</strong>: <strong>HIGH</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py#L85-L108"><code>analysis/material_balance.py:85-108</code></a></li>
-<li><strong>Model</strong>: Material Balance Reservoir CO₂ Partitioning</li>
-<li><strong>Equation</strong>:
-  $<span class="arithmatex">\(V = \min(1.0, \max(0.0, 1.0 - Z_{\text{avg}} + 0.2))\)</span>$
-  $<span class="arithmatex">\(y_{\text{CO2}} = x_{\text{CO2}} \cdot V + x_{\text{CO2}} \cdot (1 - V) \cdot (1 - V)\)</span>$</li>
-<li><strong>Expected Behavior</strong>: Vapor fraction <span class="arithmatex">\(V\)</span> and phase compositions <span class="arithmatex">\(x, y\)</span> are governed by thermodynamic equilibrium: <span class="arithmatex">\(f_{i}^L = f_{i}^V\)</span> (Rachford-Rice equation).</li>
-<li><strong>Actual Behavior</strong>: Vapor fraction is estimated from compressibility factor <span class="arithmatex">\(Z\)</span> via an arbitrary linear expression (<span class="arithmatex">\(1 - Z + 0.2\)</span>), and phase concentration is multiplied by <span class="arithmatex">\((1 - V)^2\)</span>.</li>
-<li><strong>Scientific Consequence</strong>: Fabricated pseudo-thermodynamics with zero theoretical foundation.</li>
-<li><strong>Affected Outputs</strong>: <code>_get_co2_fraction_at_reservoir()</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-15-instantaneous-co2-production-decoupled-from-in-situ-mobile-storage">SCI-FLAW-15: Instantaneous CO₂ Production Decoupled from In-Situ Mobile Storage<a class="headerlink" href="#sci-flaw-15-instantaneous-co2-production-decoupled-from-in-situ-mobile-storage" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-15</code></li>
-<li><strong>Severity</strong>: <strong>MEDIUM</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py#L983-L986"><code>core/engine_surrogate/profile_generator_fast.py:983-986</code></a></li>
-<li><strong>Model</strong>: Gas Production Profile Synthesis</li>
-<li><strong>Equation</strong>:
-  $<span class="arithmatex">\(q_{\text{CO2,prod}}(t) = q_{\text{inj}}(t) \cdot (1 - \text{trapping}) \cdot F_{\text{CO2}} \cdot (1 - e^{-c(t - t_{bt})})\)</span>$</li>
-<li><strong>Expected Behavior</strong>: Produced gas rate post-breakthrough is driven by in-situ free gas mobility and reservoir pressure gradient. If injection is shut in, gas continues to produce as the reservoir depressurizes.</li>
-<li><strong>Actual Behavior</strong>: Produced CO₂ rate is computed as a direct product of instantaneous injection rate <span class="arithmatex">\(q_{\text{inj}}(t)\)</span>. If <span class="arithmatex">\(q_{\text{inj}}(t) = 0\)</span>, produced CO₂ immediately collapses to zero.</li>
-<li><strong>Scientific Consequence</strong>: Shutting in injection immediately halts gas production, violating mass transfer and pressure dissipation physics.</li>
-<li><strong>Affected Outputs</strong>: <code>co2_gas_profile</code>, <code>gas_profile</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-16-discontinuous-cliff-in-craig-areal-sweep-at-unit-mobility">SCI-FLAW-16: Discontinuous Cliff in Craig Areal Sweep at Unit Mobility<a class="headerlink" href="#sci-flaw-16-discontinuous-cliff-in-craig-areal-sweep-at-unit-mobility" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-16</code></li>
-<li><strong>Severity</strong>: <strong>HIGH</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_models.py#L164-L182"><code>core/engine_surrogate/surrogate_models.py:164-182</code></a></li>
-<li><strong>Model</strong>: Craig-Geffen-Morse Areal Sweep Efficiency Correlation</li>
-<li><strong>Observation</strong>: Areal sweep efficiency <span class="arithmatex">\(E_A\)</span> jumps discontinuously by 48% across <span class="arithmatex">\(M = 1.0\)</span>.</li>
-<li><strong>Equation</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">if</span> <span class="n">mobility_ratio</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">return</span> <span class="mf">1.0</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">else</span><span class="p">:</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="k">return</span> <span class="mf">0.5460</span> <span class="o">-</span> <span class="mf">0.0195</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">mobility_ratio</span><span class="p">)</span> <span class="o">+</span> <span class="o">...</span>
+<li><strong>Location</strong>: <code>utils/report_generator.py</code>, line 221 &amp; line 823:</li>
+<li>In <code>_generate_html_content()</code>:
+    <div class="language-html highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p">{</span><span class="err">css_content</span><span class="p">}</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
 </span></code></pre></div></li>
-<li><strong>Expected Behavior</strong>: Areal sweep efficiency is a continuous, smooth function of mobility ratio (<span class="arithmatex">\(\lim_{M \to 1^+} E_A(M) = E_A(1.0)\)</span>).</li>
-<li><strong>Actual Behavior</strong>:</li>
-<li>For <span class="arithmatex">\(M \le 1.0\)</span>: <span class="arithmatex">\(E_A = 1.000\)</span> (100% sweep).</li>
-<li>For <span class="arithmatex">\(M = 1.0001\)</span>: <span class="arithmatex">\(E_A = 0.517\)</span> (51.7% sweep).</li>
-<li>A step discontinuity of <span class="arithmatex">\(\Delta E_A = 0.483\)</span> (48.3%) occurs at <span class="arithmatex">\(M = 1.0\)</span>.</li>
-<li><strong>Scientific Consequence</strong>: Severe non-physical step change causes gradient-based optimizers to fail and causes genetic algorithms to falsely lock into <span class="arithmatex">\(M \le 1.0\)</span>.</li>
-<li><strong>Affected Outputs</strong>: <code>areal_sweep_efficiency</code>, <code>recovery_factor</code>, <code>cumulative_oil</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
-</ul>
-<hr />
-<h3 id="sci-flaw-17-inverted-critical-gas-saturation-trapping-formulation">SCI-FLAW-17: Inverted Critical Gas Saturation Trapping Formulation<a class="headerlink" href="#sci-flaw-17-inverted-critical-gas-saturation-trapping-formulation" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-17</code></li>
-<li><strong>Severity</strong>: <strong>HIGH</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_models.py#L238-L241"><code>core/engine_surrogate/surrogate_models.py:238-241</code></a></li>
-<li><strong>Model</strong>: Residual / Capillary Gas Trapping Model</li>
-<li><strong>Observation</strong>: Trapping efficiency is computed as <span class="arithmatex">\(1.0 - S_{gc}\)</span>.</li>
-<li><strong>Equation</strong>:
-  <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">trapping_efficiency</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">critical_gas_saturation</span>
+<li>In <code>_get_css_styles()</code>:
+    <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">return</span> <span class="sa">f</span><span class="s2">"""</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="s2">&lt;style&gt;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="s2">    body </span><span class="se">{{</span><span class="s2"> ... </span><span class="se">}}</span>
 </span></code></pre></div></li>
-<li><strong>Expected Behavior</strong>: Critical gas saturation <span class="arithmatex">\(S_{gc}\)</span> represents the minimum saturation required for the gas phase to become mobile. Higher <span class="arithmatex">\(S_{gc}\)</span> means more gas is trapped in pore throats by capillary forces, so trapping efficiency must increase monotonically with <span class="arithmatex">\(S_{gc}\)</span> (<span class="arithmatex">\(\frac{\partial \eta_{\text{trap}}}{\partial S_{gc}} &gt; 0\)</span>).</li>
-<li><strong>Actual Behavior</strong>: Because trapping is defined as <span class="arithmatex">\(1.0 - S_{gc}\)</span>, increasing <span class="arithmatex">\(S_{gc}\)</span> from <span class="arithmatex">\(0.05\)</span> to <span class="arithmatex">\(0.25\)</span> causes calculated trapping efficiency to <em>decrease</em> from <span class="arithmatex">\(95\%\)</span> to <span class="arithmatex">\(75\%\)</span>.</li>
-<li><strong>Scientific Consequence</strong>: Inverts the fundamental physical relationship between capillary snap-off/hysteresis and residual gas retention.</li>
-<li><strong>Affected Outputs</strong>: <code>trapping_efficiency</code>, <code>co2_stored</code>, <code>storage_efficiency</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
+<li><strong>Defect</strong>: <code>_get_css_styles()</code> embeds its own <code>&lt;style&gt;</code> tag, resulting in invalid nested <code>&lt;style&gt;&lt;style&gt;</code> elements in the output HTML.</li>
+<li><strong>Remediation</strong>: Strip <code>&lt;style&gt;</code> and <code>&lt;/style&gt;</code> tags from <code>_get_css_styles()</code> so only raw CSS is returned.</li>
 </ul>
-<hr />
-<h3 id="sci-flaw-18-corrupted-peng-robinson-mixture-fugacity-formulation">SCI-FLAW-18: Corrupted Peng-Robinson Mixture Fugacity Formulation<a class="headerlink" href="#sci-flaw-18-corrupted-peng-robinson-mixture-fugacity-formulation" title="Permanent link">&para;</a></h3>
+<h3 id="45-defensive-mock-fallbacks-masking-broken-imports">4.5 Defensive Mock Fallbacks Masking Broken Imports<a class="headerlink" href="#45-defensive-mock-fallbacks-masking-broken-imports" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>ID</strong>: <code>SCI-FLAW-18</code></li>
-<li><strong>Severity</strong>: <strong>CRITICAL</strong></li>
-<li><strong>Location</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/unified_engine/physics/eos/__init__.py#L206"><code>core/unified_engine/physics/eos/__init__.py:206, 257-270</code></a></li>
-<li><strong>Model</strong>: Peng-Robinson (1978) Mixture Phase Equilibrium</li>
-<li><strong>Observation</strong>: The analytical expression for component fugacity coefficient <span class="arithmatex">\(\ln \phi_i\)</span> omits the critical <span class="arithmatex">\(2\sqrt{2}B\)</span> denominator in the logarithmic term, and omits the cross-interaction partial derivative summation <span class="arithmatex">\(\sum_j x_j a_{ij}\)</span>.</li>
-<li><strong>Expected Equation</strong> (Standard Peng-Robinson):
-  $<span class="arithmatex">\(\ln\phi_i = \frac{B_i}{B}(Z - 1) - \ln(Z - B) - \frac{A}{2\sqrt{2}B}\left[\frac{2\sum_j z_j A_{ij}}{A} - \frac{B_i}{B}\right]\ln\left(\frac{Z + (1+\sqrt{2})B}{Z + (1-\sqrt{2})B}\right)\)</span>$</li>
-<li><strong>Actual Behavior in Code</strong>:
-  Omits the <span class="arithmatex">\(2\sqrt{2}B\)</span> scaling and substitutes <span class="arithmatex">\(A/B\)</span>, distorting the chemical potential balance by <span class="arithmatex">\(\approx 2.83\times\)</span>.</li>
-<li><strong>Scientific Consequence</strong>: Equilibrium K-values (<span class="arithmatex">\(K_i = y_i / x_i = \phi_i^L / \phi_i^V\)</span>) computed from this formulation do not satisfy Gibbs phase rule or thermodynamic equilibrium, corrupting compositional phase boundaries.</li>
-<li><strong>Affected Outputs</strong>: <code>calculate_fugacity()</code>, <code>flash_calculation()</code>, <code>compositional_solver</code>.</li>
-<li><strong>Confidence</strong>: 100%.</li>
-<li><strong>Status</strong>: OPEN.</li>
+<li><strong>Location</strong>: <code>ui/widgets/manual_well_dialog.py</code> (lines 24–67), <code>ui/widgets/depth_profile_dialog.py</code> (lines 8–12), <code>ui/widgets/log_viewer_dialog.py</code> (lines 30–56).</li>
+<li><strong>Defect</strong>: When an internal widget or data model fails to import, the file defines a dummy mock class (e.g. <code>class ParameterInputGroup(QWidget): pass</code>). This masks installation and path errors, causing silent crashes or mysterious empty UI screens at runtime instead of explicit early errors.</li>
+<li><strong>Remediation</strong>: Use standard imports. All required internal modules (<code>core.data_models</code>, <code>parameter_input_group.py</code>) are guaranteed to exist in the repository.</li>
+</ul>
+<h3 id="46-mangled-list-values-in-parameterinputgroup">4.6 Mangled List Values in <code>ParameterInputGroup</code><a class="headerlink" href="#46-mangled-list-values-in-parameterinputgroup" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Location</strong>: <code>ui/widgets/parameter_input_group.py</code>, lines 95, 197, 214:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text_value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.'</span><span class="p">,</span> <span class="s1">','</span><span class="p">))</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># and in get_value():</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_widget</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">','</span><span class="p">,</span> <span class="s1">'.'</span><span class="p">)</span>
+</span></code></pre></div></li>
+<li><strong>Defect</strong>: The widget replaces <code>.</code> with <code>,</code> for display and <code>,</code> with <code>.</code> on read. If a parameter input is a comma-delimited list of floats (e.g. <code>[1.5, 2.5]</code>), <code>", ".join(...)</code> produces <code>"1,5, 2,5"</code>, which on <code>get_value()</code> is mangled into <code>"1.5. 2.5"</code>, corrupting multi-value numerical inputs.</li>
+<li><strong>Remediation</strong>: Only perform decimal comma substitution for scalar floating-point inputs, or preserve standard period notation throughout.</li>
 </ul>
 <hr />
+<h2 id="5-disconnected-values-simulationoptimization-parameters-audit">5. Disconnected Values &amp; Simulation/Optimization Parameters Audit<a class="headerlink" href="#5-disconnected-values-simulationoptimization-parameters-audit" title="Permanent link">&para;</a></h2>
+<h3 id="51-data-models-field-usage-breakdown-coredata_modelspy">5.1 Data Models Field Usage Breakdown (<code>core/data_models.py</code>)<a class="headerlink" href="#51-data-models-field-usage-breakdown-coredata_modelspy" title="Permanent link">&para;</a></h3>
+<p>A comprehensive audit of the 33 dataclasses in <code>core/data_models.py</code> against active simulation consumers (<code>core/engine_surrogate/*</code>, <code>core/optimisation_engine.py</code>, <code>core/objectives/*</code>, <code>core/data_integration_engine.py</code>) revealed widespread field abandonment:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Dataclass                   Total Fields    Used in Sim/Opt    Unused (Phantom)    % Unused
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>-------------------------------------------------------------------------------------------
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>TuningParams                          3                  0                   3      100.0%
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>CO2StorageParameters                 16                  6                  10       62.5%
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>FluidProperties                      14                  3                  11       78.6%
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>ProfileParameters                    12                  4                   8       66.7%
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>CCUSParameters                       43                 16                  27       62.8%
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>CoreyParameters                       9                  4                   5       55.6%
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>FaultProperties                       8                  3                   5       62.5%
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>FaultGeometry                         8                  4                   4       50.0%
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>CCUSState                            14                  7                   7       50.0%
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>AdvancedEngineParams                 27                 14                  13       48.1%
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>EORParameters                       242                143                  99       40.9%
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>GeomechanicsParameters               14                  9                   5       35.7%
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>GeostatisticalParams                 11                  8                   3       27.3%
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>PVTProperties                        24                 17                   7       29.2%
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>LayerDefinition                       4                  2                   2       50.0%
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>WellData                              7                  6                   1       14.3%
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>ReservoirData                        27                 25                   2        7.4%
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>OperationalParameters                 7                  6                   1       14.3%
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>EconomicParameters                   11                 11                   0        0.0%
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>GeneticAlgorithmParams               21                 21                   0        0.0%
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>BayesianOptimizationParams            9                  9                   0        0.0%
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>SWAGParams                            3                  3                   0        0.0%
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>TaperedInjectionParams                4                  4                   0        0.0%
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>PulsedInjectionParams                 3                  3                   0        0.0%
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>EmpiricalFittingParameters           12                 12                   0        0.0%
+</span></code></pre></div>
+<h4 id="detailed-findings-by-model">Detailed Findings by Model:<a class="headerlink" href="#detailed-findings-by-model" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong><code>TuningParams</code> (100% Unused)</strong>:</li>
+<li>Unused fields: <code>tuner_method</code>, <code>num_tuning_iterations</code>, <code>num_evaluation_generations</code>.</li>
+<li>
+<p>Impact: Neither the surrogate engine nor the optimization engine reads this dataclass.</p>
+</li>
+<li>
+<p><strong><code>FluidProperties</code> vs. <code>PVTProperties</code> Duplication</strong>:</p>
+</li>
+<li><code>FluidProperties</code> has 11 abandoned fields: <code>oil_density_ref</code>, <code>water_density_ref</code>, <code>water_viscosity_ref</code>, <code>oil_fvf_ref</code>, <code>water_compressibility</code>, <code>oil_compressibility</code>, <code>gas_density_ref</code>, <code>gas_viscosity_ref</code>, <code>gas_compressibility</code>, <code>water_fvf_ref</code>, <code>gas_fvf_ref</code>.</li>
+<li>
+<p>The active surrogate engine routes exclusively through <code>PVTProperties</code> and <code>SolventExtendedPVTEngine</code>. <code>FluidProperties</code> is a legacy artifact.</p>
+</li>
+<li>
+<p><strong><code>EORParameters</code> Phantom Fields (99 Unused Fields)</strong>:</p>
+</li>
+<li><strong>Embedded Physical Constants</strong>: 10 thermodynamic and physical constants are defined as instance fields on every EOR dataclass instead of module constants (<code>days_per_year</code>, <code>psi_to_pa_conversion</code>, <code>fahrenheit_to_kelvin_offset</code>, <code>fahrenheit_to_kelvin_scale</code>, <code>supercritical_co2_density_kg_m3</code>, <code>critical_temperature_co2_k</code>, <code>critical_pressure_co2_pa</code>, <code>molecular_weight_co2_g_mol</code>, <code>universal_gas_constant_j_mol_k</code>, <code>gravity_acceleration</code>).</li>
+<li><strong>Phantom Fault Parameters</strong>: 10 default fault parameters (<code>dummy_fault_strike</code>, <code>default_fault_dilation_angle</code>, <code>default_fault_initial_aperture</code>, <code>default_fault_maximum_aperture</code>, <code>default_fault_healing_rate</code>, <code>default_fault_stiffness</code>, etc.) that are never utilized by <code>geomechanics_fault.py</code>.</li>
+<li><strong>Dormant Physics Controls</strong>: <code>gas_oil_ratio_at_breakthrough</code>, <code>water_cut_bwow</code>, <code>injection_gor</code>, <code>co2_recycling_fraction</code>, <code>min_miscibility_degree</code>, <code>allow_wag_post_shutin</code>, <code>use_bhp_control</code>, <code>disable_adaptive_timestepping</code>.</li>
+<li>
+<p><strong>Locked Bounds</strong>: <code>locked_sor</code>, <code>locked_gravity_factor</code>, <code>locked_hyperbolic_b_factor</code>, <code>locked_transition_alpha</code>, <code>locked_transition_beta</code>.</p>
+</li>
+<li>
+<p><strong><code>WellData.perforation_properties</code> Disconnected from Inflow</strong>:</p>
+</li>
+<li>
+<p><code>ManualWellDialog</code> collects perforation intervals (top and bottom depths), but <code>surrogate_engine.py</code> and <code>FastProfileGenerator</code> evaluate deliverability using a lumped reservoir net pay thickness (<span class="arithmatex">\(h\)</span>). Perforation geometry has zero influence on well productivity or drawdown.</p>
+</li>
+<li>
+<p><strong><code>ProfileParameters</code> Custom Fractions Ignored</strong>:</p>
+</li>
+<li>Fields <code>custom_oil_production_fractions</code>, <code>oil_profile_type</code>, <code>water_cut_exponent</code>, and <code>min_economic_rate_fraction_of_peak</code> are ignored by <code>FastProfileGenerator</code>, which enforces its own analytical plateau-hyperbolic synthesis.</li>
+</ol>
+<hr />
+<h3 id="52-disconnected-dialog-inputs">5.2 Disconnected Dialog Inputs<a class="headerlink" href="#52-disconnected-dialog-inputs" title="Permanent link">&para;</a></h3>
+<h4 id="a-dropped-injection-schemes-in-dataintegrationengine">A. Dropped Injection Schemes in <code>DataIntegrationEngine</code><a class="headerlink" href="#a-dropped-injection-schemes-in-dataintegrationengine" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Location</strong>: <code>core/data_integration_engine.py</code>, lines 470–471:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">swag_params</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">huff_n_puff_params</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">tapered_params</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">pulsed_params</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">if</span> <span class="n">injection_scheme</span> <span class="o">==</span> <span class="s2">"swag"</span><span class="p">:</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">swag_params</span> <span class="o">=</span> <span class="n">SWAGParams</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">elif</span> <span class="n">injection_scheme</span> <span class="o">==</span> <span class="s2">"huff_n_puff"</span><span class="p">:</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">huff_n_puff_params</span> <span class="o">=</span> <span class="n">HuffNPuffParams</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</span></code></pre></div></li>
+<li><strong>Issue</strong>: <code>tapered_params</code> and <code>pulsed_params</code> are initialized to <code>None</code> and <strong>never constructed</strong>, even when <code>injection_scheme == "tapered"</code> or <code>"pulsed"</code>.</li>
+<li><strong>Impact</strong>: While the UI allows selecting and configuring Tapered and Pulsed injection schemes in <code>InjectionSchemeDialog</code>, the nested parameter objects are dropped before reaching <code>EORParameters</code>.</li>
+<li><strong>Remediation</strong>: Augment <code>_create_eor_parameters()</code> to instantiate <code>TaperedInjectionParams</code> and <code>PulsedInjectionParams</code> when those schemes are selected.</li>
+</ul>
+<h4 id="b-section-key-mismatch-between-reportconfigdialog-and-reportgenerator">B. Section Key Mismatch Between <code>ReportConfigDialog</code> and <code>ReportGenerator</code><a class="headerlink" href="#b-section-key-mismatch-between-reportconfigdialog-and-reportgenerator" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Location</strong>: <code>ui/dialogs/report_config_dialog.py</code> (lines 22–30) vs <code>utils/report_generator.py</code> (lines 171–181):</li>
+<li><code>ReportConfigDialog</code> presents checkboxes for:<ul>
+<li><code>"project_summary"</code></li>
+<li><code>"data_input_overview"</code></li>
+<li><code>"mmp_analysis"</code></li>
+<li><code>"eor_parameters_setup"</code></li>
+</ul>
+</li>
+<li><code>ReportGenerator</code> checks for:<ul>
+<li><code>config.get("sections", {}).get("executive_summary", True)</code></li>
+<li><code>config.get("sections", {}).get("input_parameters", True)</code></li>
+</ul>
+</li>
+<li><strong>Impact</strong>: Because the keys do not match, unchecking "Project Summary" or "Data Input Overview" in the GUI has <strong>zero effect</strong>; <code>ReportGenerator</code> defaults to <code>True</code> and includes them regardless of user intent.</li>
+<li><strong>Remediation</strong>: Standardize keys between <code>ReportConfigDialog</code> and <code>ReportGenerator</code>.</li>
+</ul>
+<h4 id="c-phantom-ai-features-in-reportconfigdialog">C. Phantom AI Features in <code>ReportConfigDialog</code><a class="headerlink" href="#c-phantom-ai-features-in-reportconfigdialog" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Location</strong>: <code>ui/dialogs/report_config_dialog.py</code> line 161 &amp; <code>ui/dialogs/ai_report_features_dialog.py</code></li>
+<li><strong>Issue</strong>: The user can open <code>AIReportFeaturesDialog</code> and select AI summary options, which are attached to <code>config["ai_features"]</code>. However, <code>ReportGenerator</code> never references <code>config["ai_features"]</code> in any method.</li>
+<li><strong>Impact</strong>: Dead UI feature.</li>
+<li><strong>Remediation</strong>: Either connect to an LLM summary generator in <code>ReportGenerator</code> or remove the button.</li>
+</ul>
+<h4 id="d-phantom-si-units-preference-cmg-exporter-trap">D. Phantom "SI Units" Preference &amp; CMG Exporter Trap<a class="headerlink" href="#d-phantom-si-units-preference-cmg-exporter-trap" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Location</strong>: <code>ui/dialogs/preferences_dialog.py</code> &amp; <code>utils/preferences_manager.py</code> &amp; <code>utils/cmg_exporter.py</code></li>
+<li><strong>Issue</strong>:</li>
+<li>The user can select <code>UnitSystem.SI</code> in preferences. However, <code>MainWindow._update_all_unit_displays()</code> only logs a message and does not alter numerical units or UI labels.</li>
+<li>In <code>utils/cmg_exporter.py</code> line 67:
+    <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"UNIT SI</span><span class="se">\n</span><span class="s2">"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">use_si_units</span> <span class="k">else</span> <span class="s2">"UNIT FIELD</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+    If <code>use_si_units=True</code>, it prints <code>UNIT SI</code> in the CMG header, but then outputs raw Field values (<code>rate=5000.0</code> STB/d and <code>pressure=3000.0</code> psia) without converting to <span class="arithmatex">\(m^3/d\)</span> or <span class="arithmatex">\(kPa\)</span>. A commercial simulator reading this deck will misinterpret rates and pressures by orders of magnitude!</li>
+<li><strong>Remediation</strong>: Either implement complete unit conversion multipliers before exporting or restrict export strictly to <code>UNIT FIELD</code>.</li>
+</ul>
+<hr />
+<h2 id="6-augmentation-remediation-execution-plan">6. Augmentation &amp; Remediation Execution Plan<a class="headerlink" href="#6-augmentation-remediation-execution-plan" title="Permanent link">&para;</a></h2>
+<h3 id="immediate-high-value-code-connections-zero-risk">Immediate High-Value Code Connections (Zero Risk):<a class="headerlink" href="#immediate-high-value-code-connections-zero-risk" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Connect Tapered &amp; Pulsed Schemes</strong>: In <code>core/data_integration_engine.py</code>, instantiate <code>TaperedInjectionParams</code> and <code>PulsedInjectionParams</code> when selected.</li>
+<li><strong>Align Report Section Keys</strong>: In <code>utils/report_generator.py</code>, support both <code>"project_summary"</code> / <code>"executive_summary"</code> and <code>"data_input_overview"</code> / <code>"input_parameters"</code>.</li>
+<li><strong>Eliminate Duplicate DCA Call</strong>: In <code>utils/report_generator.py</code>, remove the duplicate DCA generation block (lines 206–211).</li>
+<li><strong>Fix UI Destruction Bug</strong>: In <code>ui/widgets/edit_uq_parameter_dialog.py</code>, fix <code>_populate_dist_params()</code> to remove rows via <code>self.layout.removeRow()</code> rather than calling <code>w.parent().deleteLater()</code>.</li>
+<li><strong>Fix Mutable Default</strong>: In <code>ui/widgets/manual_well_dialog.py</code>, change <code>existing_names: List[str] = []</code> to <code>Optional[List[str]] = None</code>.</li>
+<li><strong>Remove Unused Imports</strong>: Clean up unused imports across <code>report_generator.py</code>, <code>cmg_exporter.py</code>, <code>manual_well_dialog.py</code>, <code>preferences_dialog.py</code>, <code>multiprocess_logging.py</code>, and <code>pvt_editor_dialog.py</code>.</li>
+<li><strong>Fix Invalid HTML <code>&lt;style&gt;</code></strong>: Strip redundant <code>&lt;style&gt;</code> wrapper in <code>ReportGenerator._get_css_styles()</code>.</li>
+</ol>
+<h3 id="deprecation-pruning-recommendations">Deprecation / Pruning Recommendations:<a class="headerlink" href="#deprecation-pruning-recommendations" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Deprecate <code>ui/models/optimization_types.py</code> (verified 100% uncalled).</li>
+<li>Move orphaned <code>ui/widgets/geomechanics_3d_view.py</code> (553 lines) to <code>deprecated/</code> or integrate into <code>ui/analysis_widget.py</code>.</li>
+<li>Clean up <code>LanguageChangeMixin</code> or apply it uniformly.</li>
+</ol>
 
 
 
@@ -3833,7 +4184,7 @@ This document catalogs <strong>only active, open items</strong>. For resolved fl
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../resolved_issues/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Resolved Issues">
+          <a href="../optimization_widget_audit/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Optimization Widget">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -3843,20 +4194,20 @@ This document catalogs <strong>only active, open items</strong>. For resolved fl
                 Previous
               </span>
               <div class="md-ellipsis">
-                Resolved Issues
+                Optimization Widget
               </div>
             </div>
           </a>
         
         
           
-          <a href="../mathematical_flaws/" class="md-footer__link md-footer__link--next" aria-label="Next: Mathematical Flaws">
+          <a href="../dead_code/" class="md-footer__link md-footer__link--next" aria-label="Next: Dead Code">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Mathematical Flaws
+                Dead Code
               </div>
             </div>
             <div class="md-footer__button md-icon">

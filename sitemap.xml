@@ -29,7 +29,15 @@
          <lastmod>2026-09-24</lastmod>
     </url>
     <url>
+         <loc>https://fgfalll.github.io/WAG_optimisation/audit/data_management_audit/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/dead_code/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://fgfalll.github.io/WAG_optimisation/audit/dialogs_models_utils_widgets_audit/</loc>
          <lastmod>2026-09-24</lastmod>
     </url>
     <url>
@@ -50,6 +58,10 @@
     </url>
     <url>
          <loc>https://fgfalll.github.io/WAG_optimisation/audit/mathematical_flaws/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://fgfalll.github.io/WAG_optimisation/audit/optimization_widget_audit/</loc>
          <lastmod>2026-09-24</lastmod>
     </url>
     <url>

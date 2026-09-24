@@ -16,7 +16,7 @@
         <link rel="prev" href="../suspicious_logic/">
       
       
-        <link rel="next" href="../dead_code/">
+        <link rel="next" href="../data_management_audit/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -1328,6 +1328,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
       
@@ -1702,6 +1708,69 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_management_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Management
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../optimization_widget_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimization Widget
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dialogs_models_utils_widgets_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dialogs, Models, Utils & Widgets
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3111,6 +3180,20 @@ This document catalogs <strong>only active, open items</strong>. For resolved fl
 <td style="text-align: left;">Maintain strict deprecation barriers; prevent inadvertent imports into active modules.</td>
 </tr>
 <tr>
+<td style="text-align: left;"><strong>Data Management &amp; Modals</strong></td>
+<td style="text-align: left;"><code>ui/data_management_widget.py</code>, <code>ui/widgets/</code></td>
+<td style="text-align: left;">Parameter disconnections (viscosity typo, omitted Corey rel perm exponents), dead PVT table methods, and bounds validation keyword mismatch. See <a href="../data_management_audit/"><strong>Data Management Audit</strong></a>.</td>
+<td style="text-align: center;"><strong>HIGH</strong></td>
+<td style="text-align: left;">Fix viscosity keys, connect Corey rel perm inputs into payload, remove dead methods, and normalize <code>min_val</code>/<code>min</code> in <code>ParameterInputGroup</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Dialogs, Models, Utils &amp; Widgets</strong></td>
+<td style="text-align: left;"><code>ui/dialogs/</code>, <code>core/data_models.py</code>, <code>utils/</code>, <code>ui/widgets/</code></td>
+<td style="text-align: left;">Dead code (<code>ui/models/</code>, <code>geomechanics_3d_view.py</code>), 99 phantom fields in <code>EORParameters</code>, report generator duplicate blocks/key mismatch, UI deletion bug in <code>edit_uq_parameter_dialog.py</code>. See <a href="../dialogs_models_utils_widgets_audit/"><strong>Full Audit</strong></a>.</td>
+<td style="text-align: center;"><strong>HIGH</strong></td>
+<td style="text-align: left;">Connect dropped injection schemes in <code>data_integration_engine.py</code>, align report section keys, fix UI lifecycle bugs, and prune orphaned modules.</td>
+</tr>
+<tr>
 <td style="text-align: left;"><strong>Deprecation Warning Noise</strong></td>
 <td style="text-align: left;">Test Suite Execution</td>
 <td style="text-align: left;">Scientific library warnings (e.g. future deprecations in SciPy and Pandas) emitted during test runs.</td>
@@ -3173,13 +3256,13 @@ This document catalogs <strong>only active, open items</strong>. For resolved fl
         
         
           
-          <a href="../dead_code/" class="md-footer__link md-footer__link--next" aria-label="Next: Dead Code">
+          <a href="../data_management_audit/" class="md-footer__link md-footer__link--next" aria-label="Next: Data Management">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Dead Code
+                Data Management
               </div>
             </div>
             <div class="md-footer__button md-icon">

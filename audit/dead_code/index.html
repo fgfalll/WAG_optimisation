@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/audit/dead_code/">
       
       
-        <link rel="prev" href="../technical_debt/">
+        <link rel="prev" href="../dialogs_models_utils_widgets_audit/">
       
       
         <link rel="next" href="../hardcoded_values/">
@@ -1328,6 +1328,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
       
@@ -1642,6 +1648,69 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_management_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Management
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../optimization_widget_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimization Widget
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dialogs_models_utils_widgets_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dialogs, Models, Utils & Widgets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -1756,6 +1825,15 @@
   <a href="#4-unused-imports-dead-dependencies-f401" class="md-nav__link">
     <span class="md-ellipsis">
       4. Unused Imports &amp; Dead Dependencies (F401)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-ui-data-management-modal-subsystem-dead-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. UI Data Management &amp; Modal Subsystem Dead Code
     </span>
   </a>
   
@@ -3121,6 +3199,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#5-ui-data-management-modal-subsystem-dead-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. UI Data Management &amp; Modal Subsystem Dead Code
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3240,6 +3327,23 @@ This document catalogs <strong>only active, open items</strong>. For resolved fl
 - In <code>core/engine_surrogate/analytical_models.py</code>:
   - Line 30: <code>from core.simulation.recovery_models import (...)</code> triggers deprecation warnings upon import even when surrogate models do not call them.</p>
 <hr />
+<h2 id="5-ui-data-management-modal-subsystem-dead-code">5. UI Data Management &amp; Modal Subsystem Dead Code<a class="headerlink" href="#5-ui-data-management-modal-subsystem-dead-code" title="Permanent link">&para;</a></h2>
+<p>Detailed in <a href="../data_management_audit/"><strong>Data Management Audit</strong></a>:</p>
+<ol>
+<li><strong>Dead PVT Table Operations (<code>ui/data_management_widget.py</code>)</strong>:</li>
+<li><code>_add_pvt_row()</code>, <code>_remove_pvt_row()</code>, and <code>_plot_pvt_data()</code> operate on non-existent <code>self.pvt_table</code>, raising <code>AttributeError</code> if invoked.</li>
+<li><strong>Dead Geostatistical Model Toggle &amp; Crash Trap (<code>ui/data_management_widget.py</code>)</strong>:</li>
+<li><code>_toggle_geostatistical_model()</code> toggles non-existent <code>self.geostatistical_props_group</code>.</li>
+<li><code>load_project_data()</code> attempts <code>self.use_geostatistical_model_checkbox.setChecked(True)</code>, crashing projects with geostatistical parameters.</li>
+<li><strong>Dead Well Creator (<code>ui/data_management_widget.py</code>)</strong>:</li>
+<li><code>_get_or_create_well()</code> is defined but never invoked across the repository.</li>
+<li><strong>Unpopulated 3D Canvas (<code>ui/data_management_widget.py</code>)</strong>:</li>
+<li><code>self.canvas_3d</code> and <code>self.ax_3d</code> are allocated and cleared, but never drawn to.</li>
+<li><strong>Unused Imports</strong>:</li>
+<li><code>ui/data_management_widget.py</code>: <code>get_origin</code>, <code>get_args</code>, <code>Union</code>, <code>UnionType</code>, <code>QLineEdit</code>, <code>QSizePolicy</code>, <code>QHeaderView</code>, <code>QComboBox</code>, <code>QPixmap</code>, <code>GeostatisticalParams</code>.</li>
+<li><code>ui/widgets/pvt_editor_dialog.py</code>: <code>pyqtSignal</code>.</li>
+<li><code>ui/widgets/pvt_table_editor.py</code>: <code>QIcon</code>.</li>
+</ol>
 
 
 
@@ -3277,7 +3381,7 @@ This document catalogs <strong>only active, open items</strong>. For resolved fl
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../technical_debt/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Technical Debt">
+          <a href="../dialogs_models_utils_widgets_audit/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Dialogs, Models, Utils &amp; Widgets">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -3287,7 +3391,7 @@ This document catalogs <strong>only active, open items</strong>. For resolved fl
                 Previous
               </span>
               <div class="md-ellipsis">
-                Technical Debt
+                Dialogs, Models, Utils & Widgets
               </div>
             </div>
           </a>
