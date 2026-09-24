@@ -1,5 +1,8 @@
 # Hardcoded Values & Magic Numbers Audit
 
+> [!NOTE]
+> This document catalogs **only active, open items**. For resolved flaws, historical post-mortems, and verification status, consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md).
+
 ## 1. Executive Summary
 
 An AST traversal targeting binary operations, comparison expressions, and function calls across active scientific computing modules identified **1,965 non-trivial hardcoded numerical values**.
@@ -25,7 +28,6 @@ Every important value has been audited to determine its physical meaning, unit, 
 | [surrogate_engine.py:224](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L224) | `1.062e-14` | Permeability conversion factor ($\text{mD} \to \text{ft}^2$) | $\text{ft}^2/\text{mD}$ | No | Physical constant ($9.86923 \times 10^{-16} \times 10.7639$) | Mathematically accurate conversion constant. |
 | [surrogate_engine.py:896](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L896) | `1.2` | Assumed oil formation volume factor $B_o$ | RB/STB | No | Default engineering guess | Used when `reservoir_data.oil_fvf` is missing to calculate pore volume from OOIP. |
 | [surrogate_engine.py:1347-1355](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L1347-L1355) | `0.4`, `0.25`, `0.10`, `0.002` | Trapping breakdown fraction coefficients | fraction | No | **UNKNOWN ORIGIN** | Heuristic split between structural, residual, solubility, and mineral trapping. |
-| [core/objectives/wrapper.py:155-186](file:///d:/rep/4.6/co2eor_optimizer/core/objectives/wrapper.py#L155-L186) | `999999.0` / `1e6` [RESOLVED] | Penalty value for missing profile data in CO₂ utilization | factor | No | Arbitrary numerical penalty | **RESOLVED**: Eradicated magic number. Missing profile data now evaluates to `float('nan')` and triggers `FAILURE_PENALTY` (-1e12) in GA without distorting scaling. |
 | [core/simulation/recovery_models.py:600-601](file:///d:/rep/4.6/co2eor_optimizer/core/simulation/recovery_models.py#L600-L601) | `-0.571, -0.614, -0.083, 1.122, 0.081, 0.031` | Dykstra-Parsons WOR polynomial fit coefficients | mixed | No | Literature chart polynomial regression | Fits published Dykstra-Parsons charts to numerical curves. |
 | [evaluation/mmp.py:148-152](file:///d:/rep/4.6/co2eor_optimizer/evaluation/mmp.py#L148-L152) | `0.35, 0.45, 0.15, 0.20` | Impurity sensitivity weights (CH4, N2, H2S, C2) | factor | No | **UNKNOWN ORIGIN** (loosely based on Yellig & Metcalfe) | Linear heuristic sensitivity factor for gas impurities. |
 | [evaluation/mmp.py:197-203](file:///d:/rep/4.6/co2eor_optimizer/evaluation/mmp.py#L197-L203) | `1.356, 0.0016, 3.3e-6, 630.0, 10.3, 0.36, 0.641, 0.21, 0.993, 0.778, 0.11` | Yuan et al. (2005) correlation coefficients | mixed | No | Yuan et al. (2005) SPE-89359-PA | Re-implemented with corrected intercept ($1.356$ vs original typo $3.356$). |

@@ -1,5 +1,8 @@
 # Suspicious Logic & Scientific Discrepancies Audit
 
+> [!NOTE]
+> This document catalogs **only active, open items**. For resolved flaws, historical post-mortems, and verification status, consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md).
+
 This document catalogs logic, equations, and code paths that are mathematically or physically questionable, internally contradictory, or scientifically unvalidated.
 
 ---
@@ -377,38 +380,7 @@ This document catalogs logic, equations, and code paths that are mathematically 
 
 ---
 
-## 2. Master Resolved Discrepancies Archive
-
-All 22 historical numerical errors, units explosions, and presentation bugs previously cataloged in this document have been fully resolved and migrated into [**`agent_wiki/audit/resolved_issues.md`**](resolved_issues.md):
-
-| ID | Issue Title | Location | Status | Full Post-Mortem |
-|:---|:---|:---|:---|:---|
-| **SUSP-B** | Unit Inconsistency in Reservoir Tank Pressure ODE | `surrogate_engine.py:904` | VERIFIED | [View Record](resolved_issues.md#susp-b-unit-inconsistency-in-reservoir-tank-pressure-ode) |
-| **SUSP-C** | Recycled Gas Double-Subtraction in Material Balance | `material_balance.py:216` | VERIFIED | [View Record](resolved_issues.md#susp-c-recycled-gas-double-subtraction-in-material-balance) |
-| **SUSP-C2** | 35.3× OOIP Dimensional Unit Inconsistency | `data_integration_engine.py:408` | VERIFIED | [View Record](resolved_issues.md#susp-c2-353-ooip-dimensional-unit-inconsistency) |
-| **SUSP-F** | 12× Recovery Factor Discrepancy in Data Validation | `data_validation.py:288` | VERIFIED | [View Record](resolved_issues.md#susp-f-12-recovery-factor-discrepancy-in-data-validation) |
-| **SUSP-G** | Recycled CO₂ Unit Explosion (21.2M Tonnes) | `material_balance.py:108` | VERIFIED | [View Record](resolved_issues.md#susp-g-recycled-co2-unit-explosion-212m-tonnes) |
-| **SUSP-H** | 180-Year Material Balance Time Vector Scaling | `material_balance.py:632` | VERIFIED | [View Record](resolved_issues.md#susp-h-180-year-material-balance-time-vector-scaling) |
-| **SUSP-I** | 15-Bar Production Profile Truncation | `optimisation_engine.py:856` | VERIFIED | [View Record](resolved_issues.md#susp-i-15-bar-production-profile-truncation) |
-| **SUSP-J** | CO₂ Utilization Penalty 1,000,000.00 Key Mismatch | `wrapper.py:105` | VERIFIED | [View Record](resolved_issues.md#susp-j-co2-utilization-penalty-100000000-key-mismatch) |
-| **SUSP-K** | Class E Artificial Storage Modifier Synthesis | `wrapper.py:130` | VERIFIED | [View Record](resolved_issues.md#susp-k-class-e-artificial-storage-modifier-synthesis) |
-| **SUSP-L** | Penalty Dilution Multipliers (*0.1, *0.8) and Silent Bare Exceptions | `optimisation_engine.py:1705` | VERIFIED | [View Record](resolved_issues.md#susp-l-penalty-dilution-multipliers-01-08-and-silent-bare-exceptions) |
-| **SUSP-M** | Plotly Dummy Mock Classes Swallowing Visualizations | `material_balance.py:9` | VERIFIED | [View Record](resolved_issues.md#susp-m-plotly-dummy-mock-classes-swallowing-visualizations) |
-| **SUSP-N** | 1000× Volumetric Downhole Velocity & Dimensionless Number Error ($N_c$, $N_g$) | `analytical_models.py:813` | VERIFIED | [View Record](resolved_issues.md#susp-n-1000-volumetric-downhole-velocity--dimensionless-number-error-n_c-n_g) |
-| **SUSP-Y** | Cronquist MMP Formula Uses Ad-Hoc `(55 - API)` Term | `evaluation/mmp.py:111` | VERIFIED | [View Record](resolved_issues.md#susp-y-cronquist-mmp-formula-uses-ad-hoc-55---api-term) |
-| **SUSP-AD** | 20× Produced CO₂ Shrinkage Bug | `material_balance.py:172` | VERIFIED | [View Record](resolved_issues.md#susp-ad-20-produced-co2-shrinkage-bug) |
-| **SUSP-AE** | Hallucinated Caprock Leakage from Normal Wellbore Production | `optimisation_engine.py:1458` | VERIFIED | [View Record](resolved_issues.md#susp-ae-hallucinated-caprock-leakage-from-normal-wellbore-production) |
-| **SUSP-AF** | Pressure Search Space Squeeze from Dimensional Mismatch on $\Delta P_{\text{inj}}$ | `optimisation_engine.py:1906` | VERIFIED | [View Record](resolved_issues.md#susp-af-pressure-search-space-squeeze-from-dimensional-mismatch-on-delta-p_textinj) |
-| **SUSP-AG** | Plateau Rate Decoupling from Collapsing Drawdown | `profile_generator_fast.py:518` | VERIFIED | [View Record](resolved_issues.md#susp-ag-plateau-rate-decoupling-from-collapsing-drawdown) |
-| **SUSP-AH** | Apparent Mass Balance Discrepancy from Recycled Stream Double-Counting | `utils/run_exporter.py:310` | VERIFIED | [View Record](resolved_issues.md#susp-ah-apparent-mass-balance-discrepancy-from-recycled-stream-double-counting) |
-| **SUSP-AI** | Post Shut-In Unattenuated CO₂ Production & False Ecology Penalties | `surrogate_engine.py:1260` | VERIFIED | [View Record](resolved_issues.md#susp-ai-post-shut-in-unattenuated-co2-production--false-ecology-penalties) |
-| **SUSP-AJ** | Decline Curve Analysis Plateau Regression Breakdown ($R^2 = -3.14$) | `decline_curve_analysis.py:90` | VERIFIED | [View Record](resolved_issues.md#susp-aj-decline-curve-analysis-plateau-regression-breakdown-r2---314) |
-| **SUSP-AK** | Well-Injector-1 Role Inversion via UI Substring Default Matching | `manual_well_dialog.py:110` | VERIFIED | [View Record](resolved_issues.md#susp-ak-well-injector-1-role-inversion-via-ui-substring-default-matching) |
-| **SUSP-AL** | Plotly Vertical Bar Schedule Collapse & Duplicate Legend Pollution | `plotting_manager.py:780` | VERIFIED | [View Record](resolved_issues.md#susp-al-plotly-vertical-bar-schedule-collapse--duplicate-legend-pollution) |
-
----
-
-## 3. Verified Correct Modules and Physical Formulations
+## 2. Verified Correct Modules and Physical Formulations
 
 The following modules, functions, and mathematical derivations were rigorously reviewed and found to be scientifically, dimensionally, and mathematically sound:
 
@@ -435,7 +407,4 @@ The following modules, functions, and mathematical derivations were rigorously r
    - Multi-generation coverage tracking (trend, min, max) with shaded envelope in `core/plotting_manager.py:plot_coverage`.
    - Symmetric Euclidean distance matrix heatmap in normalized parameter space $[0, 1]^d$ in `core/plotting_manager.py:plot_euclidean_distance_matrix`.
    - Interval-accurate multi-well operational schedule plotting with zero-rate event tracking.
-
-
-
 

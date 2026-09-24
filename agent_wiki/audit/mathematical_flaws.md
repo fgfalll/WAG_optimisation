@@ -1,5 +1,8 @@
 # Mathematical Flaw Register
 
+> [!NOTE]
+> This document catalogs **only active, open items**. For resolved flaws, historical post-mortems, and verification status, consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md).
+
 This document catalogs confirmed mathematical errors, invalid transformations, corrupted numerical solvers, and dimensional inconsistencies in the CO₂ EOR Optimizer codebase.
 
 ---

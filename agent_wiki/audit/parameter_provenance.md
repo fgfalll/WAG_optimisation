@@ -1,5 +1,8 @@
 # Scientific Parameter Provenance & Anti-Calibration Audit
 
+> [!NOTE]
+> This document catalogs **only active, open items**. For resolved flaws, historical post-mortems, and verification status, consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md).
+
 ## 1. Provenance Classification Taxonomy
 
 Every numerical parameter in a scientific simulator must have clear traceability. In this audit, all parameters in `core/data_models.py`, `core/engine_surrogate/`, and physics modules have been classified into one of six distinct categories:

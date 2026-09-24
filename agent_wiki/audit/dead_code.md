@@ -1,5 +1,8 @@
 # Dead Code, Orphaned Modules & Unused Logic Audit
 
+> [!NOTE]
+> This document catalogs **only active, open items**. For resolved flaws, historical post-mortems, and verification status, consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md).
+
 ## 1. Executive Summary
 
 Static analysis, reachability graphs, and ruff linting revealed significant volumes of orphaned code, abandoned engines, unused functions, and calculated variables that are discarded without consumption:
@@ -66,28 +69,4 @@ s_wi = params.get("s_wi", 0.25) # UNUSED (F841)
   - Line 30: `from core.simulation.recovery_models import (...)` triggers deprecation warnings upon import even when surrogate models do not call them.
 
 ---
-
-> [!NOTE]
-> **5. Removed Root Artifacts & Superseded Scripts [RESOLVED]** has been archived to [`resolved_issues.md`](resolved_issues.md#dead-05).
-
-> [!NOTE]
-> **6. Removed Scientific Justification and Help Subsystems [RESOLVED]** has been archived to [`resolved_issues.md`](resolved_issues.md#dead-06).
-
-> [!NOTE]
-> **7. Core Directory Architecture Audit & Dead Code Removal [RESOLVED]**
-> - **Phase 1 Deletions**: Completely removed `core/validation/` (1,290 lines), `core/optimization_analysis.py` (886 lines), `core/objectives/base.py` & `production.py` (136 lines), `core/exceptions.py` (32 lines), and `core/utils/` (36 lines).
-> - **Phase 2 Deprecations & Relocations**:
->   - `core/simulation/recovery_models.py` and `profile_generator.py` relocated to `deprecated/core/simulation/`.
->   - Uncalibrated `GeologyEngine` relocated to `deprecated/core/geology/geology_engine.py`.
->   - `SimulatorExporter` moved to `utils/cmg_exporter.py` with backward-compatible deprecation shim.
->   - Response surface machine learning prototypes relocated to `deprecated/core/engine_surrogate/`.
-> - **Phase 3 Internal Cleanups**:
->   - `core/data_models.py`: Removed unused `GridType`, `GridBase`, `SimpleGrid`, `FullPhysicsGrid`, `ReservoirState`, `RockProperties`. Inlined pore volume calculation.
->   - `core/data_integration_engine.py`: Removed duplicate `DataValidator` and `UnitConverter`; uses `PhysicalConstants`.
->   - `core/objectives/storage.py`: Removed dead prototype functions; retained active containment and storage efficiency models.
->   - `core/engine_surrogate/analytical_models.py`: Removed dead `LiteratureBasedMMP`; fixed array truth value evaluation in Buckley-Leverett.
-> - **Phase 4 Optimisation Engine Decoupling**:
->   - `core/optimisation_engine.py`: Removed unused `npv` fallback and breakthrough physics imports; updated physical constants; delegated GA, hybrid, and breakthrough plots directly to `PlottingManager`.
-> - **Verification**: Full suite of 307 tests passes with 0 failures.
-
 

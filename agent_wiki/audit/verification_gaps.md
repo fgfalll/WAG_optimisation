@@ -1,5 +1,8 @@
 # Scientific Verification Gaps & Dormant Code Architecture
 
+> [!NOTE]
+> This document catalogs **only active, open items**. For resolved flaws, historical post-mortems, and verification status, consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md).
+
 ## 1. Executive Summary of Verification Coverage
 
 The active production simulation pipeline (`core/engine_surrogate/` and `core/optimisation_engine.py`) has been audited and verified across 42 dedicated scientific tests in `tests/scientific/`. However, significant architectural gaps exist in dormant and legacy subsystems:

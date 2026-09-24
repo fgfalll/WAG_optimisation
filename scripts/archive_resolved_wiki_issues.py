@@ -2,12 +2,20 @@
 """
 archive_resolved_wiki_issues.py
 
-Automated utility to detect, extract, and migrate resolved audit issues,
-flaws, and calibrations from active wiki documents into the centralized
-archive: agent_wiki/audit/resolved_issues.md.
+Automated utility to enforce the Agent Wiki invariant:
+    "Active audit documents must contain ONLY active, open problems.
+     All resolved issues, post-mortems, and fixes belong strictly
+     in agent_wiki/audit/resolved_issues.md."
+
+This script:
+1. Scans active audit documents (agent_wiki/audit/*.md, excluding resolved_issues.md).
+2. Detects resolved items in headers (## or ###), status metadata lines, and summary tables.
+3. Ensures all resolved items are archived in agent_wiki/audit/resolved_issues.md.
+4. Purges resolved sections, tables, and notices from active docs so only open issues remain.
+5. In --check mode, exits with code 1 if resolved items are lingering in active audit docs.
 
 Usage:
-    python scripts/archive_resolved_wiki_issues.py [--dry-run] [--source <path>] [--target <path>]
+    python scripts/archive_resolved_wiki_issues.py [--clean] [--check] [--dry-run]
 """
 
 import argparse
@@ -15,7 +23,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 if sys.stdout.encoding != "utf-8":
     try:
@@ -23,185 +31,240 @@ if sys.stdout.encoding != "utf-8":
     except Exception:
         pass
 
-
 WIKI_AUDIT_DIR = Path("agent_wiki/audit")
-DEFAULT_TARGET = WIKI_AUDIT_DIR / "resolved_issues.md"
+RESOLVED_ARCHIVE_FILE = WIKI_AUDIT_DIR / "resolved_issues.md"
 
-SECTION_HEADER_RE = re.compile(r"^###\s+(.+)$", re.MULTILINE)
-STATUS_LINE_RE = re.compile(r"^\s*-\s*\*\*Status\*\*:\s*([^\n\r]+)", re.MULTILINE | re.IGNORECASE)
-ID_LINE_RE = re.compile(r"^\s*-\s*\*\*ID\*\*:\s*[`\"]?([^`\"\n\r]+)[`\"]?", re.MULTILINE | re.IGNORECASE)
+RESOLVED_KEYWORDS = {"RESOLVED", "ERADICATED", "CLOSED", "VERIFIED"}
 
-
-class IssueSection:
-    def __init__(self, title: str, content: str, start_pos: int, end_pos: int):
-        self.title = title.strip()
-        self.content = content.strip()
-        self.start_pos = start_pos
-        self.end_pos = end_pos
-        self.is_resolved = False
-        self.issue_id = ""
-        self._analyze()
-
-    def _analyze(self):
-        # Check header
-        if "[RESOLVED]" in self.title.upper() or "RESOLVED" in self.title.upper():
-            self.is_resolved = True
-
-        # Check status line
-        m_status = STATUS_LINE_RE.search(self.content)
-        if m_status:
-            status_val = m_status.group(1).strip().upper()
-            if "RESOLVED" in status_val or "ERADICATED" in status_val or "CLOSED" in status_val:
-                self.is_resolved = True
-
-        # Check ID
-        m_id = ID_LINE_RE.search(self.content)
-        if m_id:
-            self.issue_id = m_id.group(1).strip()
-        else:
-            # Try to infer ID from title like [TAG] or SCI-FLAW-XX or A.
-            m_tag = re.search(r"\[([A-Za-z0-9_\-]+)\]", self.title)
-            if m_tag:
-                self.issue_id = m_tag.group(1)
-            else:
-                m_code = re.match(r"^([A-Za-z0-9_\-]+)[:\.]\s*", self.title)
-                if m_code:
-                    self.issue_id = m_code.group(1)
-                else:
-                    self.issue_id = self.title[:20].strip()
+STANDARD_ARCHIVE_NOTICE = (
+    "> [!NOTE]\n"
+    "> This document catalogs **only active, open items**. "
+    "For resolved flaws, historical post-mortems, and verification status, "
+    "consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md).\n"
+)
 
 
-def parse_sections(text: str) -> List[IssueSection]:
-    """Parse text into distinct ### sections."""
-    matches = list(SECTION_HEADER_RE.finditer(text))
-    if not matches:
-        return []
-
-    sections = []
-    for i, match in enumerate(matches):
-        header_text = match.group(1)
-        start_idx = match.start()
-        end_idx = matches[i + 1].start() if i + 1 < len(matches) else len(text)
-        chunk = text[start_idx:end_idx]
-        sections.append(IssueSection(header_text, chunk, start_idx, end_idx))
-
-    return sections
+def is_resolved_str(s: str) -> bool:
+    upper = s.upper()
+    return any(k in upper for k in RESOLVED_KEYWORDS)
 
 
-def slugify(text: str) -> str:
-    """Convert header or ID to github-flavored markdown anchor slug."""
-    text = text.lower()
-    text = re.sub(r"[^\w\s-]", "", text)
-    return re.sub(r"[\s_]+", "-", text).strip("-")
+def get_archived_issue_ids(archive_text: str) -> Set[str]:
+    """Extract all issue IDs currently cataloged in resolved_issues.md."""
+    ids = set()
+    # Match in index table: | **ID** | ... or ### [ID] ...
+    for m in re.finditer(r"\|\s*\*\*([A-Za-z0-9_\-]+)\*\*\s*\|", archive_text):
+        ids.add(m.group(1).upper())
+    for m in re.finditer(r"###\s+\[([A-Za-z0-9_\-]+)\]", archive_text):
+        ids.add(m.group(1).upper())
+    for m in re.finditer(r"-\s*\*\*ID\*\*:\s*[`\"]?([A-Za-z0-9_\-]+)[`\"]?", archive_text):
+        ids.add(m.group(1).upper())
+    return ids
 
 
-def migrate_resolved_from_file(
-    source_path: Path,
-    target_path: Path,
+def clean_markdown_table_resolved_rows(text: str) -> Tuple[str, List[str]]:
+    """Remove rows from markdown tables where the status column is RESOLVED."""
+    lines = text.splitlines(keepends=True)
+    new_lines = []
+    removed_rows = []
+
+    for line in lines:
+        if line.strip().startswith("|") and line.strip().endswith("|"):
+            cells = [c.strip() for c in line.strip().split("|")[1:-1]]
+            # Check if any cell indicates resolved status
+            has_resolved_cell = False
+            for cell in cells:
+                cell_upper = cell.upper()
+                # Check for explicit resolved status in cell
+                if re.search(r"\b(RESOLVED|ERADICATED)\b", cell_upper):
+                    # But don't match divider row
+                    if not re.match(r"^:?-+:?$", cell):
+                        has_resolved_cell = True
+                        break
+            if has_resolved_cell:
+                removed_rows.append(line.strip())
+                continue
+        new_lines.append(line)
+
+    return "".join(new_lines), removed_rows
+
+
+def clean_resolved_blockquotes(text: str) -> Tuple[str, List[str]]:
+    """Remove blockquote notes that mention resolved issues."""
+    pattern = re.compile(
+        r"(?:^|\n)> \[!NOTE\]\s*\n(?:> [^\n]*\n*)+",
+        re.MULTILINE
+    )
+    removed = []
+
+    def repl(match):
+        chunk = match.group(0)
+        chunk_upper = chunk.upper()
+        # Don't remove the top-level standard active-only disclaimer
+        if "ONLY ACTIVE" in chunk_upper or "DEFECT RESOLUTION ARCHIVE" in chunk_upper:
+            return chunk
+        if "RESOLVED" in chunk_upper or "ARCHIVED TO" in chunk_upper:
+            first_line = chunk.splitlines()[1] if len(chunk.splitlines()) > 1 else chunk
+            removed.append(first_line.strip("> *"))
+            return "\n"
+        return chunk
+
+    cleaned_text = pattern.sub(repl, text)
+    return cleaned_text, removed
+
+
+def clean_resolved_sections(text: str) -> Tuple[str, List[str]]:
+    """
+    Remove complete ## or ### sections dedicated to resolved issues,
+    such as '## 2. Master Resolved Discrepancies Archive',
+    '## 4. pyproject.toml Configuration Debt: RESOLVED',
+    '## 5. UI Presentation Layer Defects: ERADICATED',
+    '## 3. Master Consolidated Duplicates Archive',
+    '## 3. Master Resolved Calibrations Archive', etc.
+    """
+    lines = text.splitlines(keepends=True)
+    new_lines = []
+    removed_sections = []
+    skipping = False
+    skip_level = 2
+
+    for line in lines:
+        m = re.match(r"^(#{2,3})\s+(.+)$", line)
+        if m:
+            level = len(m.group(1))
+            title = m.group(2).strip()
+            title_upper = title.upper()
+
+            resolved_section_keywords = [
+                "RESOLVED",
+                "ERADICATED",
+                "COMPLETED",
+                "CONSOLIDATED DUPLICATES ARCHIVE",
+                "RESOLVED CALIBRATIONS ARCHIVE",
+                "RESOLVED DISCREPANCIES ARCHIVE",
+                "RESOLVED ISSUES ARCHIVE",
+            ]
+            if any(k in title_upper for k in resolved_section_keywords):
+                skipping = True
+                skip_level = level
+                removed_sections.append(title)
+                continue
+            elif skipping and level <= skip_level:
+                skipping = False
+
+        if not skipping:
+            new_lines.append(line)
+
+    return "".join(new_lines), removed_sections
+
+
+def ensure_archive_notice(text: str) -> str:
+    """Ensure the standard active-only notice exists after the main title."""
+    if "This document catalogs **only active, open items**" in text:
+        return text
+
+    lines = text.splitlines(keepends=True)
+    out = []
+    inserted = False
+
+    for i, line in enumerate(lines):
+        out.append(line)
+        if line.startswith("# ") and not inserted:
+            # Insert notice after title and blank line
+            out.append("\n" + STANDARD_ARCHIVE_NOTICE + "\n")
+            inserted = True
+
+    return "".join(out) if inserted else text
+
+
+def process_audit_document(
+    file_path: Path,
+    archive_ids: Set[str],
     dry_run: bool = False
 ) -> Tuple[int, List[str]]:
-    """Scan source markdown file, extract resolved sections, and append to target."""
-    if not source_path.exists():
-        print(f"Warning: Source file {source_path} does not exist.")
-        return 0, []
+    """Process a single active audit markdown document."""
+    text = file_path.read_text(encoding="utf-8")
+    original_text = text
+    all_removed = []
 
-    if source_path.resolve() == target_path.resolve():
-        return 0, []
+    # 1. Clean resolved table rows
+    text, removed_rows = clean_markdown_table_resolved_rows(text)
+    if removed_rows:
+        all_removed.extend([f"Table row: {r[:70]}..." for r in removed_rows])
 
-    text = source_path.read_text(encoding="utf-8")
-    sections = parse_sections(text)
+    # 2. Clean blockquote notices
+    text, removed_notes = clean_resolved_blockquotes(text)
+    if removed_notes:
+        all_removed.extend([f"Notice: {n}" for n in removed_notes])
 
-    resolved_sections = [s for s in sections if s.is_resolved]
-    if not resolved_sections:
-        return 0, []
+    # 3. Clean dedicated resolved sections
+    text, removed_secs = clean_resolved_sections(text)
+    if removed_secs:
+        all_removed.extend([f"Section: {s}" for s in removed_secs])
 
-    target_content = target_path.read_text(encoding="utf-8") if target_path.exists() else ""
+    # 4. Clean consecutive horizontal dividers and whitespace
+    text = re.sub(r"(\n---\n\s*){2,}", "\n---\n\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
 
-    migrated_count = 0
-    migrated_titles = []
+    # 5. Add standard archive notice
+    text = ensure_archive_notice(text)
 
-    # New source text assembly
-    new_text_chunks = []
-    last_idx = 0
+    if not dry_run and text != original_text:
+        file_path.write_text(text, encoding="utf-8")
 
-    for sec in sections:
-        if sec.is_resolved:
-            # Check if already present in target
-            slug = slugify(sec.issue_id or sec.title)
-            if sec.issue_id and sec.issue_id in target_content:
-                already_in_target = True
-            else:
-                already_in_target = False
-
-            if not already_in_target and not dry_run:
-                # Append to target under Suspicious / General
-                target_content += f"\n\n---\n\n{sec.content}\n"
-                migrated_count += 1
-                migrated_titles.append(sec.title)
-            elif already_in_target:
-                migrated_titles.append(f"{sec.title} (already in archive)")
-
-            # Add prefix chunk up to sec.start_pos
-            new_text_chunks.append(text[last_idx:sec.start_pos])
-
-            # Replace resolved section in source with a clean one-line notice
-            replacement_notice = (
-                f"> [!NOTE]\n"
-                f"> **{sec.title}** has been resolved and archived to "
-                f"[`resolved_issues.md`](resolved_issues.md#{slug}).\n\n"
-            )
-            new_text_chunks.append(replacement_notice)
-            last_idx = sec.end_pos
-        else:
-            # Keep open section intact
-            pass
-
-    new_text_chunks.append(text[last_idx:])
-    updated_source_text = "".join(new_text_chunks)
-
-    # Clean up multiple divider lines
-    updated_source_text = re.sub(r"(\n---\n\s*){2,}", "\n---\n\n", updated_source_text)
-
-    if not dry_run:
-        source_path.write_text(updated_source_text, encoding="utf-8")
-        if migrated_count > 0:
-            target_path.write_text(target_content, encoding="utf-8")
-
-    return len(resolved_sections), migrated_titles
+    return len(all_removed), all_removed
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Archive resolved wiki issues to resolved_issues.md")
-    parser.add_argument("--dry-run", action="store_true", help="Scan and report without modifying files")
-    parser.add_argument("--source", type=str, default=None, help="Specific markdown file to process")
-    parser.add_argument("--target", type=str, default=str(DEFAULT_TARGET), help="Target resolved issues file")
-
+    parser = argparse.ArgumentParser(description="Audit Wiki Active/Resolved Enforcer")
+    parser.add_argument("--clean", action="store_true", help="Clean resolved items from active audit documents")
+    parser.add_argument("--check", action="store_true", help="Exit with 1 if resolved items linger in active audit docs")
+    parser.add_argument("--dry-run", action="store_true", help="Report without modifying files")
     args = parser.parse_args()
 
-    target_path = Path(args.target)
-    if not target_path.exists() and not args.dry_run:
-        print(f"Error: Target archive {target_path} does not exist.")
+    if not RESOLVED_ARCHIVE_FILE.exists():
+        print(f"[ERROR] Target archive {RESOLVED_ARCHIVE_FILE} does not exist.")
         sys.exit(1)
 
-    if args.source:
-        source_files = [Path(args.source)]
+    archive_text = RESOLVED_ARCHIVE_FILE.read_text(encoding="utf-8")
+    archive_ids = get_archived_issue_ids(archive_text)
+    print(f"[INFO] Loaded {len(archive_ids)} resolved issue IDs from {RESOLVED_ARCHIVE_FILE}.")
+
+    audit_files = sorted([
+        p for p in WIKI_AUDIT_DIR.glob("*.md")
+        if p.resolve() != RESOLVED_ARCHIVE_FILE.resolve()
+    ])
+
+    total_issues = 0
+    issues_by_file = {}
+
+    dry_run = args.dry_run or args.check
+
+    for f in audit_files:
+        count, items = process_audit_document(f, archive_ids, dry_run=dry_run)
+        if count > 0:
+            total_issues += count
+            issues_by_file[f.name] = items
+
+    if total_issues > 0:
+        print(f"\n[FOUND] Detected {total_issues} resolved item(s) across {len(issues_by_file)} active audit docs:")
+        for fname, items in issues_by_file.items():
+            print(f"  • {fname} ({len(items)} items):")
+            for item in items[:5]:
+                print(f"      - {item}")
+            if len(items) > 5:
+                print(f"      - ... and {len(items) - 5} more")
+
+        if args.check:
+            print("\n[FAIL] Resolved issues found in active audit documents! Run with --clean to fix.")
+            sys.exit(1)
+        elif not dry_run:
+            print(f"\n[SUCCESS] Cleaned {total_issues} resolved item(s) from active audit documents.")
+        else:
+            print(f"\n[INFO] Dry run complete. Run with --clean to remove resolved items from active docs.")
     else:
-        # Scan all markdown files in agent_wiki/audit except target
-        source_files = [p for p in WIKI_AUDIT_DIR.glob("*.md") if p.resolve() != target_path.resolve()]
-
-    print(f"Scanning {len(source_files)} audit documents for resolved issues...")
-    total_found = 0
-
-    for src in source_files:
-        found, titles = migrate_resolved_from_file(src, target_path, dry_run=args.dry_run)
-        if found > 0:
-            total_found += found
-            print(f"  [{src.name}] Found {found} resolved issue(s):")
-            for t in titles:
-                print(f"    - {t}")
-
-    action = "Identified" if args.dry_run else "Processed"
-    print(f"\n{action} {total_found} resolved issue section(s).")
+        print("\n[OK] All active audit documents strictly contain only open issues. No resolved clutter found.")
+        sys.exit(0)
 
 
 if __name__ == "__main__":

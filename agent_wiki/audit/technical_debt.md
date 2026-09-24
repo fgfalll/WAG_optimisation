@@ -1,5 +1,8 @@
 # Technical Debt & Software Engineering Audit
 
+> [!NOTE]
+> This document catalogs **only active, open items**. For resolved flaws, historical post-mortems, and verification status, consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md).
+
 ## 1. Overview of Technical Debt
 
 The codebase shows signs of rapid iterative prototyping, multiple architectural pivots (from 3D numerical grids to fast analytical surrogates for PhD research), and legacy preservation.
@@ -17,56 +20,12 @@ The automated test suite in `tests/` currently achieves a **100% pass rate**:
 
 ---
 
-## 3. Root Directory Cleanup & Code Restructuring: COMPLETED
+## 3. Active Technical Debt Inventory
 
-All loose Python modules in the root directory were reorganized into structured packages or removed:
-- `config_manager.py` $\to$ [utils/config_manager.py](file:///d:/rep/4.6/co2eor_optimizer/utils/config_manager.py)
-- `error_handler.py` $\to$ [utils/error_handler.py](file:///d:/rep/4.6/co2eor_optimizer/utils/error_handler.py)
-- `path_utils.py` $\to$ [utils/path_utils.py](file:///d:/rep/4.6/co2eor_optimizer/utils/path_utils.py)
-- `validation_manager.py` $\to$ [utils/validation_manager.py](file:///d:/rep/4.6/co2eor_optimizer/utils/validation_manager.py)
-- `help_manager.py` $\to$ Decommissioned and deleted along with `ui/dialogs/parameter_help_dialog.py` and `help/*.md`.
-- `cleanup_pycache.ps1` $\to$ [scripts/cleanup_pycache.ps1](file:///d:/rep/4.6/co2eor_optimizer/scripts/cleanup_pycache.ps1)
-- `data_processor.py` superseded by dedicated CLI tool [scripts/process_las_data.py](file:///d:/rep/4.6/co2eor_optimizer/scripts/process_las_data.py)
-- Removed orphaned and dead files (`ui/workers/data_processing_worker.py`, `report.log`, `fixed_phd_class.txt`, `test_surrogate.py`, `core/engine_surrogate/analytical_models – копія.py`, and legacy scientific justification dialogs/HTML assets in `ui/dialogs/` and `ui/assets/docs/`).
-
----
-
-## 4. `pyproject.toml` Configuration Debt: RESOLVED
-
-All historical configuration artifacts in `pyproject.toml` have been resolved:
-1. **Django Plugin Removed**:
-   Removed `plugins = ["mypy_django_plugin.main"]` from `[tool.mypy]`.
-2. **Test Dependencies Added**:
-   Added `hypothesis>=6.80` and `pytest-benchmark>=4.0` to `[project.optional-dependencies] dev` (`h5py>=3.8` is already in core `dependencies`).
-3. **Modernized Ruff Configuration Syntax**:
-   Nested `select` and `ignore` under `[tool.ruff.lint]`.
-
----
-
-## 5. UI Presentation Layer Defects: ERADICATED (36 F821 Undefined Names Resolved)
-
-All critical static analysis errors (`F821` undefined names, `E722` bare excepts, syntax errors) have been systematically resolved:
-
-| File & Line | Error Code | Description | Consequence | Remediation Status |
-| :--- | :--- | :--- | :--- | :--- |
-| `ui/sensitivity_widget.py:450-525` | `F821` | Missing imports for `pd`, `np`, `go`, `make_subplots` | `NameError: name 'pd' is not defined` when sensitivity analysis completes | **RESOLVED**: Added imports for pandas, numpy, and plotly. |
-| `ui/main_window.py:1528, 1542, 1551` | `F821` | Undefined local variable `charts` / layout indices in `_generate_report_data` | `NameError` during PDF/HTML report generation | **RESOLVED**: Fixed `report_charts` and layout/tab index extraction. |
-| `ui/uq_widget.py:172, 176, 267` | `F821` | Missing PyQt6 imports `QSpinBox`, `QTextBrowser` | `NameError` during Uncertainty Quantification tab layout initialization | **RESOLVED**: Imported `QSpinBox`, `QTextBrowser` from `PyQt6.QtWidgets`. |
-| `ui/widgets/log_viewer_dialog.py:275` | `F821` | Missing import `QTableWidgetItem` | `NameError` when displaying well log perforations table | **RESOLVED**: Imported `QTableWidgetItem` from `PyQt6.QtWidgets`. |
-| `ui/optimization_widget.py:1774` | `F821` | Undefined `UnlockParametersDialog` | Crash when user attempts to unlock relaxable constraints | **RESOLVED**: Implemented `UnlockParametersDialog` with typed relaxation bounds. |
-| `ui/optimization_widget.py:994` | `E722` | Bare `except:` in mutation tuple parsing | Catches `KeyboardInterrupt` and hides evaluation errors | **RESOLVED**: Changed to `except (ValueError, SyntaxError) as e:`. |
-| `tests/validation/spe5_benchmark_validation.py:249` | SyntaxError | Missing comma after `simulation_years: float = 8.0` | Benchmark script cannot be compiled or imported by test runners | **RESOLVED**: Added trailing comma `,`. |
-| `core/optimisation_engine.py` | `F821` | Undefined `EPSILON`, `SimulatorExporter` | Runtime `NameError` in optimizer paths | **RESOLVED**: Defined `EPSILON = 1e-10` and imported `SimulatorExporter`. |
-| `core/data_integration_engine.py` | `F821` | Undefined `GeomechanicsParameters`, `create_geostatistical_grid` | Runtime `NameError` in geomechanics integration | **RESOLVED**: Imported `GeomechanicsParameters` and `create_geostatistical_grid`. |
-| `analysis/sensitivity_analyzer.py` | `F821` | Undefined `self`, `PengRobinsonEOS`, `SoaveRedlichKwongEOS` | Crash in sensitivity matrix evaluations | **RESOLVED**: Added `self` parameter to `run_two_way_sensitivity` and handled EOS imports safely. |
-| `ui/ai_assistant_widget.py` | `F821` | Undefined `AI_SERVICES_CONFIG`, `QInputDialog` | Crash in AI service credential dialogs | **RESOLVED**: Fixed `self.AI_SERVICES_CONFIG` and imported `QInputDialog`. |
-| `core/validation/physical_consistency_validator.py` | `F821` | Undefined `CCUSState` | Validation crash | **RESOLVED**: Imported `CCUSState`. |
-| `ui/analysis_widget.py`, `ui/config_widget.py` | `F821` | Undefined `ConfigManager` | UI settings crash | **RESOLVED**: Imported `ConfigManager`. |
-
----
-
-## 6. Resolved Issues Archive
-
-All verified historical defect fixes, eradicated hidden calibrations, and eliminated scientific flaws are archived in:
-👉 [**Resolved Issues & Defect Resolution Archive (`resolved_issues.md`)**](resolved_issues.md)
-
+| Category | Component / Module | Scope & Impact | Risk Level | Proposed Architectural Refactoring |
+| :--- | :--- | :--- | :---: | :--- |
+| **Monolithic Modules** | `core/optimisation_engine.py` (~3,200 LOC) | Houses optimizer algorithms (GA, BO, PSO, DE), profile post-processing, and fallback handlers in a single monolithic orchestrator. | **MEDIUM** | Decompose into modular strategy patterns (`OptimizerBase`, `GeneticAlgorithmStrategy`, `BayesianStrategy`). |
+| **Monolithic UI Views** | `ui/main_window.py`, `ui/optimization_widget.py` (~1,800 LOC each) | Tightly couples Qt GUI layout construction, worker thread management, and PDF/HTML report compilation. | **MEDIUM** | Extract report generation to `services/reporting/` and worker orchestration to dedicated presenters. |
+| **Type Annotation Gaps** | Surrogate & Optimizer Boundaries | Extensive reliance on `Dict[str, Any]` and raw `**kwargs` dictionaries rather than typed dataclasses (`SimulationConfig`, `EconomicParameters`). | **LOW** | Enforce strict typing across `SurrogateEngineWrapper` and `OptimizationEngine` inputs. |
+| **Dormant Package Isolation** | `compositional_engine/`, `unified_engine/`, `engine_simple/` | Dormant historical engines remain in tree (~10,000 LOC total) despite 100% active routing to `core/engine_surrogate/`. | **LOW** | Maintain strict deprecation barriers; prevent inadvertent imports into active modules. |
+| **Deprecation Warning Noise** | Test Suite Execution | Scientific library warnings (e.g. future deprecations in SciPy and Pandas) emitted during test runs. | **LOW** | Audit and modernize library call patterns across analytical and reporting modules. |

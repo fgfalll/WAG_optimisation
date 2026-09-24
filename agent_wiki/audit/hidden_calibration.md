@@ -1,5 +1,8 @@
 # Hidden Calibration & Artificial Fitting Audit
 
+> [!NOTE]
+> This document catalogs **only active, open items**. For resolved flaws, historical post-mortems, and verification status, consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md).
+
 ## 1. Executive Summary
 
 A critical scientific finding of this audit is the presence of **unstated calibrations, heuristic tuning multipliers, and empirical fittings** embedded in the physics and profile generation layers.
@@ -20,15 +23,4 @@ While some parameters are documented in [`agent_wiki/data/parameters.md`](file:/
 - **Scientific Audit Verdict**: Physically plausible mechanism, but acts as a manual tuning knob to force-match CMG or field breakthrough times without geologic crossflow verification.
 
 ---
-
-## 3. Master Resolved Calibrations Archive
-
-The following empirical overrides and manual tuning adjustments have been fully eliminated or replaced with physics models, with complete post-mortems archived in [**`agent_wiki/audit/resolved_issues.md`**](resolved_issues.md):
-
-| ID | Calibration Title | Location | Status | Full Post-Mortem |
-|:---|:---|:---|:---|:---|
-| **CALIB-WAG** | WAG Phase Mobility Buffering & Mass Preservation | `profile_generator_fast.py:309` | VERIFIED | [View Record](resolved_issues.md#calib-wag-wag-phase-mobility-buffering--mass-preservation) |
-| **CALIB-MMP** | Modified Cronquist MMP Formula (`55 - API`) | `evaluation/mmp.py:111` | VERIFIED | [View Record](resolved_issues.md#calib-mmp-modified-cronquist-mmp-formula-55---api) |
-| **CALIB-STORAGE** | Zero-Injection Storage Efficiency Override (Optimizer Cheat) | `optimisation_engine.py:1708` | VERIFIED | [View Record](resolved_issues.md#calib-storage-zero-injection-storage-efficiency-override-optimizer-cheat) |
-
 
