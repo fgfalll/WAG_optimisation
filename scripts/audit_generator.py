@@ -6,12 +6,9 @@ calibrations, duplicates, module inventories, call graphs, and dead code classif
 
 import ast
 import csv
-import json
 import os
-import re
-import sys
 from pathlib import Path
-from typing import Dict, List, Any, Set, Tuple
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -20,7 +17,7 @@ EXCLUDE_DIRS = {
     ".ruff_cache", ".hypothesis", ".benchmarks", "build", "dist"
 }
 
-def get_all_py_files() -> List[Path]:
+def get_all_py_files() -> list[Path]:
     py_files = []
     for root, dirs, files in os.walk(REPO_ROOT):
         dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
@@ -32,16 +29,16 @@ def get_all_py_files() -> List[Path]:
 # ==============================================================================
 # 1. MODULE & CODEBASE INVENTORY
 # ==============================================================================
-def audit_inventory(py_files: List[Path]) -> Dict[str, Any]:
+def audit_inventory(py_files: list[Path]) -> dict[str, Any]:
     inventory = []
     total_lines = 0
     total_classes = 0
     total_functions = 0
-    
+
     for p in py_files:
         rel = p.relative_to(REPO_ROOT).as_posix()
         try:
-            with open(p, "r", encoding="utf-8", errors="ignore") as f:
+            with open(p, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
             lines = len(content.splitlines())
             total_lines += lines
@@ -64,12 +61,12 @@ def audit_inventory(py_files: List[Path]) -> Dict[str, Any]:
                 "functions": [],
                 "error": str(e)
             })
-            
+
     # Write audit/architecture/modules.txt
     out_txt = REPO_ROOT / "audit" / "architecture" / "modules.txt"
     out_txt.parent.mkdir(parents=True, exist_ok=True)
     with open(out_txt, "w", encoding="utf-8") as f:
-        f.write(f"CO2 EOR OPTIMIZER - REPOSITORY MODULE INVENTORY\n")
+        f.write("CO2 EOR OPTIMIZER - REPOSITORY MODULE INVENTORY\n")
         f.write(f"Total Python Files: {len(inventory)}\n")
         f.write(f"Total Code Lines: {total_lines}\n")
         f.write(f"Total Classes: {total_classes}\n")
@@ -77,12 +74,14 @@ def audit_inventory(py_files: List[Path]) -> Dict[str, Any]:
         f.write("=" * 80 + "\n\n")
         for item in inventory:
             f.write(f"Module: {item['path']} ({item['lines']} lines)\n")
-            if item['classes']:
-                f.write(f"  Classes ({len(item['classes'])}): {', '.join(item['classes'][:10])}{'...' if len(item['classes']) > 10 else ''}\n")
-            if item['functions']:
-                f.write(f"  Functions ({len(item['functions'])}): {', '.join(item['functions'][:10])}{'...' if len(item['functions']) > 10 else ''}\n")
+            classes = item.get("classes")
+            if isinstance(classes, list) and classes:
+                f.write(f"  Classes ({len(classes)}): {', '.join(classes[:10])}{'...' if len(classes) > 10 else ''}\n")
+            functions = item.get("functions")
+            if isinstance(functions, list) and functions:
+                f.write(f"  Functions ({len(functions)}): {', '.join(functions[:10])}{'...' if len(functions) > 10 else ''}\n")
             f.write("\n")
-            
+
     return {
         "files_count": len(inventory),
         "total_lines": total_lines,
@@ -94,20 +93,20 @@ def audit_inventory(py_files: List[Path]) -> Dict[str, Any]:
 # ==============================================================================
 # 2. AST FALLBACK AUDIT
 # ==============================================================================
-def audit_fallbacks(py_files: List[Path]) -> List[Dict[str, Any]]:
+def audit_fallbacks(py_files: list[Path]) -> list[dict[str, Any]]:
     fallbacks = []
-    
+
     for p in py_files:
         rel = p.relative_to(REPO_ROOT).as_posix()
         # Focus especially on core, analysis, evaluation, utils
         try:
-            with open(p, "r", encoding="utf-8", errors="ignore") as f:
+            with open(p, encoding="utf-8", errors="ignore") as f:
                 lines = f.readlines()
                 content = "".join(lines)
             tree = ast.parse(content, filename=str(p))
         except Exception:
             continue
-            
+
         for node in ast.walk(tree):
             # 1. try/except handlers returning or setting values
             if isinstance(node, ast.Try):
@@ -119,11 +118,11 @@ def audit_fallbacks(py_files: List[Path]) -> List[Dict[str, Any]]:
                     returns = [n for n in ast.walk(handler) if isinstance(n, ast.Return)]
                     pass_nodes = [n for n in handler.body if isinstance(n, ast.Pass)]
                     assigns = [n for n in handler.body if isinstance(n, ast.Assign)]
-                    
+
                     category = "IMPLEMENTATION FALLBACK"
                     severity = "MEDIUM"
                     behavior = "Catches error and continues"
-                    
+
                     if pass_nodes and len(handler.body) == 1:
                         category = "SCIENTIFICALLY DANGEROUS" if "core" in rel else "IMPLEMENTATION FALLBACK"
                         severity = "HIGH" if "core" in rel else "LOW"
@@ -139,7 +138,7 @@ def audit_fallbacks(py_files: List[Path]) -> List[Dict[str, Any]]:
                         if any(term in behavior.lower() for term in ["rf", "recovery", "pressure", "eff", "co2"]):
                             category = "ARTIFICIAL RESULT-PRODUCING FALLBACK"
                             severity = "CRITICAL"
-                            
+
                     fallbacks.append({
                         "file": rel,
                         "line": handler.lineno,
@@ -149,7 +148,7 @@ def audit_fallbacks(py_files: List[Path]) -> List[Dict[str, Any]]:
                         "severity": severity,
                         "impact": "Alters simulation trajectory or suppresses state divergence" if "core" in rel else "UI/app resilience"
                     })
-                    
+
             # 2. np.clip calls on physical variables
             if isinstance(node, ast.Call):
                 func_name = ""
@@ -157,7 +156,7 @@ def audit_fallbacks(py_files: List[Path]) -> List[Dict[str, Any]]:
                     func_name = "np.clip"
                 elif isinstance(node.func, ast.Name) and node.func.id == "clip":
                     func_name = "clip"
-                    
+
                 if func_name and node.args:
                     arg_str = ast.unparse(node.args[0])
                     limits = [ast.unparse(a) for a in node.args[1:]]
@@ -178,7 +177,7 @@ def audit_fallbacks(py_files: List[Path]) -> List[Dict[str, Any]]:
                         "severity": severity,
                         "impact": f"Forces physical variable {arg_str} into artificial range"
                     })
-                    
+
             # 3. dict.get with physical defaults
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "get":
                 if len(node.args) >= 2:
@@ -204,30 +203,30 @@ def audit_fallbacks(py_files: List[Path]) -> List[Dict[str, Any]]:
         writer = csv.DictWriter(f, fieldnames=["file", "line", "trigger", "behavior", "category", "severity", "impact"])
         writer.writeheader()
         writer.writerows(fallbacks)
-        
+
     return fallbacks
 
 # ==============================================================================
 # 3. HARDCODED SCIENTIFIC VALUES AUDIT
 # ==============================================================================
-def audit_hardcoded_values(py_files: List[Path]) -> List[Dict[str, Any]]:
+def audit_hardcoded_values(py_files: list[Path]) -> list[dict[str, Any]]:
     hardcoded = []
-    
+
     # Target files with physical/simulation content
     target_prefixes = ("core/engine_surrogate", "core/simulation", "core/unified_engine", "evaluation", "analysis", "core/data_models.py", "core/optimisation_engine.py")
-    
+
     for p in py_files:
         rel = p.relative_to(REPO_ROOT).as_posix()
         if not any(rel.startswith(prefix) for prefix in target_prefixes):
             continue
-            
+
         try:
-            with open(p, "r", encoding="utf-8", errors="ignore") as f:
+            with open(p, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
             tree = ast.parse(content, filename=str(p))
         except Exception:
             continue
-            
+
         for node in ast.walk(tree):
             # Inspect numeric literals inside assignments or comparisons
             if isinstance(node, ast.Assign):
@@ -237,13 +236,13 @@ def audit_hardcoded_values(py_files: List[Path]) -> List[Dict[str, Any]]:
                         val = node.value.value
                         if val in (0, 1, -1, 2, 10, 100) and not any(k in var_name.lower() for k in ["perm", "poro", "temp", "pres", "dens", "visc", "mw", "rate", "api"]):
                             continue # skip trivial indices
-                            
+
                         # Infer physical meaning and unit
                         unit = "dimensionless"
                         meaning = "Numerical constant"
                         origin = "ENGINEERING CORRELATION"
                         v_lower = var_name.lower()
-                        
+
                         if "press" in v_lower or "p_" in v_lower or "mmp" in v_lower:
                             unit = "psi"
                             meaning = "Pressure parameter"
@@ -272,7 +271,7 @@ def audit_hardcoded_values(py_files: List[Path]) -> List[Dict[str, Any]]:
                         elif "comp" in v_lower:
                             unit = "1/psi"
                             meaning = "Compressibility"
-                            
+
                         hardcoded.append({
                             "variable": var_name,
                             "file": rel,
@@ -291,13 +290,13 @@ def audit_hardcoded_values(py_files: List[Path]) -> List[Dict[str, Any]]:
         writer = csv.DictWriter(f, fieldnames=["variable", "file", "line", "value", "unit", "meaning", "origin", "configurable", "empirical", "scientific_impact"])
         writer.writeheader()
         writer.writerows(hardcoded)
-        
+
     return hardcoded
 
 # ==============================================================================
 # 4. HIDDEN CALIBRATION & EMPIRICAL PARAMETERS AUDIT
 # ==============================================================================
-def audit_empirical_parameters() -> List[Dict[str, Any]]:
+def audit_empirical_parameters() -> list[dict[str, Any]]:
     # Curated authoritative register of identified empirical tunings and calibrations
     calibrations = [
         {
@@ -389,19 +388,19 @@ def audit_empirical_parameters() -> List[Dict[str, Any]]:
             "status": "VALIDATED"
         }
     ]
-    
+
     out_csv = REPO_ROOT / "audit" / "scientific" / "empirical_parameters.csv"
     with open(out_csv, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["parameter", "file", "line", "value", "target", "equation", "purpose", "classification", "status"])
         writer.writeheader()
         writer.writerows(calibrations)
-        
+
     return calibrations
 
 # ==============================================================================
 # 5. SUSPICIOUS CALCULATIONS & UNKNOWN PARAMETERS
 # ==============================================================================
-def audit_suspicious_calculations() -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+def audit_suspicious_calculations() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     suspicious = [
         {
             "id": "SUSP-01",
@@ -449,7 +448,7 @@ def audit_suspicious_calculations() -> Tuple[List[Dict[str, Any]], List[Dict[str
             "remediation": "Add comma after simulation_years: float = 8.0,"
         }
     ]
-    
+
     unknowns = [
         {
             "parameter": "api_subtrahend_55",
@@ -479,25 +478,25 @@ def audit_suspicious_calculations() -> Tuple[List[Dict[str, Any]], List[Dict[str
             "risk": "May underestimate compaction drive in high-porosity unconsolidated sands"
         }
     ]
-    
+
     out_csv1 = REPO_ROOT / "audit" / "scientific" / "suspicious_calculations.csv"
     with open(out_csv1, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["id", "location", "issue", "evidence", "consequence", "severity", "remediation"])
         writer.writeheader()
         writer.writerows(suspicious)
-        
+
     out_csv2 = REPO_ROOT / "audit" / "scientific" / "unknown_parameters.csv"
     with open(out_csv2, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["parameter", "file", "value", "unit", "hypothesis", "provenance", "risk"])
         writer.writeheader()
         writer.writerows(unknowns)
-        
+
     return suspicious, unknowns
 
 # ==============================================================================
 # 6. DUPLICATE LOGIC AUDIT
 # ==============================================================================
-def audit_duplicates() -> List[Dict[str, Any]]:
+def audit_duplicates() -> list[dict[str, Any]]:
     duplicates = [
         {
             "subsystem": "Simulation Scenario Evaluation",
@@ -536,7 +535,7 @@ def audit_duplicates() -> List[Dict[str, Any]]:
             "status": "evaluation/mmp.py is active authoritative correlation module"
         }
     ]
-    
+
     out_txt = REPO_ROOT / "audit" / "code" / "duplicates.txt"
     with open(out_txt, "w", encoding="utf-8") as f:
         f.write("CO2 EOR OPTIMIZER - DUPLICATE IMPLEMENTATION AUDIT\n")
@@ -549,7 +548,7 @@ def audit_duplicates() -> List[Dict[str, Any]]:
                 f.write(f"  Implementation C: {dup['impl_c']}\n")
             f.write(f"  Active Source of Truth: {dup['active']}\n")
             f.write(f"  Status / Evaluation: {dup['status']}\n\n")
-            
+
     return duplicates
 
 # ==============================================================================
@@ -559,23 +558,23 @@ if __name__ == "__main__":
     print("Starting comprehensive audit data extraction...")
     py_files = get_all_py_files()
     print(f"Discovered {len(py_files)} Python files in repository.")
-    
+
     inv = audit_inventory(py_files)
     print(f"Inventory complete: {inv['total_lines']} lines of code.")
-    
+
     fallbacks = audit_fallbacks(py_files)
     print(f"Fallback audit complete: {len(fallbacks)} fallbacks cataloged.")
-    
+
     hardcoded = audit_hardcoded_values(py_files)
     print(f"Hardcoded values audit complete: {len(hardcoded)} values cataloged.")
-    
+
     empirical = audit_empirical_parameters()
     print(f"Empirical calibrations audit complete: {len(empirical)} parameters recorded.")
-    
+
     susp, unk = audit_suspicious_calculations()
     print(f"Suspicious calculations: {len(susp)}, Unknowns: {len(unk)} recorded.")
-    
+
     dups = audit_duplicates()
     print(f"Duplicate implementations: {len(dups)} subsystems analyzed.")
-    
+
     print("All audit artifacts successfully generated in audit/!")

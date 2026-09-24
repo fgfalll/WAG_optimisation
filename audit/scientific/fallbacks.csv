@@ -1,525 +1,840 @@
-Module,Line,Exception Type,Body Length
-analysis/breakthrough_physics.py,154,"(ImportError, TypeError, ValueError, RuntimeError)",2
-analysis/decline_curve_analysis.py,118,"(RuntimeError, ValueError, TypeError)",3
-analysis/decline_curve_analysis.py,144,"(RuntimeError, ValueError, TypeError)",2
-analysis/decline_curve_analysis.py,315,"(RuntimeError, ValueError, TypeError, FloatingPointError)",2
-analysis/material_balance.py,21,ImportError,3
-analysis/material_balance.py,378,Exception,2
-analysis/material_balance.py,111,Exception,1
-analysis/profiler.py,57,Exception,1
-analysis/profiler.py,366,Exception,1
-analysis/profiler_refactored.py,69,Exception,2
-analysis/sensitivity_analyzer.py,31,ImportError,2
-analysis/sensitivity_analyzer.py,64,Exception,2
-analysis/sensitivity_analyzer.py,298,"(AttributeError, KeyError, ValueError, IndexError)",2
-analysis/sensitivity_analyzer.py,413,ValueError,1
-analysis/sensitivity_analyzer.py,567,"(ValueError, AttributeError)",1
-analysis/sensitivity_analyzer.py,683,"(ValueError, AttributeError)",1
-analysis/sensitivity_analyzer.py,765,Exception,2
-analysis/sensitivity_analyzer.py,200,Exception,1
-analysis/sensitivity_analyzer.py,243,Exception,2
-analysis/sensitivity_analyzer.py,329,Exception,1
-analysis/sensitivity_analyzer.py,660,Exception,2
-analysis/sensitivity_analyzer.py,533,Exception,2
-analysis/uq_engine.py,23,ImportError,4
-analysis/uq_engine.py,209,IndexError,1
-analysis/uq_engine.py,213,Exception,1
-analysis/uq_engine.py,271,ImportError,3
-analysis/uq_engine.py,345,Exception,3
-analysis/uq_engine.py,355,Exception,2
-analysis/uq_engine.py,187,"(ValueError, TypeError)",1
-analysis/well_analysis.py,71,Exception,2
-analysis/well_analysis.py,156,Exception,2
-audit/__main__.py,23,Exception,4
-audit/pipeline.py,65,Exception,1
-audit/pipeline.py,138,Exception,1
-audit/pipeline.py,178,Exception,1
-co2eor_optimizer/analysis/sensitivity_analyzer.py,19,NameError,2
-co2eor_optimizer/analysis/sensitivity_analyzer.py,34,ImportError,4
-co2eor_optimizer/analysis/sensitivity_analyzer.py,47,ImportError,2
-co2eor_optimizer/analysis/sensitivity_analyzer.py,236,ValueError,1
-co2eor_optimizer/analysis/sensitivity_analyzer.py,374,"(ValueError, AttributeError)",1
-co2eor_optimizer/analysis/sensitivity_analyzer.py,451,"(ValueError, AttributeError)",1
-co2eor_optimizer/analysis/sensitivity_analyzer.py,519,Exception,2
-co2eor_optimizer/analysis/sensitivity_analyzer.py,176,Exception,1
-co2eor_optimizer/analysis/sensitivity_analyzer.py,188,Exception,1
-co2eor_optimizer/analysis/sensitivity_analyzer.py,414,Exception,2
-co2eor_optimizer/analysis/sensitivity_analyzer.py,438,Exception,2
-co2eor_optimizer/analysis/sensitivity_analyzer.py,279,Exception,2
-co2eor_optimizer/analysis/sensitivity_analyzer.py,345,Exception,2
-co2eor_optimizer/analysis/uq_engine.py,19,NameError,2
-co2eor_optimizer/analysis/uq_engine.py,33,ImportError,4
-co2eor_optimizer/analysis/uq_engine.py,162,Exception,2
-co2eor_optimizer/analysis/uq_engine.py,337,"(ValueError, IndexError)",1
-co2eor_optimizer/analysis/uq_engine.py,401,Exception,2
-co2eor_optimizer/analysis/uq_engine.py,433,Exception,2
-co2eor_optimizer/analysis/uq_engine.py,446,Exception,1
-co2eor_optimizer/analysis/uq_engine.py,99,Exception,1
-co2eor_optimizer/analysis/uq_engine.py,118,Exception,2
-co2eor_optimizer/analysis/uq_engine.py,151,TypeError,1
-co2eor_optimizer/analysis/uq_engine.py,297,Exception,2
-co2eor_optimizer/analysis/well_analysis.py,71,Exception,2
-co2eor_optimizer/analysis/well_analysis.py,156,Exception,2
-co2eor_optimizer/config_manager.py,176,"(KeyError, TypeError, IndexError)",1
-co2eor_optimizer/config_manager.py,45,FileNotFoundError,1
-co2eor_optimizer/config_manager.py,51,Exception,2
-co2eor_optimizer/config_manager.py,122,json.JSONDecodeError,1
-co2eor_optimizer/config_manager.py,124,Exception,1
-co2eor_optimizer/core/data_models.py,488,TypeError,1
-co2eor_optimizer/core/eos_models.py,19,ImportError,4
-co2eor_optimizer/core/eos_models.py,29,ImportError,2
-co2eor_optimizer/core/eos_models.py,146,"(ValueError, RuntimeError)",1
-co2eor_optimizer/core/eos_models.py,199,Exception,2
-co2eor_optimizer/core/eos_models.py,217,Exception,2
-co2eor_optimizer/core/eos_models.py,266,Exception,2
-co2eor_optimizer/core/optimisation_engine.py,13,ImportError,2
-co2eor_optimizer/core/optimisation_engine.py,45,ImportError,3
-co2eor_optimizer/core/optimisation_engine.py,304,Exception,2
-co2eor_optimizer/core/optimisation_engine.py,956,Exception,2
-co2eor_optimizer/core/optimisation_engine.py,182,Exception,2
-co2eor_optimizer/core/optimisation_engine.py,297,Exception,1
-co2eor_optimizer/core/optimisation_engine.py,340,Exception,1
-co2eor_optimizer/core/optimisation_engine.py,260,"(ValueError, TypeError)",1
-co2eor_optimizer/core/recovery_models.py,345,ValueError,2
-co2eor_optimizer/data_processor.py,49,EclipseParserError,2
-co2eor_optimizer/data_processor.py,68,Exception,2
-co2eor_optimizer/data_processor.py,166,Exception,2
-co2eor_optimizer/evaluation/mmp.py,10,ImportError,1
-co2eor_optimizer/evaluation/mmp.py,306,Exception,1
-co2eor_optimizer/help_manager.py,47,"(FileNotFoundError, yaml.YAMLError)",2
-co2eor_optimizer/help_manager.py,58,"(KeyError, IndexError, AttributeError)",2
-co2eor_optimizer/help_manager.py,93,FileNotFoundError,3
-co2eor_optimizer/help_manager.py,97,"(KeyError, IndexError, AttributeError)",2
-co2eor_optimizer/help_manager.py,100,Exception,2
-co2eor_optimizer/main.py,22,NameError,3
-co2eor_optimizer/main.py,55,OSError,2
-co2eor_optimizer/main.py,131,Exception,1
-co2eor_optimizer/main.py,174,Exception,3
-co2eor_optimizer/main.py,208,Exception,3
-co2eor_optimizer/parsers/eclipse_parser.py,278,"(FileNotFoundError, EclipseParserError, DimensionError, Exception)",3
-co2eor_optimizer/parsers/eclipse_parser.py,69,ValueError,1
-co2eor_optimizer/parsers/eclipse_parser.py,83,ValueError,1
-co2eor_optimizer/parsers/eclipse_parser.py,115,"(ValueError, IndexError)",1
-co2eor_optimizer/parsers/eclipse_parser.py,132,"(ValueError, IndexError)",1
-co2eor_optimizer/parsers/eclipse_parser.py,201,"(ValueError, TypeError)",1
-co2eor_optimizer/parsers/eclipse_parser.py,212,"(ValueError, TypeError)",1
-co2eor_optimizer/parsers/eclipse_parser.py,245,IOError,1
-co2eor_optimizer/parsers/eclipse_parser.py,141,"(ValueError, IndexError)",1
-co2eor_optimizer/parsers/las_parser.py,60,lasio.LASHeaderError,2
-co2eor_optimizer/parsers/las_parser.py,64,Exception,2
-co2eor_optimizer/parsers/las_parser.py,84,Exception,1
-co2eor_optimizer/parsers/las_parser.py,162,KeyError,1
-co2eor_optimizer/parsers/las_parser.py,121,"(ValueError, TypeError)",1
-co2eor_optimizer/parsers/las_parser.py,148,ValueError,1
-co2eor_optimizer/ui/config_widget.py,29,ImportError,3
-co2eor_optimizer/ui/config_widget.py,239,"(ValueError, TypeError)",2
-co2eor_optimizer/ui/config_widget.py,520,Exception,1
-co2eor_optimizer/ui/config_widget.py,536,Exception,1
-co2eor_optimizer/ui/config_widget.py,223,"(ValueError, TypeError)",2
-co2eor_optimizer/ui/config_widget.py,553,ValueError,1
-co2eor_optimizer/ui/config_widget.py,199,"(ValueError, TypeError)",2
-co2eor_optimizer/ui/config_widget.py,208,"(ValueError, TypeError)",2
-co2eor_optimizer/ui/data_management_widget.py,23,ImportError,5
-co2eor_optimizer/ui/data_management_widget.py,33,ImportError,7
-co2eor_optimizer/ui/data_management_widget.py,225,"(ValueError, TypeError)",1
-co2eor_optimizer/ui/data_management_widget.py,236,"(ValueError, TypeError)",2
-co2eor_optimizer/ui/data_management_widget.py,272,Exception,2
-co2eor_optimizer/ui/data_management_widget.py,294,Exception,1
-co2eor_optimizer/ui/dialogs/scenario_editor_dialog.py,17,ImportError,1
-co2eor_optimizer/ui/dialogs/scenario_editor_dialog.py,27,ImportError,2
-co2eor_optimizer/ui/dialogs/scenario_editor_dialog.py,172,"(ValueError, TypeError)",1
-co2eor_optimizer/ui/logging_widget.py,118,Exception,2
-co2eor_optimizer/ui/main_window.py,20,ImportError,2
-co2eor_optimizer/ui/main_window.py,27,ImportError,2
-co2eor_optimizer/ui/main_window.py,64,ImportError,5
-co2eor_optimizer/ui/main_window.py,332,Exception,4
-co2eor_optimizer/ui/main_window.py,363,Exception,3
-co2eor_optimizer/ui/main_window.py,146,Exception,3
-co2eor_optimizer/ui/main_window.py,277,Exception,1
-co2eor_optimizer/ui/main_window.py,416,Exception,2
-co2eor_optimizer/ui/main_window.py,429,Exception,1
-co2eor_optimizer/ui/mmp_well_analysis_widget.py,22,ImportError,6
-co2eor_optimizer/ui/mmp_well_analysis_widget.py,307,Exception,2
-co2eor_optimizer/ui/optimization_widget.py,289,Exception,3
-co2eor_optimizer/ui/optimization_widget.py,422,Exception,2
-co2eor_optimizer/ui/sensitivity_widget.py,29,ImportError,1
-co2eor_optimizer/ui/sensitivity_widget.py,36,ImportError,1
-co2eor_optimizer/ui/sensitivity_widget.py,260,ValueError,2
-co2eor_optimizer/ui/sensitivity_widget.py,207,Exception,3
-co2eor_optimizer/ui/sensitivity_widget.py,378,Exception,2
-co2eor_optimizer/ui/sensitivity_widget.py,394,Exception,2
-co2eor_optimizer/ui/uq_widget.py,20,ImportError,2
-co2eor_optimizer/ui/widgets/depth_profile_dialog.py,10,ImportError,1
-co2eor_optimizer/ui/widgets/log_viewer_dialog.py,19,ImportError,5
-co2eor_optimizer/ui/widgets/log_viewer_dialog.py,28,ImportError,2
-co2eor_optimizer/ui/widgets/log_viewer_dialog.py,226,ValueError,1
-co2eor_optimizer/ui/widgets/manual_well_dialog.py,14,ImportError,2
-co2eor_optimizer/ui/widgets/manual_well_dialog.py,27,ImportError,2
-co2eor_optimizer/ui/widgets/manual_well_dialog.py,32,ImportError,2
-co2eor_optimizer/ui/widgets/manual_well_dialog.py,136,"(ValueError, TypeError)",1
-co2eor_optimizer/ui/widgets/manual_well_dialog.py,151,"(ValueError, TypeError)",1
-co2eor_optimizer/ui/widgets/manual_well_dialog.py,232,Exception,2
-co2eor_optimizer/ui/widgets/manual_well_dialog.py,124,"(ValueError, TypeError)",1
-co2eor_optimizer/ui/widgets/manual_well_dialog.py,220,"(AttributeError, ValueError)",1
-co2eor_optimizer/ui/widgets/pvt_editor_dialog.py,19,ImportError,4
-co2eor_optimizer/ui/widgets/pvt_editor_dialog.py,29,ImportError,3
-co2eor_optimizer/ui/widgets/pvt_editor_dialog.py,253,"(ValueError, TypeError)",1
-co2eor_optimizer/ui/widgets/pvt_editor_dialog.py,255,"(ValueError, TypeError)",1
-co2eor_optimizer/ui/widgets/pvt_editor_dialog.py,290,"(ValueError, TypeError)",2
-co2eor_optimizer/ui/widgets/pvt_table_editor.py,82,Exception,1
-co2eor_optimizer/ui/widgets/pvt_table_editor.py,233,Exception,1
-co2eor_optimizer/ui/widgets/pvt_table_editor.py,247,Exception,1
-co2eor_optimizer/ui/widgets/pvt_table_editor.py,110,ValueError,3
-co2eor_optimizer/ui/widgets/pvt_table_editor.py,144,ValueError,1
-co2eor_optimizer/ui/widgets/pvt_table_editor.py,220,"(ValueError, TypeError)",1
-co2eor_optimizer/ui/workers/ai_query_worker.py,81,ValueError,2
-co2eor_optimizer/ui/workers/ai_query_worker.py,85,Exception,2
-co2eor_optimizer/ui/workers/data_processing_worker.py,70,Exception,2
-co2eor_optimizer/ui/workers/optimization_worker.py,73,AttributeError,3
-co2eor_optimizer/ui/workers/optimization_worker.py,77,Exception,2
-co2eor_optimizer/ui/workers/sensitivity_analysis_worker.py,48,AttributeError,3
-co2eor_optimizer/ui/workers/sensitivity_analysis_worker.py,52,Exception,2
-co2eor_optimizer/ui/workers/uq_worker.py,46,AttributeError,3
-co2eor_optimizer/ui/workers/uq_worker.py,50,Exception,2
-co2eor_optimizer/ui/workers/well_analysis_worker.py,87,Exception,2
-co2eor_optimizer/utils/grdecl_writer.py,162,IOError,2
-co2eor_optimizer/utils/grdecl_writer.py,165,Exception,2
-co2eor_optimizer/utils/grdecl_writer.py,46,ValueError,2
-co2eor_optimizer/utils/i18n_manager.py,65,Exception,1
-co2eor_optimizer/utils/project_file_handler.py,115,TypeError,1
-co2eor_optimizer/utils/project_file_handler.py,117,IOError,1
-co2eor_optimizer/utils/project_file_handler.py,119,Exception,1
-co2eor_optimizer/utils/project_file_handler.py,149,gzip.BadGzipFile,2
-co2eor_optimizer/utils/project_file_handler.py,161,json.JSONDecodeError,1
-co2eor_optimizer/utils/project_file_handler.py,163,IOError,1
-co2eor_optimizer/utils/project_file_handler.py,165,Exception,1
-co2eor_optimizer/utils/project_file_handler.py,237,ImportError,1
-co2eor_optimizer/utils/project_file_handler.py,239,Exception,1
-co2eor_optimizer/utils/project_file_handler.py,60,Exception,2
-co2eor_optimizer/utils/project_file_handler.py,85,"(ImportError, AttributeError, TypeError)",2
-co2eor_optimizer/utils/project_file_handler.py,157,json.JSONDecodeError,1
-co2eor_optimizer/utils/project_file_handler.py,159,Exception,1
-co2eor_optimizer/utils/report_generator.py,39,bare_except,1
-co2eor_optimizer/utils/report_generator.py,83,Exception,3
-co2eor_optimizer/validation_manager.py,37,"(FileNotFoundError, yaml.YAMLError)",2
-co2eor_optimizer/validation_manager.py,51,"(IndexError, AttributeError)",1
-co2eor_optimizer/validation_manager.py,77,"(ValueError, TypeError)",1
-core/data_integration_engine.py,148,Exception,2
-core/data_integration_engine.py,194,Exception,3
-core/data_integration_engine.py,601,Exception,3
-core/data_integration_engine.py,808,Exception,2
-core/data_models.py,144,"(IndexError, ValueError)",1
-core/engine_surrogate/analytical_models.py,41,ImportError,3
-core/engine_surrogate/analytical_models.py,130,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
-core/engine_surrogate/analytical_models.py,252,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
-core/engine_surrogate/analytical_models.py,379,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
-core/engine_surrogate/analytical_models.py,521,"(ValueError, TypeError, ArithmeticError, RuntimeError)",2
-core/engine_surrogate/feature_transformer.py,20,ImportError,2
-core/engine_surrogate/response_surfaces.py,22,ImportError,3
-core/engine_surrogate/surrogate_engine.py,712,Exception,2
-core/engine_surrogate/surrogate_engine.py,861,Exception,1
-core/engine_surrogate/surrogate_models.py,553,Exception,2
-core/engine_surrogate/surrogate_models.py,668,ImportError,2
-core/engine_surrogate/surrogate_models.py,792,Exception,2
-core/engine_surrogate/training_data.py,20,ImportError,2
-core/engine_surrogate/training_data.py,133,Exception,2
-core/geology/geostatistical_modeling.py,173,Exception,2
-core/geology/geostatistical_modeling.py,287,Exception,2
-core/geology/geostatistical_modeling.py,470,Exception,4
-core/geology/geostatistical_modeling.py,615,Exception,2
-core/geology/geostatistical_modeling.py,140,Exception,3
-core/geology/geostatistical_modeling.py,256,Exception,2
-core/geology/geostatistical_modeling.py,159,ValueError,3
-core/geology/geostatistical_modeling.py,561,ValueError,2
-core/geology/geostatistical_modeling.py,252,ValueError,2
-core/objectives/economic.py,11,ImportError,2
-core/objectives/production.py,16,ImportError,1
-core/objectives/storage.py,99,"(TypeError, ValueError)",1
-core/objectives/storage.py,104,"(TypeError, ValueError)",1
-core/objectives/wrapper.py,130,Exception,1
-core/optimisation_engine.py,26,ImportError,1
-core/optimisation_engine.py,40,ImportError,2
-core/optimisation_engine.py,55,ImportError,6
-core/optimisation_engine.py,242,Exception,2
-core/optimisation_engine.py,278,ImportError,3
-core/optimisation_engine.py,282,Exception,3
-core/optimisation_engine.py,352,"(RuntimeError, AttributeError)",1
-core/optimisation_engine.py,373,"(RuntimeError, ValueError, ZeroDivisionError, ArithmeticError)",1
-core/optimisation_engine.py,448,Exception,2
-core/optimisation_engine.py,1124,Exception,1
-core/optimisation_engine.py,1570,Exception,2
-core/optimisation_engine.py,2100,Exception,1
-core/optimisation_engine.py,3712,Exception,2
-core/optimisation_engine.py,4409,Exception,2
-core/optimisation_engine.py,635,ValueError,1
-core/optimisation_engine.py,901,Exception,1
-core/optimisation_engine.py,924,ValueError,1
-core/optimisation_engine.py,2907,"(OSError, IOError, ValueError)",1
-core/optimisation_engine.py,3587,"(ImportError, AttributeError)",1
-core/optimisation_engine.py,3658,Exception,1
-core/optimisation_engine.py,4232,Exception,2
-core/optimisation_engine.py,584,Exception,1
-core/optimisation_engine.py,2162,Exception,1
-core/optimization_analysis.py,858,Exception,2
-core/optimization_analysis.py,882,Exception,2
-core/optimization_analysis.py,119,Exception,1
-core/optimization_analysis.py,296,Exception,2
-core/optimization_analysis.py,358,Exception,2
-core/optimization_analysis.py,428,Exception,2
-core/optimization_analysis.py,536,Exception,2
-core/optimization_analysis.py,609,Exception,2
-core/optimization_analysis.py,692,Exception,2
-core/optimization_analysis.py,765,Exception,2
-core/optimization_analysis.py,833,Exception,2
-core/plotting_manager.py,620,ImportError,2
-core/plotting_manager.py,644,ImportError,2
-core/plotting_manager.py,666,ImportError,2
-core/plotting_manager.py,688,ImportError,2
-core/plotting_manager.py,1054,Exception,1
-core/plotting_manager.py,418,Exception,1
-core/simulation/__init__.py,9,ImportError,1
-core/simulation/profile_generator.py,22,ImportError,11
-core/simulation/profile_generator.py,78,Exception,1
-core/simulation/profile_generator.py,297,Exception,1
-core/simulation/profile_generator.py,307,Exception,3
-core/simulation/recovery_models.py,28,ImportError,1
-core/simulation/recovery_models.py,799,"(TypeError, ValueError, KeyError)",1
-core/simulation/recovery_models.py,610,"(RuntimeError, ValueError, ArithmeticError)",3
-core/simulation/simulator_exporter.py,55,Exception,2
-core/utils/profiler_utils.py,16,ImportError,2
-core/validation/data_quality_validator.py,149,Exception,2
-core/validation/data_quality_validator.py,240,Exception,2
-core/validation/data_quality_validator.py,318,Exception,2
-core/validation/data_quality_validator.py,381,Exception,2
-core/validation/data_quality_validator.py,427,Exception,2
-evaluation/mmp.py,12,ImportError,1
-evaluation/mmp.py,370,Exception,1
-evaluation/mmp.py,332,"(ValueError, TypeError)",1
-evaluation/mmp.py,344,"(ValueError, TypeError, ZeroDivisionError)",1
-evaluation/mmp.py,427,Exception,1
-main.py,53,OSError,2
-main.py,219,Exception,2
-main.py,266,Exception,1
-main.py,328,Exception,3
-main.py,375,Exception,4
-main.py,126,ImportError,2
-main.py,171,ImportError,2
-main.py,179,ImportError,2
-parsers/las_parser.py,60,lasio.LASHeaderError,2
-parsers/las_parser.py,64,Exception,2
-parsers/las_parser.py,84,Exception,1
-parsers/las_parser.py,162,KeyError,1
-parsers/las_parser.py,121,"(ValueError, TypeError)",1
-parsers/las_parser.py,148,ValueError,1
-scripts/archive_resolved_wiki_issues.py,23,Exception,1
-scripts/audit_generator.py,59,Exception,1
-scripts/audit_generator.py,108,Exception,1
-scripts/audit_generator.py,228,Exception,1
-scripts/parse_coverage.py,25,ValueError,1
-scripts/process_las_data.py,82,Exception,2
-tests/conftest.py,20,Exception,1
-tests/core/test_fitness_function.py,294,Exception,1
-tests/core/test_fitness_function.py,321,Exception,1
-tests/core/test_fitness_function.py,348,Exception,1
-tests/core/test_fitness_function.py,376,Exception,1
-tests/core/test_fitness_function.py,407,Exception,1
-tests/core/test_fitness_function.py,437,Exception,1
-tests/core/test_fitness_function.py,467,Exception,1
-tests/core/test_surrogate_engine_reference.py,265,Exception,2
-tests/test_cmg_surrogate_validation.py,339,ImportError,1
-tests/validation/cmg_output_parser.py,167,Exception,1
-tests/validation/cmg_output_parser.py,288,Exception,2
-tests/validation/cmg_output_parser.py,352,Exception,1
-tests/validation/cmg_output_parser.py,102,Exception,2
-tests/validation/cmg_output_parser.py,110,Exception,2
-tests/validation/cmg_output_parser.py,228,bare_except,1
-tests/validation/cmg_output_parser.py,345,ValueError,1
-tests/validation/cmg_runner.py,135,subprocess.TimeoutExpired,3
-tests/validation/cmg_runner.py,146,Exception,3
-tests/validation/cmg_runner.py,174,Exception,2
-tests/validation/cmg_runner.py,191,Exception,1
-tests/validation/combined_cmg_parser.py,22,ImportError,2
-tests/validation/combined_cmg_parser.py,111,Exception,2
-tests/validation/combined_cmg_parser.py,141,Exception,2
-tests/validation/empirical_engine_validation.py,171,Exception,2
-tests/validation/empirical_engine_validation.py,461,Exception,1
-tests/validation/extract_sr3_reference.py,109,Exception,4
-tests/validation/sr3_parser.py,20,ImportError,1
-tests/validation/sr3_parser.py,23,ImportError,3
-tests/validation/sr3_parser.py,195,Exception,4
-tests/validation/sr3_parser.py,254,Exception,1
-tests/validation/sr3_parser.py,29,ImportError,3
-tests/validation/sr3_reader.py,127,bare_except,1
-tests/validation/sr3_reader.py,155,bare_except,3
-tests/validation/sr3_reader.py,384,bare_except,1
-tests/validation/sr3_reader.py,585,ValueError,1
-tests/validation/sr3_reader.py,227,bare_except,1
-tests/validation/sr3_reader.py,458,bare_except,1
-tests/validation/sr3_reader.py,528,bare_except,1
-tests/validation/sr3_reader.py,533,bare_except,1
-ui/analysis_widget.py,58,ImportError,1
-ui/analysis_widget.py,65,ImportError,1
-ui/config_widget.py,64,ImportError,3
-ui/config_widget.py,401,"(ValueError, TypeError)",2
-ui/config_widget.py,1113,Exception,1
-ui/config_widget.py,1144,Exception,1
-ui/config_widget.py,1241,Exception,3
-ui/config_widget.py,1267,Exception,3
-ui/config_widget.py,358,"(ValueError, TypeError)",2
-ui/config_widget.py,1173,ValueError,1
-ui/config_widget.py,1180,Exception,1
-ui/config_widget.py,330,"(ValueError, TypeError)",2
-ui/config_widget.py,339,"(ValueError, TypeError)",2
-ui/data_management_widget.py,26,ImportError,3
-ui/data_management_widget.py,36,ImportError,5
-ui/data_management_widget.py,54,ImportError,2
-ui/data_management_widget.py,741,Exception,2
-ui/data_management_widget.py,756,"(ValueError, TypeError)",1
-ui/data_management_widget.py,769,"(ValueError, TypeError)",2
-ui/data_management_widget.py,1101,Exception,2
-ui/data_management_widget.py,1396,Exception,2
-ui/data_management_widget.py,1553,"(TypeError, KeyError, ZeroDivisionError)",1
-ui/data_management_widget.py,1636,"(KeyError, ZeroDivisionError, TypeError, ValueError)",3
-ui/data_management_widget.py,1698,Exception,2
-ui/data_management_widget.py,1821,Exception,2
-ui/data_management_widget.py,1878,Exception,2
-ui/data_management_widget.py,1936,Exception,2
-ui/data_management_widget.py,176,Exception,1
-ui/data_management_widget.py,185,Exception,1
-ui/data_management_widget.py,845,"(TypeError, ValueError, KeyError)",1
-ui/data_management_widget.py,952,Exception,9
-ui/data_management_widget.py,1586,Exception,1
-ui/data_management_widget.py,802,"(ValueError, AttributeError)",1
-ui/data_management_widget.py,1077,"(ValueError, AttributeError)",1
-ui/data_management_widget.py,1390,Exception,1
-ui/data_management_widget.py,1574,"(ValueError, AttributeError)",1
-ui/data_management_widget.py,656,Exception,1
-ui/data_management_widget.py,893,Exception,1
-ui/dialogs/injection_scheme_dialog.py,637,Exception,3
-ui/dialogs/injection_scheme_dialog.py,682,Exception,2
-ui/dialogs/preferences_dialog.py,153,Exception,2
-ui/main_window.py,45,ImportError,1
-ui/main_window.py,52,ImportError,2
-ui/main_window.py,60,ImportError,2
-ui/main_window.py,100,ImportError,5
-ui/main_window.py,811,Exception,4
-ui/main_window.py,872,Exception,1
-ui/main_window.py,899,Exception,1
-ui/main_window.py,909,Exception,1
-ui/main_window.py,918,Exception,1
-ui/main_window.py,932,Exception,1
-ui/main_window.py,1065,Exception,3
-ui/main_window.py,1124,"(FileNotFoundError, json.JSONDecodeError)",2
-ui/main_window.py,1461,Exception,2
-ui/main_window.py,1683,Exception,3
-ui/main_window.py,1734,Exception,3
-ui/main_window.py,302,Exception,3
-ui/main_window.py,661,Exception,1
-ui/main_window.py,1190,Exception,3
-ui/main_window.py,1355,Exception,1
-ui/main_window.py,1804,Exception,2
-ui/main_window.py,1896,Exception,1
-ui/main_window.py,326,Exception,2
-ui/main_window.py,1439,Exception,2
-ui/optimization_widget.py,68,ImportError,6
-ui/optimization_widget.py,974,Exception,1
-ui/optimization_widget.py,998,Exception,3
-ui/optimization_widget.py,1594,Exception,5
-ui/optimization_widget.py,1884,Exception,3
-ui/optimization_widget.py,2007,Exception,4
-ui/optimization_widget.py,2077,Exception,2
-ui/optimization_widget.py,2390,Exception,2
-ui/optimization_widget.py,1058,Exception,1
-ui/optimization_widget.py,1437,Exception,2
-ui/optimization_widget.py,993,bare_except,1
-ui/sensitivity_widget.py,20,ImportError,3
-ui/sensitivity_widget.py,27,ImportError,2
-ui/sensitivity_widget.py,396,ValueError,2
-ui/sensitivity_widget.py,511,Exception,2
-ui/sensitivity_widget.py,359,Exception,5
-ui/widgets/context_bubble.py,14,TypeError,1
-ui/widgets/context_bubble.py,38,TypeError,1
-ui/widgets/depth_profile_dialog.py,10,ImportError,1
-ui/widgets/geomechanics_3d_view.py,25,ImportError,2
-ui/widgets/geomechanics_3d_view.py,389,Exception,2
-ui/widgets/geomechanics_3d_view.py,544,Exception,2
-ui/widgets/geomechanics_3d_view.py,282,Exception,2
-ui/widgets/geomechanics_3d_view.py,511,Exception,2
-ui/widgets/geomechanics_3d_view.py,436,Exception,1
-ui/widgets/log_viewer_dialog.py,35,ImportError,5
-ui/widgets/log_viewer_dialog.py,49,ImportError,2
-ui/widgets/log_viewer_dialog.py,374,ValueError,1
-ui/widgets/manual_well_dialog.py,26,ImportError,2
-ui/widgets/manual_well_dialog.py,53,ImportError,2
-ui/widgets/manual_well_dialog.py,61,ImportError,2
-ui/widgets/manual_well_dialog.py,250,"(ValueError, TypeError)",1
-ui/widgets/manual_well_dialog.py,267,"(ValueError, TypeError)",1
-ui/widgets/manual_well_dialog.py,393,Exception,2
-ui/widgets/manual_well_dialog.py,234,"(ValueError, TypeError)",1
-ui/widgets/manual_well_dialog.py,357,"(AttributeError, ValueError)",1
-ui/widgets/parameter_input_group.py,145,"(ValueError, TypeError)",1
-ui/widgets/pvt_editor_dialog.py,37,ImportError,4
-ui/widgets/pvt_editor_dialog.py,54,ImportError,2
-ui/widgets/pvt_editor_dialog.py,93,ImportError,2
-ui/widgets/pvt_editor_dialog.py,508,Exception,1
-ui/widgets/pvt_editor_dialog.py,645,Exception,2
-ui/widgets/pvt_editor_dialog.py,748,Exception,2
-ui/widgets/pvt_editor_dialog.py,782,Exception,1
-ui/widgets/pvt_editor_dialog.py,853,"(ValueError, AttributeError)",1
-ui/widgets/pvt_editor_dialog.py,908,"(ValueError, TypeError)",2
-ui/widgets/pvt_editor_dialog.py,916,Exception,2
-ui/widgets/pvt_editor_dialog.py,940,"(ValueError, TypeError)",1
-ui/widgets/pvt_editor_dialog.py,825,"(ValueError, IndexError)",1
-ui/widgets/pvt_table_editor.py,126,Exception,1
-ui/widgets/pvt_table_editor.py,279,Exception,1
-ui/widgets/pvt_table_editor.py,298,Exception,1
-ui/widgets/pvt_table_editor.py,151,ValueError,4
-ui/widgets/pvt_table_editor.py,182,ValueError,1
-ui/widgets/pvt_table_editor.py,259,"(ValueError, TypeError)",2
-ui/workers/ai_query_worker.py,13,ImportError,3
-ui/workers/ai_query_worker.py,20,ImportError,4
-ui/workers/ai_query_worker.py,102,"(ValueError, ImportError)",2
-ui/workers/ai_query_worker.py,106,Exception,2
-ui/workers/ai_query_worker.py,134,PermissionDenied,1
-ui/workers/ai_query_worker.py,136,GoogleAPICallError,1
-ui/workers/ai_query_worker.py,164,AuthenticationError,1
-ui/workers/ai_query_worker.py,166,RateLimitError,1
-ui/workers/ai_query_worker.py,168,APIError,1
-ui/workers/base_worker.py,41,Exception,2
-ui/workers/dca_worker.py,34,Exception,1
-ui/workers/model_list_worker.py,36,httpx.RequestError,2
-ui/workers/model_list_worker.py,39,httpx.HTTPStatusError,2
-ui/workers/model_list_worker.py,42,Exception,2
-ui/workers/optimization_worker.py,54,Exception,2
-ui/workers/sensitivity_analysis_worker.py,67,AttributeError,3
-ui/workers/sensitivity_analysis_worker.py,72,Exception,2
-ui/workers/uq_worker.py,46,AttributeError,3
-ui/workers/uq_worker.py,50,Exception,2
-ui/workers/well_analysis_worker.py,87,Exception,2
-utils/config_manager.py,137,"(KeyError, TypeError, IndexError)",1
-utils/config_manager.py,28,Exception,1
-utils/config_manager.py,36,FileNotFoundError,1
-utils/config_manager.py,42,Exception,2
-utils/config_manager.py,95,json.JSONDecodeError,1
-utils/config_manager.py,97,Exception,1
-utils/i18n_manager.py,65,Exception,1
-utils/multiprocess_logging.py,43,"(PermissionError, OSError)",1
-utils/multiprocess_logging.py,48,Exception,1
-utils/multiprocess_logging.py,61,"(EOFError, BrokenPipeError, OSError)",1
-utils/multiprocess_logging.py,193,Exception,1
-utils/multiprocess_logging.py,248,Exception,1
-utils/multiprocess_logging.py,161,Exception,1
-utils/project_file_handler.py,73,"(TypeError, IOError)",2
-utils/project_file_handler.py,90,"(IOError, json.JSONDecodeError)",2
-utils/project_file_handler.py,45,Exception,2
-utils/report_generator.py,84,Exception,2
-utils/report_generator.py,105,Exception,1
-utils/report_generator.py,152,Exception,4
-utils/report_generator.py,1007,Exception,2
-utils/report_generator.py,1019,Exception,2
-utils/report_generator.py,162,Exception,1
-utils/run_exporter.py,1518,"(TypeError, OverflowError, ValueError)",1
-utils/run_exporter.py,1528,Exception,1
-utils/run_exporter.py,588,Exception,1
-utils/run_exporter.py,1423,Exception,1
-utils/run_exporter.py,1487,Exception,1
+file,line,trigger,behavior,category,severity,impact
+analysis/breakthrough_physics.py,248,Numerical bounds exceeded on vdp,"Clamped to [0.0, 0.95]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable vdp into artificial range
+analysis/breakthrough_physics.py,262,"Numerical bounds exceeded on _to_float(reservoir_params.get('porosity', 0.15))","Clamped to [0.01, 0.4]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable _to_float(reservoir_params.get('porosity', 0.15)) into artificial range"
+analysis/breakthrough_physics.py,392,Missing key 'injection_gor',Substituted default 10000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_gor'=10000.0
+analysis/breakthrough_physics.py,146,Missing key 'pressure',Substituted default 2000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=2000.0
+analysis/breakthrough_physics.py,147,Missing key 'temperature',Substituted default 150.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=150.0
+analysis/breakthrough_physics.py,154,"Exception caught: (ImportError, TypeError, ValueError, RuntimeError)",Assigns fallback: eos_model = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/breakthrough_physics.py,222,Numerical bounds exceeded on breakthrough_time,"Clamped to [self.params.min_bt_time_clip, self.params.max_bt_time_clip]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable breakthrough_time into artificial range
+analysis/breakthrough_physics.py,267,Missing key 'injection_rate',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=5000.0
+analysis/breakthrough_physics.py,291,Missing key 'permeability',Substituted default 100.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'permeability'=100.0
+analysis/breakthrough_physics.py,292,Missing key 'porosity',Substituted default 0.15,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'porosity'=0.15
+analysis/breakthrough_physics.py,298,Missing key 'injection_rate',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=5000.0
+analysis/breakthrough_physics.py,342,Missing key 'permeability',Substituted default 100.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'permeability'=100.0
+analysis/breakthrough_physics.py,347,Missing key 'injection_rate',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=5000.0
+analysis/breakthrough_physics.py,262,Missing key 'porosity',Substituted default 0.15,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'porosity'=0.15
+analysis/data_validation.py,357,Missing key 'initial_pressure',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'initial_pressure'=0.0
+analysis/data_validation.py,358,Missing key 'max_pressure_psi',Substituted default 10000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'max_pressure_psi'=10000.0
+analysis/decline_curve_analysis.py,118,"Exception caught: (RuntimeError, ValueError, TypeError)","Returns fallback value: (qi, di, 0.0)",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/decline_curve_analysis.py,144,"Exception caught: (RuntimeError, ValueError, TypeError)","Returns fallback value: self.fit_exponential(time, rate)",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/decline_curve_analysis.py,315,"Exception caught: (RuntimeError, ValueError, TypeError, FloatingPointError)",Returns fallback value: 'exponential',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/decline_curve_analysis.py,361,Missing key 'production_rate',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'production_rate'=np.array([])
+analysis/decline_curve_analysis.py,363,Missing key 'forecast_rate',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'forecast_rate'=np.array([])
+analysis/injection_scheme_validator.py,59,Missing key 'daily_co2_injected_mscf',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'daily_co2_injected_mscf'=np.array([])
+analysis/injection_scheme_validator.py,60,Missing key 'daily_water_injected_bbl',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'daily_water_injected_bbl'=np.array([])
+analysis/injection_scheme_validator.py,118,Missing key 'daily_co2_injected_mscf',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'daily_co2_injected_mscf'=np.array([])
+analysis/injection_scheme_validator.py,120,Missing key 'daily_pressure',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'daily_pressure'=np.array([])
+analysis/injection_scheme_validator.py,387,Missing key 'daily_co2_injected_mscf',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'daily_co2_injected_mscf'=np.array([])
+analysis/injection_scheme_validator.py,389,Missing key 'daily_water_injected_bbl',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'daily_water_injected_bbl'=np.array([])
+analysis/material_balance.py,21,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/material_balance.py,378,Exception caught: Exception,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/material_balance.py,111,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/material_balance.py,75,Missing key 'pressure',Substituted default 2000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=2000.0
+analysis/material_balance.py,76,Missing key 'temperature',Substituted default 150.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=150.0
+analysis/material_balance.py,194,Missing key 'pressure',Substituted default 2000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=2000.0
+analysis/material_balance.py,200,Missing key 'caprock_fracture_pressure_psi',Substituted default 5500.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'caprock_fracture_pressure_psi'=5500.0
+analysis/material_balance.py,253,Numerical bounds exceeded on net_stored_tonne[i] / purchased_tonne[i],"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable net_stored_tonne[i] / purchased_tonne[i] into artificial range
+analysis/profiler.py,57,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/profiler.py,100,Numerical bounds exceeded on enhanced_efficiency,"Clamped to [0.1, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable enhanced_efficiency into artificial range
+analysis/profiler.py,217,Numerical bounds exceeded on factor,"Clamped to [0.5, 1.5]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable factor into artificial range
+analysis/profiler.py,238,Numerical bounds exceeded on S_star,"Clamped to [0, 1]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable S_star into artificial range
+analysis/profiler.py,276,Numerical bounds exceeded on S_wn,"Clamped to [0, 1]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable S_wn into artificial range
+analysis/profiler.py,329,Numerical bounds exceeded on S_w_avg,"Clamped to [0, 1 - S_or]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable S_w_avg into artificial range
+analysis/profiler.py,366,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/profiler.py,832,Missing key resolution,Substituted default DAYS_PER_YEAR,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter resolution=DAYS_PER_YEAR
+analysis/profiler.py,150,Numerical bounds exceeded on heterogeneity_penalty,"Clamped to [0.7, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable heterogeneity_penalty into artificial range
+analysis/profiler.py,445,Numerical bounds exceeded on s_gas,"Clamped to [0, 1]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable s_gas into artificial range
+analysis/profiler.py,446,Numerical bounds exceeded on s_water,"Clamped to [0, 1]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable s_water into artificial range
+analysis/profiler.py,447,Numerical bounds exceeded on 1 - s_gas - s_water,"Clamped to [0, 1]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable 1 - s_gas - s_water into artificial range
+analysis/profiler.py,580,Numerical bounds exceeded on current_pressure,"Clamped to [min_pressure, self.eor_params.max_pressure_psi]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable current_pressure into artificial range
+analysis/profiler.py,781,Numerical bounds exceeded on current_pressure,"Clamped to [500, self.eor_params.max_pressure_psi]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable current_pressure into artificial range
+analysis/profiler.py,761,Numerical bounds exceeded on 1.0 - f_co2_at_producer - f_water_at_producer,"Clamped to [0, 1]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable 1.0 - f_co2_at_producer - f_water_at_producer into artificial range
+analysis/profiler.py,730,Numerical bounds exceeded on self.eor_params.s_wc + (1 - self.eor_params.s_orw - self.eor_params.s_wc) * (1 - np.exp(-0.5 * pvi_past_bt)),"Clamped to [self.eor_params.s_wc, 1 - self.eor_params.s_orw]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable self.eor_params.s_wc + (1 - self.eor_params.s_orw - self.eor_params.s_wc) * (1 - np.exp(-0.5 * pvi_past_bt)) into artificial range
+analysis/profiler.py,72,Missing key 'PORO',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'PORO'=0.2
+analysis/profiler.py,653,Numerical bounds exceeded on co2_saturation_near_well,"Clamped to [0.4, 0.85]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable co2_saturation_near_well into artificial range
+analysis/profiler.py,695,Numerical bounds exceeded on 1.0 - np.exp(-co2_cut_aggressiveness * pvi_past_bt),"Clamped to [0, 0.6]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable 1.0 - np.exp(-co2_cut_aggressiveness * pvi_past_bt) into artificial range
+analysis/profiler.py,701,Numerical bounds exceeded on S_wf + (1 - self.eor_params.sor - S_wf) * (1 - np.exp(-0.3 * pvi_past_bt)),"Clamped to [S_wf, 1 - self.eor_params.sor]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable S_wf + (1 - self.eor_params.sor - S_wf) * (1 - np.exp(-0.3 * pvi_past_bt)) into artificial range
+analysis/profiler_refactored.py,69,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,26,Exception caught: ImportError,Assigns fallback: EOS_MODELS_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,37,Exception caught: ImportError,Assigns fallback: SALIB_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,70,Exception caught: Exception,Assigns fallback: self.config_manager = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,308,"Exception caught: (AttributeError, KeyError, ValueError, IndexError)",Returns fallback value: False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,423,Exception caught: ValueError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,577,"Exception caught: (ValueError, AttributeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,694,"Exception caught: (ValueError, AttributeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,776,Exception caught: Exception,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,206,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,253,Exception caught: Exception,Assigns fallback: self._eos_cache[cache_key] = {},IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,339,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,670,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,345,Missing key 'mmp_value',Substituted default self.engine.mmp,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'mmp_value'=self.engine.mmp
+analysis/sensitivity_analyzer.py,354,Missing key 'avg_porosity',Substituted default self.engine.avg_porosity,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'avg_porosity'=self.engine.avg_porosity
+analysis/sensitivity_analyzer.py,543,Exception caught: Exception,"Assigns fallback: results_array[idx, :] = np.nan",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/sensitivity_analyzer.py,186,Numerical bounds exceeded on base_val,"Clamped to [low, high]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable base_val into artificial range
+analysis/uq_engine.py,23,Exception caught: ImportError,"Assigns fallback: OptimizationEngine, EconomicParameters = (object, object)",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/uq_engine.py,209,Exception caught: IndexError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/uq_engine.py,213,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/uq_engine.py,271,Exception caught: ImportError,Assigns fallback: regression = LassoRegression(),IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/uq_engine.py,345,Exception caught: Exception,Assigns fallback: first_order = np.zeros(len(param_names)),IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/uq_engine.py,355,Exception caught: Exception,"Assigns fallback: mean_val, var_val = (0.0, 0.0)",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/uq_engine.py,187,"Exception caught: (ValueError, TypeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/well_analysis.py,71,Exception caught: Exception,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/well_analysis.py,91,Numerical bounds exceeded on api,"Clamped to [15, 50]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable api into artificial range
+analysis/well_analysis.py,156,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+analysis/well_analysis.py,246,Missing key 'temp',Substituted default self.config.default_reservoir_temp,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'temp'=self.config.default_reservoir_temp
+audit/__main__.py,23,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+audit/pipeline.py,65,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+audit/pipeline.py,138,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+audit/pipeline.py,178,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+core/data_integration_engine.py,148,Exception caught: Exception,"Returns fallback value: {'is_valid': False, 'errors': [f'Processing error: {str(e)}'], 'component_results': {}, 'processed_data': None}",IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/data_integration_engine.py,194,Exception caught: Exception,Assigns fallback: data['generated_properties'] = None,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/data_integration_engine.py,602,Exception caught: Exception,Assigns fallback: compatibility['surrogate_engine']['compatible'] = False,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/data_integration_engine.py,809,Exception caught: Exception,"Returns fallback value: {'porosity': np.full((nx, ny, nz), 0.2), 'permeability_x': np.full((nx, ny, nz), 100.0), 'permeability_y': np.full((nx, ny, nz), 100.0), 'permeability_z': np.full((nx, ny, nz), 10.0)}",IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/data_integration_engine.py,467,Missing key 'injection_scheme',Substituted default 'continuous',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_scheme'='continuous'
+core/data_integration_engine.py,711,Missing key 'poissons_ratio',Substituted default 0.25,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'poissons_ratio'=0.25
+core/data_integration_engine.py,253,Missing key 'recycle_growth_rate',Substituted default 1.5,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'recycle_growth_rate'=1.5
+core/data_integration_engine.py,398,Missing key 'initial_pressure',Substituted default 4000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'initial_pressure'=4000.0
+core/data_integration_engine.py,399,Missing key 'temperature',Substituted default 150.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=150.0
+core/data_integration_engine.py,400,Missing key 'rock_compressibility',Substituted default 3e-06,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'rock_compressibility'=3e-06
+core/data_integration_engine.py,412,Missing key 'interfacial_tension',Substituted default 5.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'interfacial_tension'=5.0
+core/data_integration_engine.py,490,Missing key 'injection_rate',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=5000.0
+core/data_integration_engine.py,496,Missing key 'target_pressure_psi',Substituted default 3000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'target_pressure_psi'=3000.0
+core/data_integration_engine.py,497,Missing key 'max_pressure_psi',Substituted default 6000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'max_pressure_psi'=6000.0
+core/data_integration_engine.py,498,Missing key 'min_injection_rate_mscfd',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'min_injection_rate_mscfd'=5000.0
+core/data_integration_engine.py,499,Missing key 'max_injection_rate_mscfd',Substituted default 100000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'max_injection_rate_mscfd'=100000.0
+core/data_integration_engine.py,500,Missing key 'sor',Substituted default 0.25,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'sor'=0.25
+core/data_integration_engine.py,510,Missing key 'wellbore_pressure',Substituted default 500.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'wellbore_pressure'=500.0
+core/data_integration_engine.py,512,Missing key 'max_injector_bhp_psi',Substituted default 8000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'max_injector_bhp_psi'=8000.0
+core/data_integration_engine.py,527,Missing key 'time_resolution',Substituted default 'yearly',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'time_resolution'='yearly'
+core/data_integration_engine.py,543,Missing key 'water_injection_cost_usd_per_bbl',Substituted default 1.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'water_injection_cost_usd_per_bbl'=1.0
+core/data_integration_engine.py,545,Missing key 'discount_rate_fraction',Substituted default 0.1,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'discount_rate_fraction'=0.1
+core/data_integration_engine.py,628,Missing key 'initial_pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'initial_pressure'=0
+core/data_integration_engine.py,631,Missing key 'temperature',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=0
+core/data_integration_engine.py,672,Missing key 'anisotropy_ratio',Substituted default 1,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'anisotropy_ratio'=1
+core/data_integration_engine.py,757,Missing key 'poissons_ratio',Substituted default 0.25,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'poissons_ratio'=0.25
+core/data_integration_engine.py,762,Missing key 'pore_compressibility',Substituted default 1e-06,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pore_compressibility'=1e-06
+core/data_integration_engine.py,763,Missing key 'permeability_stress_coefficient',Substituted default 1e-05,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'permeability_stress_coefficient'=1e-05
+core/data_integration_engine.py,475,Missing key 'swag_water_gas_ratio',Substituted default 1.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'swag_water_gas_ratio'=1.0
+core/data_integration_engine.py,476,Missing key 'swag_simultaneous_injection',Substituted default True,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'swag_simultaneous_injection'=True
+core/data_integration_engine.py,477,Missing key 'swag_mixing_efficiency',Substituted default 0.8,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'swag_mixing_efficiency'=0.8
+core/data_integration_engine.py,482,Missing key 'huff_n_puff_injection_period_days',Substituted default 10,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'huff_n_puff_injection_period_days'=10
+core/data_integration_engine.py,483,Missing key 'huff_n_puff_soaking_period_days',Substituted default 5,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'huff_n_puff_soaking_period_days'=5
+core/data_models.py,146,"Exception caught: (IndexError, ValueError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/data_models.py,60,Numerical bounds exceeded on K,"Clamped to [0.5, 10.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable K into artificial range
+core/data_models.py,1958,Numerical bounds exceeded on (sw - self.swi) / (1 - self.sor - self.swi),"Clamped to [0, 1]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable (sw - self.swi) / (1 - self.sor - self.swi) into artificial range
+core/data_models.py,1963,Numerical bounds exceeded on (sg - self.sgr) / (1 - self.swi - self.sor - self.sgr),"Clamped to [0, 1]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable (sg - self.sgr) / (1 - self.swi - self.sor - self.sgr) into artificial range
+core/data_models.py,352,Missing key 'PORO',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'PORO'=0.2
+core/engine_surrogate/analytical_models.py,116,"Exception caught: (ValueError, TypeError, ArithmeticError, RuntimeError)",Returns fallback value: self._literature_based_recovery(**params),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/engine_surrogate/analytical_models.py,144,"Numerical bounds exceeded on params.get('v_dp', params.get('v_dp_coefficient', 0.5))","Clamped to [0.0, 0.999]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable params.get('v_dp', params.get('v_dp_coefficient', 0.5)) into artificial range"
+core/engine_surrogate/analytical_models.py,145,"Numerical bounds exceeded on params.get('s_wi', params.get('connate_water_saturation', S_WI_CONNATE))","Clamped to [0.0, 0.8]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,"Forces physical variable params.get('s_wi', params.get('connate_water_saturation', S_WI_CONNATE)) into artificial range"
+core/engine_surrogate/analytical_models.py,151,Missing key 'viscosity_inj',"Substituted default params.get('co2_viscosity', 0.05)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'viscosity_inj'=params.get('co2_viscosity', 0.05)"
+core/engine_surrogate/analytical_models.py,238,"Exception caught: (ValueError, TypeError, ArithmeticError, RuntimeError)",Returns fallback value: self._literature_based_recovery(**params),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/engine_surrogate/analytical_models.py,261,Missing key 'viscosity_inj',"Substituted default params.get('co2_viscosity', 0.05)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'viscosity_inj'=params.get('co2_viscosity', 0.05)"
+core/engine_surrogate/analytical_models.py,262,"Numerical bounds exceeded on params.get('v_dp', params.get('v_dp_coefficient', 0.5))","Clamped to [0.0, 0.99]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable params.get('v_dp', params.get('v_dp_coefficient', 0.5)) into artificial range"
+core/engine_surrogate/analytical_models.py,263,Missing key 'sor',Substituted default S_OR_BASE,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'sor'=S_OR_BASE
+core/engine_surrogate/analytical_models.py,264,Missing key 'soi',Substituted default 0.8,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'soi'=0.8
+core/engine_surrogate/analytical_models.py,265,"Numerical bounds exceeded on params.get('s_wi', params.get('connate_water_saturation', S_WI_CONNATE))","Clamped to [0.0, 0.8]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,"Forces physical variable params.get('s_wi', params.get('connate_water_saturation', S_WI_CONNATE)) into artificial range"
+core/engine_surrogate/analytical_models.py,317,Numerical bounds exceeded on vertical_eff,"Clamped to [0.1, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable vertical_eff into artificial range
+core/engine_surrogate/analytical_models.py,365,"Exception caught: (ValueError, TypeError, ArithmeticError, RuntimeError)",Returns fallback value: self._literature_based_recovery(**params),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/engine_surrogate/analytical_models.py,386,Missing key 'viscosity_inj',"Substituted default params.get('co2_viscosity', 0.05)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'viscosity_inj'=params.get('co2_viscosity', 0.05)"
+core/engine_surrogate/analytical_models.py,390,Missing key 'sor',Substituted default S_OR_BASE,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'sor'=S_OR_BASE
+core/engine_surrogate/analytical_models.py,447,Missing key 'pressure',"Substituted default params.get('target_pressure_psi', 3000.0)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'pressure'=params.get('target_pressure_psi', 3000.0)"
+core/engine_surrogate/analytical_models.py,448,Missing key 'mmp',Substituted default 2500.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'mmp'=2500.0
+core/engine_surrogate/analytical_models.py,464,Numerical bounds exceeded on arg,"Clamped to [-700, 700]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable arg into artificial range
+core/engine_surrogate/analytical_models.py,507,"Exception caught: (ValueError, TypeError, ArithmeticError, RuntimeError)",Returns fallback value: self._literature_based_recovery(**params),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/engine_surrogate/analytical_models.py,529,"Numerical bounds exceeded on params.get('v_dp', params.get('v_dp_coefficient', 0.5))","Clamped to [0.0, 0.999]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable params.get('v_dp', params.get('v_dp_coefficient', 0.5)) into artificial range"
+core/engine_surrogate/analytical_models.py,661,Numerical bounds exceeded on params.get('v_dp') or params.get('v_dp_coefficient') or 0.5,"Clamped to [0.0, 0.95]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable params.get('v_dp') or params.get('v_dp_coefficient') or 0.5 into artificial range
+core/engine_surrogate/analytical_models.py,662,Numerical bounds exceeded on params.get('s_wi') or params.get('connate_water_saturation') or S_WI_CONNATE,"Clamped to [0.0, 0.8]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable params.get('s_wi') or params.get('connate_water_saturation') or S_WI_CONNATE into artificial range
+core/engine_surrogate/analytical_models.py,765,Numerical bounds exceeded on sor,"Clamped to [sor_min, sor_imm]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable sor into artificial range
+core/engine_surrogate/analytical_models.py,778,Numerical bounds exceeded on e_sweep,"Clamped to [0.0, 1.0]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable e_sweep into artificial range
+core/engine_surrogate/analytical_models.py,161,"Numerical bounds exceeded on params.get('x_co2', params.get('f_s', s_gas / (s_gas + s_oil)))","Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable params.get('x_co2', params.get('f_s', s_gas / (s_gas + s_oil))) into artificial range"
+core/engine_surrogate/analytical_models.py,193,Numerical bounds exceeded on displacement_eff,"Clamped to [0.05, 0.95]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable displacement_eff into artificial range
+core/engine_surrogate/analytical_models.py,200,Numerical bounds exceeded on rf,"Clamped to [0.05, 0.85]",ARTIFICIAL RESULT-PRODUCING FALLBACK,HIGH,Forces physical variable rf into artificial range
+core/engine_surrogate/analytical_models.py,287,Numerical bounds exceeded on (s_g - s_gc) / (1.0 - sor - s_gc),"Clamped to [0.0, 1.0]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable (s_g - s_gc) / (1.0 - sor - s_gc) into artificial range
+core/engine_surrogate/analytical_models.py,312,Numerical bounds exceeded on areal_eff,"Clamped to [0.1, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable areal_eff into artificial range
+core/engine_surrogate/analytical_models.py,326,Numerical bounds exceeded on recovery,"Clamped to [0.1, max_cap]",ARTIFICIAL RESULT-PRODUCING FALLBACK,HIGH,Forces physical variable recovery into artificial range
+core/engine_surrogate/analytical_models.py,399,"Numerical bounds exceeded on (s_g - s_gc) / max(1.0 - sor - s_gc, EPSILON)","Clamped to [0.0, 1.0]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,"Forces physical variable (s_g - s_gc) / max(1.0 - sor - s_gc, EPSILON) into artificial range"
+core/engine_surrogate/analytical_models.py,416,Numerical bounds exceeded on displacement_eff,"Clamped to [0.0, 0.75]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable displacement_eff into artificial range
+core/engine_surrogate/analytical_models.py,447,Missing key 'target_pressure_psi',Substituted default 3000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'target_pressure_psi'=3000.0
+core/engine_surrogate/analytical_models.py,475,Numerical bounds exceeded on rf,"Clamped to [0.05, 0.8]",ARTIFICIAL RESULT-PRODUCING FALLBACK,HIGH,Forces physical variable rf into artificial range
+core/engine_surrogate/analytical_models.py,559,Numerical bounds exceeded on sweep,"Clamped to [0.0, 0.75]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable sweep into artificial range
+core/engine_surrogate/analytical_models.py,716,Numerical bounds exceeded on omega * omega_tl,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable omega * omega_tl into artificial range
+core/engine_surrogate/analytical_models.py,797,Numerical bounds exceeded on 1.0 / (1.0 + N_g),"Clamped to [0.1, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable 1.0 / (1.0 + N_g) into artificial range
+core/engine_surrogate/analytical_models.py,815,Numerical bounds exceeded on rf,"Clamped to [0.0, rf_max_physical]",ARTIFICIAL RESULT-PRODUCING FALLBACK,HIGH,Forces physical variable rf into artificial range
+core/engine_surrogate/analytical_models.py,950,Numerical bounds exceeded on omega,"Clamped to [0.0001, 1.0 - 0.0001]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable omega into artificial range
+core/engine_surrogate/analytical_models.py,922,Numerical bounds exceeded on arg / 2.0,"Clamped to [-10, 10]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable arg / 2.0 into artificial range
+core/engine_surrogate/geomechanics_fault.py,93,Numerical bounds exceeded on horizontal_stress_ratio_k0,"Clamped to [0.4, 1.2]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable horizontal_stress_ratio_k0 into artificial range
+core/engine_surrogate/geomechanics_fault.py,94,Numerical bounds exceeded on poissons_ratio,"Clamped to [0.1, 0.45]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable poissons_ratio into artificial range
+core/engine_surrogate/geomechanics_fault.py,95,Numerical bounds exceeded on biot_coefficient,"Clamped to [0.5, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable biot_coefficient into artificial range
+core/engine_surrogate/geomechanics_fault.py,124,Numerical bounds exceeded on fault_transmissibility_multiplier,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable fault_transmissibility_multiplier into artificial range
+core/engine_surrogate/profile_generator_fast.py,145,Missing key 'n_injectors',Substituted default 1,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'n_injectors'=1
+core/engine_surrogate/profile_generator_fast.py,147,Missing key 'active_injectors',Substituted default n_injectors,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'active_injectors'=n_injectors
+core/engine_surrogate/profile_generator_fast.py,278,Missing key 'max_production_rate_stbd',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'max_production_rate_stbd'=0.0
+core/engine_surrogate/profile_generator_fast.py,279,Missing key 'min_production_rate_stbd',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'min_production_rate_stbd'=0.0
+core/engine_surrogate/profile_generator_fast.py,450,Missing key 'base_decline_rate',Substituted default decline_rate,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'base_decline_rate'=decline_rate
+core/engine_surrogate/profile_generator_fast.py,539,Missing key 'max_production_rate_stbd',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'max_production_rate_stbd'=0.0
+core/engine_surrogate/profile_generator_fast.py,761,Missing key 'huff_n_puff_injection_period_days',Substituted default 30.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'huff_n_puff_injection_period_days'=30.0
+core/engine_surrogate/profile_generator_fast.py,762,Missing key 'huff_n_puff_soaking_period_days',Substituted default 15.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'huff_n_puff_soaking_period_days'=15.0
+core/engine_surrogate/profile_generator_fast.py,768,Missing key 'huff_n_puff_production_rate_fraction',Substituted default 0.3,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'huff_n_puff_production_rate_fraction'=0.3
+core/engine_surrogate/profile_generator_fast.py,779,Missing key 'injection_rate',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=5000.0
+core/engine_surrogate/profile_generator_fast.py,878,Numerical bounds exceeded on water_cut,"Clamped to [max(0.0, water_cut_start), 0.95]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable water_cut into artificial range
+core/engine_surrogate/profile_generator_fast.py,924,Missing key 'pre_breakthrough_co2_fraction_in_solution_gas',Substituted default 0.05,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pre_breakthrough_co2_fraction_in_solution_gas'=0.05
+core/engine_surrogate/profile_generator_fast.py,939,Missing key 'co2_production_rate_constant',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'co2_production_rate_constant'=0.2
+core/engine_surrogate/profile_generator_fast.py,940,Missing key 'injection_profile',Substituted default None,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_profile'=None
+core/engine_surrogate/profile_generator_fast.py,1152,Missing key 'huff_n_puff_injection_period_days',Substituted default 30.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'huff_n_puff_injection_period_days'=30.0
+core/engine_surrogate/profile_generator_fast.py,1153,Missing key 'huff_n_puff_soaking_period_days',Substituted default 7.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'huff_n_puff_soaking_period_days'=7.0
+core/engine_surrogate/profile_generator_fast.py,1188,Missing key 'swag_simultaneous_injection',Substituted default True,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'swag_simultaneous_injection'=True
+core/engine_surrogate/profile_generator_fast.py,1189,Missing key 'swag_water_gas_ratio',Substituted default 1.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'swag_water_gas_ratio'=1.0
+core/engine_surrogate/profile_generator_fast.py,1190,Missing key 'swag_mixing_efficiency',Substituted default 0.9,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'swag_mixing_efficiency'=0.9
+core/engine_surrogate/profile_generator_fast.py,1191,Missing key 'swag_cycle_length_days',Substituted default 30,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'swag_cycle_length_days'=30
+core/engine_surrogate/profile_generator_fast.py,1226,Missing key 'tapered_initial_rate_multiplier',Substituted default 2.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'tapered_initial_rate_multiplier'=2.0
+core/engine_surrogate/profile_generator_fast.py,1227,Missing key 'tapered_final_rate_multiplier',Substituted default 0.5,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'tapered_final_rate_multiplier'=0.5
+core/engine_surrogate/profile_generator_fast.py,1232,"Numerical bounds exceeded on time_years / max(duration_years, 0.001)","Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable time_years / max(duration_years, 0.001) into artificial range"
+core/engine_surrogate/profile_generator_fast.py,208,Missing key 'active_injectors',Substituted default 1,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'active_injectors'=1
+core/engine_surrogate/profile_generator_fast.py,283,Numerical bounds exceeded on oil_profile,"Clamped to [0, max_rate]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable oil_profile into artificial range
+core/engine_surrogate/profile_generator_fast.py,284,Numerical bounds exceeded on water_profile,"Clamped to [0, max_rate]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable water_profile into artificial range
+core/engine_surrogate/profile_generator_fast.py,303,Numerical bounds exceeded on water_cut,"Clamped to [0, 0.95]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable water_cut into artificial range
+core/engine_surrogate/profile_generator_fast.py,348,Numerical bounds exceeded on contrast * 0.1,"Clamped to [-0.15, 0.15]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable contrast * 0.1 into artificial range
+core/engine_surrogate/profile_generator_fast.py,393,Numerical bounds exceeded on 0.05 * mobility_ratio_wo,"Clamped to [0.0, 0.15]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable 0.05 * mobility_ratio_wo into artificial range
+core/engine_surrogate/profile_generator_fast.py,448,Missing key 'decline_rate',"Substituted default params.get('base_decline_rate', 0.15)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'decline_rate'=params.get('base_decline_rate', 0.15)"
+core/engine_surrogate/profile_generator_fast.py,461,Numerical bounds exceeded on post_bt_acceleration,"Clamped to [1.0, 2.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable post_bt_acceleration into artificial range
+core/engine_surrogate/profile_generator_fast.py,527,Missing key 'permeability',Substituted default 100.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'permeability'=100.0
+core/engine_surrogate/profile_generator_fast.py,858,Missing key 'injection_scheme',Substituted default 'continuous',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_scheme'='continuous'
+core/engine_surrogate/profile_generator_fast.py,864,Missing key 'water_injection_profile',Substituted default None,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'water_injection_profile'=None
+core/engine_surrogate/profile_generator_fast.py,933,Missing key 'solubility_trapping_fraction',Substituted default 0.03,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'solubility_trapping_fraction'=0.03
+core/engine_surrogate/profile_generator_fast.py,942,Numerical bounds exceeded on residual_trap + solubility_trap + structural_trap,"Clamped to [0.0, 0.95]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable residual_trap + solubility_trap + structural_trap into artificial range
+core/engine_surrogate/profile_generator_fast.py,949,Numerical bounds exceeded on h_koval * e_eff * koval_mult,"Clamped to [1.0, 50.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable h_koval * e_eff * koval_mult into artificial range
+core/engine_surrogate/profile_generator_fast.py,955,Numerical bounds exceeded on frac_flow_co2,"Clamped to [0.15, 0.95]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable frac_flow_co2 into artificial range
+core/engine_surrogate/profile_generator_fast.py,1252,Missing key 'tapered_min_rate_floor',Substituted default 0.05,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'tapered_min_rate_floor'=0.05
+core/engine_surrogate/profile_generator_fast.py,151,Missing key 'n_injectors',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'n_injectors'=0
+core/engine_surrogate/profile_generator_fast.py,448,Missing key 'base_decline_rate',Substituted default 0.15,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'base_decline_rate'=0.15
+core/engine_surrogate/profile_generator_fast.py,822,Missing key 'huff_n_puff_production_decay_rate',Substituted default 0.02,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'huff_n_puff_production_decay_rate'=0.02
+core/engine_surrogate/profile_generator_fast.py,131,Missing key 'injection_scheme',Substituted default 'continuous',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_scheme'='continuous'
+core/engine_surrogate/pvt_state.py,161,Numerical bounds exceeded on rho,"Clamped to [2.0, 1100.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable rho into artificial range
+core/engine_surrogate/pvt_state.py,202,Numerical bounds exceeded on b_co2_rb_per_mscf,"Clamped to [0.2, 15.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable b_co2_rb_per_mscf into artificial range
+core/engine_surrogate/pvt_state.py,226,Numerical bounds exceeded on mu_cp,"Clamped to [0.015, 0.12]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable mu_cp into artificial range
+core/engine_surrogate/pvt_state.py,244,Numerical bounds exceeded on rs,"Clamped to [0.0, 4000.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable rs into artificial range
+core/engine_surrogate/pvt_state.py,257,Numerical bounds exceeded on x_co2,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable x_co2 into artificial range
+core/engine_surrogate/pvt_state.py,274,Numerical bounds exceeded on x_co2,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable x_co2 into artificial range
+core/engine_surrogate/pvt_state.py,284,Numerical bounds exceeded on sf,"Clamped to [1.0, 1.8]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable sf into artificial range
+core/engine_surrogate/pvt_state.py,307,Numerical bounds exceeded on bo_hc * swelling,"Clamped to [1.02, 2.5]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable bo_hc * swelling into artificial range
+core/engine_surrogate/pvt_state.py,319,Numerical bounds exceeded on x_co2,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable x_co2 into artificial range
+core/engine_surrogate/pvt_state.py,326,Numerical bounds exceeded on mu_live_hc,"Clamped to [0.2, self.mu_o_dead]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable mu_live_hc into artificial range
+core/engine_surrogate/pvt_state.py,334,Numerical bounds exceeded on mu_o,"Clamped to [0.08, self.mu_o_dead * 1.5]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable mu_o into artificial range
+core/engine_surrogate/pvt_state.py,353,Numerical bounds exceeded on y_co2,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable y_co2 into artificial range
+core/engine_surrogate/pvt_state.py,367,Numerical bounds exceeded on z_hc,"Clamped to [0.65, 1.4]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable z_hc into artificial range
+core/engine_surrogate/pvt_state.py,381,Numerical bounds exceeded on mu_hc,"Clamped to [0.01, 0.06]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable mu_hc into artificial range
+core/engine_surrogate/pvt_state.py,458,Numerical bounds exceeded on y_co2_free_gas,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable y_co2_free_gas into artificial range
+core/engine_surrogate/surrogate_engine.py,709,Exception caught: Exception,Returns fallback value: self._error_result(str(e)),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/engine_surrogate/surrogate_engine.py,858,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/engine_surrogate/surrogate_engine.py,450,Missing key 'solution_gas_profile',"Substituted default np.maximum(0.0, total_gas_rate - co2_prod_rate)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'solution_gas_profile'=np.maximum(0.0, total_gas_rate - co2_prod_rate)"
+core/engine_surrogate/surrogate_engine.py,452,Missing key 'water_injection_profile',Substituted default np.zeros_like(oil_rate),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'water_injection_profile'=np.zeros_like(oil_rate)
+core/engine_surrogate/surrogate_engine.py,423,"Numerical bounds exceeded on cum_inj_mscf * CO2_TONNE_PER_MSCF / max(ooip_val * 0.135, 1.0)","Clamped to [0.0, 0.85]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable cum_inj_mscf * CO2_TONNE_PER_MSCF / max(ooip_val * 0.135, 1.0) into artificial range"
+core/engine_surrogate/surrogate_engine.py,431,Numerical bounds exceeded on recovery_factor,"Clamped to [0.0, rf_max_physical]",ARTIFICIAL RESULT-PRODUCING FALLBACK,HIGH,Forces physical variable recovery_factor into artificial range
+core/engine_surrogate/surrogate_engine.py,844,Numerical bounds exceeded on t_bt_calc,"Clamped to [0.1, max(lifetime * 0.9, 0.5)]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable t_bt_calc into artificial range
+core/engine_surrogate/surrogate_engine.py,247,Missing key 'compressibility_oil',Substituted default 1e-05,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'compressibility_oil'=1e-05
+core/engine_surrogate/surrogate_engine.py,248,Missing key 'compressibility_water',Substituted default 3e-06,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'compressibility_water'=3e-06
+core/engine_surrogate/surrogate_engine.py,249,Missing key 'compressibility_rock',"Substituted default getattr(reservoir_data, 'rock_compressibility', 4e-06)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'compressibility_rock'=getattr(reservoir_data, 'rock_compressibility', 4e-06)"
+core/engine_surrogate/surrogate_engine.py,286,Numerical bounds exceeded on cum_inj_tonne * 0.55 / (oil_mass_tonne + cum_inj_tonne * 0.55),"Clamped to [0.0, 0.85]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable cum_inj_tonne * 0.55 / (oil_mass_tonne + cum_inj_tonne * 0.55) into artificial range
+core/engine_surrogate/surrogate_engine.py,288,"Numerical bounds exceeded on cum_inj_mscf_running / max(cum_inj_mscf_running + 1000.0, 1.0)","Clamped to [0.05, 0.95]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable cum_inj_mscf_running / max(cum_inj_mscf_running + 1000.0, 1.0) into artificial range"
+core/engine_surrogate/surrogate_engine.py,308,"Numerical bounds exceeded on remaining_oil_stb * bo_dynamic / max(vp_dynamic, 1.0)","Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable remaining_oil_stb * bo_dynamic / max(vp_dynamic, 1.0) into artificial range"
+core/engine_surrogate/surrogate_engine.py,310,"Numerical bounds exceeded on water_in_res_bbl / max(vp_dynamic, 1.0)","Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable water_in_res_bbl / max(vp_dynamic, 1.0) into artificial range"
+core/engine_surrogate/surrogate_engine.py,311,Numerical bounds exceeded on 1.0 - S_o - S_w,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable 1.0 - S_o - S_w into artificial range
+core/engine_surrogate/surrogate_engine.py,337,Missing key 'water_injection_profile',Substituted default np.zeros_like(profile_result['oil_profile']),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'water_injection_profile'=np.zeros_like(profile_result['oil_profile'])
+core/engine_surrogate/surrogate_engine.py,377,Numerical bounds exceeded on dp,"Clamped to [-450.0, 450.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable dp into artificial range
+core/engine_surrogate/surrogate_engine.py,389,Numerical bounds exceeded on current_p,"Clamped to [p_min, p_safe_ceiling]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable current_p into artificial range
+core/engine_surrogate/surrogate_engine.py,430,Missing key 'sor',Substituted default 0.25,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'sor'=0.25
+core/engine_surrogate/surrogate_engine.py,835,Missing key 'injection_scheme',Substituted default 'continuous',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_scheme'='continuous'
+core/engine_surrogate/surrogate_models.py,553,Exception caught: Exception,"Returns fallback value: {'recovery_factor': 0.0, 'npv': 0.0, 'cumulative_oil': 0.0, 'co2_stored': 0.0, 'confidence': 0.0, 'error': str(e)}",IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/engine_surrogate/surrogate_models.py,182,Numerical bounds exceeded on areal_eff,"Clamped to [0.1, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable areal_eff into artificial range
+core/engine_surrogate/surrogate_models.py,200,Numerical bounds exceeded on vertical_eff,"Clamped to [0.1, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable vertical_eff into artificial range
+core/engine_surrogate/surrogate_models.py,243,Numerical bounds exceeded on trapping_eff,"Clamped to [0.1, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable trapping_eff into artificial range
+core/engine_surrogate/surrogate_models.py,333,Numerical bounds exceeded on cumulative_recycle_frac,"Clamped to [0.0, max_recycle_frac]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable cumulative_recycle_frac into artificial range
+core/engine_surrogate/surrogate_models.py,365,"Numerical bounds exceeded on net_stored_tonne / max(co2_injected_total, EPSILON)","Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable net_stored_tonne / max(co2_injected_total, EPSILON) into artificial range"
+core/engine_surrogate/surrogate_models.py,410,Numerical bounds exceeded on overall_eff,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable overall_eff into artificial range
+core/engine_surrogate/surrogate_models.py,594,Missing key 'target_pressure_psi',Substituted default 3000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'target_pressure_psi'=3000.0
+core/engine_surrogate/surrogate_models.py,595,Missing key 'mmp',Substituted default 2500.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'mmp'=2500.0
+core/engine_surrogate/surrogate_models.py,603,Missing key 'injection_rate',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=5000.0
+core/engine_surrogate/surrogate_models.py,609,Missing key 'sor',Substituted default S_OR_BASE,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'sor'=S_OR_BASE
+core/engine_surrogate/surrogate_models.py,109,Missing key 'injection_rate',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=0
+core/engine_surrogate/surrogate_models.py,113,Missing key 'target_pressure_psi',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'target_pressure_psi'=0
+core/engine_surrogate/surrogate_models.py,484,Missing key 'injection_rate',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=5000.0
+core/engine_surrogate/surrogate_models.py,488,Missing key 'recycle_growth_rate',Substituted default 1.5,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'recycle_growth_rate'=1.5
+core/engine_surrogate/surrogate_models.py,510,Missing key 'discount_rate',Substituted default 0.1,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'discount_rate'=0.1
+core/engine_surrogate/surrogate_models.py,621,Numerical bounds exceeded on confidence,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable confidence into artificial range
+core/engine_surrogate/surrogate_models.py,504,Missing key 'solution_gas_co2_fraction',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'solution_gas_co2_fraction'=0.2
+core/engine_surrogate/surrogate_models.py,543,Numerical bounds exceeded on recovery_factor,"Clamped to [0.0, 1.0]",ARTIFICIAL RESULT-PRODUCING FALLBACK,HIGH,Forces physical variable recovery_factor into artificial range
+core/engine_surrogate/surrogate_models.py,537,Missing key 'pressure',"Substituted default params.get('target_pressure_psi', 3000.0)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'pressure'=params.get('target_pressure_psi', 3000.0)"
+core/engine_surrogate/surrogate_models.py,538,Missing key 'mmp',Substituted default 2500.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'mmp'=2500.0
+core/engine_surrogate/surrogate_models.py,537,Missing key 'target_pressure_psi',Substituted default 3000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'target_pressure_psi'=3000.0
+core/geology/geostatistical_modeling.py,173,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/geology/geostatistical_modeling.py,287,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/geology/geostatistical_modeling.py,470,Exception caught: Exception,"Returns fallback value: (facies_map, facies_info)",IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/geology/geostatistical_modeling.py,615,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/geology/geostatistical_modeling.py,140,Exception caught: Exception,Assigns fallback: field = np.random.rand(*shape),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/geology/geostatistical_modeling.py,256,Exception caught: Exception,"Assigns fallback: cat_field = np.random.rand(shape[0], shape[1])",IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/geology/geostatistical_modeling.py,334,Numerical bounds exceeded on field,"Clamped to [0, 1]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable field into artificial range
+core/geology/geostatistical_modeling.py,388,Numerical bounds exceeded on normalized,"Clamped to [0, 1]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable normalized into artificial range
+core/geology/geostatistical_modeling.py,75,Missing key 'anisotropy_ratio',Substituted default 1.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'anisotropy_ratio'=1.0
+core/geology/geostatistical_modeling.py,76,Missing key 'anisotropy_angle',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'anisotropy_angle'=0.0
+core/geology/geostatistical_modeling.py,159,Exception caught: ValueError,Assigns fallback: field = np.random.rand(*shape),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/geology/geostatistical_modeling.py,561,Exception caught: ValueError,Assigns fallback: cat_field = np.random.rand(*shape),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/geology/geostatistical_modeling.py,252,Exception caught: ValueError,Assigns fallback: cat_field = np.random.rand(*shape),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/objectives/economic.py,11,Exception caught: ImportError,Returns fallback value: np.sum(values / (1 + rate) ** np.arange(len(values))),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/objectives/economic.py,48,Missing key f'{time_resolution}_oil_stb',Substituted default np.array([0]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_resolution}_oil_stb'=np.array([0])
+core/objectives/economic.py,49,Missing key f'{time_resolution}_co2_purchased_mscf',Substituted default np.array([0]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_resolution}_co2_purchased_mscf'=np.array([0])
+core/objectives/economic.py,50,Missing key f'{time_resolution}_co2_recycled_mscf',Substituted default np.array([0]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_resolution}_co2_recycled_mscf'=np.array([0])
+core/objectives/economic.py,132,"Exception caught: (TypeError, ValueError)",Assigns fallback: discount_rate = 0.1,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/objectives/economic.py,161,Missing key f'{time_resolution}_oil_stb',Substituted default np.array([0]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_resolution}_oil_stb'=np.array([0])
+core/objectives/economic.py,162,Missing key f'{time_resolution}_co2_purchased_mscf',Substituted default np.array([0]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_resolution}_co2_purchased_mscf'=np.array([0])
+core/objectives/economic.py,163,Missing key f'{time_resolution}_co2_recycled_mscf',Substituted default np.array([0]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_resolution}_co2_recycled_mscf'=np.array([0])
+core/objectives/economic.py,72,"Exception caught: (TypeError, ValueError)",Assigns fallback: opex_val = 10.0,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/objectives/economic.py,121,"Exception caught: (TypeError, ValueError)",Assigns fallback: capex_val = 0.0,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/objectives/economic.py,182,"Exception caught: (TypeError, ValueError)",Assigns fallback: opex_val = 10.0,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/objectives/storage.py,44,"Exception caught: (TypeError, ValueError)",Assigns fallback: co2_density_val = 0.053,ARTIFICIAL RESULT-PRODUCING FALLBACK,CRITICAL,Alters simulation trajectory or suppresses state divergence
+core/objectives/storage.py,49,"Exception caught: (TypeError, ValueError)",Assigns fallback: produced_co2_frac_val = 0.5,ARTIFICIAL RESULT-PRODUCING FALLBACK,CRITICAL,Alters simulation trajectory or suppresses state divergence
+core/objectives/storage.py,32,Missing key f'{time_resolution}_co2_purchased_mscf',Substituted default np.array([0]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_resolution}_co2_purchased_mscf'=np.array([0])
+core/objectives/storage.py,33,Missing key f'{time_resolution}_co2_recycled_mscf',Substituted default np.array([0]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_resolution}_co2_recycled_mscf'=np.array([0])
+core/objectives/storage.py,34,Missing key f'{time_resolution}_co2_produced_mscf',Substituted default np.array([0]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_resolution}_co2_produced_mscf'=np.array([0])
+core/objectives/storage.py,64,Numerical bounds exceeded on net_stored / total_injected,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable net_stored / total_injected into artificial range
+core/objectives/storage.py,102,Numerical bounds exceeded on s_cont,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable s_cont into artificial range
+core/objectives/wrapper.py,61,Missing key 'pressure',Substituted default profiles.get('reservoir_pressure'),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=profiles.get('reservoir_pressure')
+core/objectives/wrapper.py,131,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,26,Exception caught: ImportError,Returns fallback value: MockPreferences(),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,43,Exception caught: ImportError,Assigns fallback: WellAnalysis = None,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,240,Exception caught: Exception,Assigns fallback: self.b_gas_rb_per_mscf = B_GAS_RB_PER_MSCF,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,276,Exception caught: ImportError,Assigns fallback: self.simulation_engine = None,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,280,Exception caught: Exception,Assigns fallback: self.simulation_engine = None,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,350,"Exception caught: (RuntimeError, AttributeError)","Returns fallback value: max(1, mp.cpu_count() - 1)",IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,371,"Exception caught: (RuntimeError, ValueError, ZeroDivisionError, ArithmeticError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,451,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,1127,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,1573,Exception caught: Exception,Returns fallback value: FAILURE_PENALTY,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,2103,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,3715,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,405,Missing key 'PORO',Substituted default np.array([self.advanced_engine_params.default_porosity]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'PORO'=np.array([self.advanced_engine_params.default_porosity])
+core/optimisation_engine.py,638,Exception caught: ValueError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,904,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,927,Exception caught: ValueError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,1165,Missing key f'{resolution}_oil_stb',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{resolution}_oil_stb'=np.array([])
+core/optimisation_engine.py,1520,Missing key 'pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=0
+core/optimisation_engine.py,1654,Missing key f'{time_res}_pressure',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_res}_pressure'=np.array([])
+core/optimisation_engine.py,2910,"Exception caught: (OSError, IOError, ValueError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,3590,"Exception caught: (ImportError, AttributeError)",Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,3661,Exception caught: Exception,Silent suppression (pass),SCIENTIFICALLY DANGEROUS,HIGH,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,3931,Missing key 'pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=0
+core/optimisation_engine.py,3954,Missing key 'rate',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rate'=0
+core/optimisation_engine.py,3975,Missing key 'porosity',Substituted default self.avg_porosity,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'porosity'=self.avg_porosity
+core/optimisation_engine.py,3981,Missing key 'permeability',Substituted default 100.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'permeability'=100.0
+core/optimisation_engine.py,4040,Missing key 'rate',Substituted default self.eor_params.injection_rate,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'rate'=self.eor_params.injection_rate
+core/optimisation_engine.py,4235,Exception caught: Exception,Assigns fallback: all_well_results[well_name] = {'error': str(e)},IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,587,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,1178,Numerical bounds exceeded on impact_factor,"Clamped to [0.5, 1.2]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable impact_factor into artificial range
+core/optimisation_engine.py,1314,Missing key 'co2_injection',"Substituted default profiles.get(f'{time_res}_co2_injected_mscf', [])",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'co2_injection'=profiles.get(f'{time_res}_co2_injected_mscf', [])"
+core/optimisation_engine.py,1792,Numerical bounds exceeded on result,"Clamped to [MIN_OBJECTIVE_VALUE, MAX_OBJECTIVE_VALUE]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable result into artificial range
+core/optimisation_engine.py,2165,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/optimisation_engine.py,1030,Missing key 'permeability',Substituted default 100.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'permeability'=100.0
+core/optimisation_engine.py,1031,Missing key 'porosity',Substituted default 0.15,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'porosity'=0.15
+core/optimisation_engine.py,1039,Missing key 'rate',"Substituted default all_params.get('injection_rate', 5000.0)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'rate'=all_params.get('injection_rate', 5000.0)"
+core/optimisation_engine.py,1064,Missing key 'oil_production_rate',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'oil_production_rate'=[]
+core/optimisation_engine.py,1066,Missing key 'co2_injection',"Substituted default profiles.get('injection_profile', [])",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'co2_injection'=profiles.get('injection_profile', [])"
+core/optimisation_engine.py,1070,Missing key 'co2_production_rate',"Substituted default profiles.get('co2_gas_profile', [])",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'co2_production_rate'=profiles.get('co2_gas_profile', [])"
+core/optimisation_engine.py,1073,Missing key 'hydrocarbon_gas_production_rate',"Substituted default profiles.get('solution_gas_profile', [])",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'hydrocarbon_gas_production_rate'=profiles.get('solution_gas_profile', [])"
+core/optimisation_engine.py,1076,Missing key 'water_production_rate',"Substituted default profiles.get('water_profile', [])",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'water_production_rate'=profiles.get('water_profile', [])"
+core/optimisation_engine.py,1314,Missing key f'{time_res}_co2_injected_mscf',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{time_res}_co2_injected_mscf'=[]
+core/optimisation_engine.py,1931,Numerical bounds exceeded on round(float(sanitized['shut_in_mode'])),"Clamped to [0, 2]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable round(float(sanitized['shut_in_mode'])) into artificial range
+core/optimisation_engine.py,1934,Numerical bounds exceeded on round(float(sanitized['allow_well_conversion'])),"Clamped to [0, 1]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable round(float(sanitized['allow_well_conversion'])) into artificial range
+core/optimisation_engine.py,1940,Numerical bounds exceeded on round(float(sanitized['injection_scheme'])),"Clamped to [0, 4]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable round(float(sanitized['injection_scheme'])) into artificial range
+core/optimisation_engine.py,527,Missing key 'PERMX',Substituted default np.array([self.advanced_engine_params.default_permeability]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'PERMX'=np.array([self.advanced_engine_params.default_permeability])
+core/optimisation_engine.py,924,Missing key f'{self.operational_params.time_resolution}_oil_stb',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter f'{self.operational_params.time_resolution}_oil_stb'=0
+core/optimisation_engine.py,1039,Missing key 'injection_rate',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=5000.0
+core/optimisation_engine.py,1066,Missing key 'injection_profile',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_profile'=[]
+core/optimisation_engine.py,1073,Missing key 'solution_gas_profile',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'solution_gas_profile'=[]
+core/optimisation_engine.py,1616,Missing key co2_inj_key,Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter co2_inj_key=np.array([])
+core/optimisation_engine.py,4147,Missing key 'discount_rate',Substituted default 0.1,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'discount_rate'=0.1
+core/optimisation_engine.py,4153,Missing key 'pressure',Substituted default 2000,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=2000
+core/optimisation_engine.py,4154,Missing key 'rate',Substituted default 5000,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rate'=5000
+core/optimisation_engine.py,4179,Missing key 'sor',Substituted default 0.3,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'sor'=0.3
+core/optimisation_engine.py,1374,Missing key 'max_sandface_pressure_psi',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'max_sandface_pressure_psi'=0.0
+core/optimisation_engine.py,1618,Missing key 'co2_injection_mscf',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'co2_injection_mscf'=np.array([])
+core/optimisation_engine.py,1620,Missing key 'co2_injection',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'co2_injection'=np.array([])
+core/optimisation_engine.py,3001,Numerical bounds exceeded on value,"Clamped to [min_val, max_val]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable value into artificial range
+core/plotting_manager.py,620,Exception caught: ImportError,Returns fallback value: go.Figure().update_layout(title_text='Breakthrough visualization not available'),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/plotting_manager.py,644,Exception caught: ImportError,Returns fallback value: go.Figure().update_layout(title_text='Fault mechanics visualization not available'),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/plotting_manager.py,666,Exception caught: ImportError,Returns fallback value: go.Figure().update_layout(title_text='Scenario comparison visualization not available'),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/plotting_manager.py,688,Exception caught: ImportError,Returns fallback value: go.Figure().update_layout(title_text='Fault effect analysis visualization not available'),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/plotting_manager.py,1631,Exception caught: ImportError,Returns fallback value: go.Figure().update_layout(title_text='Recovery models not available'),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/plotting_manager.py,1746,Exception caught: Exception,Returns fallback value: go.Figure(),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/plotting_manager.py,1054,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+core/plotting_manager.py,1060,Missing key 'injection_scheme',"Substituted default getattr(eor_params, 'injection_scheme', 'unknown')",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'injection_scheme'=getattr(eor_params, 'injection_scheme', 'unknown')"
+core/plotting_manager.py,418,Exception caught: Exception,Silent suppression (pass),SCIENTIFICALLY DANGEROUS,HIGH,Alters simulation trajectory or suppresses state divergence
+core/plotting_manager.py,496,Missing key 'total_injected_tonne',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'total_injected_tonne'=0
+core/plotting_manager.py,518,Missing key f'{resolution}_co2_injected_mscf',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter f'{resolution}_co2_injected_mscf'=0
+core/plotting_manager.py,519,Missing key f'{resolution}_co2_produced_mscf',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter f'{resolution}_co2_produced_mscf'=0
+core/plotting_manager.py,1087,Missing key 'rate_mscfd',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rate_mscfd'=0
+core/plotting_manager.py,1094,Missing key 'rate_mscfd',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rate_mscfd'=0.0
+core/plotting_manager.py,1540,Numerical bounds exceeded on norm_val,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable norm_val into artificial range
+core/plotting_manager.py,1715,Missing key 'PERMX',Substituted default [100.0],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'PERMX'=[100.0]
+deprecated/core/engine_surrogate/feature_transformer.py,20,Exception caught: ImportError,Assigns fallback: SKLEARN_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/engine_surrogate/model_factory.py,152,Missing key 'surface_type',Substituted default 'polynomial',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'surface_type'='polynomial'
+deprecated/core/engine_surrogate/response_surfaces.py,22,Exception caught: ImportError,Assigns fallback: SCIPY_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/engine_surrogate/training_data.py,20,Exception caught: ImportError,Assigns fallback: SCIPY_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/engine_surrogate/training_data.py,133,Exception caught: Exception,Returns fallback value: self.generate_random_samples(n_samples),IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/geology/geology_engine.py,47,Numerical bounds exceeded on enhanced_efficiency,"Clamped to [0.1, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable enhanced_efficiency into artificial range
+deprecated/core/geology/geology_engine.py,83,Numerical bounds exceeded on heterogeneity_penalty,"Clamped to [0.7, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable heterogeneity_penalty into artificial range
+deprecated/core/geology/geology_engine.py,127,Numerical bounds exceeded on factor,"Clamped to [0.5, 1.5]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable factor into artificial range
+deprecated/core/simulation/profile_generator.py,22,Exception caught: ImportError,Assigns fallback: PhysicsEngine = None,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/simulation/profile_generator.py,78,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/simulation/profile_generator.py,297,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/simulation/profile_generator.py,307,Exception caught: Exception,Assigns fallback: stb_per_mscf = 1000 / 5.615,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/simulation/recovery_models.py,28,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/simulation/recovery_models.py,801,"Exception caught: (TypeError, ValueError, KeyError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/simulation/recovery_models.py,107,Numerical bounds exceeded on s_gas / s_total,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable s_gas / s_total into artificial range
+deprecated/core/simulation/recovery_models.py,204,Numerical bounds exceeded on sigma,"Clamped to [0.0, sigma_0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable sigma into artificial range
+deprecated/core/simulation/recovery_models.py,236,Numerical bounds exceeded on nc,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable nc into artificial range
+deprecated/core/simulation/recovery_models.py,262,Numerical bounds exceeded on sor_star,"Clamped to [0.0, sor_base]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable sor_star into artificial range
+deprecated/core/simulation/recovery_models.py,299,Numerical bounds exceeded on alpha_base,"Clamped to [0.5, 1.5]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable alpha_base into artificial range
+deprecated/core/simulation/recovery_models.py,316,Numerical bounds exceeded on p_mmp_ratio,"Clamped to [0.0, 2.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable p_mmp_ratio into artificial range
+deprecated/core/simulation/recovery_models.py,317,Numerical bounds exceeded on c7_plus_fraction,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable c7_plus_fraction into artificial range
+deprecated/core/simulation/recovery_models.py,365,Numerical bounds exceeded on rf,"Clamped to [0.0, self.max_rf_cap]",ARTIFICIAL RESULT-PRODUCING FALLBACK,HIGH,Forces physical variable rf into artificial range
+deprecated/core/simulation/recovery_models.py,593,Numerical bounds exceeded on v_dp,"Clamped to [0.0, 0.999]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable v_dp into artificial range
+deprecated/core/simulation/recovery_models.py,612,"Exception caught: (RuntimeError, ValueError, ArithmeticError)",Assigns fallback: c = 0.5 + 0.05 * np.log(mobility_ratio) if mobility_ratio > 1 else 0.5,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+deprecated/core/simulation/recovery_models.py,624,Missing key 'soi',Substituted default 0.8,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'soi'=0.8
+deprecated/core/simulation/recovery_models.py,625,Missing key 'sor',Substituted default 0.25,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'sor'=0.25
+deprecated/core/simulation/recovery_models.py,641,"Numerical bounds exceeded on kwargs.get('v_dp', 0.5)","Clamped to [0.0, 0.9999]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable kwargs.get('v_dp', 0.5) into artificial range"
+deprecated/core/simulation/recovery_models.py,688,Missing key 'mmp',Substituted default 2000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'mmp'=2000.0
+deprecated/core/simulation/recovery_models.py,689,Missing key 'pressure',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=0.0
+deprecated/core/simulation/recovery_models.py,79,Numerical bounds exceeded on omega,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable omega into artificial range
+deprecated/core/simulation/recovery_models.py,112,Numerical bounds exceeded on mu_m,"Clamped to [EPSILON, 1000000.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable mu_m into artificial range
+deprecated/core/simulation/recovery_models.py,137,Numerical bounds exceeded on mu_oe,"Clamped to [EPSILON, 1000000.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable mu_oe into artificial range
+deprecated/core/simulation/recovery_models.py,153,Numerical bounds exceeded on mu_ge,"Clamped to [EPSILON, 1000000.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable mu_ge into artificial range
+deprecated/core/simulation/recovery_models.py,415,"Numerical bounds exceeded on p.get('v_dp', 0.6)","Clamped to [0.0, 0.9999]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable p.get('v_dp', 0.6) into artificial range"
+deprecated/core/simulation/recovery_models.py,416,"Numerical bounds exceeded on p.get('s_wi', p.get('connate_water_saturation', 0.25))","Clamped to [0.0, 0.8]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,"Forces physical variable p.get('s_wi', p.get('connate_water_saturation', 0.25)) into artificial range"
+deprecated/core/simulation/recovery_models.py,418,Missing key 'viscosity_inj',"Substituted default p.get('co2_viscosity', p.get('mu_co2', 0.05))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'viscosity_inj'=p.get('co2_viscosity', p.get('mu_co2', 0.05))"
+deprecated/core/simulation/recovery_models.py,444,Numerical bounds exceeded on rf_mis,"Clamped to [0.0, 1.0]",ARTIFICIAL RESULT-PRODUCING FALLBACK,HIGH,Forces physical variable rf_mis into artificial range
+deprecated/core/simulation/recovery_models.py,473,Missing key 'viscosity_inj',"Substituted default p.get('co2_viscosity', p.get('mu_co2', 0.05))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'viscosity_inj'=p.get('co2_viscosity', p.get('mu_co2', 0.05))"
+deprecated/core/simulation/recovery_models.py,478,Missing key 'porosity',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'porosity'=0.2
+deprecated/core/simulation/recovery_models.py,483,Missing key 'pressure',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=0.0
+deprecated/core/simulation/recovery_models.py,484,Missing key 'mmp',Substituted default 2000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'mmp'=2000.0
+deprecated/core/simulation/recovery_models.py,493,Missing key 'sor',"Substituted default p.get('sor_base', 0.35)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'sor'=p.get('sor_base', 0.35)"
+deprecated/core/simulation/recovery_models.py,498,"Numerical bounds exceeded on p.get('s_wi', p.get('connate_water_saturation', 0.25))","Clamped to [0.0, 0.8]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,"Forces physical variable p.get('s_wi', p.get('connate_water_saturation', 0.25)) into artificial range"
+deprecated/core/simulation/recovery_models.py,505,"Numerical bounds exceeded on p.get('v_dp', 0.6)","Clamped to [0.0, 0.99]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable p.get('v_dp', 0.6) into artificial range"
+deprecated/core/simulation/recovery_models.py,518,Numerical bounds exceeded on e_a,"Clamped to [0.1, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable e_a into artificial range
+deprecated/core/simulation/recovery_models.py,522,Numerical bounds exceeded on rf_im,"Clamped to [0.0, 1.0]",ARTIFICIAL RESULT-PRODUCING FALLBACK,HIGH,Forces physical variable rf_im into artificial range
+deprecated/core/simulation/recovery_models.py,550,Numerical bounds exceeded on (s_g - s_gc) / (1 - sor - s_gc),"Clamped to [0, 1]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable (s_g - s_gc) / (1 - sor - s_gc) into artificial range
+deprecated/core/simulation/recovery_models.py,565,Numerical bounds exceeded on e_d_bt,"Clamped to [0.0, 1.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable e_d_bt into artificial range
+deprecated/core/simulation/recovery_models.py,627,Numerical bounds exceeded on vertical_sweep * displacement_sweep,"Clamped to [0.0, 1.0]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable vertical_sweep * displacement_sweep into artificial range
+deprecated/core/simulation/recovery_models.py,658,Numerical bounds exceeded on sweep_efficiency,"Clamped to [0.0, 1.0]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable sweep_efficiency into artificial range
+deprecated/core/simulation/recovery_models.py,702,Numerical bounds exceeded on rf,"Clamped to [0.0, self.max_rf_cap]",ARTIFICIAL RESULT-PRODUCING FALLBACK,HIGH,Forces physical variable rf into artificial range
+deprecated/core/simulation/recovery_models.py,784,Missing key 'rate',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rate'=0
+deprecated/core/simulation/recovery_models.py,477,Missing key 'rate',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rate'=5000.0
+deprecated/core/simulation/recovery_models.py,493,Missing key 'sor_base',Substituted default 0.35,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'sor_base'=0.35
+deprecated/core/simulation/recovery_models.py,611,Numerical bounds exceeded on solution,"Clamped to [0.0, 1.0]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable solution into artificial range
+deprecated/core/simulation/recovery_models.py,756,Missing key 'viscosity_inj',Substituted default 0.05,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'viscosity_inj'=0.05
+deprecated/core/simulation/recovery_models.py,325,Numerical bounds exceeded on arg,"Clamped to [-700, 700]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable arg into artificial range
+deprecated/parsers/eclipse_parser.py,278,"Exception caught: (FileNotFoundError, EclipseParserError, DimensionError, Exception)",Assigns fallback: success = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+deprecated/parsers/eclipse_parser.py,74,Exception caught: ValueError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+deprecated/parsers/eclipse_parser.py,88,Exception caught: ValueError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+deprecated/parsers/eclipse_parser.py,120,"Exception caught: (ValueError, IndexError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+deprecated/parsers/eclipse_parser.py,137,"Exception caught: (ValueError, IndexError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+deprecated/parsers/eclipse_parser.py,203,"Exception caught: (ValueError, TypeError)",Assigns fallback: numeric_values = expanded_tokens,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+deprecated/parsers/eclipse_parser.py,214,"Exception caught: (ValueError, TypeError)","Assigns fallback: current_data[keyword] = np.array(numeric_values, dtype=object)",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+deprecated/parsers/eclipse_parser.py,245,Exception caught: IOError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+deprecated/parsers/eclipse_parser.py,146,"Exception caught: (ValueError, IndexError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+evaluation/mmp.py,12,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+evaluation/mmp.py,370,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+evaluation/mmp.py,332,"Exception caught: (ValueError, TypeError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+evaluation/mmp.py,344,"Exception caught: (ValueError, TypeError, ZeroDivisionError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+evaluation/mmp.py,427,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+main.py,62,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+main.py,129,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+main.py,150,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+scripts/archive_resolved_wiki_issues.py,31,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+scripts/audit_generator.py,56,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+scripts/audit_generator.py,107,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+scripts/audit_generator.py,227,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+scripts/parse_coverage.py,25,Exception caught: ValueError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+scripts/process_las_data.py,82,Exception caught: Exception,Assigns fallback: self.failed_files[fp.name] = str(exc),IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+scripts/validate_engine_physics.py,263,Missing key 'cumulative_co2_injected_mscf',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'cumulative_co2_injected_mscf'=0.0
+scripts/validate_engine_physics.py,269,Missing key 'mean_pressure_psi',Substituted default np.mean(sim_result['pressure']),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'mean_pressure_psi'=np.mean(sim_result['pressure'])
+scripts/validate_engine_physics.py,270,Missing key 'max_pressure_psi',Substituted default np.max(sim_result['pressure']),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'max_pressure_psi'=np.max(sim_result['pressure'])
+tests/conftest.py,22,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+tests/core/test_fitness_function.py,294,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+tests/core/test_fitness_function.py,321,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+tests/core/test_fitness_function.py,348,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+tests/core/test_fitness_function.py,376,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+tests/core/test_fitness_function.py,407,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+tests/core/test_fitness_function.py,437,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+tests/core/test_fitness_function.py,467,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+tests/core/test_surrogate_engine.py,925,Missing key 'cumulative_co2_injected_tonne',Substituted default 5000.0 * 365.25 * 10 * 0.05295,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'cumulative_co2_injected_tonne'=5000.0 * 365.25 * 10 * 0.05295
+tests/core/test_surrogate_engine_reference.py,265,Exception caught: Exception,Returns fallback value: {'errors': [str(e)]},IMPLEMENTATION FALLBACK,MEDIUM,Alters simulation trajectory or suppresses state divergence
+tests/core/test_surrogate_engine_reference.py,470,Missing key 'pressure',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=[]
+tests/core/test_surrogate_engine_reference.py,512,Missing key 'pressure',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=[]
+tests/core/test_surrogate_engine_reference.py,530,Missing key 'co2_injection',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'co2_injection'=[]
+tests/core/test_surrogate_engine_reference.py,625,Missing key 'co2_injection',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'co2_injection'=[]
+tests/core/test_surrogate_engine_well_setup.py,99,Missing key 'co2_injection',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'co2_injection'=[]
+tests/core/test_surrogate_engine_well_setup.py,100,Missing key 'oil_production_rate',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'oil_production_rate'=[]
+tests/core/test_surrogate_engine_well_setup.py,108,Missing key 'pressure',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=[]
+tests/core/test_surrogate_engine_well_setup.py,138,Missing key 'co2_injection',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'co2_injection'=[]
+tests/core/test_surrogate_engine_well_setup.py,139,Missing key 'pressure',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=[]
+tests/core/test_surrogate_engine_well_setup.py,170,Missing key 'pressure',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=[]
+tests/core/test_surrogate_engine_well_setup.py,217,Missing key 'pressure',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=[]
+tests/core/test_surrogate_engine_well_setup.py,218,Missing key 'pressure',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=[]
+tests/scientific/co2/test_co2_breakthrough_physics.py,42,Numerical bounds exceeded on h_koval * e_eff * 1.0,"Clamped to [1.0, 50.0]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable h_koval * e_eff * 1.0 into artificial range
+tests/scientific/co2/test_co2_breakthrough_physics.py,46,Numerical bounds exceeded on frac_flow,"Clamped to [0.15, 0.95]",LEGITIMATE NUMERICAL SAFETY,LOW,Forces physical variable frac_flow into artificial range
+tests/scientific/conftest.py,20,Missing key 'initial_pressure',Substituted default 4000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'initial_pressure'=4000.0
+tests/scientific/conftest.py,21,Missing key 'temperature',Substituted default 160.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=160.0
+tests/scientific/conftest.py,22,Missing key 'porosity',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'porosity'=0.2
+tests/scientific/conftest.py,23,Missing key 'permeability',Substituted default 100.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'permeability'=100.0
+tests/scientific/conftest.py,28,Missing key 'rock_compressibility',Substituted default 4e-06,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'rock_compressibility'=4e-06
+tests/scientific/conservation/test_carbon_accounting.py,41,Missing key 'annual_co2_injected_mscf',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'annual_co2_injected_mscf'=np.array([])
+tests/scientific/reference_solutions/test_buckley_leverett_analytical.py,54,Numerical bounds exceeded on sg_avg_norm,"Clamped to [0.0, 1.0]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable sg_avg_norm into artificial range
+tests/test_cmg_surrogate_validation.py,339,Exception caught: ImportError,Assigns fallback: EPSILON = 1e-10,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/test_cmg_surrogate_validation.py,191,Missing key 'mean_pressure_psi',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'mean_pressure_psi'=0.0
+tests/test_cmg_surrogate_validation.py,200,Missing key 'max_pressure_psi',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'max_pressure_psi'=0.0
+tests/test_cmg_surrogate_validation.py,209,Missing key 'pressure',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=np.array([])
+tests/test_cmg_surrogate_validation.py,231,Missing key 'cumulative_co2_injected_mscf',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'cumulative_co2_injected_mscf'=0.0
+tests/test_cmg_surrogate_validation.py,250,Missing key 'cumulative_co2_injected_mscf',Substituted default 1.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'cumulative_co2_injected_mscf'=1.0
+tests/test_project_save_load.py,15,Exception caught: ImportError,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+tests/test_project_save_load.py,48,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+tests/validation/cmg_input_generator.py,192,Missing key 'porosity',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'porosity'=0.2
+tests/validation/cmg_input_generator.py,193,Missing key 'permeability_x',Substituted default 100,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'permeability_x'=100
+tests/validation/cmg_input_generator.py,194,Missing key 'permeability_y',Substituted default 100,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'permeability_y'=100
+tests/validation/cmg_input_generator.py,195,Missing key 'permeability_z',Substituted default 10,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'permeability_z'=10
+tests/validation/cmg_input_generator.py,209,Missing key 'initial_pressure',Substituted default 4000,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'initial_pressure'=4000
+tests/validation/cmg_input_generator.py,210,Missing key 'temperature',Substituted default 150,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=150
+tests/validation/cmg_input_generator.py,268,Missing key 'injection_rate',Substituted default 5000,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=5000
+tests/validation/cmg_output_parser.py,167,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/cmg_output_parser.py,288,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/cmg_output_parser.py,352,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/cmg_output_parser.py,102,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/cmg_output_parser.py,110,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/cmg_output_parser.py,228,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+tests/validation/cmg_output_parser.py,345,Exception caught: ValueError,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+tests/validation/cmg_runner.py,135,Exception caught: subprocess.TimeoutExpired,"Returns fallback value: {'success': False, 'returncode': -1, 'stdout': '', 'stderr': f'Simulation timed out after {timeout} seconds', 'runtime': runtime}",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/cmg_runner.py,146,Exception caught: Exception,"Returns fallback value: {'success': False, 'returncode': -1, 'stdout': '', 'stderr': str(e), 'runtime': runtime}",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/cmg_runner.py,174,Exception caught: Exception,Returns fallback value: False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/cmg_runner.py,191,Exception caught: Exception,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/combined_cmg_parser.py,22,Exception caught: ImportError,Assigns fallback: SR3_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/combined_cmg_parser.py,111,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/combined_cmg_parser.py,141,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/combined_cmg_parser.py,95,Missing key 'final_pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'final_pressure'=0
+tests/validation/combined_cmg_parser.py,93,Missing key 'cumulative_co2_injected_mmscf',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'cumulative_co2_injected_mmscf'=0
+tests/validation/combined_cmg_parser.py,129,Missing key 'pressure_profile',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure_profile'=[]
+tests/validation/comparison_metrics.py,150,Missing key 'pressure_profile',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure_profile'=np.array([])
+tests/validation/comparison_metrics.py,151,Missing key 'pressure_profile',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure_profile'=np.array([])
+tests/validation/comparison_metrics.py,155,Missing key 'final_pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'final_pressure'=0
+tests/validation/comparison_metrics.py,156,Missing key 'final_pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'final_pressure'=0
+tests/validation/empirical_engine_validation.py,171,Exception caught: Exception,Returns fallback value: {},IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/empirical_engine_validation.py,461,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/empirical_engine_validation.py,372,Missing key 'final_pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'final_pressure'=0
+tests/validation/empirical_engine_validation.py,302,Missing key 'pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=0
+tests/validation/empirical_engine_validation.py,305,Missing key 'pressure',"Substituted default [res.get('pressure', 0)]",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'pressure'=[res.get('pressure', 0)]"
+tests/validation/empirical_engine_validation.py,301,Missing key 'pressure',Substituted default [0],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=[0]
+tests/validation/empirical_engine_validation.py,300,Missing key 'pressure',Substituted default [0],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'=[0]
+tests/validation/empirical_engine_validation.py,305,Missing key 'pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=0
+tests/validation/empirical_engine_validation.py,441,Missing key 'final_pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'final_pressure'=0
+tests/validation/empirical_engine_validation.py,448,Missing key 'final_pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'final_pressure'=0
+tests/validation/extract_sr3_reference.py,109,Exception caught: Exception,Assigns fallback: results[case_id] = {'error': str(e)},IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/extract_sr3_reference.py,55,Missing key 'final_pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'final_pressure'=0
+tests/validation/extract_sr3_reference.py,57,Missing key 'cumulative_co2_injected',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'cumulative_co2_injected'=0
+tests/validation/extract_sr3_reference.py,66,Missing key 'pressure_profile',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure_profile'=np.array([])
+tests/validation/spe5_empirical_validation.py,152,Numerical bounds exceeded on (sg - sgc) / (1 - swi - sor - sgc),"Clamped to [0.0, 1.0]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable (sg - sgc) / (1 - swi - sor - sgc) into artificial range
+tests/validation/spe5_empirical_validation.py,153,Numerical bounds exceeded on (1 - swi - sg) / (1 - swi - sor),"Clamped to [0.0, 1.0]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable (1 - swi - sg) / (1 - swi - sor) into artificial range
+tests/validation/spe5_empirical_validation.py,234,"Numerical bounds exceeded on np.cumsum(q_inj * dt) / max(p.PV_BBL, 1.0) * 0.4","Clamped to [0.0, 1.0 - p.SWI - p.SOR]",LEGITIMATE NUMERICAL SAFETY,LOW,"Forces physical variable np.cumsum(q_inj * dt) / max(p.PV_BBL, 1.0) * 0.4 into artificial range"
+tests/validation/spe5_empirical_validation.py,151,Numerical bounds exceeded on sg,"Clamped to [0, 1]",SCIENTIFICALLY QUESTIONABLE,MEDIUM,Forces physical variable sg into artificial range
+tests/validation/spe5_empirical_validation.py,252,Missing key 'pressure_profile',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure_profile'=np.array([])
+tests/validation/spe5_empirical_validation.py,254,Missing key 'final_pressure',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'final_pressure'=0.0
+tests/validation/sr3_parser.py,20,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_parser.py,23,Exception caught: ImportError,Assigns fallback: _validation_dir = str(Path(__file__).parent),IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_parser.py,195,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_parser.py,254,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_parser.py,29,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_reader.py,127,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_reader.py,155,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_reader.py,384,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_reader.py,585,Exception caught: ValueError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_reader.py,227,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_reader.py,458,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_reader.py,528,Exception caught: Exception,Assigns fallback: key_var = '',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+tests/validation/sr3_reader.py,533,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/analysis_widget.py,59,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/analysis_widget.py,66,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,65,Exception caught: ImportError,Assigns fallback: CONFIGURABLE_DATACLASSES = {},IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,403,"Exception caught: (ValueError, TypeError)",Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,1115,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,1146,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,1243,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,1269,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,88,Missing key 'injection_profile_display_map',Substituted default {},IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_profile_display_map'={}
+ui/config_widget.py,360,"Exception caught: (ValueError, TypeError)",Assigns fallback: all_valid = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,1175,Exception caught: ValueError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,1182,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,332,"Exception caught: (ValueError, TypeError)",Assigns fallback: all_valid = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/config_widget.py,341,"Exception caught: (ValueError, TypeError)",Assigns fallback: all_valid = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,26,Exception caught: ImportError,Assigns fallback: PreferencesManager = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,36,Exception caught: ImportError,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,54,Exception caught: ImportError,Assigns fallback: DATA_INTEGRATION_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,752,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,767,"Exception caught: (ValueError, TypeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,780,"Exception caught: (ValueError, TypeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1116,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1411,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1568,"Exception caught: (TypeError, KeyError, ZeroDivisionError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1651,"Exception caught: (KeyError, ZeroDivisionError, TypeError, ValueError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1713,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1759,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1864,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1921,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,2081,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,176,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/data_management_widget.py,185,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/data_management_widget.py,856,"Exception caught: (TypeError, ValueError, KeyError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/data_management_widget.py,967,Exception caught: Exception,Assigns fallback: error_msg = f'Failed to load EOS composition from config: {e}',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1601,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1941,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1948,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,653,Missing key 'sol_gor',Substituted default 500.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'sol_gor'=500.0
+ui/data_management_widget.py,736,Missing key 'poro',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'poro'=0.2
+ui/data_management_widget.py,813,"Exception caught: (ValueError, AttributeError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/data_management_widget.py,837,Missing key 'poro',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'poro'=0.2
+ui/data_management_widget.py,838,Missing key 'perm',Substituted default 100.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'perm'=100.0
+ui/data_management_widget.py,1092,"Exception caught: (ValueError, AttributeError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/data_management_widget.py,1405,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1582,Missing key 'perm',Substituted default 100.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'perm'=100.0
+ui/data_management_widget.py,1589,"Exception caught: (ValueError, AttributeError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/data_management_widget.py,1837,Missing key 'poro',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'poro'=0.2
+ui/data_management_widget.py,1872,Missing key 'sol_gor',Substituted default 500.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'sol_gor'=500.0
+ui/data_management_widget.py,1873,Missing key 'temperature',Substituted default 212.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=212.0
+ui/data_management_widget.py,1874,Missing key 'initial_pressure',Substituted default 4000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'initial_pressure'=4000.0
+ui/data_management_widget.py,1934,Exception caught: Exception,Assigns fallback: self.manual_inputs_values[name] = val,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,667,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,863,Missing key 'initial_pressure',Substituted default 4000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'initial_pressure'=4000.0
+ui/data_management_widget.py,864,Missing key 'rock_compressibility',Substituted default 3e-06,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'rock_compressibility'=3e-06
+ui/data_management_widget.py,865,Missing key 'temperature',Substituted default 150.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=150.0
+ui/data_management_widget.py,870,Missing key 'perm',Substituted default 100.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'perm'=100.0
+ui/data_management_widget.py,878,Missing key 'interfacial_tension',Substituted default 5.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'interfacial_tension'=5.0
+ui/data_management_widget.py,908,Exception caught: Exception,"Assigns fallback: component_names = eos_composition_data.get('component_names', default_names)",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,1976,Exception caught: Exception,Assigns fallback: self.manual_inputs_values[name] = value,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/data_management_widget.py,709,Missing key 'injection_scheme',Substituted default 'continuous',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_scheme'='continuous'
+ui/data_management_widget.py,1038,Missing key 'temperature',Substituted default 212.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=212.0
+ui/data_management_widget.py,1041,Missing key 'co2_solubility_scm_per_bbl',Substituted default 200.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'co2_solubility_scm_per_bbl'=200.0
+ui/data_management_widget.py,1054,Missing key 'temperature',Substituted default 212.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=212.0
+ui/data_management_widget.py,1057,Missing key 'co2_solubility_scm_per_bbl',Substituted default 200.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'co2_solubility_scm_per_bbl'=200.0
+ui/data_management_widget.py,1480,Missing key 'injection_scheme',Substituted default 'continuous',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_scheme'='continuous'
+ui/data_management_widget.py,830,Missing key 'perm',Substituted default 100.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'perm'=100.0
+ui/data_management_widget.py,1183,Missing key 'injection_scheme',Substituted default 'continuous',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_scheme'='continuous'
+ui/data_management_widget.py,1300,Missing key 'initial_pressure',Substituted default 4000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'initial_pressure'=4000.0
+ui/data_management_widget.py,1301,Missing key 'temperature',Substituted default 150.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'temperature'=150.0
+ui/data_management_widget.py,1302,Missing key 'rock_compressibility',Substituted default 3e-06,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'rock_compressibility'=3e-06
+ui/data_management_widget.py,1303,Missing key 'swi',Substituted default 0.25,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'swi'=0.25
+ui/data_management_widget.py,1309,Missing key 'interfacial_tension',Substituted default 5.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'interfacial_tension'=5.0
+ui/data_management_widget.py,2046,Missing key 'permeability_multiplier',Substituted default 1.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'permeability_multiplier'=1.0
+ui/data_management_widget.py,2047,Missing key 'porosity',Substituted default 0.2,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'porosity'=0.2
+ui/dialogs/injection_scheme_dialog.py,637,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/dialogs/injection_scheme_dialog.py,682,Exception caught: Exception,Returns fallback value: False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/dialogs/injection_scheme_dialog.py,138,Missing key 'huff_n_puff_injection_period_days',Substituted default 30,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'huff_n_puff_injection_period_days'=30
+ui/dialogs/injection_scheme_dialog.py,139,Missing key 'huff_n_puff_soaking_period_days',Substituted default 15,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'huff_n_puff_soaking_period_days'=15
+ui/dialogs/injection_scheme_dialog.py,183,Missing key 'swag_water_gas_ratio',Substituted default 1.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'swag_water_gas_ratio'=1.0
+ui/dialogs/injection_scheme_dialog.py,184,Missing key 'swag_simultaneous_injection',Substituted default True,IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'swag_simultaneous_injection'=True
+ui/dialogs/injection_scheme_dialog.py,185,Missing key 'swag_cycle_length_days',Substituted default 30,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'swag_cycle_length_days'=30
+ui/dialogs/injection_scheme_dialog.py,217,Missing key 'tapered_initial_rate_multiplier',Substituted default 2.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'tapered_initial_rate_multiplier'=2.0
+ui/dialogs/injection_scheme_dialog.py,218,Missing key 'tapered_final_rate_multiplier',Substituted default 0.5,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'tapered_final_rate_multiplier'=0.5
+ui/dialogs/injection_scheme_dialog.py,674,Missing key 'injection_rate',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injection_rate'=0
+ui/dialogs/preferences_dialog.py,153,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,45,Exception caught: ImportError,Assigns fallback: QWebEngineView = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,52,Exception caught: ImportError,Assigns fallback: PSUTIL_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,60,Exception caught: ImportError,Assigns fallback: GPUTIL_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,100,Exception caught: ImportError,Assigns fallback: log_msg = f'FATAL ERROR in MainWindow: Could not import one or more required modules: {e_mw_imp}. Application cannot continue.',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,814,Exception caught: Exception,Assigns fallback: self.project_file_path = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,880,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,909,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,921,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,930,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,944,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1126,Exception caught: Exception,Returns fallback value: False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1185,"Exception caught: (FileNotFoundError, json.JSONDecodeError)",Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1522,Exception caught: Exception,Returns fallback value: '',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1744,Exception caught: Exception,Assigns fallback: error_msg = f'Failed to switch engine: {str(e)}',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1795,Exception caught: Exception,Assigns fallback: error_msg = f'Failed to switch engine from Config Widget: {str(e)}',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,307,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,667,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1251,Exception caught: Exception,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1416,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1865,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1967,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,331,Exception caught: Exception,Returns fallback value: dataclass_type(),IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1046,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1071,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/main_window.py,1500,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/optimization_widget.py,68,Exception caught: ImportError,Assigns fallback: MMP_METHODS = {},IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/optimization_widget.py,1022,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/optimization_widget.py,1046,Exception caught: Exception,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/optimization_widget.py,1642,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/optimization_widget.py,1932,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/optimization_widget.py,2055,Exception caught: Exception,Assigns fallback: error_msg = f'Error handling engine type change: {str(e)}',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/optimization_widget.py,2125,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/optimization_widget.py,2438,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/optimization_widget.py,1106,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/optimization_widget.py,1485,Exception caught: Exception,Assigns fallback: self.current_results['material_balance_analysis'] = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/optimization_widget.py,1810,Missing key 'total_injected_tonne',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'total_injected_tonne'=0
+ui/optimization_widget.py,2431,Missing key 'mmp',Substituted default np.array([]),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'mmp'=np.array([])
+ui/optimization_widget.py,1041,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/sensitivity_widget.py,24,Exception caught: ImportError,Assigns fallback: SensitivityAnalysisWorker = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/sensitivity_widget.py,31,Exception caught: ImportError,Assigns fallback: QWebEngineView = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/sensitivity_widget.py,400,Exception caught: ValueError,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/sensitivity_widget.py,515,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/sensitivity_widget.py,363,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/context_bubble.py,14,Exception caught: TypeError,Assigns fallback: token_count = len(str(data).split()),IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/context_bubble.py,38,Exception caught: TypeError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/depth_profile_dialog.py,10,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/geomechanics_3d_view.py,25,Exception caught: ImportError,Assigns fallback: PYVISTA_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/geomechanics_3d_view.py,389,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/geomechanics_3d_view.py,544,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/geomechanics_3d_view.py,282,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/geomechanics_3d_view.py,511,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/geomechanics_3d_view.py,436,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/log_viewer_dialog.py,36,Exception caught: ImportError,Assigns fallback: plt = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/log_viewer_dialog.py,50,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/log_viewer_dialog.py,375,Exception caught: ValueError,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/widgets/log_viewer_dialog.py,266,Missing key 'Temperature',Substituted default 'N/A',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'Temperature'='N/A'
+ui/widgets/manual_well_dialog.py,26,Exception caught: ImportError,Returns fallback value: '',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/manual_well_dialog.py,53,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/manual_well_dialog.py,61,Exception caught: ImportError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/manual_well_dialog.py,250,"Exception caught: (ValueError, TypeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/manual_well_dialog.py,267,"Exception caught: (ValueError, TypeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/manual_well_dialog.py,393,Exception caught: Exception,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/manual_well_dialog.py,234,"Exception caught: (ValueError, TypeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/manual_well_dialog.py,357,"Exception caught: (AttributeError, ValueError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/manual_well_dialog.py,320,Missing key 'SurfaceX',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'SurfaceX'=0.0
+ui/widgets/manual_well_dialog.py,321,Missing key 'SurfaceY',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'SurfaceY'=0.0
+ui/widgets/parameter_input_group.py,145,"Exception caught: (ValueError, TypeError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,37,Exception caught: ImportError,Assigns fallback: MATPLOTLIB_AVAILABLE = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,54,Exception caught: ImportError,Assigns fallback: THERMO_AVAILABLE_FOR_UI = False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,93,Exception caught: ImportError,Assigns fallback: SolventExtendedPVTEngine = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,508,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,645,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,748,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,782,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,853,"Exception caught: (ValueError, AttributeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,908,"Exception caught: (ValueError, TypeError)",Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,916,Exception caught: Exception,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,940,"Exception caught: (ValueError, TypeError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/widgets/pvt_editor_dialog.py,825,"Exception caught: (ValueError, IndexError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/widgets/pvt_table_editor.py,126,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_table_editor.py,279,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_table_editor.py,298,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_table_editor.py,151,Exception caught: ValueError,Returns fallback value: False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/widgets/pvt_table_editor.py,182,Exception caught: ValueError,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+ui/widgets/pvt_table_editor.py,259,"Exception caught: (ValueError, TypeError)","Assigns fallback: data[r, c] = None",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/ai_query_worker.py,13,Exception caught: ImportError,Assigns fallback: genai = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/ai_query_worker.py,20,Exception caught: ImportError,Assigns fallback: OpenAI = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/ai_query_worker.py,102,"Exception caught: (ValueError, ImportError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/ai_query_worker.py,106,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/ai_query_worker.py,134,Exception caught: PermissionDenied,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/ai_query_worker.py,136,Exception caught: GoogleAPICallError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/ai_query_worker.py,164,Exception caught: AuthenticationError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/ai_query_worker.py,166,Exception caught: RateLimitError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/ai_query_worker.py,168,Exception caught: APIError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/base_worker.py,41,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/dca_worker.py,34,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/model_list_worker.py,36,Exception caught: httpx.RequestError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/model_list_worker.py,39,Exception caught: httpx.HTTPStatusError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/model_list_worker.py,42,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/optimization_worker.py,54,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/sensitivity_analysis_worker.py,67,Exception caught: AttributeError,"Assigns fallback: msg = f""Sensitivity analyzer is missing method '{self.method_name}'.""",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/sensitivity_analysis_worker.py,72,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/uq_worker.py,46,Exception caught: AttributeError,"Assigns fallback: msg = f""UQ engine is missing method '{self.method_name}'.""",IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/uq_worker.py,50,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+ui/workers/well_analysis_worker.py,87,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/cmg_exporter.py,55,Exception caught: Exception,Returns fallback value: False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/cmg_exporter.py,127,Missing key f'{resolution}_oil_stb',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{resolution}_oil_stb'=[]
+utils/cmg_exporter.py,131,Missing key f'{resolution}_co2_injected_mscf',Substituted default [],IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter f'{resolution}_co2_injected_mscf'=[]
+utils/cmg_exporter.py,80,Missing key 'rate',Substituted default 5000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rate'=5000.0
+utils/cmg_exporter.py,81,Missing key 'pressure',Substituted default 3000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=3000.0
+utils/cmg_exporter.py,169,Missing key 'rate',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rate'=0
+utils/cmg_exporter.py,170,Missing key 'pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=0
+utils/cmg_exporter.py,193,Missing key 'rate',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rate'=0
+utils/cmg_exporter.py,194,Missing key 'pressure',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=0
+utils/cmg_exporter.py,137,Missing key 'pressure',Substituted default 3000.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'pressure'=3000.0
+utils/config_manager.py,137,"Exception caught: (KeyError, TypeError, IndexError)",Returns fallback value: default,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/config_manager.py,28,Exception caught: Exception,Assigns fallback: self._default_config_dir = None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/config_manager.py,36,Exception caught: FileNotFoundError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/config_manager.py,42,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/config_manager.py,95,Exception caught: json.JSONDecodeError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/config_manager.py,97,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/i18n_manager.py,65,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/las_parser.py,18,"Exception caught: (ImportError, AttributeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/las_parser.py,71,Exception caught: LASHeaderError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/las_parser.py,75,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/las_parser.py,95,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/las_parser.py,173,Exception caught: KeyError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/las_parser.py,132,"Exception caught: (ValueError, TypeError)",Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/las_parser.py,159,Exception caught: ValueError,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/multiprocess_logging.py,326,Exception caught: OSError,Assigns fallback: logs_dir = Path.cwd(),IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/multiprocess_logging.py,46,"Exception caught: (PermissionError, OSError)",Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+utils/multiprocess_logging.py,51,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+utils/multiprocess_logging.py,64,"Exception caught: (EOFError, BrokenPipeError, OSError)",Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/multiprocess_logging.py,196,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+utils/multiprocess_logging.py,251,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+utils/multiprocess_logging.py,164,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+utils/project_file_handler.py,105,"Exception caught: (TypeError, IOError)",Returns fallback value: False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/project_file_handler.py,122,"Exception caught: (IOError, json.JSONDecodeError)",Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/project_file_handler.py,77,Exception caught: Exception,Returns fallback value: cls(**data),IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/project_file_handler.py,49,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/project_file_handler.py,69,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/project_file_handler.py,59,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/report_generator.py,84,Exception caught: Exception,Returns fallback value: None,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/report_generator.py,105,Exception caught: Exception,Returns fallback value: f'Error testing wkhtmltopdf: {str(e)}',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/report_generator.py,152,Exception caught: Exception,Returns fallback value: False,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/report_generator.py,1007,Exception caught: Exception,Returns fallback value: '',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/report_generator.py,1019,Exception caught: Exception,Returns fallback value: '',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/report_generator.py,696,Missing key 'peak_rate',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'peak_rate'=0
+utils/report_generator.py,757,Missing key 'peak_rate',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'peak_rate'=0
+utils/report_generator.py,162,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/report_generator.py,383,Missing key 'temperature',Substituted default 'N/A',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'temperature'='N/A'
+utils/report_generator.py,400,Missing key 'injection_rate',Substituted default 'N/A',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_rate'='N/A'
+utils/report_generator.py,402,Missing key 'injection_scheme',Substituted default 'N/A',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_scheme'='N/A'
+utils/report_generator.py,403,Missing key 'target_pressure_psi',Substituted default 'N/A',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'target_pressure_psi'='N/A'
+utils/report_generator.py,404,Missing key 'max_pressure_psi',Substituted default 'N/A',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'max_pressure_psi'='N/A'
+utils/report_generator.py,405,Missing key 'min_injection_rate_bpd',Substituted default 'N/A',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'min_injection_rate_bpd'='N/A'
+utils/report_generator.py,406,Missing key 'max_injection_rate_bpd',Substituted default 'N/A',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'max_injection_rate_bpd'='N/A'
+utils/report_generator.py,428,Missing key 'injection_profile_type',Substituted default 'N/A',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'injection_profile_type'='N/A'
+utils/report_generator.py,430,Missing key 'initial_decline_rate_annual_fraction',Substituted default 'N/A',IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'initial_decline_rate_annual_fraction'='N/A'
+utils/report_generator.py,594,Missing key 'rf_p10',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rf_p10'=0
+utils/report_generator.py,594,Missing key 'rf_p50',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rf_p50'=0
+utils/report_generator.py,594,Missing key 'rf_p90',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'rf_p90'=0
+utils/report_generator.py,639,Missing key 'discount_rate_fraction',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'discount_rate_fraction'=0
+utils/run_exporter.py,1518,"Exception caught: (TypeError, OverflowError, ValueError)",Returns fallback value: f'<{obj_type_name} not serialized>',IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/run_exporter.py,1528,Exception caught: Exception,Returns fallback value: 0.0,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/run_exporter.py,588,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+utils/run_exporter.py,1423,Exception caught: Exception,Catches error and continues,IMPLEMENTATION FALLBACK,MEDIUM,UI/app resilience
+utils/run_exporter.py,1487,Exception caught: Exception,Silent suppression (pass),IMPLEMENTATION FALLBACK,LOW,UI/app resilience
+utils/run_exporter.py,275,"Missing key 'MMP (Calculated, psi)'","Substituted default getattr(engine, 'mmp', 2000.0)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'MMP (Calculated, psi)'=getattr(engine, 'mmp', 2000.0)"
+utils/run_exporter.py,276,Missing key 'Average Porosity',"Substituted default getattr(eng_res, 'average_porosity', 0.2)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'Average Porosity'=getattr(eng_res, 'average_porosity', 0.2)"
+utils/run_exporter.py,278,Missing key 'Average Permeability (mD)',"Substituted default gen_params.get('Average Permeability', res_params.get('average_permeability', getattr(eng_res, 'average_permeability', getattr(eng_res, 'permeability_md', 100.0))))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'Average Permeability (mD)'=gen_params.get('Average Permeability', res_params.get('average_permeability', getattr(eng_res, 'average_permeability', getattr(eng_res, 'permeability_md', 100.0))))"
+utils/run_exporter.py,292,Missing key 'Initial Pressure (psi)',"Substituted default res_params.get('initial_pressure', getattr(eng_res, 'initial_pressure', getattr(eng_res, 'initial_pressure_psi', 3000.0)))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'Initial Pressure (psi)'=res_params.get('initial_pressure', getattr(eng_res, 'initial_pressure', getattr(eng_res, 'initial_pressure_psi', 3000.0)))"
+utils/run_exporter.py,301,Missing key 'Temperature (°F)',"Substituted default res_params.get('temperature', getattr(eng_res, 'temperature', getattr(eng_res, 'temperature_f', 160.0)))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'Temperature (°F)'=res_params.get('temperature', getattr(eng_res, 'temperature', getattr(eng_res, 'temperature_f', 160.0)))"
+utils/run_exporter.py,322,Missing key 'rock_compressibility',"Substituted default getattr(eng_res, 'rock_compressibility', 3e-06)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'rock_compressibility'=getattr(eng_res, 'rock_compressibility', 3e-06)"
+utils/run_exporter.py,327,Missing key 'injector_count',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injector_count'=0
+utils/run_exporter.py,334,Missing key 'caprock_fracture_pressure_psi',"Substituted default getattr(eor, 'caprock_fracture_pressure_psi', 5500.0)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'caprock_fracture_pressure_psi'=getattr(eor, 'caprock_fracture_pressure_psi', 5500.0)"
+utils/run_exporter.py,978,Missing key 'discount_rate_fraction',"Substituted default getattr(getattr(engine, 'economic_params', None), 'discount_rate_fraction', 0.1)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'discount_rate_fraction'=getattr(getattr(engine, 'economic_params', None), 'discount_rate_fraction', 0.1)"
+utils/run_exporter.py,1384,Missing key 'MMP Analysis Configuration',Substituted default {},IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'MMP Analysis Configuration'={}
+utils/run_exporter.py,242,Missing key 'total_injected_tonne',"Substituted default results.get('total_co2_injected_tonne', 0.0)",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'total_injected_tonne'=results.get('total_co2_injected_tonne', 0.0)"
+utils/run_exporter.py,280,Missing key 'Average Permeability',"Substituted default res_params.get('average_permeability', getattr(eng_res, 'average_permeability', getattr(eng_res, 'permeability_md', 100.0)))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'Average Permeability'=res_params.get('average_permeability', getattr(eng_res, 'average_permeability', getattr(eng_res, 'permeability_md', 100.0)))"
+utils/run_exporter.py,294,Missing key 'initial_pressure',"Substituted default getattr(eng_res, 'initial_pressure', getattr(eng_res, 'initial_pressure_psi', 3000.0))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'initial_pressure'=getattr(eng_res, 'initial_pressure', getattr(eng_res, 'initial_pressure_psi', 3000.0))"
+utils/run_exporter.py,303,Missing key 'temperature',"Substituted default getattr(eng_res, 'temperature', getattr(eng_res, 'temperature_f', 160.0))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'temperature'=getattr(eng_res, 'temperature', getattr(eng_res, 'temperature_f', 160.0))"
+utils/run_exporter.py,451,Missing key 'MMP Analysis Configuration',Substituted default {},IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'MMP Analysis Configuration'={}
+utils/run_exporter.py,242,Missing key 'total_co2_injected_tonne',Substituted default 0.0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'total_co2_injected_tonne'=0.0
+utils/run_exporter.py,282,Missing key 'average_permeability',"Substituted default getattr(eng_res, 'average_permeability', getattr(eng_res, 'permeability_md', 100.0))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'average_permeability'=getattr(eng_res, 'average_permeability', getattr(eng_res, 'permeability_md', 100.0))"
+utils/run_exporter.py,346,Missing key 'pressure',Substituted default {},IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'pressure'={}
+utils/run_exporter.py,819,Missing key 'injector_count',Substituted default 0,LEGITIMATE ENGINEERING DEFAULT,MEDIUM,Provides implicit physical parameter 'injector_count'=0
+utils/run_exporter.py,1152,Missing key 'yearly_pressure',"Substituted default profiles.get('annual_pressure', np.zeros(n_y))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'yearly_pressure'=profiles.get('annual_pressure', np.zeros(n_y))"
+utils/run_exporter.py,1172,Missing key 'yearly_co2_injected_mscf',"Substituted default profiles.get('annual_co2_injected_mscf', np.zeros(n_y))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'yearly_co2_injected_mscf'=profiles.get('annual_co2_injected_mscf', np.zeros(n_y))"
+utils/run_exporter.py,1179,Missing key 'yearly_water_injected_bbl',"Substituted default profiles.get('annual_water_injected_bbl', np.zeros(n_y))",IMPLEMENTATION FALLBACK,MEDIUM,"Provides implicit physical parameter 'yearly_water_injected_bbl'=profiles.get('annual_water_injected_bbl', np.zeros(n_y))"
+utils/run_exporter.py,1226,Missing key 'monthly_pressure',Substituted default np.zeros(n_m),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'monthly_pressure'=np.zeros(n_m)
+utils/run_exporter.py,1232,Missing key 'monthly_co2_injected_mscf',Substituted default np.zeros(n_m),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'monthly_co2_injected_mscf'=np.zeros(n_m)
+utils/run_exporter.py,1235,Missing key 'monthly_water_injected_bbl',Substituted default np.zeros(n_m),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'monthly_water_injected_bbl'=np.zeros(n_m)
+utils/run_exporter.py,1153,Missing key 'annual_pressure',Substituted default np.zeros(n_y),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'annual_pressure'=np.zeros(n_y)
+utils/run_exporter.py,1174,Missing key 'annual_co2_injected_mscf',Substituted default np.zeros(n_y),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'annual_co2_injected_mscf'=np.zeros(n_y)
+utils/run_exporter.py,1181,Missing key 'annual_water_injected_bbl',Substituted default np.zeros(n_y),IMPLEMENTATION FALLBACK,MEDIUM,Provides implicit physical parameter 'annual_water_injected_bbl'=np.zeros(n_y)

@@ -93,7 +93,7 @@ from core.objectives.storage import calculate_geomechanical_containment_score
 from utils.cmg_exporter import SimulatorExporter
 
 
-INJECTION_SCHEMES = ["continuous", "wag", "tapered", "huff_n_puff", "swag"]
+INJECTION_SCHEMES = ["continuous", "wag", "tapered", "huff_n_puff", "swag", "pulsed"]
 FAILURE_PENALTY = -1e12
 
 class PickleSafeOptimiser:
@@ -1856,7 +1856,7 @@ class OptimizationEngine:
         # Injection scheme - discrete GA variable using numeric index
         # (pygad requires numeric values in gene_space, actual scheme mapped later)
         if not self.eor_params.injection_scheme_locked:
-            b["injection_scheme"] = (0, 4)  # indices 0-4 for 5 schemes
+            b["injection_scheme"] = (0, len(INJECTION_SCHEMES) - 1)
 
         active_scheme = getattr(self.eor_params, "injection_scheme", "continuous")
         is_locked = getattr(self.eor_params, "injection_scheme_locked", True)
@@ -1937,7 +1937,7 @@ class OptimizationEngine:
             sanitized["injection_scheme"], (int, float, np.number)
         ):
             sanitized["injection_scheme"] = int(
-                np.clip(round(float(sanitized["injection_scheme"])), 0, 4)
+                np.clip(round(float(sanitized["injection_scheme"])), 0, len(INJECTION_SCHEMES) - 1)
             )
 
         active_scheme = getattr(self.eor_params, "injection_scheme", "continuous")
@@ -2850,7 +2850,7 @@ class OptimizationEngine:
             elif key == "allow_well_conversion":
                 gene_space.append([0, 1])
             elif key == "injection_scheme":
-                gene_space.append([0, 1, 2, 3, 4])
+                gene_space.append(list(range(len(INJECTION_SCHEMES))))
             elif isinstance(val, dict) and "low" in val and "high" in val:
                 # Discrete parameter using numeric index range
                 if val.get("step") == 1:
@@ -3246,13 +3246,18 @@ class OptimizationEngine:
         self._results["charts"] = charts
         return self._results
 
-    def optimize_nsga_2(self, nsga2_params_override, **kwargs) -> Dict[str, Any]:
+    def optimize_nsga_2(self, nsga2_params_override=None, **kwargs) -> Dict[str, Any]:
         """
         Multi-objective NSGA-II optimization using pygad.
         Returns Pareto front of non-dominated solutions.
         """
         self.reset_to_base_state()
-        ga_params = deepcopy(nsga2_params_override or self.ga_params_default_config)
+        ga_params = deepcopy(
+            nsga2_params_override
+            or kwargs.get("ga_params_override")
+            or kwargs.get("nsga2_params_override")
+            or self.ga_params_default_config
+        )
         ga_params.num_objectives = 2  # Force bi-objective for NSGA-II
 
         self.ga_params_current_run = ga_params
@@ -3273,7 +3278,7 @@ class OptimizationEngine:
             elif param_name == "allow_well_conversion":
                 gene_space.append([0, 1])
             elif param_name == "injection_scheme":
-                gene_space.append([0, 1, 2, 3, 4])
+                gene_space.append(list(range(len(INJECTION_SCHEMES))))
             else:
                 val = bounds_dict[param_name]
                 if isinstance(val, dict) and "low" in val and "high" in val:

@@ -1,35 +1,35 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 archive_resolved_wiki_issues.py
 
-Automated utility to enforce the Agent Wiki invariant:
-    "Active audit documents must contain ONLY active, open problems.
-     All resolved issues, post-mortems, and fixes belong strictly
-     in agent_wiki/audit/resolved_issues.md."
-
-This script:
-1. Scans active audit documents (agent_wiki/audit/*.md, excluding resolved_issues.md).
-2. Detects resolved items in headers (## or ###), status metadata lines, and summary tables.
-3. Ensures all resolved items are archived in agent_wiki/audit/resolved_issues.md.
-4. Purges resolved sections, tables, and notices from active docs so only open issues remain.
-5. In --check mode, exits with code 1 if resolved items are lingering in active audit docs.
+Automated script and CI gatekeeper to enforce the Wiki Invariant:
+1. 'agent_wiki/audit/resolved_issues.md' is the SOLE repository for resolved flaws,
+   eliminated duplicate logic, verified calibrations, and software defect post-mortems.
+2. All active audit documents ('agent_wiki/audit/*.md' except 'resolved_issues.md')
+   MUST contain ONLY active, open problems.
+3. This script parses resolved issues from 'resolved_issues.md', scrubs resolved items,
+   resolved tables, and resolution notices from active audit documents, and ensures
+   clean separation between active open problems and historical resolved archives.
 
 Usage:
-    python scripts/archive_resolved_wiki_issues.py [--clean] [--check] [--dry-run]
+    python scripts/archive_resolved_wiki_issues.py --clean
+    python scripts/archive_resolved_wiki_issues.py --check
+    python scripts/archive_resolved_wiki_issues.py --dry-run
 """
 
 import argparse
-import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
 
-if sys.stdout.encoding != "utf-8":
-    try:
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:
-        pass
+# Safe stdout UTF-8 reconfiguration for Windows console without static typing errors
+if sys.stdout and getattr(sys.stdout, "encoding", None) != "utf-8":
+    reconfig = getattr(sys.stdout, "reconfigure", None)
+    if callable(reconfig):
+        try:
+            reconfig(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
 
 WIKI_AUDIT_DIR = Path("agent_wiki/audit")
 RESOLVED_ARCHIVE_FILE = WIKI_AUDIT_DIR / "resolved_issues.md"
@@ -49,9 +49,9 @@ def is_resolved_str(s: str) -> bool:
     return any(k in upper for k in RESOLVED_KEYWORDS)
 
 
-def get_archived_issue_ids(archive_text: str) -> Set[str]:
+def get_archived_issue_ids(archive_text: str) -> set[str]:
     """Extract all issue IDs currently cataloged in resolved_issues.md."""
-    ids = set()
+    ids: set[str] = set()
     # Match in index table: | **ID** | ... or ### [ID] ...
     for m in re.finditer(r"\|\s*\*\*([A-Za-z0-9_\-]+)\*\*\s*\|", archive_text):
         ids.add(m.group(1).upper())
@@ -62,7 +62,7 @@ def get_archived_issue_ids(archive_text: str) -> Set[str]:
     return ids
 
 
-def clean_markdown_table_resolved_rows(text: str) -> Tuple[str, List[str]]:
+def clean_markdown_table_resolved_rows(text: str) -> tuple[str, list[str]]:
     """Remove rows from markdown tables where the status column is RESOLVED."""
     lines = text.splitlines(keepends=True)
     new_lines = []
@@ -89,7 +89,7 @@ def clean_markdown_table_resolved_rows(text: str) -> Tuple[str, List[str]]:
     return "".join(new_lines), removed_rows
 
 
-def clean_resolved_blockquotes(text: str) -> Tuple[str, List[str]]:
+def clean_resolved_blockquotes(text: str) -> tuple[str, list[str]]:
     """Remove blockquote notes that mention resolved issues."""
     pattern = re.compile(
         r"(?:^|\n)> \[!NOTE\]\s*\n(?:> [^\n]*\n*)+",
@@ -97,9 +97,9 @@ def clean_resolved_blockquotes(text: str) -> Tuple[str, List[str]]:
     )
     removed = []
 
-    def repl(match):
-        chunk = match.group(0)
-        chunk_upper = chunk.upper()
+    def repl(match: re.Match[str]) -> str:
+        chunk: str = str(match.group(0))
+        chunk_upper: str = chunk.upper()
         # Don't remove the top-level standard active-only disclaimer
         if "ONLY ACTIVE" in chunk_upper or "DEFECT RESOLUTION ARCHIVE" in chunk_upper:
             return chunk
@@ -113,7 +113,7 @@ def clean_resolved_blockquotes(text: str) -> Tuple[str, List[str]]:
     return cleaned_text, removed
 
 
-def clean_resolved_sections(text: str) -> Tuple[str, List[str]]:
+def clean_resolved_sections(text: str) -> tuple[str, list[str]]:
     """
     Remove complete ## or ### sections dedicated to resolved issues,
     such as '## 2. Master Resolved Discrepancies Archive',
@@ -167,7 +167,7 @@ def ensure_archive_notice(text: str) -> str:
     out = []
     inserted = False
 
-    for i, line in enumerate(lines):
+    for line in lines:
         out.append(line)
         if line.startswith("# ") and not inserted:
             # Insert notice after title and blank line
@@ -179,9 +179,9 @@ def ensure_archive_notice(text: str) -> str:
 
 def process_audit_document(
     file_path: Path,
-    archive_ids: Set[str],
+    archive_ids: set[str],
     dry_run: bool = False
-) -> Tuple[int, List[str]]:
+) -> tuple[int, list[str]]:
     """Process a single active audit markdown document."""
     text = file_path.read_text(encoding="utf-8")
     original_text = text
@@ -215,7 +215,7 @@ def process_audit_document(
     return len(all_removed), all_removed
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Audit Wiki Active/Resolved Enforcer")
     parser.add_argument("--clean", action="store_true", help="Clean resolved items from active audit documents")
     parser.add_argument("--check", action="store_true", help="Exit with 1 if resolved items linger in active audit docs")
@@ -261,7 +261,7 @@ def main():
         elif not dry_run:
             print(f"\n[SUCCESS] Cleaned {total_issues} resolved item(s) from active audit documents.")
         else:
-            print(f"\n[INFO] Dry run complete. Run with --clean to remove resolved items from active docs.")
+            print("\n[INFO] Dry run complete. Run with --clean to remove resolved items from active docs.")
     else:
         print("\n[OK] All active audit documents strictly contain only open issues. No resolved clutter found.")
         sys.exit(0)

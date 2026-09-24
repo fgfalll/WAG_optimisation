@@ -235,3 +235,40 @@ def test_run_exporter_with_enriched_parameters(tmp_path, qapp, sample_engine):
     assert "**Initial Reservoir Pressure**" in report_content
     assert "**Formation Net Thickness**" in report_content
     assert "**Well Infrastructure**" in report_content
+
+
+def test_optimization_widget_secondary_objective_and_resolutions(qapp):
+    """Verify that OptimizationWidget constrains time resolutions and dynamically exposes secondary objective."""
+    config_mgr = ConfigManager()
+    widget = OptimizationWidget(config_manager=config_mgr)
+
+    # 1. Verify resolutions are constrained strictly to Yearly and Monthly
+    resolutions = [widget.resolution_combo.itemText(i) for i in range(widget.resolution_combo.count())]
+    assert "Yearly" in resolutions
+    assert "Monthly" in resolutions
+    assert "Quarterly" not in resolutions
+    assert "Weekly" not in resolutions
+
+    # 2. Verify initial visibility of secondary objective (GA selected by default -> hidden)
+    assert widget.secondary_objective_combo.isHidden()
+    assert widget.secondary_objective_label.isHidden()
+
+    # 3. Switch method to NSGA-II -> secondary objective should become visible (not hidden)
+    nsga_idx = widget.method_combo.findData("optimize_nsga_2")
+    assert nsga_idx != -1, "optimize_nsga_2 method missing from combo"
+    widget.method_combo.setCurrentIndex(nsga_idx)
+    assert not widget.secondary_objective_combo.isHidden()
+    assert not widget.secondary_objective_label.isHidden()
+
+    # Verify secondary objective options loaded
+    sec_options = [widget.secondary_objective_combo.itemData(i) for i in range(widget.secondary_objective_combo.count())]
+    assert "npv" in sec_options
+    assert "recovery_factor" in sec_options
+
+    # 4. Switch back to standard GA -> secondary objective should be hidden
+    ga_idx = widget.method_combo.findData("optimize_genetic_algorithm")
+    assert ga_idx != -1, "optimize_genetic_algorithm method missing from combo"
+    widget.method_combo.setCurrentIndex(ga_idx)
+    assert widget.secondary_objective_combo.isHidden()
+    assert widget.secondary_objective_label.isHidden()
+

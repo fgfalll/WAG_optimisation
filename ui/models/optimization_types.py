@@ -1,3 +1,12 @@
+"""
+ui/models/optimization_types.py - Legacy UI Optimization Models.
+
+Note: In the active production architecture (v0.8.5+), optimization objectives are
+managed directly via core/objectives/wrapper.py and constraints/search bounds via
+core/data_models.py and core/optimisation_engine.py. These dataclasses are preserved
+for backwards compatibility.
+"""
+
 from dataclasses import dataclass, field
 from typing import Dict, Tuple, Optional, Any, List
 

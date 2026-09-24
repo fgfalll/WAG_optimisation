@@ -1,10 +1,8 @@
 import logging
-import json
-import io
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Any, Dict, List
-from dataclasses import fields, is_dataclass, asdict
+from dataclasses import fields, is_dataclass
 from functools import partial
 
 import numpy as np
@@ -42,7 +40,7 @@ from PyQt6.QtWidgets import (
     QLineEdit,
 )
 from PyQt6.QtGui import QIcon, QFont
-from PyQt6.QtCore import Qt, pyqtSignal, QObject, pyqtSlot, QEvent
+from PyQt6.QtCore import Qt, pyqtSignal, pyqtSlot, QEvent
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 import plotly.graph_objects as go
 
@@ -52,9 +50,7 @@ from ui.workers.optimization_worker import OptimizationWorker
 from core.optimisation_engine import OptimizationEngine
 from core.data_models import (
     GeneticAlgorithmParams,
-    EconomicParameters,
     BayesianOptimizationParams,
-    EORParameters,
 )
 from analysis.material_balance import create_material_balance_from_optimization
 
@@ -146,6 +142,7 @@ class OptimizationWidget(QWidget):
         ui_config = self.config_manager.get_section("ui_config").get("optimization", {})
         self.OPTIMIZATION_METHODS = ui_config.get("methods", {})
         self.OPTIMIZATION_OBJECTIVES = ui_config.get("objectives", {})
+        self.OPTIMIZATION_SECONDARY_OBJECTIVES = ui_config.get("secondary_objectives", {})
         self.PARAMETER_METADATA = ui_config.get("parameter_metadata", {})
 
         self.engine: Optional[OptimizationEngine] = None
@@ -170,7 +167,7 @@ class OptimizationWidget(QWidget):
         self._connect_signals()
 
         if not all(
-            [OptimizationWorker, OptimizationEngine, GeneticAlgorithmParams, EconomicParameters]
+            [OptimizationWorker, OptimizationEngine, GeneticAlgorithmParams, BayesianOptimizationParams]
         ):
             self.setEnabled(False)
             QMessageBox.critical(
@@ -216,6 +213,7 @@ class OptimizationWidget(QWidget):
         self.setup_group.setTitle(self.tr("Core Setup"))
         self.method_label.setText(self.tr("Method:"))
         self.objective_label.setText(self.tr("Objective:"))
+        self.secondary_objective_label.setText(self.tr("Secondary Obj:"))
         self.resolution_label.setText(self.tr("Resolution:"))
 
         # Populate method combo box with translated text
@@ -240,11 +238,24 @@ class OptimizationWidget(QWidget):
             self.objective_combo.setCurrentIndex(idx)
         self.objective_combo.blockSignals(False)
 
-        # Populate resolution combo box
+        # Populate secondary objective combo box
+        self.secondary_objective_combo.blockSignals(True)
+        current_sec_data = self.secondary_objective_combo.currentData()
+        self.secondary_objective_combo.clear()
+        for text, data in self.OPTIMIZATION_SECONDARY_OBJECTIVES.items():
+            self.secondary_objective_combo.addItem(self.tr(text), userData=data)
+        idx = self.secondary_objective_combo.findData(current_sec_data)
+        if idx != -1:
+            self.secondary_objective_combo.setCurrentIndex(idx)
+        elif self.secondary_objective_combo.count() > 1:
+            self.secondary_objective_combo.setCurrentIndex(1)
+        self.secondary_objective_combo.blockSignals(False)
+
+        # Populate resolution combo box (supported: Yearly, Monthly)
         self.resolution_combo.blockSignals(True)
         current_res = self.resolution_combo.currentText().lower()
         self.resolution_combo.clear()
-        resolutions = ["Yearly", "Quarterly", "Monthly", "Weekly"]
+        resolutions = ["Yearly", "Monthly"]
         for res in resolutions:
             self.resolution_combo.addItem(self.tr(res), userData=res.lower())
         idx = self.resolution_combo.findData(current_res)
@@ -436,20 +447,28 @@ class OptimizationWidget(QWidget):
         self.method_combo.setMinimumWidth(150)
         self.objective_combo = QComboBox()
         self.objective_combo.setMinimumWidth(150)
+        self.secondary_objective_combo = QComboBox()
+        self.secondary_objective_combo.setMinimumWidth(150)
+        self.secondary_objective_combo.setVisible(False)
         self.resolution_combo = QComboBox()
         self.resolution_combo.setMinimumWidth(150)
         self.method_label = QLabel()
         self.method_label.setMinimumWidth(100)
         self.objective_label = QLabel()
         self.objective_label.setMinimumWidth(100)
+        self.secondary_objective_label = QLabel()
+        self.secondary_objective_label.setMinimumWidth(100)
+        self.secondary_objective_label.setVisible(False)
         self.resolution_label = QLabel()
         self.resolution_label.setMinimumWidth(100)
         setup_grid.addWidget(self.method_label, 0, 0)
         setup_grid.addWidget(self.method_combo, 0, 1)
         setup_grid.addWidget(self.objective_label, 1, 0)
         setup_grid.addWidget(self.objective_combo, 1, 1)
-        setup_grid.addWidget(self.resolution_label, 2, 0)
-        setup_grid.addWidget(self.resolution_combo, 2, 1)
+        setup_grid.addWidget(self.secondary_objective_label, 2, 0)
+        setup_grid.addWidget(self.secondary_objective_combo, 2, 1)
+        setup_grid.addWidget(self.resolution_label, 3, 0)
+        setup_grid.addWidget(self.resolution_combo, 3, 1)
         setup_layout.addWidget(self.setup_group)
         # Note: Engine selection moved to Config Widget (single source of truth)
         setup_layout.addStretch()
@@ -755,9 +774,7 @@ class OptimizationWidget(QWidget):
     @pyqtSlot(logging.LogRecord)
     def _append_log_message(self, record: logging.LogRecord):
         """Appends a formatted message to the log display."""
-        import datetime
-
-        timestamp = datetime.datetime.fromtimestamp(record.created).strftime("%H:%M:%S")
+        timestamp = datetime.fromtimestamp(record.created).strftime("%H:%M:%S")
         message = f"{timestamp} [{record.levelname}] {record.name}: {record.getMessage()}"
         self.log_display.append(message)
 
@@ -854,10 +871,13 @@ class OptimizationWidget(QWidget):
         self._update_input_summary_tab()
 
     def _on_method_changed(self, method_name: str):
-        """Shows/hides the relevant hyperparameter sub-tabs based on the selected method."""
+        """Shows/hides the relevant hyperparameter sub-tabs and controls based on the selected method."""
         method_key = (self.method_combo.currentData() or "").lower()
         is_hybrid = "hybrid" in method_key
         is_nsga2 = "nsga" in method_key.lower()
+
+        self.secondary_objective_label.setVisible(is_nsga2)
+        self.secondary_objective_combo.setVisible(is_nsga2)
 
         self.hyperparam_tabs.setTabVisible(
             0, "genetic" in method_key or is_hybrid or is_nsga2
@@ -918,20 +938,6 @@ class OptimizationWidget(QWidget):
                 widget = QComboBox()
                 options = {
                     "acquisition_function": ["ucb", "ei", "poi"],
-                    "strategy": [
-                        "best1bin",
-                        "best1exp",
-                        "rand1exp",
-                        "randtobest1exp",
-                        "currenttobest1exp",
-                        "best2exp",
-                        "rand2exp",
-                        "randtobest1bin",
-                        "currenttobest1bin",
-                        "best2bin",
-                        "rand2bin",
-                        "rand1bin",
-                    ],
                     "parent_selection_type": ["sss", "rws", "sus", "rank", "random", "tournament"],
                     "crossover_type": ["single_point", "two_points", "uniform", "scattered"],
                     "mutation_type": ["random", "swap", "inversion", "scramble", "adaptive"],
@@ -1019,8 +1025,8 @@ class OptimizationWidget(QWidget):
                 offset = 1 if relation == "<" else 0
                 new_max = value - offset
                 peer_widget.setMaximum(new_max)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to update min/max validator: {e}")
 
     def _get_params_from_form(self, dc_class: type, input_dict: Dict) -> Optional[Any]:
         """Reads values from the UI widgets and creates a dataclass instance."""
@@ -1035,13 +1041,8 @@ class OptimizationWidget(QWidget):
                     kwargs[name] = widget.isChecked()
                 elif isinstance(widget, QComboBox):
                     kwargs[name] = widget.currentText()
-                elif isinstance(widget, QLineEdit) and name == "mutation":
-                    try:
-                        kwargs[name] = eval(widget.text())
-                    except:
-                        raise ValueError(
-                            self.tr("Invalid format for mutation tuple. Use (min, max).")
-                        )
+                elif isinstance(widget, QLineEdit):
+                    kwargs[name] = widget.text()
             return dc_class(**kwargs)
         except Exception as e:
             QMessageBox.critical(
@@ -1073,8 +1074,6 @@ class OptimizationWidget(QWidget):
             "MMP Analysis Configuration": {},
             "Genetic Algorithm": {},
             "Bayesian Optimization": {},
-            "Particle Swarm Optimization": {},
-            "Differential Evolution": {},
         }
 
         # 1. Optimization Setup
@@ -1084,6 +1083,17 @@ class OptimizationWidget(QWidget):
         if hasattr(self, "objective_combo") and self.objective_combo.count() > 0:
             all_params["Optimization Setup"]["selected_objective"] = self.objective_combo.currentText()
             all_params["Optimization Setup"]["objective_key"] = str(self.objective_combo.currentData() or "")
+        if (
+            hasattr(self, "secondary_objective_combo")
+            and self.secondary_objective_combo.isVisible()
+            and self.secondary_objective_combo.count() > 0
+        ):
+            all_params["Optimization Setup"]["secondary_objective"] = (
+                self.secondary_objective_combo.currentText()
+            )
+            all_params["Optimization Setup"]["secondary_objective_key"] = str(
+                self.secondary_objective_combo.currentData() or ""
+            )
         if hasattr(self, "resolution_combo") and self.resolution_combo.count() > 0:
             all_params["Optimization Setup"]["time_resolution"] = self.resolution_combo.currentText()
         all_params["Optimization Setup"]["simulation_engine_type"] = (
@@ -1329,15 +1339,29 @@ class OptimizationWidget(QWidget):
             or "hybrid" in method_key_lower
             or "nsga" in method_key_lower
         ):
-            params = self._get_params_from_form(GeneticAlgorithmParams, self.ga_param_inputs)
-            kwargs["ga_params_override"] = params
+            ga_params = self._get_params_from_form(GeneticAlgorithmParams, self.ga_param_inputs)
+            if "nsga" in method_key_lower and ga_params is not None:
+                secondary_obj = self.secondary_objective_combo.currentData()
+                if secondary_obj == self.engine.chosen_objective:
+                    QMessageBox.warning(
+                        self,
+                        self.tr("Objective Conflict"),
+                        self.tr(
+                            "Primary and secondary objectives must be distinct for bi-objective optimization."
+                        ),
+                    )
+                    return
+                if secondary_obj:
+                    ga_params.secondary_objective = secondary_obj
+                    ga_params.num_objectives = 2
+            kwargs["ga_params_override"] = ga_params
         if (
             "bayesian" in method_key_lower
             or "hybrid" in method_key_lower
             or "nsga" in method_key_lower
         ):
-            params = self._get_params_from_form(BayesianOptimizationParams, self.bo_param_inputs)
-            kwargs["bo_params_override"] = params
+            bo_params = self._get_params_from_form(BayesianOptimizationParams, self.bo_param_inputs)
+            kwargs["bo_params_override"] = bo_params
 
         if any(v is None for v in kwargs.values()):
             return
@@ -1787,66 +1811,6 @@ class OptimizationWidget(QWidget):
             display_name = self.tr(meta.get("display", key.replace("_", " ").title()))
             self.bo_sensitivity_param_combo.addItem(display_name, userData=key)
 
-    def _generate_co2_summary_html(self) -> str:
-        """Generates an HTML summary of CO2 performance metrics."""
-        if not self.current_results or not self.current_results.get("material_balance_analysis"):
-            return f"<p>{self.tr('No CO2 analysis data available.')}</p>"
-
-        mb_stats = self.current_results["material_balance_analysis"].get("summary_statistics", {})
-        final_metrics = self.current_results.get("final_metrics", {})
-
-        def get_stat(key, unit, is_money=False):
-            val = mb_stats.get(key)
-            if val is None:
-                return "N/A"
-            prefix = "$" if is_money else ""
-            return f"{prefix}{val:,.0f} {unit}"
-
-        co2_util = final_metrics.get("co2_utilization", "N/A")
-        co2_util_str = (
-            f"{co2_util:.2f} MSCF/STB" if isinstance(co2_util, (float, np.floating)) else "N/A"
-        )
-
-        total_purchased_val = mb_stats.get("total_injected_tonne", 0) - mb_stats.get(
-            "total_recycled_tonne", 0
-        )
-        total_purchased_str = f"{total_purchased_val:,.2f} tonnes"
-
-        html = """
-        <style>
-            body {{ font-family: sans-serif; margin: 20px; }}
-            h2 {{ color: #333; }}
-            table {{ border-collapse: collapse; width: 80%; margin-top: 20px; }}
-            th, td {{ border: 1px solid #ddd; padding: 10px; text-align: left; }}
-            th {{ background-color: #f2f2f2; }}
-            tr:nth-child(even) {{ background-color: #f9f9f9; }}
-        </style>
-        <h2>CO₂ Performance Summary</h2>
-        <table>
-            <tr><th>Metric</th><th>Value</th></tr>
-            <tr><td>CO₂ Utilization Factor</td><td><b>{co2_util_str}</b></td></tr>
-            <tr><td>Total CO₂ Injected</td><td>{total_injected}</td></tr>
-            <tr><td>Total CO₂ Produced</td><td>{total_produced}</td></tr>
-            <tr><td>Total CO₂ Recycled</td><td>{total_recycled}</td></tr>
-            <tr><td>Total CO₂ Purchased</td><td>{total_purchased}</td></tr>
-            <tr><td><b>Total Net CO₂ Stored</b></td><td><b>{total_stored}</b></td></tr>
-            <tr><td>Total CO₂ Leaked</td><td>{total_leaked}</td></tr>
-            <tr><td>Final Cumulative Stored</td><td>{final_cumulative}</td></tr>
-            <tr><td>Average Storage Efficiency</td><td>{avg_efficiency:.2f}%</td></tr>
-        </table>
-        """.format(
-            co2_util_str=co2_util_str,
-            total_injected=get_stat("total_injected_tonne", "tonnes"),
-            total_produced=get_stat("total_produced_tonne", "tonnes"),
-            total_recycled=get_stat("total_recycled_tonne", "tonnes"),
-            total_purchased=total_purchased_str,
-            total_stored=get_stat("total_net_stored_tonne", "tonnes"),
-            total_leaked=get_stat("total_leakage_tonne", "tonnes"),
-            final_cumulative=get_stat("final_cumulative_stored_tonne", "tonnes"),
-            avg_efficiency=mb_stats.get("avg_storage_efficiency", 0) * 100,
-        )
-        return html
-
     def _generate_selected_plot(self):
         """Generates and displays the plot currently selected in the QListWidget."""
         if not self.engine or not self.current_results or not self.plot_list.currentItem():
@@ -2058,29 +2022,6 @@ class OptimizationWidget(QWidget):
             self.status_label.setText(f"<i><b style='color:red;'>{error_msg}</b></i>")
             logger.error(error_msg, exc_info=True)
 
-    def _clean_dict_for_json(self, data_dict: Any) -> Any:
-        """Recursively cleans a dictionary to make it JSON serializable."""
-        if isinstance(data_dict, dict):
-            cleaned_dict = {}
-            for key, value in data_dict.items():
-                if key in ["bayes_opt_obj", "pygad_instance", "de_result_obj", "charts"]:
-                    cleaned_dict[key] = f"<{type(value).__name__} object not serialized>"
-                    continue
-                cleaned_dict[key] = self._clean_dict_for_json(value)
-            return cleaned_dict
-        elif isinstance(data_dict, list):
-            return [self._clean_dict_for_json(item) for item in data_dict]
-        elif hasattr(data_dict, "tolist"):
-            return data_dict.tolist()
-        elif isinstance(data_dict, (np.integer, np.floating)):
-            return data_dict.item()
-        elif is_dataclass(data_dict):
-            return asdict(data_dict)
-        elif type(data_dict).__name__ == "Figure":
-            return f"<matplotlib.figure.Figure not serialized>"
-        else:
-            return data_dict
-
     def _export_run_data(self):
         """Exports the current run's inputs, results, and graphs to a new folder using RunDataExporter."""
         if not self.current_results:
@@ -2171,156 +2112,6 @@ class OptimizationWidget(QWidget):
         }
 
         return plots
-
-    def _generate_detailed_csv_export(self) -> Dict[str, pd.DataFrame]:
-        """Generates detailed CSV exports of the optimization results for both yearly and daily resolutions."""
-        results = self.current_results
-        if not (results and self.engine):
-            return {}
-
-        profiles = results.get("optimized_profiles", {})
-        mb_analysis = results.get("material_balance_analysis") or {}
-        mb_data = mb_analysis.get("material_balance_data", {})
-
-        dataframes = {}
-        for resolution in ["yearly", "daily"]:
-            res_profiles = {
-                k: v
-                for k, v in profiles.items()
-                if k.startswith(resolution) and not k.endswith("_years")
-            }
-            if not res_profiles:
-                continue
-
-            df = pd.DataFrame(res_profiles)
-            df.index = df.index + 1
-            df.index.name = resolution.title()
-
-            # Merge material balance data if available
-            if mb_data and resolution == self.engine.operational_params.time_resolution:
-                mb_df = pd.DataFrame(mb_data)
-                mb_df.index = mb_df.index + 1
-                mb_df = mb_df.drop(columns=["years"], errors="ignore")
-                df = df.join(mb_df)
-
-            # Clean up column names
-            df.columns = [
-                col.replace(f"{resolution}_", "").replace("_", " ").title() for col in df.columns
-            ]
-            dataframes[resolution] = df
-
-        return dataframes
-
-    def _generate_detailed_txt_export(self) -> str:
-        """Generates a detailed TXT export with enhanced statistics and input parameters."""
-        output = io.StringIO()
-
-        # --- HEADER ---
-        output.write(f"=== CO₂ EOR OPTIMIZATION RUN REPORT ===\n")
-        output.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-        output.write(
-            f"Method: {self.current_results.get('method', 'Unknown').replace('_', ' ').title()}\n"
-        )
-        output.write(f"Objective: {self.objective_combo.currentText()}\n\n")
-
-        # --- INPUTS ---
-        output.write("=== INPUT PARAMETERS ===\n")
-        input_params = self._get_current_input_parameters()
-        user_defined_params = self._get_user_defined_params()
-
-        for category, params in input_params.items():
-            output.write(f"\n--- {category.upper()} ---\n")
-            for param_name, param_value in sorted(params.items()):
-                flag = " [USER-DEFINED]" if param_name in user_defined_params else ""
-                output.write(f"{param_name}: {param_value}{flag}\n")
-
-        # --- RESULTS ---
-        output.write(f"\n\n=== OPTIMIZATION RESULTS ===\n")
-        output.write(
-            f"Final Optimized {self.objective_combo.currentText()}: {self.current_results.get('objective_function_value', 'N/A'):.4g}\n"
-        )
-
-        output.write(f"\n--- ALL FINAL METRICS ---\n")
-        final_metrics = self.current_results.get("final_metrics", {})
-        for key, value in sorted(final_metrics.items()):
-            display_name = key.replace("_", " ").title()
-            value_str = f"{value:.4f}" if isinstance(value, (float, np.floating)) else str(value)
-            output.write(f"{display_name}: {value_str}\n")
-
-        output.write(f"\n--- OPTIMIZED PARAMETERS ---\n")
-        for i in range(self.results_table.rowCount()):
-            param = self.results_table.item(i, 0).text()
-            value = self.results_table.item(i, 1).text()
-            output.write(f"{param}: {value}\n")
-
-        # --- ANALYSIS SUMMARIES ---
-        if self.current_results.get("material_balance_analysis"):
-            output.write(f"\n--- MATERIAL BALANCE SUMMARY ---\n")
-            mb_stats = self.current_results["material_balance_analysis"].get(
-                "summary_statistics", {}
-            )
-            for key, value in sorted(mb_stats.items()):
-                output.write(f"{key.replace('_', ' ').title()}: {value}\n")
-
-        if self.current_results.get("dca_results"):
-            output.write(f"\n--- DECLINE CURVE ANALYSIS SUMMARY ---\n")
-            dca_raw = self.current_results["dca_results"]
-            dca_stats = dca_raw.get("summary")
-            if dca_stats is None or not isinstance(dca_stats, dict):
-                dca_stats = {
-                    k: v for k, v in dca_raw.items()
-                    if not isinstance(v, (np.ndarray, list))
-                }
-            for key, value in sorted(dca_stats.items()):
-                output.write(f"{key.replace('_', ' ').title()}: {value}\n")
-
-        # --- OPTIMIZER STATS ---
-        output.write(f"\n\n=== DETAILED OPTIMIZATION STATISTICS ===\n")
-        stats = self.current_results.get("bo_statistics") or self.current_results.get(
-            "ga_statistics"
-        )
-        if stats:
-            for key, value in sorted(stats.items()):
-                if isinstance(value, list):
-                    continue
-                output.write(f"{key.replace('_', ' ').title()}: {value}\n")
-
-        # --- FOOTER ---
-        output.write(f"\n\n=== END OF REPORT ===\n")
-        output.write("Generated by CO₂ EOR Optimization Tool\n")
-
-        return output.getvalue()
-
-    def _get_user_defined_params(self) -> set:
-        """Compares current engine parameters to base project parameters to find user customizations."""
-        if not self.engine:
-            return set()
-
-        user_defined = set()
-
-        # Define which dataclasses to check
-        param_sets = [
-            ("EOR Parameters", self.engine.eor_params, self.engine._base_eor_params),
-            ("Economic Parameters", self.engine.economic_params, self.engine._base_economic_params),
-        ]
-
-        for category, current_params, base_params in param_sets:
-            if not is_dataclass(current_params) or not is_dataclass(base_params):
-                continue
-
-            current_dict = asdict(current_params)
-            base_dict = asdict(base_params)
-
-            for key, current_val in current_dict.items():
-                base_val = base_dict.get(key)
-                # Check for significant difference, especially for floats
-                if isinstance(current_val, float):
-                    if not np.isclose(current_val, base_val):
-                        user_defined.add(key)
-                elif current_val != base_val:
-                    user_defined.add(key)
-
-        return user_defined
 
     # --- Methods for Integrated MMP Analysis ---
     def _mmp_normalize_gas_composition(self):
