@@ -145,15 +145,17 @@ class ManualWellDialog(QDialog):
     def _apply_initial_values(self):
         if not self.initial_values:
             return
-        if "name" in self.initial_values or "well_name" in self.initial_values:
-            w_name = self.initial_values.get("name") or self.initial_values.get("well_name")
-            self.well_name_edit.setText(str(w_name))
         if "status" in self.initial_values or "role" in self.initial_values:
             val = str(self.initial_values.get("status") or self.initial_values.get("role"))
             for idx in range(self.status_combo.count()):
                 if val.lower() in self.status_combo.itemText(idx).lower():
+                    self.status_combo.blockSignals(True)
                     self.status_combo.setCurrentIndex(idx)
+                    self.status_combo.blockSignals(False)
                     break
+        if "name" in self.initial_values or "well_name" in self.initial_values:
+            w_name = self.initial_values.get("name") or self.initial_values.get("well_name")
+            self.well_name_edit.setText(str(w_name))
         for k, v in self.initial_values.items():
             if k in self.key_param_widgets:
                 self.key_param_widgets[k].set_value(v)
@@ -431,19 +433,21 @@ class ManualWellDialog(QDialog):
                 "PeacemanWellIndex": np.array([wi]),
             }
 
-            return WellData(
-                name=well_name,
-                depths=depths_np,
-                well_path=well_path_np,
-                perforation_properties=perfs,
-                metadata=final_metadata,
-                properties=well_props,
-                units={},
-                skin_factor=float(self.key_param_values.get("SkinFactor", 0.0)),
-                wellbore_radius_ft=float(self.key_param_values.get("WellboreRadius", 0.354)),
-                perforations=[[p["top"], p["bottom"]] for p in perfs],
-                well_index=wi,
-            )
+            well_kwargs = {
+                "name": well_name,
+                "depths": depths_np,
+                "well_path": well_path_np,
+                "perforation_properties": perfs,
+                "metadata": final_metadata,
+                "properties": well_props,
+                "units": {},
+                "skin_factor": float(self.key_param_values.get("SkinFactor", 0.0)),
+                "wellbore_radius_ft": float(self.key_param_values.get("WellboreRadius", 0.354)),
+                "perforations": [[p["top"], p["bottom"]] for p in perfs],
+            }
+            if hasattr(WellData, '__dataclass_fields__') and "well_index" in WellData.__dataclass_fields__:
+                well_kwargs["well_index"] = wi
+            return WellData(**well_kwargs)
         except Exception as e:
             QMessageBox.critical(
                 self,

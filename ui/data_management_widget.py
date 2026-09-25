@@ -454,7 +454,7 @@ class DataManagementWidget(QWidget):
 
         view_3d_layout.setSpacing(4)
 
-        # Toolbar Frame 1 (Camera + Well Placement + Features)
+        # Toolbar Frame 1 (Camera, Refresh, Features)
         tb_frame1 = QFrame()
         tb_frame1.setFrameShape(QFrame.Shape.StyledPanel)
         tb_frame1.setStyleSheet("QFrame { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 2px; }")
@@ -466,7 +466,7 @@ class DataManagementWidget(QWidget):
         lbl_views.setStyleSheet("font-weight: bold; color: #495057;")
         tb1_layout.addWidget(lbl_views)
 
-        btn_iso = QPushButton("Isometric (3D)")
+        btn_iso = QPushButton("3D Iso")
         btn_iso.setToolTip("Switch to 3D isometric view (elev=30, azim=-60)")
         btn_iso.clicked.connect(lambda: self._set_3d_camera_view(elev=30, azim=-60))
         tb1_layout.addWidget(btn_iso)
@@ -476,30 +476,24 @@ class DataManagementWidget(QWidget):
         btn_top.clicked.connect(lambda: self._set_3d_camera_view(elev=90, azim=-90))
         tb1_layout.addWidget(btn_top)
 
-        btn_side = QPushButton("Cross-Section (XZ)")
+        btn_side = QPushButton("Side (XZ)")
         btn_side.setToolTip("Switch to side cross-section view (elev=0, azim=0)")
         btn_side.clicked.connect(lambda: self._set_3d_camera_view(elev=0, azim=0))
         tb1_layout.addWidget(btn_side)
 
-        tb1_layout.addSpacing(6)
-        self.btn_place_well_3d = QPushButton(self.tr("📍 Add Well by Click"))
-        self.btn_place_well_3d.setCheckable(True)
-        self.btn_place_well_3d.setToolTip(
-            self.tr("Toggle interactive placement: Click anywhere on the 3D model to place a well at clicked (X, Y) coordinates")
-        )
-        self.btn_place_well_3d.toggled.connect(self._on_place_well_mode_toggled)
-        self.btn_place_well_3d.setStyleSheet(
-            "QPushButton:checked { background-color: #28a745; color: white; font-weight: bold; border: 1px solid #1e7e34; }"
-        )
-        tb1_layout.addWidget(self.btn_place_well_3d)
+        btn_refresh_3d = QPushButton(QIcon.fromTheme("view-refresh"), self.tr("Refresh 3D"))
+        btn_refresh_3d.setToolTip(self.tr("Re-render 3D Subsurface Model"))
+        btn_refresh_3d.clicked.connect(self._render_3d_subsurface_view)
+        tb1_layout.addWidget(btn_refresh_3d)
 
         tb1_layout.addSpacing(6)
-        self.toggle_perfs_chk = QCheckBox(self.tr("Perforations"))
+        self.toggle_perfs_chk = QCheckBox(self.tr("Perfs"))
+        self.toggle_perfs_chk.setToolTip(self.tr("Highlight perforation intervals in gold"))
         self.toggle_perfs_chk.setChecked(True)
         self.toggle_perfs_chk.toggled.connect(self._render_3d_subsurface_view)
         tb1_layout.addWidget(self.toggle_perfs_chk)
 
-        self.toggle_vectors_chk = QCheckBox(self.tr("Sweep Vectors"))
+        self.toggle_vectors_chk = QCheckBox(self.tr("Sweep"))
         self.toggle_vectors_chk.setChecked(True)
         self.toggle_vectors_chk.setToolTip(self.tr("Show 3D inter-well sweep vectors colored by vertical perforation overlap"))
         self.toggle_vectors_chk.toggled.connect(self._render_3d_subsurface_view)
@@ -507,17 +501,15 @@ class DataManagementWidget(QWidget):
 
         self.toggle_drainage_chk = QCheckBox(self.tr("Drainage"))
         self.toggle_drainage_chk.setChecked(True)
+        self.toggle_drainage_chk.setToolTip(self.tr("Show well drainage radius cylinders"))
         self.toggle_drainage_chk.toggled.connect(self._render_3d_subsurface_view)
         tb1_layout.addWidget(self.toggle_drainage_chk)
 
         tb1_layout.addStretch()
-        btn_refresh_3d = QPushButton(QIcon.fromTheme("view-refresh"), self.tr("Refresh 3D"))
-        btn_refresh_3d.clicked.connect(self._render_3d_subsurface_view)
-        tb1_layout.addWidget(btn_refresh_3d)
 
         view_3d_layout.addWidget(tb_frame1)
 
-        # Toolbar Frame 2 (Property Volume & Real-time Cursor Readout)
+        # Toolbar Frame 2 (Interactive Well Placement, Property Realization & Real-time Cursor Readout)
         tb_frame2 = QFrame()
         tb_frame2.setFrameShape(QFrame.Shape.StyledPanel)
         tb_frame2.setStyleSheet("QFrame { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 2px; }")
@@ -525,6 +517,18 @@ class DataManagementWidget(QWidget):
         tb2_layout.setContentsMargins(4, 2, 4, 2)
         tb2_layout.setSpacing(6)
 
+        self.btn_place_well_3d = QPushButton(self.tr("📍 Add Well by Click"))
+        self.btn_place_well_3d.setCheckable(True)
+        self.btn_place_well_3d.setToolTip(
+            self.tr("Click anywhere on the 3D reservoir cube to place a well at clicked coordinates")
+        )
+        self.btn_place_well_3d.toggled.connect(self._on_place_well_mode_toggled)
+        self.btn_place_well_3d.setStyleSheet(
+            "QPushButton { font-weight: bold; padding: 3px 8px; } QPushButton:checked { background-color: #28a745; color: white; border: 1px solid #1e7e34; }"
+        )
+        tb2_layout.addWidget(self.btn_place_well_3d)
+
+        tb2_layout.addSpacing(6)
         lbl_prop = QLabel(self.tr("Property:"))
         lbl_prop.setStyleSheet("font-weight: bold; color: #495057;")
         tb2_layout.addWidget(lbl_prop)
@@ -565,9 +569,13 @@ class DataManagementWidget(QWidget):
 
         view_3d_layout.addWidget(tb_frame2)
 
-        self.fig_3d = Figure(figsize=(6, 5), tight_layout=True)
+        # 3D Figure & Canvas - Explicit axes positioning to guarantee 3D viewport never collapses
+        self.fig_3d = Figure(figsize=(7, 6))
         self.canvas_3d = FigureCanvas(self.fig_3d)
-        self.ax_3d = self.fig_3d.add_subplot(111, projection='3d')
+        self.ax_3d = self.fig_3d.add_axes([0.04, 0.04, 0.84, 0.90], projection='3d')
+        self.cax_3d = self.fig_3d.add_axes([0.90, 0.22, 0.022, 0.55])
+        self.cax_3d.set_visible(False)
+        self._3d_colorbar = None
         view_3d_layout.addWidget(self.canvas_3d, stretch=1)
 
         # Connect mouse events for interactive well placement and hover readout
@@ -961,7 +969,7 @@ class DataManagementWidget(QWidget):
 
         self.well_trajectory_renderer = None
 
-        self.wells_sub_tabs.addTab(tab_trajectories, self.tr("Well Inventory & Mechanics"))
+        self.wells_sub_tabs.addTab(tab_trajectories, self.tr("Well Inventory && Mechanics"))
 
         # --- Sub-tab 2: Inter-Well Transmissibility & Perforation Overlap Validation ---
         tab_interwell = QWidget()
@@ -2656,7 +2664,9 @@ class DataManagementWidget(QWidget):
         """
         if not hasattr(self, 'ax_3d') or self.ax_3d is None:
             return None
-        if event.x is None or event.y is None or event.inaxes != self.ax_3d:
+        if event.x is None or event.y is None:
+            return None
+        if event.inaxes is not None and event.inaxes != self.ax_3d:
             return None
 
         try:
@@ -2689,7 +2699,7 @@ class DataManagementWidget(QWidget):
             return None
 
     def _on_3d_canvas_mouse_down(self, event):
-        if hasattr(self, 'ax_3d') and event.inaxes == self.ax_3d:
+        if hasattr(self, 'ax_3d') and (event.inaxes == self.ax_3d or event.inaxes is None):
             self._mouse_press_pos = (event.x, event.y, event.button, getattr(event, 'dblclick', False))
 
     def _on_3d_canvas_mouse_up(self, event):
@@ -2698,7 +2708,9 @@ class DataManagementWidget(QWidget):
         press_x, press_y, btn, dbl = self._mouse_press_pos
         self._mouse_press_pos = None
 
-        if event.x is None or event.y is None or event.inaxes != self.ax_3d:
+        if event.x is None or event.y is None:
+            return
+        if event.inaxes is not None and event.inaxes != self.ax_3d:
             return
 
         dx = abs(event.x - press_x)
@@ -2883,13 +2895,15 @@ class DataManagementWidget(QWidget):
 
             self.ax_3d.clear()
 
-            # Remove previous colorbar to prevent duplicate stacking
-            if hasattr(self, '_3d_colorbar') and self._3d_colorbar is not None:
-                try:
-                    self._3d_colorbar.remove()
-                except Exception:
-                    pass
-                self._3d_colorbar = None
+            # Reset dedicated colorbar axes
+            if hasattr(self, 'cax_3d') and self.cax_3d is not None:
+                self.cax_3d.clear()
+                self.cax_3d.set_visible(False)
+            self._3d_colorbar = None
+
+            # Enforce consistent position for ax_3d to prevent layout shrinking
+            if hasattr(self, 'ax_3d') and self.ax_3d is not None:
+                self.ax_3d.set_position([0.04, 0.04, 0.84, 0.90])
 
             length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
             area_acres = float(self.manual_inputs_values.get('area', 100.0) or 100.0)
@@ -2990,10 +3004,15 @@ class DataManagementWidget(QWidget):
                         facecolors=cmap(norm(np.tile(k_y1, (6, 1)))), alpha=alpha, shade=False
                     )
 
-                    # Add Colorbar on right
-                    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-                    sm.set_array([])
-                    self._3d_colorbar = self.fig_3d.colorbar(sm, ax=self.ax_3d, shrink=0.55, pad=0.08, label=cbar_label)
+                    # Render colorbar into dedicated cax_3d
+                    if hasattr(self, 'cax_3d') and self.cax_3d is not None:
+                        self.cax_3d.clear()
+                        self.cax_3d.set_visible(True)
+                        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+                        sm.set_array([])
+                        self._3d_colorbar = self.fig_3d.colorbar(sm, cax=self.cax_3d)
+                        self._3d_colorbar.set_label(cbar_label, fontsize=8.5, fontweight="bold")
+                        self.cax_3d.tick_params(labelsize=8)
 
                 elif "stratigraphy" in prop_mode.lower() or "layers" in prop_mode.lower():
                     # Stratigraphy / Layer Slabs
@@ -3129,10 +3148,11 @@ class DataManagementWidget(QWidget):
                 self.ax_3d.plot_surface(fx, fy, fz, color="#e83e8c", alpha=0.35)
                 self.ax_3d.text(mx, my, top_depth, " Fault Plane", color="#e83e8c", fontweight="bold")
 
-            self.ax_3d.set_title("3D Shared Earth Subsurface Model", fontsize=11, fontweight="bold")
-            self.ax_3d.set_xlabel("X Length (ft)", fontsize=9)
-            self.ax_3d.set_ylabel("Y Width (ft)", fontsize=9)
-            self.ax_3d.set_zlabel("TVD Depth (ft)", fontsize=9)
+            self.ax_3d.set_title("3D Shared Earth Subsurface Model", fontsize=11, fontweight="bold", pad=12)
+            self.ax_3d.set_xlabel("X Length (ft)", fontsize=9, labelpad=8)
+            self.ax_3d.set_ylabel("Y Width (ft)", fontsize=9, labelpad=8)
+            self.ax_3d.set_zlabel("TVD Depth (ft)", fontsize=9, labelpad=8)
+            self.ax_3d.tick_params(labelsize=8)
             z_padding = max(thickness_ft * 0.25, 25.0)
             self.ax_3d.set_zlim(z_max_well + z_padding, max(0.0, z_min_well - z_padding))
             self.ax_3d.grid(True, linestyle=":", alpha=0.5)

@@ -72,6 +72,7 @@ class WellData:
     skin_factor: float = 0.0
     wellbore_radius_ft: float = 0.354
     perforations: List[List[float]] = dataclasses.field(default_factory=list)
+    well_index: Optional[float] = None
 
     def calculate_peaceman_index(
         self,

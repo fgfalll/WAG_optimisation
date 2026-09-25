@@ -127,3 +127,25 @@ def test_screen_to_reservoir_ray_plane_inversion(qapp):
     inv_x, inv_y = coords
     assert np.isclose(inv_x, target_x, atol=1.0)
     assert np.isclose(inv_y, target_y, atol=1.0)
+
+
+def test_manual_well_dialog_data_creation(qapp):
+    """Verify get_well_data creates WellData without unexpected keyword argument errors."""
+    init_vals = {
+        "SurfaceX": 1000.0,
+        "SurfaceY": 500.0,
+        "TopDepth": 4900.0,
+        "BottomDepth": 5050.0,
+        "name": "Well-Creation-Test",
+        "TrajectoryType": "Vertical",
+        "role": "Injector",
+    }
+    dlg = ManualWellDialog([], initial_values=init_vals)
+    well = dlg.get_well_data()
+    assert well is not None
+    assert well.name == "Well-Creation-Test"
+    assert well.well_index is not None
+    assert well.well_index > 0
+    assert hasattr(well, "skin_factor")
+    assert hasattr(well, "wellbore_radius_ft")
+
