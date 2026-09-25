@@ -58,12 +58,14 @@ class FastProfileGenerator:
         p_wf: float,
         mmp: float,
         pi: float,
+        max_deliverability_bopd: Optional[float] = None,
     ) -> float:
         """
         Calculates maximum single-well liquid deliverability using Composite Vogel-Darcy IPR.
         - Above MMP (P_wf >= MMP): Linear Darcy miscible flow.
         - Below MMP (P_wf < MMP <= P_res): Two-phase near-wellbore flashing via Composite Vogel.
         - Saturated (P_res < MMP): Classic Vogel two-phase inflow.
+        - Clamped to artificial lift capacity if max_deliverability_bopd is specified.
 
         Ref: Vogel (1968), Standing (1971), Beggs (1991) 'Production Optimization'.
         """
@@ -74,19 +76,23 @@ class FastProfileGenerator:
 
         # Regime 1: Entire drainage volume is above MMP (Single-phase miscible Darcy flow)
         if p_wf_effective >= mmp:
-            return float(pi * (p_res - p_wf_effective))
-
+            q = float(pi * (p_res - p_wf_effective))
         # Regime 2: Reservoir is above MMP, but near-wellbore drawdown flashes below MMP
-        if p_res >= mmp:
+        elif p_res >= mmp:
             q_mmp = pi * (p_res - mmp)
             ratio = p_wf_effective / max(mmp, 1.0)
             # Composite Vogel addition below bubble point/MMP:
             q_two_phase = (pi * mmp / 1.8) * max(0.0, 1.0 - 0.2 * ratio - 0.8 * (ratio**2))
-            return float(q_mmp + q_two_phase)
+            q = float(q_mmp + q_two_phase)
+        else:
+            # Regime 3: Entire reservoir is below MMP (Saturated immiscible two-phase inflow)
+            ratio = p_wf_effective / max(p_res, 1.0)
+            q = float((pi * p_res / 1.8) * max(0.0, 1.0 - 0.2 * ratio - 0.8 * (ratio**2)))
 
-        # Regime 3: Entire reservoir is below MMP (Saturated immiscible two-phase inflow)
-        ratio = p_wf_effective / max(p_res, 1.0)
-        return float((pi * p_res / 1.8) * max(0.0, 1.0 - 0.2 * ratio - 0.8 * (ratio**2)))
+        if max_deliverability_bopd is not None and max_deliverability_bopd > 0:
+            q = min(q, float(max_deliverability_bopd))
+
+        return float(max(0.0, q))
 
     def generate_profile(
         self,
@@ -529,10 +535,16 @@ class FastProfileGenerator:
         n_patterns = max(1, int(round(area_acres / pattern_spacing_acres)))
         effective_producers = max(n_producers, n_patterns)
 
-        # Single-well deliverability via Composite Vogel-Darcy IPR
-        q_ipr_per_well = self.calculate_composite_ipr_deliverability(
+        # Single-well deliverability via Composite Vogel-Darcy IPR clamped to artificial lift capacity (<= 1,000 BOPD default)
+        max_single_well_rate = float(
+            params.get("max_single_well_rate_bopd")
+            or params.get("max_well_rate_bopd")
+            or 1000.0
+        )
+        q_ipr_raw = self.calculate_composite_ipr_deliverability(
             p_res=p_res, p_wf=p_wf, mmp=mmp, pi=pi
         )
+        q_ipr_per_well = min(q_ipr_raw, max_single_well_rate) if max_single_well_rate > 0 else q_ipr_raw
         field_ipr_capacity = q_ipr_per_well * effective_producers
 
         # User/optimizer max production rate limit
@@ -554,9 +566,11 @@ class FastProfileGenerator:
             dyn_ceilings = np.zeros(n_points)
             for idx in range(n_points):
                 p_i = float(dyn_p_res[idx])
-                q_i = self.calculate_composite_ipr_deliverability(
+                q_i_raw = self.calculate_composite_ipr_deliverability(
                     p_res=p_i, p_wf=p_wf, mmp=mmp, pi=pi
-                ) * effective_producers
+                )
+                q_i_well = min(q_i_raw, max_single_well_rate) if max_single_well_rate > 0 else q_i_raw
+                q_i = q_i_well * effective_producers
                 dyn_ceilings[idx] = min(q_i, user_max_rate * effective_producers) if user_max_rate > 0 else q_i
         else:
             dyn_ceilings = np.full(n_points, rate_ceiling)

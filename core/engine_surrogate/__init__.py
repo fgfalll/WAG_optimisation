@@ -23,6 +23,21 @@ from .analytical_models import (
 from .profile_generator_fast import FastProfileGenerator
 from .pvt_state import SolventExtendedPVTEngine
 from .geomechanics_fault import GeomechanicsFaultModel
+from .relative_permeability import (
+    stone_1_three_phase_relperm,
+    carlson_trapped_gas,
+    carlson_imbibition_gas_relperm,
+    corey_two_phase_relperm,
+    normalize_saturations,
+)
+from .well_mechanics import (
+    calculate_peaceman_index_horizontal,
+    calculate_peaceman_index_vertical,
+    calculate_vertical_perforation_overlap,
+    calculate_interwell_transmissibility,
+    generate_synthetic_well_trajectory,
+    validate_well_network,
+)
 
 __all__ = [
     # Base and Surrogate Models
@@ -37,6 +52,18 @@ __all__ = [
     "FastProfileGenerator",
     "SolventExtendedPVTEngine",
     "GeomechanicsFaultModel",
+    "stone_1_three_phase_relperm",
+    "carlson_trapped_gas",
+    "carlson_imbibition_gas_relperm",
+    "corey_two_phase_relperm",
+    "normalize_saturations",
+    # Well Mechanics
+    "calculate_peaceman_index_horizontal",
+    "calculate_peaceman_index_vertical",
+    "calculate_vertical_perforation_overlap",
+    "calculate_interwell_transmissibility",
+    "generate_synthetic_well_trajectory",
+    "validate_well_network",
     # Analytical Recovery Models
     "AnalyticalRecoveryModel",
     "BuckleyLeverettSurrogate",

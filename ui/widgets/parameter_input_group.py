@@ -42,11 +42,10 @@ class ParameterInputGroup(QWidget):
         self.input_row_widget = QFrame()
         self.input_row_widget.setObjectName("InputWidgetFrame")
         self._input_row_layout = QHBoxLayout(self.input_row_widget)
-        self._input_row_layout.setContentsMargins(2, 2, 2, 2)
-        self._input_row_layout.setSpacing(5)
+        self._input_row_layout.setContentsMargins(1, 1, 1, 1)
+        self._input_row_layout.setSpacing(3)
 
         self.label = QLabel(f"{label_text}:")
-        # Use size policy instead of fixed minimum width for better flexibility
         self.label.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         self._input_row_layout.addWidget(self.label)
 
@@ -55,7 +54,8 @@ class ParameterInputGroup(QWidget):
         self._input_row_layout.addWidget(self.input_widget, 1)
 
         self.help_button = QPushButton("?")
-        self.help_button.setFixedSize(22, 22)
+        self.help_button.setFixedSize(18, 18)
+        self.help_button.setStyleSheet("QPushButton { font-size: 10px; font-weight: bold; padding: 0px; margin: 0px; }")
         self.help_button.setCursor(QCursor(Qt.CursorShape.WhatsThisCursor))
         self.help_button.clicked.connect(self._request_help)
         self._input_row_layout.addWidget(self.help_button)

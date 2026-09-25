@@ -74,6 +74,8 @@ All issue entries across the wiki follow this machine-readable section schema to
 | **SFT-10** | Data Models (`core/data_models.py`) Type Safety Hardening & Fault/Fluid Separation | Software Defect | `technical_debt.md` | 2026-09-23 | **VERIFIED** |
 | **SFT-11** | Project Save/Load Failure & State Serialization Breakdown | Software Defect | `technical_debt.md` | 2026-09-24 | **VERIFIED** |
 | **SFT-12** | Single Integrated Shared Earth Model & Reservoir Evaluation Workstation Upgrade | Architectural & Scientific Upgrade | `data_management_audit.md` | 2026-09-24 | **VERIFIED** |
+| **SFT-14** | Master Plan v4.0 Full Implementation: Stone I, Carlson Hysteresis, Peaceman WI, Multi-Domain Workstation & UI Layout | Architectural & Scientific Upgrade | `shared_earth_workstation.md` | 2026-09-25 | **VERIFIED** |
+| **SFT-15** | Phase 3: 3D Well Mechanics, Anisotropic Peaceman WI, Trajectory Renderer & Deliverability Clamping | Well Mechanics & UI Visualization | `shared_earth_workstation.md` | 2026-09-25 | **VERIFIED** |
 
 ---
 
@@ -912,6 +914,97 @@ All issue entries across the wiki follow this machine-readable section schema to
   - **Pre-Flight Physical Audit Gate & Multi-Domain Evaluation Workstation**: Built `PreFlightAuditDialog` (verifying all 5 pillars with traffic-light status) and `ModelEvaluationDashboard` (multi-tab domain diagnostics).
   - **Parameter Safety**: Added `_safe_attr` and `_safe_float` helpers to eliminate `NoneType` `TypeError` crashes across surrogate engine evaluations.
 - **Verification**: `pytest tests/test_project_save_load.py tests/test_physics_validation.py tests/core/test_single_simulation.py tests/test_optimization_widget_export_parameters.py tests/test_geomechanics_fault_caprock.py tests/test_closed_loop_and_well_roles.py -v` passed all 60 tests.
+
+### [SFT-13] Real-Time Subsurface Visualizers & Visual Audit Confirmation Gate Integration
+- **ID**: `SFT-13`
+- **Category**: GUI & Workstation Subsystem Integration
+- **Original Document**: [`agent_wiki/audit/data_management_audit.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/audit/data_management_audit.md)
+- **Location**: [`ui/data_management_widget.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py), [`ui/widgets/geology_cross_section_widget.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/geology_cross_section_widget.py), [`ui/widgets/geostatistics_visualizer_widget.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/geostatistics_visualizer_widget.py), [`ui/widgets/fault_geometry_visualizer_widget.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/fault_geometry_visualizer_widget.py), [`ui/dialogs/visual_audit_modal.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/dialogs/visual_audit_modal.py)
+- **Severity**: HIGH
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-25
+- **Previous Defect**:
+  - `DataManagementWidget` right panel had missing visualizer tabs from Master Plan v4.0 (Workstream 1.4).
+  - Geostatistics was restricted to a static canvas without real-time parameter tuning controls.
+  - Stratigraphic orthogonal slicing (XZ, YZ, XY) and Vertical Proportion Curves (VPC) were not directly accessible in the right tab panel.
+  - Fault 3D geometry, Shale Gouge Ratio (SGR) seal integrity heatmaps, and well standoff buffer checking were not accessible in the right tab panel.
+  - Visual Audit Confirmation Gate modal was unhooked from the left panel action footer.
+  - Splitter lacked explicit stretch factors causing empty whitespace allocation on modern widescreen displays.
+- **Resolution Details**:
+  - **Right Panel Tab Expansion**: Organized the right panel into 6 dedicated diagnostic views:
+    0. `3D Subsurface View`: Formation wireframe, well completions, wellhead markers, drainage radiuses, and dynamic empty-state prompt.
+    1. `Stratigraphy & Cross-Sections`: Interactive IJK orthogonal slicing (XZ, YZ, XY) with colormap selectors and Vertical Proportion Curves (VPC).
+    2. `Geostatistics & Spatial`: `GeostatisticsVisualizerWidget` with 1D experimental vs theoretical semivariogram fitting, real-time variogram parameters (range, sill, nugget, anisotropy, seed), 2D SGS permeability realization heatmaps, and Dykstra-Parsons $V_{DP}$ calculator.
+    3. `Fault & Containment`: `FaultGeometryVisualizerWidget` with 3D fault plane mesh embedded in reservoir bounding wireframe, SGR seal rating, Coulomb Failure Stress change ($\Delta\text{CFS}$), slip tendency ($T_s$), and 250 ft well standoff buffer detection.
+    4. `Relative Permeability`: Dual-panel Corey relative permeability curves with endpoints and wettability crossover markers.
+    5. `2D Diagnostics`: WebEngine Plotly interactive diagnostics.
+  - **Left Panel Footer Actions**: Added `Visual Audit Gate` button opening `VisualAuditModal` (3-tab Shared Earth visual confirmation gate) alongside `Pre-Flight Physical Audit` and `Model Workstation`.
+  - **Dynamic Signal & State Synchronization**: Wired automatic data propagation between UI parameter inputs, well additions/removals, and the visualizer widgets upon tab changes, project loading, and clearing.
+  - **Splitter Ergonomics**: Configured balanced stretch factors (`1:1`, `[500, 700]`) to ensure ergonomic layout on all screen resolutions.
+- **Verification**: `tests/test_project_save_load.py` (5/5 tests), `tests/test_app_startup.py` (3/3 tests), `tests/core/test_single_simulation.py` (4/4 tests), and `tests/test_optimization_widget_export_parameters.py` (3/3 tests) all passed 100%.
+
+### [SFT-14] Master Plan v4.0 Full Implementation: Stone I, Carlson Hysteresis, Peaceman WI, Multi-Domain Workstation & UI Layout
+- **ID**: `SFT-14`
+- **Category**: Physics & Workstation Subsystem Implementation
+- **Original Document**: [`agent_wiki/architecture/shared_earth_workstation.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/architecture/shared_earth_workstation.md)
+- **Location**: [`core/engine_surrogate/relative_permeability.py`](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/relative_permeability.py), [`ui/widgets/model_evaluation_dashboard.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/model_evaluation_dashboard.py), [`ui/widgets/manual_well_dialog.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/manual_well_dialog.py), [`ui/data_management_widget.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py)
+- **Severity**: HIGH
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-25
+- **Previous Defect**:
+  - `UNIT_CATEGORY_MAP` omitted `'length': 'length'`, causing the UI to display raw `"Reservoir Length ({unit}): 2000,0"` when unit preferences were default or unit formatting had no fallback.
+  - Left panel input columns were crowded (3-column grid for Corey rel-perm and horizontal 3-item layout for Grid Dimensions), clipping parameter labels and input boxes.
+  - Model selection checkboxes were arranged horizontally, truncating the second checkbox text to `"U..."`.
+  - Master Plan v4.0 Phase 2: Stone I 3-phase relative permeability ($k_{ro}$) and Carlson trapped gas saturation hysteresis ($S_{gt}$) were not implemented.
+  - Master Plan v4.0 Phase 3: `ManualWellDialog` lacked trajectory types (Vertical, Horizontal, Deviated) and anisotropic Peaceman Well Index ($WI_{horiz}$) calculation.
+  - Master Plan v4.0 Phase 6: `ModelEvaluationDashboard` contained basic placeholder plots instead of the full 5-tab research-grade diagnostic suite (Bourdet RTA derivatives, PR-EOS P-T envelopes, slim-tube recovery curves, dual-envelope 3D Mohr-Coulomb, 3D Pollock streamlines, and IPAF tables).
+- **Resolution Details**:
+  - **Stone I & Carlson Hysteresis Core Engine**: Implemented `core/engine_surrogate/relative_permeability.py` providing `stone_1_three_phase_relperm`, `carlson_trapped_gas`, and `carlson_imbibition_gas_relperm` with Land parameter $C = 1/S_{gr}^{max} - 1/(1 - S_{wc})$.
+  - **Manual Well Peaceman Calculator**: Added `TrajectoryType` and `LateralLength` to `ManualWellDialog`. Integrated Peaceman anisotropic horizontal index ($WI_{horiz}$) calculation (SPE-10194) and 3D horizontal/deviated well path generation.
+  - **Multi-Domain Evaluation Workstation (5 Tabs)**: Fully implemented `ModelEvaluationDashboard`:
+    - *Tab 1: Static QC & Geostatistical Surveillance*: Theoretical Spherical vs experimental semivariograms, petrophysical porosity & log-normal permeability CDFs, and stratigraphic pay profile.
+    - *Tab 2: SCAL, Phase Behavior & Miscibility Surveillance*: PR-EOS P-T phase envelope overlay with current reservoir state, 1D slim-tube recovery break-over curve at 1.2 PVI, Stone I 3-phase relative permeability, and Carlson imbibition scanning loop.
+    - *Tab 3: Dynamic Production & Material Balance Surveillance*: SPE-13185 Bourdet log-log RTA derivative with logarithmic $L$-spacing smoothing ($L=0.3$), dynamic Voidage Replacement Ratio $\text{VRR}(t)$, loss-ratio decline diagnostics $D(t)$ and $b(t)$, and closed-loop material balance error tracking.
+    - *Tab 4: Containment & Geomechanics Surveillance*: Dynamic 3D Mohr-Coulomb circles with dual failure envelopes (shear slip and tensile breakdown cutoff), thermo-poroelastic stress path with cold $\text{CO}_2$ cooling ($\Delta T = -40^\circ\text{F}$), distance-to-failure metric $F(t)$, and Shale Gouge Ratio (SGR) curve.
+    - *Tab 5: Pattern Sweep, Streamlines & Flooding Surveillance*: 3D Pollock streamline time-of-flight with runtime safeguards ($v_{min} = 10^{-8}\text{ m/d}$, $\tau_{max} = 50\text{ yr}$), Inter-Well Pair Allocation Factors (IPAF) table, and flooding efficiency quadrant cross-plots.
+  - **GUI Form Ergonomics & Unit Formatting**:
+    - Added `'length': 'length'` to `UNIT_CATEGORY_MAP` and added `DEFAULT_UNITS` fallback mapping ensuring `{unit}` is always formatted.
+    - Upgraded Grid Dimensions to a 3-column `QGridLayout` with balanced equal spacing.
+    - Restructured Model selection checkboxes to a clean vertical `QVBoxLayout`.
+    - Converted Relative Permeability inputs to an unclipped 2-column grid.
+    - Compacted `ParameterInputGroup` margins, spacing, and help button to 18x18.
+- **Verification**: `tests/test_project_save_load.py` (5/5), `tests/core/test_relative_permeability.py` (4/4), `tests/test_physics_validation.py` (41/41), `tests/core/test_single_simulation.py` (4/4), and `tests/test_optimization_widget_export_parameters.py` (3/3) all passing 100%.
+
+### [SFT-15] Phase 3 Complete Implementation: 3D Well Mechanics, Anisotropic Peaceman WI, Trajectory Renderer & Deliverability Clamping
+- **ID**: `SFT-15`
+- **Category**: Well Mechanics & UI Visualization Subsystem Implementation
+- **Original Document**: [`agent_wiki/architecture/shared_earth_workstation.md`](file:///d:/rep/4.6/co2eor_optimizer/agent_wiki/architecture/shared_earth_workstation.md)
+- **Location**: [`core/engine_surrogate/well_mechanics.py`](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/well_mechanics.py), [`core/engine_surrogate/profile_generator_fast.py`](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/profile_generator_fast.py), [`core/data_models.py`](file:///d:/rep/4.6/co2eor_optimizer/core/data_models.py), [`ui/widgets/well_trajectory_renderer_widget.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/well_trajectory_renderer_widget.py), [`ui/data_management_widget.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/data_management_widget.py), [`ui/widgets/depth_profile_editor.py`](file:///d:/rep/4.6/co2eor_optimizer/ui/widgets/depth_profile_editor.py)
+- **Severity**: HIGH
+- **Status**: RESOLVED
+- **Date Resolved**: 2026-09-25
+- **Previous Defect**:
+  - `depth_profile_editor.py` crashed on startup with `TypeError: arguments did not match any overloaded call: QFont(..., float)` due to passing floating-point point size (`pointSize() * 0.8`).
+  - Wells tab in `DataManagementWidget` lacked 3D well visualization, inter-well sweep connectivity vectors, and well mechanics metrics.
+  - Anisotropic Peaceman Well Index ($WI_{horiz}$) per SPE-10194 was not implemented as a shared, reusable calculation across the surrogate engine and data models.
+  - Vertical perforation overlap validation ($\Omega_{overlap} \ge 20\%$) and 3D inter-well transmissibility ($T_{ij}$) were missing from the well management workflow.
+  - Single-well deliverability in `FastProfileGenerator` was not clamped to realistic artificial lift capacity limits ($q_o \le 1,000$ BOPD), allowing unphysically high well rates under high PI and deep drawdown.
+- **Resolution Details**:
+  - **PyQt6 QFont Fix**: Cast `pointSize * 0.8` to `int` in `DepthProfileEditor.__init__`, resolving the startup crash.
+  - **3D Well Mechanics Module**: Built `core/engine_surrogate/well_mechanics.py` containing:
+    - Anisotropic Peaceman horizontal well index ($WI_{horiz}$) per Peaceman (1983) SPE-10194.
+    - Anisotropic Peaceman vertical well index ($WI_{vert}$).
+    - Vertical perforation overlap evaluation ($h_{overlap}$, $\Omega_{overlap}$) with 20% minimum sweep threshold validation.
+    - 3D geometric inter-well transmissibility ($T_{ij}$).
+    - Synthetic 3D trajectory coordinate generation for vertical, horizontal (kick-off, build curve, lateral extension along azimuth), and deviated S-curves.
+    - Comprehensive well network validation (`validate_well_network`).
+  - **WellData Data Model Integration**: Updated `WellData.calculate_peaceman_index` to route to anisotropic horizontal calculation when well trajectory is horizontal or lateral length is defined. Added `WellData.get_trajectory_points` producing 3D coordinates.
+  - **Composite Vogel-Darcy Deliverability Clamping**: Enforced single-well artificial lift capacity clamping ($q_o \le 1,000$ BOPD default or `max_single_well_rate_bopd`) in `FastProfileGenerator.calculate_composite_ipr_deliverability` and `generate_profile` across both static and dynamic pressure paths.
+  - **Interactive 3D Well Trajectory & Pattern Renderer**: Implemented `ui/widgets/well_trajectory_renderer_widget.py` featuring camera angle presets (Isometric 3D, Top Map XY, Side XZ), toggleable perforation intervals, drainage radii, inter-well sweep vectors colored by overlap quality, and active well highlighting.
+  - **Wells Tab Dual-Subtab Workstation**: Upgraded `DataManagementWidget._create_wells_tab()` into a 2-subtab interface:
+    - *Sub-tab 1*: Well inventory list, management buttons, live selected well mechanics card ($WI$, trajectory, perfs), and embedded `WellTrajectoryRendererWidget`.
+    - *Sub-tab 2*: Inter-Well Transmissibility & Perforation Overlap Validation table, operating pattern classification, and sweep status badges.
+- **Verification**: `tests/core/test_well_mechanics.py` (8/8 tests PASSED), `tests/test_project_save_load.py` (5/5 tests PASSED), `tests/core/test_single_simulation.py` (4/4 tests PASSED), and `tests/test_physics_validation.py` (41/41 tests PASSED).
 
 
 

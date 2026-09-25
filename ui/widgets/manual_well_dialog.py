@@ -31,6 +31,10 @@ class ManualWellDialog(QDialog):
     """A dialog to manually input a well with detailed perforations and an optional path editor."""
 
     KEY_PARAM_DEFS = {
+        "TrajectoryType": ("Trajectory Type", "combobox", str, {
+            "default_value": "Vertical",
+            "items": ["Vertical", "Horizontal", "Deviated (S-Curve)"]
+        }),
         "SurfaceX": ("Surface X Coordinate (ft)", "lineedit", float, {"default_value": 0.0}),
         "SurfaceY": ("Surface Y Coordinate (ft)", "lineedit", float, {"default_value": 0.0}),
         "WellboreRadius": ("Wellbore Radius (ft)", "lineedit", float, {"default_value": 0.35}),
@@ -42,9 +46,15 @@ class ManualWellDialog(QDialog):
             float,
             {"default_value": 3000.0},
         ),
+        "LateralLength": ("Lateral Length (ft)", "lineedit", float, {"default_value": 1500.0}),
     }
 
-    def __init__(self, existing_names: Optional[List[str]] = None, parent: Optional[QWidget] = None):
+    def __init__(
+        self,
+        existing_names: Optional[List[str]] = None,
+        parent: Optional[QWidget] = None,
+        initial_values: Optional[Dict[str, Any]] = None,
+    ):
         super().__init__(parent)
         self.setMinimumSize(600, 500)
 
@@ -52,6 +62,7 @@ class ManualWellDialog(QDialog):
         self.key_param_values: Dict[str, Any] = {}
         self.well_path: List[QPointF] = []
         self.existing_names = list(existing_names) if existing_names is not None else []
+        self.initial_values = initial_values or {}
 
         main_layout = QVBoxLayout(self)
 
@@ -65,8 +76,6 @@ class ManualWellDialog(QDialog):
         self.params_group = QGroupBox()
         params_form_layout = QFormLayout(self.params_group)
         for name, (label, w_type, p_type, kwargs) in self.KEY_PARAM_DEFS.items():
-            # NOTE: The label for this custom widget is set at creation. For dynamic
-            # translation, the ParameterInputGroup class would need to be modified.
             widget = ParameterInputGroup(
                 param_name=name, label_text=label, input_type=w_type, **kwargs
             )
@@ -79,6 +88,12 @@ class ManualWellDialog(QDialog):
         self.status_combo = QComboBox()
         self.status_combo.addItems(["Producer (Active)", "Producer (Inactive)", "Injector"])
         params_form_layout.addRow(self.status_label, self.status_combo)
+
+        self.peaceman_wi_label = QLabel(self.tr("Peaceman Well Index: Calculating..."))
+        self.peaceman_wi_label.setStyleSheet(
+            "font-weight: bold; color: #1e3d59; padding: 4px; background: #e9ecef; border-radius: 4px;"
+        )
+        params_form_layout.addRow(self.peaceman_wi_label)
 
         self.edit_path_btn = QPushButton()
         self.edit_path_btn.setIcon(QIcon.fromTheme("document-edit"))
@@ -123,6 +138,31 @@ class ManualWellDialog(QDialog):
         self._initialize_defaults()
         self.retranslateUi()
         self._update_well_name()
+
+        if self.initial_values:
+            self._apply_initial_values()
+
+    def _apply_initial_values(self):
+        if not self.initial_values:
+            return
+        if "name" in self.initial_values or "well_name" in self.initial_values:
+            w_name = self.initial_values.get("name") or self.initial_values.get("well_name")
+            self.well_name_edit.setText(str(w_name))
+        if "status" in self.initial_values or "role" in self.initial_values:
+            val = str(self.initial_values.get("status") or self.initial_values.get("role"))
+            for idx in range(self.status_combo.count()):
+                if val.lower() in self.status_combo.itemText(idx).lower():
+                    self.status_combo.setCurrentIndex(idx)
+                    break
+        for k, v in self.initial_values.items():
+            if k in self.key_param_widgets:
+                self.key_param_widgets[k].set_value(v)
+                p_type = self.KEY_PARAM_DEFS[k][2]
+                try:
+                    self.key_param_values[k] = self._coerce_value(str(v), p_type)
+                except Exception:
+                    pass
+        self._update_peaceman_display()
 
     def _on_well_name_edited(self, text: str):
         text_lower = text.strip().lower()
@@ -209,6 +249,37 @@ class ManualWellDialog(QDialog):
         except (ValueError, TypeError):
             raise ValueError("Must be a valid number.")
 
+    def _calculate_peaceman_index(self) -> float:
+        rw = float(self.key_param_values.get("WellboreRadius", 0.35) or 0.35)
+        skin = float(self.key_param_values.get("SkinFactor", 0.0) or 0.0)
+        traj = str(self.key_param_values.get("TrajectoryType", "Vertical"))
+        top = float(self.key_param_values.get("TopDepth", 1.0) or 1.0)
+        bot = float(self.key_param_values.get("BottomDepth", 3000.0) or 3000.0)
+        lat = float(self.key_param_values.get("LateralLength", 1500.0) or 1500.0)
+        
+        kh = 100.0  # nominal mD
+        kv_kh = 0.10
+        kz = kh * kv_kh
+        dx, dy, dz = 100.0, 100.0, 20.0
+        
+        if traj == "Horizontal":
+            # SPE-10194 anisotropic horizontal index
+            r_oh = 0.28 * np.sqrt((kz / kh)**0.5 * dy**2 + (kh / kz)**0.5 * dz**2) / ((kz / kh)**0.25 + (kh / kz)**0.25)
+            denom = max(np.log(max(r_oh / rw, 1.1)) + skin, 0.1)
+            wi = (0.00708 * np.sqrt(kh * kz) * lat) / denom
+        else:
+            h_eff = max(bot - top, 10.0)
+            r_o = 0.28 * np.sqrt(dx**2 + dy**2) / 2.0
+            denom = max(np.log(max(r_o / rw, 1.1)) + skin, 0.1)
+            wi = (0.00708 * kh * h_eff) / denom
+        return round(float(wi), 2)
+
+    def _update_peaceman_display(self):
+        if hasattr(self, 'peaceman_wi_label'):
+            wi = self._calculate_peaceman_index()
+            traj = self.key_param_values.get("TrajectoryType", "Vertical")
+            self.peaceman_wi_label.setText(f"Peaceman Well Index ({traj}): {wi:.2f} STB/d/psi")
+
     def _on_parameter_changed(self, value: Any):
         sender = self.sender()
         if not isinstance(sender, ParameterInputGroup):
@@ -223,6 +294,7 @@ class ManualWellDialog(QDialog):
                 if top is not None and bottom is not None and bottom > top:
                     self.well_path[0].setY(top)
                     self.well_path[-1].setY(bottom)
+            self._update_peaceman_display()
         except (ValueError, TypeError):
             if param_name in self.key_param_values:
                 del self.key_param_values[param_name]
@@ -272,33 +344,46 @@ class ManualWellDialog(QDialog):
 
         try:
             path_to_use = self.well_path
+            top = self.key_param_values.get("TopDepth", 1.0)
+            bottom = self.key_param_values.get("BottomDepth", 3000.0)
+            sx = self.key_param_values.get("SurfaceX", 0.0)
+            sy = self.key_param_values.get("SurfaceY", 0.0)
+            traj = str(self.key_param_values.get("TrajectoryType", "Vertical"))
+            lat = float(self.key_param_values.get("LateralLength", 1500.0) or 1500.0)
 
             if not path_to_use:
-                top = self.key_param_values.get("TopDepth")
-                bottom = self.key_param_values.get("BottomDepth")
-                sx = self.key_param_values.get("SurfaceX", 0.0)
-                sy = self.key_param_values.get("SurfaceY", 0.0)
                 if top is None or bottom is None or bottom <= top:
                     raise ValueError(
                         self.tr(
                             "Could not create default well path. Please ensure Top and Bottom depths are valid and Top < Bottom."
                         )
                     )
-                logger.info(
-                    "No explicit path set. Creating default straight vertical well path with 10ft sampling."
-                )
-                depths_np = np.arange(top, bottom, 10.0)
-                if depths_np.size == 0 or depths_np[-1] < bottom:
-                    depths_np = np.append(depths_np, bottom)
-                if depths_np.size == 0:
-                    depths_np = np.array([top, bottom])
-                # Create 3D path: [x, y, z] using SurfaceX and SurfaceY
-                well_path_np = np.column_stack((np.full_like(depths_np, sx), np.full_like(depths_np, sy), depths_np))
+                if traj == "Horizontal":
+                    kickoff = max(top, bottom - 100.0)
+                    depths_np = np.linspace(top, bottom, 20)
+                    vert_steps = len(depths_np)
+                    well_path_np = np.zeros((vert_steps + 10, 3))
+                    well_path_np[:vert_steps, 0] = sx
+                    well_path_np[:vert_steps, 1] = sy
+                    well_path_np[:vert_steps, 2] = depths_np
+                    # Lateral extension
+                    lat_x = np.linspace(sx, sx + lat, 10)
+                    well_path_np[vert_steps:, 0] = lat_x
+                    well_path_np[vert_steps:, 1] = sy
+                    well_path_np[vert_steps:, 2] = bottom
+                else:
+                    logger.info(
+                        "No explicit path set. Creating default straight vertical well path with 10ft sampling."
+                    )
+                    depths_np = np.arange(top, bottom, 10.0)
+                    if depths_np.size == 0 or depths_np[-1] < bottom:
+                        depths_np = np.append(depths_np, bottom)
+                    if depths_np.size == 0:
+                        depths_np = np.array([top, bottom])
+                    well_path_np = np.column_stack((np.full_like(depths_np, sx), np.full_like(depths_np, sy), depths_np))
             else:
-                # Convert 2D path points [x, depth] to 3D [x, 0, depth]
                 well_path_np = np.array([[p.x(), 0.0, p.y()] for p in path_to_use])
 
-            # depths_np should be the unique z-coordinates
             depths_np = np.sort(np.unique(well_path_np[:, 2]))
 
             perfs = []
@@ -332,12 +417,18 @@ class ManualWellDialog(QDialog):
                 final_metadata["type"] = "producer"
                 final_metadata["status"] = status
             
+            wi = self._calculate_peaceman_index()
+            final_metadata["peaceman_well_index"] = wi
+            final_metadata["trajectory_type"] = traj
+            final_metadata["lateral_length_ft"] = lat
+
             if not perfs:
                 final_metadata["perforations_treatment"] = "entire_wellbore"
 
             well_props = {
                 "WellboreRadius": np.array([self.key_param_values.get("WellboreRadius", 0.35)]),
                 "SkinFactor": np.array([self.key_param_values.get("SkinFactor", 0.0)]),
+                "PeacemanWellIndex": np.array([wi]),
             }
 
             return WellData(
@@ -351,6 +442,7 @@ class ManualWellDialog(QDialog):
                 skin_factor=float(self.key_param_values.get("SkinFactor", 0.0)),
                 wellbore_radius_ft=float(self.key_param_values.get("WellboreRadius", 0.354)),
                 perforations=[[p["top"], p["bottom"]] for p in perfs],
+                well_index=wi,
             )
         except Exception as e:
             QMessageBox.critical(

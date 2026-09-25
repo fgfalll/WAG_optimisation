@@ -11,6 +11,10 @@
 | Component | File Path | Role in Architecture |
 | :--- | :--- | :--- |
 | **Main Data Management Tab** | `ui/data_management_widget.py` | Central GUI tab for entering reservoir, PVT, well, and surrogate tuning parameters; dispatches `project_data_updated` signal. |
+| **Stratigraphy & Cross-Section Viewer** | `ui/widgets/geology_cross_section_widget.py` | Interactive orthogonal IJK slicing (XZ, YZ, XY) with facies colormaps and Vertical Proportion Curves (VPC). |
+| **Geostatistics Visualizer Widget** | `ui/widgets/geostatistics_visualizer_widget.py` | Real-time 1D experimental vs theoretical semivariogram fitting, 2D SGS permeability heatmaps, and Dykstra-Parsons $V_{DP}$. |
+| **Fault & Containment Visualizer** | `ui/widgets/fault_geometry_visualizer_widget.py` | 3D fault plane mesh embedded in formation bounding box, SGR seal integrity rating, Coulomb stress $\Delta\text{CFS}$, and well standoff detection. |
+| **Shared Earth Visual Audit Modal** | `ui/dialogs/visual_audit_modal.py` | Unified 3-tab pre-flight visual data confirmation gate enforcing ISO 27914 and EPA Class VI model verification. |
 | **PVT Detailed Editor Dialog** | `ui/widgets/pvt_editor_dialog.py` | Multi-tab dialog for editing black-oil tables (`PVTO`, `PVTG`, `PVTW`) and running Peng-Robinson / SRK EOS flashes. |
 | **PVT Table Editor Widget** | `ui/widgets/pvt_table_editor.py` | Embedded spreadsheet table editor with numeric range validation and CSV import/export. |
 | **Manual Well Dialog** | `ui/widgets/manual_well_dialog.py` | Dialog for creating single wells with surface coordinates, wellbore geometry, and perforation intervals. |

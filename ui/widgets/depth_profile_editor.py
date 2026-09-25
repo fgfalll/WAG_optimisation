@@ -15,8 +15,9 @@ class DepthProfileEditor(QWidget):
         self._hover_point_data: QPointF | None = None
         self.setMouseTracking(True)
 
-        self.axis_pen = QPen(Qt.GlobalColor.black, 1)
-        self.axis_font = QFont(QApplication.font().family(), QApplication.font().pointSize() * 0.8)
+        base_pt = QApplication.font().pointSize()
+        pt_size = int(round(base_pt * 0.8)) if base_pt > 0 else 8
+        self.axis_font = QFont(QApplication.font().family(), max(6, pt_size))
         self.path_pen = QPen(Qt.GlobalColor.blue, 2)
         self.point_brush = QBrush(Qt.GlobalColor.blue)
         self.hover_brush = QBrush(Qt.GlobalColor.red)

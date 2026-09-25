@@ -80,18 +80,35 @@ class WellData:
         dx_ft: float,
         dy_ft: float,
         mu_cp: float = 1.0,
+        kz_mD: Optional[float] = None,
+        dz_ft: Optional[float] = None,
     ) -> float:
         """
         Calculate Peaceman productivity/injectivity index in field units (RB/d/psi or STB/d/psi).
-
-        Equivalent wellblock radius r_o:
-            r_o = 0.198 * sqrt(dx^2 + dy^2)  (isotropic block)
-
-        Well Index WI:
-            WI = (0.00708 * k * h_perf) / (mu * (ln(r_o / r_w) + S))
+        Automatically routes to anisotropic horizontal formulation if trajectory is horizontal.
         """
         if k_mD <= 0 or h_ft <= 0 or dx_ft <= 0 or dy_ft <= 0:
             return 1.0
+
+        meta = self.metadata or {}
+        traj = str(meta.get("trajectory_type", "Vertical")).lower()
+        lat_len = float(meta.get("lateral_length", 0.0) or 0.0)
+
+        if "horiz" in traj or lat_len > 0:
+            from core.engine_surrogate.well_mechanics import calculate_peaceman_index_horizontal
+            eff_kz = float(kz_mD if kz_mD is not None and kz_mD > 0 else k_mD * 0.10)
+            eff_dz = float(dz_ft if dz_ft is not None and dz_ft > 0 else 20.0)
+            eff_lat = float(lat_len if lat_len > 0 else 1500.0)
+            return calculate_peaceman_index_horizontal(
+                ky_md=k_mD,
+                kz_md=eff_kz,
+                length_lateral_ft=eff_lat,
+                dy_ft=dy_ft,
+                dz_ft=eff_dz,
+                r_w_ft=self.wellbore_radius_ft,
+                skin=self.skin_factor,
+                mu_cp=mu_cp,
+            )
 
         h_perf = h_ft
         if self.perforations:
@@ -110,6 +127,50 @@ class WellData:
         mu = max(mu_cp, 0.01)
         wi = (0.00708 * k_mD * h_perf) / (mu * denom)
         return float(max(wi, 1e-4))
+
+    def get_trajectory_points(
+        self,
+        top_tvd: float = 1000.0,
+        bottom_tvd: float = 3000.0,
+        length_ft: float = 2000.0,
+        width_ft: float = 1000.0,
+        **kwargs,
+    ) -> np.ndarray:
+        """
+        Return 3D trajectory coordinate array (N, 3) [X, Y, Z_TVD].
+        Uses self.well_path if present, otherwise synthesizes physics-accurate 3D trajectory.
+        """
+        top_tvd = float(kwargs.get("top_depth", top_tvd))
+        bottom_tvd = float(kwargs.get("bottom_depth", bottom_tvd))
+        if self.well_path is not None and len(self.well_path) > 0:
+            wp = np.asarray(self.well_path, dtype=float)
+            if wp.ndim == 2 and wp.shape[1] >= 3:
+                return wp
+            elif wp.ndim == 2 and wp.shape[1] == 2:
+                z = np.linspace(top_tvd, bottom_tvd, len(wp))
+                return np.column_stack([wp[:, 0], wp[:, 1], z])
+
+        from core.engine_surrogate.well_mechanics import generate_synthetic_well_trajectory
+        meta = self.metadata or {}
+        sx = float(meta.get("SurfaceX", meta.get("surface_x", length_ft * 0.5)))
+        sy = float(meta.get("SurfaceY", meta.get("surface_y", width_ft * 0.5)))
+        traj = str(meta.get("trajectory_type", "Vertical"))
+        lat_len = float(meta.get("lateral_length", 1500.0))
+
+        top = float(meta.get("TopDepth", top_tvd))
+        bot = float(meta.get("BottomDepth", bottom_tvd))
+        if self.depths is not None and len(self.depths) > 1:
+            top = float(self.depths[0])
+            bot = float(self.depths[-1])
+
+        return generate_synthetic_well_trajectory(
+            surface_x=sx,
+            surface_y=sy,
+            top_tvd=top,
+            bottom_tvd=bot,
+            trajectory_type=traj,
+            lateral_length_ft=lat_len,
+        )
 
     def validate(self) -> bool:
         if not hasattr(self.depths, "size") or self.depths.size == 0:
