@@ -6,7 +6,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
 [![PyQt6](https://img.shields.io/badge/GUI-PyQt6-green)](https://pypi.org/project/PyQt6/)
-[![Tests](https://img.shields.io/badge/tests-258%20passed-brightgreen)](.github/workflows/docs.yml)
+[![Tests](https://img.shields.io/badge/tests-329%20passed%20%7C%204%20failing-orange)](audit/scientific_flaws.md)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-informational)](https://fgfalll.github.io/WAG_optimisation/)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -86,11 +86,39 @@ co2eor_optimizer/
 ├── ui/                        ← PyQt6 desktop application
 ├── evaluation/                ← MMP correlations (Cronquist, Yellig-Metcalfe)
 ├── agent_wiki/                ← Full technical documentation (→ GitHub Pages)
-├── tests/                     ← 258 tests, 0 failures
-└── deprecated/                ← Legacy engines (do not modify)
+├── audit/                     ← Machine-readable audit output (ruff, coverage, findings register)
+├── tests/                     ← 356 tests: 329 pass, 4 fail (HIGH-10), 23 skip
+└── (no deprecated/ dir)       ← legacy engines were deleted, not relocated (MED-16)
 ```
 
 > **📖 Full architecture documentation**: [fgfalll.github.io/WAG_optimisation/](https://fgfalll.github.io/WAG_optimisation/)
+
+---
+
+## ⚠️ Audit Status (04-10-2026)
+
+An independent four-phase forensic audit of this repository is on record. **No code was changed by it** —
+it produced documentation and a findings register only.
+
+| | |
+|---|---|
+| Findings | **52** — 13 CRITICAL, 18 HIGH, 16 MEDIUM, 5 LOW ([`audit/scientific_flaws.md`](audit/scientific_flaws.md)) |
+| Predictive validity of the active `hybrid` path | **NOT ESTABLISHED** — no experimental or benchmark evidence exists for that configuration ([`phd_audit.md`](phd_audit.md) §C) |
+| Parameters without a citable source | **48 of 91** are `UNKNOWN — EVIDENCE REQUIRED` ([`audit/parameter_provenance.csv`](audit/parameter_provenance.csv)) |
+| Software / anti-pattern record | [`res_audit.md`](res_audit.md) |
+| Run audit (Verdict: **FLAGGED**) | [`agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/audit.md`](agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/audit.md) |
+
+Three feature descriptions elsewhere in this README are **currently aspirational rather than verified**, and are
+listed here instead of being quietly reworded:
+
+1. **Geomechanical safety enforcement** — the EPA Class VI ceiling is enforced inside the engine, but the
+   wrapper-side Class‑VI and leakage constraint blocks never execute (they read a profile key that is not
+   populated), and all leakage terms are structurally zero (**CRIT-09, CRIT-10**).
+2. **NPV features** — the implemented cash-flow model omits four inputs the engine supplies and charges CO₂ on
+   *stored* rather than *purchased* volume; a hard-coded $100/t carbon-tax floor overrides the user's value
+   (**HIGH-08, HIGH-13**). Reported `recovery_factor` is a post-hoc clip of the raw model output (**HIGH-01**).
+3. **"daily / monthly / annual resolution"** — the engine emits only `monthly_*` and `yearly_*` profile keys;
+   there are zero `daily_*` keys (**MED-10**).
 
 ---
 
@@ -137,6 +165,7 @@ Full technical documentation is auto-generated from [`agent_wiki/`](agent_wiki/)
 | [Physics](https://fgfalll.github.io/WAG_optimisation/physics/reservoir_model/) | Reservoir model, PVT, CO₂ properties, displacement, relative permeability |
 | [Development](https://fgfalll.github.io/WAG_optimisation/development/common_pitfalls/) | Change safety matrix, common pitfalls, coding rules, extension points |
 | [Audit](https://fgfalll.github.io/WAG_optimisation/audit/technical_debt/) | Dead code, hardcoded values, fallbacks, suspicious logic |
+| [Scientific audit (local)](audit/scientific_flaws.md) | **52-finding flaw register**, parameter provenance, `res_audit.md`, `phd_audit.md` — not published to Pages |
 | [Verification](https://fgfalll.github.io/WAG_optimisation/verification/verification_strategy/) | 7-level V&V hierarchy, conservation tests, convergence studies |
 | [Validation](https://fgfalll.github.io/WAG_optimisation/validation/benchmarks/) | SPE 5, CMG GEM reference benchmarks |
 

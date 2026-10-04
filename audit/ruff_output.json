@@ -1,0 +1,7 @@
+﻿python : C:\Users\sayno\AppData\Local\Programs\Python\Python312\python.exe: No module named ruff
+At line:1 char:1
++ python -m ruff check . --output-format json 2>&1 | Out-File -FilePath ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\sayno\...dule named ruff:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
