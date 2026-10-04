@@ -2,13 +2,29 @@
 
 - **Date**: `04-10-2026`
 - **Run ID**: `SIM-AUDIT-04-10-2026-01`
-- **Run Type**: Reproducible numerical verification campaign (17 standalone scripts) + full pytest/coverage
+- **Run Type**: Reproducible numerical verification campaign (18 standalone scripts) + full pytest/coverage
   static-analysis toolchain. **Audit-only: no source code was modified.**
 - **Engine**: `core/engine_surrogate` (`SurrogateEngineWrapper` + `FastProfileGenerator`), production default
   `recovery_model_type = "hybrid"`, 10-year run, monthly time base, `T = 180 °F`.
 - **Injection Scheme**: `Continuous CO₂` (plus a `WAG` variant used to isolate CRIT-11)
 - **Simulation Duration**: `10 years` (monthly)
 - **Verdict**: **`FLAGGED`**
+
+> **Post-run refresh (04-10-2026, after commits `a68fc35` / `9d252ce`).** The verdict and every
+> physics number above are unchanged — no scientific code was touched. Three *software* facts did
+> change and are recorded here rather than silently edited into the tables below:
+> 1. **HIGH-10 RESOLVED** — the missing `QIcon` import was added at
+>    `ui/widgets/fault_geometry_visualizer_widget.py:19`; `pytest tests/ -q` now returns
+>    **`0 failed / 333 passed / 23 skipped`**, so the `AGENTS.md` invariant #5 gate
+>    (`tests/test_project_save_load.py`) is green again.
+> 2. **HIGH-19 NEW** — re-running ruff found two undefined names in the new workbench code
+>    (`pyvista_reservoir_canvas.py:974` `has_active_fault`, `subsurface_data_viewer_widget.py:335`
+>    `QToolTip`). One is swallowed by `except Exception` and silently blanks the 3-D caprock view;
+>    the other raises in an unguarded Qt slot. Neither is reached by any test, so **0 failures and
+>    two reachable `NameError`s coexist** — which is precisely the HIGH-18 point.
+> 3. **Register size 52 → 53** (13 CRITICAL / 19 HIGH / 16 MEDIUM / 5 LOW), re-derived by
+>    `evidence_scripts/v_recount.py` (53 IDs parsed, 0 missing). Ruff is now `3244 / 191` with
+>    `F821 6` (was `3132 / 192`, `F821 5`).
 
 ---
 
@@ -81,10 +97,10 @@
 | `dBo/dP` (x_CO₂ = 0) | `+1.01e-4 … +1.13e-4 1/psi` | **FAILED** — wrong sign (CRIT-03) |
 | WAG water rate vs SWAG | `25.0` vs `25000.0` bpd | **FAILED** — 1000× (CRIT-11) |
 | Containment score floor vs threshold | `0.4400 … 0.7502` vs `0.30` | **FAILED** — never prunes (CRIT-08) |
-| pytest (full suite) | `4 failed / 329 passed / 23 skipped` | all 4 failures = one `QIcon` import (HIGH-10) |
+| pytest (full suite) | *(baseline)* `4 failed / 329 passed / 23 skipped` → **refresh 04-10-2026: `0 failed / 333 passed / 23 skipped`** | all 4 baseline failures = one `QIcon` import (**HIGH-10, RESOLVED**) |
 | pytest (`tests/scientific`) | `36 passed` | **not evidence** — 5 tautological, 3 defect-asserting (HIGH-18) |
 | Coverage (line) | `37 %` (`13367 / 36062`) | `wrapper.py` and `storage.py` at `0 %` |
-| Ruff | `3132` findings / `192` files (F821 5, F811 5, F401 345, F841 77) | MED-13 |
+| Ruff | *(baseline)* `3132` findings / `192` files (F821 5, F811 5, F401 345, F841 77) → **refresh: `3244` / `191` (F821 6, F811 7, F401 329, F841 85)** | MED-13; the 2 new `F821` are **HIGH-19** |
 
 ---
 
@@ -121,7 +137,7 @@ corrected accordingly.
 
 | Artifact | Path |
 |:---|:---|
-| Reproducible evidence scripts (17) | [`evidence_scripts/`](evidence_scripts/) |
+| Reproducible evidence scripts (18) | [`evidence_scripts/`](evidence_scripts/) |
 | PVT re-verification (`Bo`, `Bg`, Z) | [`evidence_scripts/v_pvt2.py`](evidence_scripts/v_pvt2.py) |
 | Sweep/RF grids (CRIT-06, CRIT-07, HIGH-02) | [`evidence_scripts/v_rf.py`](evidence_scripts/v_rf.py) |
 | HCPVI + mobile-oil term (CRIT-01, HIGH-01) | [`evidence_scripts/v_hcpvi.py`](evidence_scripts/v_hcpvi.py) |
@@ -130,7 +146,8 @@ corrected accordingly.
 | Mass balance & geomechanics (CRIT-08/10) | [`evidence_scripts/v_physics.py`](evidence_scripts/v_physics.py) |
 | Inert-gene evidence (CRIT-13) | [`evidence_scripts/v_inert.py`](evidence_scripts/v_inert.py) |
 | Test-suite integrity scan (HIGH-18) | [`evidence_scripts/v_tests2.py`](evidence_scripts/v_tests2.py) |
-| Register cross-tab derivation (52 findings) | [`evidence_scripts/v_counts2.py`](evidence_scripts/v_counts2.py) |
+| Register cross-tab derivation (52 findings, superseded) | [`evidence_scripts/v_counts2.py`](evidence_scripts/v_counts2.py) |
+| Register self-count, current (**53** findings) | [`evidence_scripts/v_recount.py`](evidence_scripts/v_recount.py) |
 | Master flaw register | [`../../../audit/scientific_flaws.md`](../../../audit/scientific_flaws.md) |
 | Parameter provenance (91 rows) | [`../../../audit/parameter_provenance.csv`](../../../audit/parameter_provenance.csv) |
 | Software/anti-pattern audit | [`../../../res_audit.md`](../../../res_audit.md) |
@@ -138,7 +155,7 @@ corrected accordingly.
 | Raw pytest output | [`../../../audit/runtime/pytest_output.txt`](../../../audit/runtime/pytest_output.txt) |
 | Ruff report (UTF-16) | [`../../../audit/code_quality/ruff_report.json`](../../../audit/code_quality/ruff_report.json) |
 
-> **Note on file-name collision:** `../../../audit/scientific_flaws.md` (this audit's register, 52 findings) is a
+> **Note on file-name collision:** `../../../audit/scientific_flaws.md` (this audit's register, **53** findings) is a
 > **different file** from `agent_wiki/audit/scientific_flaws.md` (a prior-session register, 18 SCI-FLAW rows).
 > Cross-check between the two is in `phd_audit.md` PART E.
 
@@ -148,7 +165,9 @@ corrected accordingly.
 .venv\Scripts\python.exe -X utf8 agent_wiki\audit\simulation_run_audits\04-10-2026_forensic_scientific_audit\evidence_scripts\v_hcpvi.py
 .venv\Scripts\python.exe -X utf8 ...\evidence_scripts\v_engine.py
 .venv\Scripts\python.exe -m pytest tests\scientific -q          # 36 passed
-.venv\Scripts\python.exe -m pytest tests\ -q                    # 4 failed / 329 passed / 23 skipped
+.venv\Scripts\python.exe -m pytest tests\ -q                    # refresh: 0 failed / 333 passed / 23 skipped (baseline: 4 failed / 329 passed / 23 skipped)
+.venv\Scripts\python.exe -X utf8 ...\evidence_scripts\v_recount.py   # register self-count: 53 findings, 0 IDs unparsed
+.venv\Scripts\ruff.exe check . --output-format json --no-cache       # refresh: 3244 diagnostics, F821 6
 .venv\Scripts\pyan3.exe ...                                      # 959 nodes / 2225 edges
 ```
 
@@ -158,7 +177,7 @@ corrected accordingly.
 
 | Category | Verdict this run |
 |:---|:---|
-| **SOFTWARE CORRECTNESS** | Runs and fails loudly at the boundary; 4 test failures share one root cause; data-flow defects (dead constraints, inert genes, wrong profile keys) dominate. |
+| **SOFTWARE CORRECTNESS** | Runs and fails loudly at the boundary; the 4 baseline test failures shared one root cause and are now fixed (**HIGH-10 RESOLVED**, `0 failed / 333 passed`), but two new undefined names in `ui/workbench/` are reachable and untested (**HIGH-19**); data-flow defects (dead constraints, inert genes, wrong profile keys) dominate. |
 | **NUMERICAL STABILIZATION** | Pressure step limited to ±450 psi/step with **no error estimator** — stability by clipping, not by adaptivity. Distinct from physics. |
 | **PHYSICAL CONSISTENCY** | **FAILED** in PVT (sign + magnitude) and in the sweep/throughput models. |
 | **EMPIRICAL CALIBRATION** | **None performed.** 48/91 constants are `UNKNOWN — EVIDENCE REQUIRED`; 16 are labelled `CALIBRATED` with no stated data set. |

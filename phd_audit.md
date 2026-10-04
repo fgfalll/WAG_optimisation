@@ -9,7 +9,7 @@ four-phase forensic audit.
 
 | File | Phases |
 |---|---|
-| `audit/scientific_flaws.md` | Master register — **52 findings**, each with Severity / Category / Location (`file:line`) / Observed / Expected / Impact / Evidence, plus a *"Verified correct — do not flag"* section |
+| `audit/scientific_flaws.md` | Master register — **53 findings** (04-10-2026 refresh), each with Severity / Category / Location (`file:line`) / Observed / Expected / Impact / Evidence, plus a *"Verified correct — do not flag"* section |
 | `audit/parameter_provenance.csv` | 91 constants → LITERATURE / EMPIRICAL / CALIBRATED / **UNKNOWN — EVIDENCE REQUIRED** |
 | `res_audit.md` | Phase 1 (software quality) + Phase 3 (anti-patterns) + toolchain + change-safety |
 | **`phd_audit.md` (this file)** | Phase 2 + Phase 4 + categorical separation + predictive-validity verdict |
@@ -709,8 +709,11 @@ Reasoning, stated categorically and without reference to any score:
    while reported RF and oil are identical (A.2); `v_dp = 0.0` is indistinguishable from default
    (A.11); 2 of the searched gene pairs are inert (CRIT-13). A search on such a surface converges
    to whatever the artifacts favor.
-4. **Coverage does not evidence validity**: 329 passing tests coexist with all of the above because
-   one test *asserts* the 48.3 % cliff (A.9) and another *asserts* inverted trapping (B.4).
+4. **Coverage does not evidence validity**: **333 passing / 0 failing** tests (04-10-2026 refresh;
+   baseline 329 passing / 4 failing) coexist with all of the above because
+   one test *asserts* the 48.3 % cliff (A.9) and another *asserts* inverted trapping (B.4) — and
+   because two reachable `NameError`s (HIGH-19) are either swallowed by `except Exception` or sit
+   in a Qt slot that no test invokes. A fully green suite is *compatible with* the defects above.
 
 **What would be required to change this verdict** (documented, not implemented — audit-only rule):
 
@@ -791,7 +794,7 @@ Full detail with line-level evidence: `audit/scientific_flaws.md` §5.
 
 | Item | Path |
 |---|---|
-| Master register (52 findings) | `audit/scientific_flaws.md` |
+| Master register (**53** findings) | `audit/scientific_flaws.md` |
 | Parameter provenance (91 rows) | `audit/parameter_provenance.csv` |
 | Software/anti-pattern audit | `res_audit.md` |
 | PVT re-verification (`Bo`, `Bg`, `Z`) | `agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_pvt2.py` |
@@ -803,7 +806,8 @@ Full detail with line-level evidence: `audit/scientific_flaws.md` §5.
 | Koval H, containment floor, `or`-defaults | `…/evidence_scripts/v_misc.py` |
 | Inert genes / key mismatches (CRIT-13) | `…/evidence_scripts/v_inert.py` |
 | Test-suite integrity AST scan (HIGH-18) | `…/evidence_scripts/v_tests2.py` |
-| Register cross-tab derivation (52 findings) | `…/evidence_scripts/v_counts2.py` |
+| Register cross-tab derivation (52 findings, superseded) | `…/evidence_scripts/v_counts2.py` |
+| Register self-count, current (**53** findings: 13/19/16/5; 0 IDs unparsed) | `…/evidence_scripts/v_recount.py` |
 | Original scripts (unmodified copies) | `%TEMP%/opencode/v_*.py`, `audit_verify_*.py` |
 | Prior register (18 `SCI-FLAW-*` rows) | `audit/scientific_flaws/scientific_flaws.csv` |
 | Toolchain raw output | `audit/code_quality/`, `audit/runtime/` |

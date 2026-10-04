@@ -1,6 +1,7 @@
 # Scientific & Mathematical Flaw Register — CO2 EOR Optimizer
 
 **Audit round:** 04-10-2026 (forensic, audit-only — no source file was modified)
+**Register refresh:** 04-10-2026, after commits `a68fc35` / `9d252ce` — HIGH-10 marked **RESOLVED**, **HIGH-19** added, MED-13 metrics re-measured, §0.2 counts reconciled with §7. Totals now **53**.
 **Auditor role:** Senior Reservoir Simulation Engineer / Applied Mathematician
 **Register status:** OPEN (documentation + classification phase complete; remediation NOT started)
 **Companion deliverables:** `res_audit.md` (software quality + anti-patterns), `phd_audit.md` (scientific reconstruction + CO2-EOR physics), `audit/parameter_provenance.csv`
@@ -30,11 +31,13 @@ This audit deliberately **does not** compute a single "model accuracy" number. F
 | Bucket (= Category field) | Definition | Count in this register |
 |---|---|---:|
 | **MATHEMATICAL CORRECTNESS** (`MATHEMATICAL`) | Wrong formula, wrong normalization, wrong units, non-existent limit, discontinuity | 8 |
-| **PHYSICAL CONSISTENCY** (`PHYSICAL`) | Violation of thermodynamics, conservation, or displacement physics in equations that *are* executed | 10 |
+| **PHYSICAL CONSISTENCY** (`PHYSICAL`) | Violation of thermodynamics, conservation, or displacement physics in equations that *are* executed | 9 |
 | **NUMERICAL STABILIZATION** (`NUMERICAL`) | Clipping, flooring, epsilons, fallbacks used to keep numbers finite — legitimate technique **only** when it does not replace the model | 3 |
-| **SOFTWARE CORRECTNESS** (`SOFTWARE`) | Data flow, dead code, key mismatches, masking, inert genes, test gaps — correctness of the program, independent of physics | 23 |
-| **PARAMETER / EMPIRICAL PROVENANCE** (`PROVENANCE`) | Constants/coefficients with no cited source, mis-cited correlations, undocumented units | 7 |
+| **SOFTWARE CORRECTNESS** (`SOFTWARE`) | Data flow, dead code, key mismatches, masking, inert genes, test gaps — correctness of the program, independent of physics | 25 |
+| **PARAMETER / EMPIRICAL PROVENANCE** (`PROVENANCE`) | Constants/coefficients with no cited source, mis-cited correlations, undocumented units | 8 |
 | **PREDICTIVE VALIDITY** | Whether outputs can be trusted to forecast a real field (requires benchmark/experimental evidence — **none found in-repo for the active `hybrid` path**) | reported as a **verdict** in `phd_audit.md` §6, not as a score |
+
+Category counts above and in §7 are produced by one parser over this file (`evidence_scripts/v_recount.py`, re-run 04-10-2026): **53 findings — 13 CRITICAL / 19 HIGH / 16 MEDIUM / 5 LOW**. (The pre-refresh copy of this table said PHYSICAL 10 / SOFTWARE 23 / PROVENANCE 7 = 51; that was a transcription error against §7 and has been corrected.)
 
 ### 0.3 Hierarchy of scientific truth applied
 
@@ -44,12 +47,15 @@ Corollary explicitly enforced in this audit: **agreement with a benchmark is nev
 
 ### 0.4 Numeric evidence
 
-All measured numbers below are reproduced by two scripts kept **outside** the repository (audit-only rule):
+All measured numbers below are reproduced by scripts kept **outside** the repository (audit-only rule) and mirrored into the run-audit folder (invariant #6):
 
 ```
 .venv\Scripts\python.exe C:\Users\sayno\AppData\Local\Temp\opencode\audit_verify_3.py
 .venv\Scripts\python.exe C:\Users\sayno\AppData\Local\Temp\opencode\audit_verify_4.py
+.venv\Scripts\python.exe C:\Users\sayno\AppData\Local\Temp\opencode\v_recount.py      # register self-count (§0.2 / §7)
 ```
+
+Mirror: `agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/` (18 scripts).
 
 ---
 
@@ -409,7 +415,7 @@ All measured numbers below are reproduced by two scripts kept **outside** the re
 - **Expected:** Import `QIcon` from `PyQt6.QtGui`; suite green.
 - **Impact:** Mandatory post-change gate `pytest tests/test_project_save_load.py -v` (AGENTS.md invariant #5) currently **cannot pass**, so data-model/UI changes cannot be validated as required.
 - **Evidence:** `audit/runtime/pytest_output.txt` (short test summary); ruff F821 list.
-- **Status:** NEW
+- **Status:** **RESOLVED** — re-verified 04-10-2026 after commit `a68fc35`: `ui/widgets/fault_geometry_visualizer_widget.py:19` now carries `from PyQt6.QtGui import QIcon`, the F821 is gone, and `pytest tests/ -q` returns **`333 passed, 23 skipped, 0 failed`** (356 collected). `pytest tests/test_project_save_load.py` (AGENTS.md invariant #5 gate) now passes. `audit/runtime/pytest_output.txt` is retained as the **pre-fix** baseline and must be read as such. The finding is retained (not deleted) because the same defect *class* recurred twice in new code — see **HIGH-19**.
 
 ### HIGH-11 — `RECOVERY_MODELS_AVAILABLE = False` is the only guard preventing `NameError`s
 
@@ -496,6 +502,19 @@ All measured numbers below are reproduced by two scripts kept **outside** the re
 - **Evidence & Citation:** `v_tests2.py` (AST: `A) tautological = 5`, `B) no production import = 6`, `C) exercises production = 25`); `pytest tests/scientific` → `36 passed`; source reads cited above.
 - **Status:** NEW — **do not "fix" by weakening these tests**; re-specify them against production code (see `res_audit.md` §5, change-safety row NEW).
 
+### HIGH-19 — Two undefined names in the new workbench code reproduce the HIGH-10 defect class
+
+- **Severity:** HIGH | **Category:** `SOFTWARE`
+- **Location:** `ui/workbench/components/pyvista_reservoir_canvas.py:974` (`has_active_fault`); `ui/workbench/components/subsurface_data_viewer_widget.py:335` (`QToolTip`)
+- **Observed:** Both names are referenced but never bound anywhere in the repository (repo-wide grep: `has_active_fault` = 1 occurrence, the *use*; `QToolTip` = 1 occurrence in this file, the *use* — every other widget that calls `QToolTip.showText` imports it from `PyQt6.QtWidgets`).
+  - `:974` sits inside the caprock block `if hasattr(self, 'chk_caprock') and self.chk_caprock.isChecked()` (`:946`), which is inside `try:` (`:601`) … `except Exception as e: logger.error(f"PyVista 3D rendering error: {e}", exc_info=True)` (`:1272-1273`). The `NameError` is therefore caught, logged at ERROR only, and control leaves the block **before** `self.plotter.render()` (`:1269`) and `self._has_rendered_mesh = True` (`:1267`) — the 3D canvas renders nothing while appearing to "work". The checkbox is switched on programmatically by two workbench tree entries, `subsurface_workbench_widget.py:755` (`"caprock_3d"`) and `:784` (`"caprock"`), so the path is reachable from normal navigation (default state is `setChecked(False)` at `:258`).
+  - `:335` is in `_copy_table_to_clipboard`, connected directly to `btn_copy_table.clicked` (`:130`) with **no** `try/except`. The clipboard is written first (`:334`), so data is copied, then the slot raises `NameError: name 'QToolTip' is not defined`; the tooltip feedback never appears and the exception escapes the slot to the PyQt6 exception hook.
+- **Expected:** Import `QToolTip` from `PyQt6.QtWidgets`; define (or derive) `has_active_fault` — e.g. `has_active_fault = len(active_fault_list) > 0` — before `:974`. Ruff `F821` is the intended detector for exactly this defect class.
+- **Impact:** A marquee feature of the new workbench (3-D caprock stratigraphy) silently produces an empty viewport, and the sheet-export copy button raises in a slot. Neither is covered by any test, so the suite stays green — the same "cannot fail" condition documented in HIGH-18. This is the second occurrence of the HIGH-10 pattern within two commits, i.e. the fix for HIGH-10 was treated as a one-off rather than as a class.
+- **Evidence:** `ruff check . --output-format json` → `F821 pyvista_reservoir_canvas.py:974 "Undefined name has_active_fault"`, `F821 subsurface_data_viewer_widget.py:335 "Undefined name QToolTip"` (`audit/ruff_output.json`); source reads cited above; repo-wide grep for both identifiers.
+- **Status:** NEW (found by re-running ruff on 04-10-2026 after `a68fc35`). **Not fixed by this audit (audit-only rule).**
+- **Note (false positive, do not "fix"):** `F821 core/geology/petrophysical_distribution.py:404` flags `prev_field`, but that name *is* bound at `:405` on the previous loop iteration and is only read under `if k > 0` (`:402`). Control flow makes it safe at runtime; this is a flow-insensitive lint artifact. → record in §6.
+
 ---
 
 ## 3. MEDIUM findings
@@ -514,7 +533,7 @@ All measured numbers below are reproduced by two scripts kept **outside** the re
 | **MED-10** | SOFTWARE | `optimisation_engine.py:841-896`, `:1611`, `:1652`; `data_models.py:1262`, `:1273`; `profile_generator_fast.py:103` | Valid `time_resolution` values are `weekly/monthly/quarterly/yearly`; profiles only ever expose `yearly_*` and `monthly_*`; engine time base is **monthly** by default while `OperationalParameters` defaults to **yearly**; fallbacks use the non-existent `"daily"`. → one resolution vocabulary, propagated. → `weekly`/`quarterly` runs silently read empty arrays (see CRIT-08 for the consequence). | Source | NEW |
 | **MED-11** | PROVENANCE | `data_models.py:913`, `:917`; `profile_generator_fast.py:1111-1115` | `default_gas_fvf = 0.005` has no documented unit; `mobility_ratio = base_injection_rate × mobility_ratio_factor(0.001)` is compared against `high_mobility_threshold = 2.0` labelled a *mobility ratio* ⇒ the adaptive WAG logic triggers for any rate > 2000 MSCFD (dimensionally meaningless). → document units (rb/scf) and compare a true mobility ratio. → WAG enhancement is decided by injection rate, not by mobility. | Source; CRIT-11 | NEW |
 | **MED-12** | PROVENANCE | `surrogate_engine.py:352`, `:354`, `:356` | `oil_mass = ooip·0.135`, `x_co2 = 0.55·M_inj/(M_oil + 0.55·M_inj)`, `y_co2 = clip(cum/(cum+1000), 0.05, 0.95)` — solubility/vapor-fraction surrogates with no cited source (1000 MSCF time constant, 0.55 mass factor, 0.135 t/STB). → mark `UNKNOWN — EVIDENCE REQUIRED` and tie to a flash calculation. → `x_co2/y_co2` drive all PVT (B_o, μ, B_g mixture). | Source + `audit/parameter_provenance.csv` | NEW |
-| **MED-13** | SOFTWARE | repo-wide | Ruff **3132** violations over **192** files (top: UP006 789, W293 713, UP045 404, **F401 345 unused imports**, I001 257, **F841 77 unused locals**, F821 5, F811 5); vulture **41** dead-code candidates; coverage **37%**; pytest `4 failed / 329 passed / 23 skipped`; jscpd not installed (duplicate detection not run). → triage F401/F841/F821 first (they hide real defects), keep style noise separate. → F401/F841 mask dead physics (CRIT-13) and F821 hides runtime NameErrors (HIGH-10/11). | `audit/code_quality/ruff_report.json` (UTF-16), `dead_code_candidates.txt`, `audit/runtime/coverage.xml`, `pytest_output.txt` | NEW |
+| **MED-13** | SOFTWARE | repo-wide | Ruff **3244** violations over **191** files (re-run 04-10-2026 after `a68fc35`; top: UP006 857, W293 686, UP045 426, **F401 329 unused imports**, I001 253, **F841 85 unused locals**, **F821 6**, F811 7 — at audit baseline: 3132 / 192 / F401 345 / F841 77 / F821 5 / F811 5); vulture **41** dead-code candidates (04-10-2026 run; a re-run after `a68fc35` timed out on `RecursionError`, so 41 is the last verifiable figure); coverage **37 %** repo-wide (`audit/runtime/coverage.xml`, denominator 36 062 statements); pytest **`0 failed / 333 passed / 23 skipped`** (re-run 04-10-2026; was `4 failed / 329 passed / 23 skipped`); jscpd not installed (duplicate detection not run). → triage F401/F841/F821 first (they hide real defects), keep style noise separate. → F401/F841 mask dead physics (CRIT-13) and F821 hides runtime `NameError`s (HIGH-11, HIGH-19; HIGH-10 resolved). | `audit/ruff_output.json` (UTF-8, re-run), `audit/code_quality/ruff_report.json` (UTF-16, baseline), `dead_code_candidates.txt`, `audit/runtime/coverage.xml`, `pytest_output.txt` | NEW (metrics refreshed 04-10-2026) |
 | **MED-14** | SOFTWARE | `optimisation_engine.py:905-935` | If no simulation engine is available the code silently falls back to `ProductionProfiler` (different physics) and then clamps RF into [0,1] *after the fact* (`:930-935`). → fail loudly, or mark results as `engine_type = profiler` everywhere downstream. → two physics in one result namespace. | Source | NEW |
 | **MED-15** | PROVENANCE | `agent_wiki/README.md:35`, `source_of_truth_map.md:16`, `source_of_truth.md:26`, `common_pitfalls.md:34`, `code/inventory.md:26`, `execution_flow.md:81-82`, `code/functions/simulation_functions.md`, `code/classes/surrogate_classes.md`, `validation/conservation.md` | The wiki documents `_calculate_engine_npv()` and `_calculate_co2_purchased_recycled()` as the source of truth for economics. **Neither function exists anywhere in the repository** (grep for `def _calculate_engine_npv\|def _calculate_co2_purchased_recycled\|def _solve_pressure_ode` → 0 hits). Real code: purchased/recycled at `surrogate_engine.py:572-596`; NPV at `surrogate_models.py:507-530`. → wiki must match code. → agents following the wiki edit a non-existent function and believe `economic.py` is dead for the wrong reason. | Grep; corrected during this round (see wiki edits) | NEW (corrected in `agent_wiki/` as part of this deliverable) |
 | **MED-16** | PROVENANCE | `agent_wiki/verification/test_matrix.md:5`, `:18-46`; `agent_wiki/architecture/overview.md:71`; `agent_wiki/README.md:29` | The master verification matrix is stale on four counts. (a) It declares **"42 test items across 16 subdirectories"**; `pytest --collect-only tests/scientific` returns **36 items in 15 subdirectories**. (b) **6 of its 40 listed tests no longer exist anywhere in `tests/`**: `test_co2_density_thermal_expansion`, `test_cubic_eos_z_factor_bounds`, `test_phase_label_assignment`, `test_peng_robinson_fugacity_equation_structure`, `test_corey_relative_permeability_bounds`, `test_bg_discrepancy_between_modules` (grep = 0 hits each) — five of them cite `unified_engine/…`. (c) `test_koval_fractional_flow_mobility_inversion` was **renamed** to `..._monotonicity` (0 hits for the old name) and 2 existing tests (`test_profile_generator_co2_breakthrough_gas_rate_increases_with_mobility`, `test_alston_impurity_mmp_trend`) are **unlisted**. (d) `overview.md:71` and `README.md:29` state the legacy engines were *"relocated into `deprecated/`"* — **neither `deprecated/` nor `core/unified_engine/` exists** (`unified_engine` is referenced 51× in the wiki, 0× as a real path). → regenerate the matrix from `--collect-only` and stop citing deleted trees. → readers conclude that six thermodynamic assertions are being enforced when no such test exists. | `pytest --collect-only tests/scientific` (36 items); 7 greps returning 0; `Test-Path deprecated`, `core/unified_engine` = False | NEW (corrected in `agent_wiki/verification/test_matrix.md` as part of this deliverable) |
@@ -574,6 +593,7 @@ These were checked numerically or by dimensional analysis and found sound; recor
 10. **Geomechanical stress path and slip tendency** (`geomechanics_fault.py:98`, `:129-132`, `:188-198`) — normal/shear resolution on a fault plane and the Biot-coupled `p_crit` are standard forms.
 11. **VRR/voidage assembly** `q_inj = q_CO₂·B_CO₂ + q_w·B_w` (`surrogate_engine.py:406`) — correct in form.
 12. **MMP user override** survives the Cronquist recomputation (LOW-02 notes the ordering dependency).
+13. **`F821` `prev_field` at `petrophysical_distribution.py:404`** is a lint artifact, not a bug: `prev_field = field` is bound at `:405` on the preceding iteration and the read at `:404` is guarded by `if k > 0` (`:402`), so the name is always bound when it is used. → do **not** "fix" by initializing a dummy variable that would change the recursion; if the warning must go, restructure the loop (with a test) rather than paper over it. (Contrast with the two genuine `F821`s in HIGH-19, which have no binding anywhere.)
 
 ---
 
@@ -582,7 +602,7 @@ These were checked numerically or by dimensional analysis and found sound; recor
 | Severity | IDs |
 |---|---|
 | CRITICAL (13) | CRIT-01 … CRIT-13 |
-| HIGH (18) | HIGH-01 … HIGH-18 |
+| HIGH (19) | HIGH-01 … HIGH-19 |
 | MEDIUM (16) | MED-01 … MED-16 |
 | LOW (5) | LOW-01 … LOW-05 |
 
@@ -591,10 +611,10 @@ These were checked numerically or by dimensional analysis and found sound; recor
 | MATHEMATICAL | 3 | 3 | 2 | 0 | **8** |
 | PHYSICAL | 3 | 5 | 0 | 1 | **9** |
 | NUMERICAL | 1 | 1 | 0 | 1 | **3** |
-| SOFTWARE | 6 | 7 | 8 | 3 | **24** |
+| SOFTWARE | 6 | 8 | 8 | 3 | **25** |
 | PROVENANCE | 0 | 2 | 6 | 0 | **8** |
-| **Total** | **13** | **18** | **16** | **5** | **52** |
+| **Total** | **13** | **19** | **16** | **5** | **53** |
 
-**Category totals: 52 findings** (counts derived programmatically from the register's own `Category` fields — see `audit/parameter_provenance.csv` header note). Note the deliberately uneven distribution: the majority are *software/data-flow* defects that **silence** physics (dead constraints, inert genes, key mismatches), while the physics defects that remain active are concentrated in PVT (`B_g`, Z, `B_o`) and in the recovery-model floors/limbs. These two populations require different remediation strategies and must not be conflated into one "quality" number.
+**Category totals: 53 findings** (counts derived programmatically from the register's own `Severity`/`Category` fields by `evidence_scripts/v_recount.py`, re-run 04-10-2026 after HIGH-19 was added — the script parses all 53 IDs with 0 missing). Status distribution: **NEW 48, CONFIRMED 4, RESOLVED 1** (HIGH-10). Note the deliberately uneven distribution: the majority are *software/data-flow* defects that **silence** physics (dead constraints, inert genes, key mismatches), while the physics defects that remain active are concentrated in PVT (`B_g`, Z, `B_o`) and in the recovery-model floors/limbs. These two populations require different remediation strategies and must not be conflated into one "quality" number.
 
 **No composite accuracy score is issued.** Predictive validity is assessed narratively in `phd_audit.md` §6 and currently rates **NOT ESTABLISHED** for the active `hybrid` path (no experimental or benchmark evidence exists in the repository for that configuration; the benchmark/validation material present targets `phd_hybrid` and dormant engines — see HIGH-09).

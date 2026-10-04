@@ -15,6 +15,7 @@ The dedicated scientific verification test suite is located in `tests/scientific
 > | Listed here but **absent from `tests/`** | **6** — marked `REMOVED` in the verdict column |
 > | Renamed since the table was written | 1 (`…_mobility_inversion` → `…_mobility_monotonicity`) |
 > | Present but previously unlisted | 2 (`test_profile_generator_co2_breakthrough_gas_rate_increases_with_mobility`, `test_alston_impurity_mmp_trend`) |
+> | Full suite (`pytest tests/`, refreshed 04-10-2026) | **356 collected → 333 passed, 0 failed, 23 skipped** (baseline was 329/4/23; the 4 failures were the missing `QIcon` import, HIGH-10, now RESOLVED) |
 >
 > **Read verdicts with care (HIGH-18).** Three of these tests assert *that a defect exists* rather than the
 > physically correct value, and five import production symbols they never call. A `PASSED` result for those items

@@ -6,7 +6,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
 [![PyQt6](https://img.shields.io/badge/GUI-PyQt6-green)](https://pypi.org/project/PyQt6/)
-[![Tests](https://img.shields.io/badge/tests-329%20passed%20%7C%204%20failing-orange)](audit/scientific_flaws.md)
+[![Tests](https://img.shields.io/badge/tests-333%20passed%20%7C%200%20failing-brightgreen)](audit/scientific_flaws.md)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-informational)](https://fgfalll.github.io/WAG_optimisation/)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -87,7 +87,7 @@ co2eor_optimizer/
 ├── evaluation/                ← MMP correlations (Cronquist, Yellig-Metcalfe)
 ├── agent_wiki/                ← Full technical documentation (→ GitHub Pages)
 ├── audit/                     ← Machine-readable audit output (ruff, coverage, findings register)
-├── tests/                     ← 356 tests: 329 pass, 4 fail (HIGH-10), 23 skip
+├── tests/                     ← 356 tests: 333 pass, 0 fail, 23 skip (04-10-2026)
 └── (no deprecated/ dir)       ← legacy engines were deleted, not relocated (MED-16)
 ```
 
@@ -102,11 +102,16 @@ it produced documentation and a findings register only.
 
 | | |
 |---|---|
-| Findings | **52** — 13 CRITICAL, 18 HIGH, 16 MEDIUM, 5 LOW ([`audit/scientific_flaws.md`](audit/scientific_flaws.md)) |
+| Findings | **53** — 13 CRITICAL, 19 HIGH, 16 MEDIUM, 5 LOW ([`audit/scientific_flaws.md`](audit/scientific_flaws.md)) |
+| Test suite (re-run 04-10-2026) | **356 collected — 333 passed, 0 failed, 23 skipped**; the 4 baseline failures were one missing `QIcon` import (HIGH-10, **RESOLVED**) and `tests/test_project_save_load.py` (AGENTS.md invariant #5) is green again |
 | Predictive validity of the active `hybrid` path | **NOT ESTABLISHED** — no experimental or benchmark evidence exists for that configuration ([`phd_audit.md`](phd_audit.md) §C) |
 | Parameters without a citable source | **48 of 91** are `UNKNOWN — EVIDENCE REQUIRED` ([`audit/parameter_provenance.csv`](audit/parameter_provenance.csv)) |
 | Software / anti-pattern record | [`res_audit.md`](res_audit.md) |
 | Run audit (Verdict: **FLAGGED**) | [`agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/audit.md`](agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/audit.md) |
+
+A green suite is not evidence of physical correctness: two reachable `NameError`s introduced in the
+workbench commit (HIGH-19) are invisible to it — one is caught by `except Exception` and blanks the
+3-D caprock view, the other raises in a Qt slot that no test invokes.
 
 Three feature descriptions elsewhere in this README are **currently aspirational rather than verified**, and are
 listed here instead of being quietly reworded:
@@ -165,7 +170,7 @@ Full technical documentation is auto-generated from [`agent_wiki/`](agent_wiki/)
 | [Physics](https://fgfalll.github.io/WAG_optimisation/physics/reservoir_model/) | Reservoir model, PVT, CO₂ properties, displacement, relative permeability |
 | [Development](https://fgfalll.github.io/WAG_optimisation/development/common_pitfalls/) | Change safety matrix, common pitfalls, coding rules, extension points |
 | [Audit](https://fgfalll.github.io/WAG_optimisation/audit/technical_debt/) | Dead code, hardcoded values, fallbacks, suspicious logic |
-| [Scientific audit (local)](audit/scientific_flaws.md) | **52-finding flaw register**, parameter provenance, `res_audit.md`, `phd_audit.md` — not published to Pages |
+| [Scientific audit (local)](audit/scientific_flaws.md) | **53-finding flaw register**, parameter provenance, `res_audit.md`, `phd_audit.md` — not published to Pages |
 | [Verification](https://fgfalll.github.io/WAG_optimisation/verification/verification_strategy/) | 7-level V&V hierarchy, conservation tests, convergence studies |
 | [Validation](https://fgfalll.github.io/WAG_optimisation/validation/benchmarks/) | SPE 5, CMG GEM reference benchmarks |
 

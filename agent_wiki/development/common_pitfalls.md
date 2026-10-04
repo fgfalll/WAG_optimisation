@@ -1,17 +1,17 @@
-# Top 52 Traps & Common Pitfalls for AI Agents
+# Top 53 Traps & Common Pitfalls for AI Agents
 
 This document highlights the most frequent misconceptions, resolved gotchas, and traps encountered when working with this codebase.
 
 > [!IMPORTANT]
-> **Read first — 2026-10-04 independent audit.** This list predates an audit that registered **52 open findings
-> (13 CRITICAL, 18 HIGH, 16 MEDIUM, 5 LOW)**, of which only a subset is represented above. Before editing any
+> **Read first — 2026-10-04 independent audit.** This list predates an audit that registered **53 findings
+> (13 CRITICAL, 19 HIGH, 16 MEDIUM, 5 LOW; 1 already RESOLVED, HIGH-10)**, of which only a subset is represented above. Before editing any
 > scientific code, consult:
 > - [`audit/scientific_flaws.md`](../../audit/scientific_flaws.md) — the master flaw register (severity, category, `file:line`, evidence, remediation order);
 > - [`res_audit.md`](../../res_audit.md) — software quality, anti-patterns, toolchain record, change-safety rows;
 > - [`phd_audit.md`](../../phd_audit.md) — physical/mathematical reconstruction; predictive validity for the active `hybrid` path is **NOT ESTABLISHED**;
 > - [`audit/parameter_provenance.csv`](../../audit/parameter_provenance.csv) — 91 parameters; **48 (53 %) are `UNKNOWN — EVIDENCE REQUIRED`**.
 >
-> Traps **50–52** below were added from that audit.
+> Traps **50–53** below were added from that audit (53 covers HIGH-19, registered 2026-10-04 after the workbench commit).
 
 ---
 
@@ -260,7 +260,7 @@ This document highlights the most frequent misconceptions, resolved gotchas, and
   - Added [tests/test_project_save_load.py](file:///d:/rep/4.6/co2eor_optimizer/tests/test_project_save_load.py) covering end-to-end roundtrip serialization, legacy compatibility, and UI restoration.
 
 ### 50. Treating a Green `pytest` as Analytical Verification
-- **Trap**: Reading `36 passed` in `tests/scientific/` (or `329 passed` overall) as evidence that the physics is verified.
+- **Trap**: Reading `36 passed` in `tests/scientific/` (or `333 passed / 0 failed` overall) as evidence that the physics is verified.
 - **Reality**: 5 of the 36 scientific tests import production symbols they **never call** — `test_koval_fractional_flow_mobility_monotonicity` imports `FastProfileGenerator` and then re-derives `profile_generator_fast.py:958-969` by hand at `:38-46` — and 3 tests assert **that a defect exists** (`step > 0.40`, `eff_high_sgc < eff_low_sgc`, `truncation_fraction > 0.20`), so *fixing* the physics turns the suite red. 6 more never import production code at all. Consequence: the *Analytical Verification* rung of the evidence hierarchy reports PASS for items where the test either restates the code or pins the wrong answer. **HIGH-18.**
 - **Rule**: Before trusting any test, confirm it (a) executes the symbol under test, (b) asserts the physically correct value, and (c) would fail if the defect were introduced *or* removed.
 
@@ -273,6 +273,11 @@ This document highlights the most frequent misconceptions, resolved gotchas, and
 - **Trap**: Reading `README.md` invariants #3/#10 (mass conservation, closed-loop carbon accounting) as runtime guarantees.
 - **Reality**: $M_{\text{recycled}} \le M_{\text{produced}}$ holds **by construction**, not by enforcement — recycled is capped as `min(prod·η_recycle, inj)` at `optimisation_engine.py:871-872`, so no code asserts it; and the second half is uncheckable because `total_leakage_tonne ≡ 0.0` (CRIT-10, HIGH-05) while `cum_stored = inj − prod` (`surrogate_engine.py:543`) **ignores leakage entirely**. Measured on a 10-yr run: inj 36 525 000 MSCF = purchased 34 994 496 + recycled 1 530 504 (exact) ✓.
 - **Rule**: An invariant that cannot be violated is not an invariant that has been tested. Distinguish *holds by construction* from *asserted* — see `res_audit.md` §2.4.
+
+### 53. Treating a Fixed Defect as a Fixed Class
+- **Trap**: Reading `333 passed / 0 failed` (and the HIGH-10 fix) as "the missing-import problem is gone".
+- **Reality**: HIGH-10 was one missing `from PyQt6.QtGui import QIcon`. Two commits later the **same defect class** is back in `ui/workbench/`: `pyvista_reservoir_canvas.py:974` uses `has_active_fault`, which is bound nowhere in the repository, and `subsurface_data_viewer_widget.py:335` uses `QToolTip`, which is never imported. The first is swallowed by `except Exception` at `:1272`, so the 3-D caprock view silently renders nothing when the checkbox (turned on automatically by the `caprock` / `caprock_3d` tree entries at `subsurface_workbench_widget.py:755`, `:784`) is enabled; the second raises inside the `btn_copy_table.clicked` slot, which has no guard. Neither is reached by any test, so the suite still reports 0 failures. **HIGH-19.**
+- **Rule**: `F821` is a release gate, not a lint preference — run `ruff check --select F821` before committing UI code, and never close a defect without asking whether the *pattern* still exists elsewhere. Note the counter-example: `F821` on `petrophysical_distribution.py:404` (`prev_field`) is a **false positive** (bound at `:405`, read only under `if k > 0`) — see `audit/scientific_flaws.md` §6; a blanket "fix every F821" rule would corrupt working control flow.
 
 
 

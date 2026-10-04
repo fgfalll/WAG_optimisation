@@ -7,7 +7,7 @@
 
 | Deliverable | Phase | Contents |
 |---|---|---|
-| `audit/scientific_flaws.md` | 2 + 4 (register) | 52 numbered scientific findings with measured evidence |
+| `audit/scientific_flaws.md` | 2 + 4 (register) | **53** numbered scientific findings with measured evidence (13 CRITICAL / 19 HIGH / 16 MEDIUM / 5 LOW) |
 | `audit/parameter_provenance.csv` | 2 (provenance) | 91 constants with source location + provenance class |
 | **`res_audit.md` (this file)** | 1 + 3 | Software quality, toolchain output, anti-patterns, change-safety |
 | `phd_audit.md` | 2 + 4 | Mathematical reconstruction, CO₂-EOR physics, categorical separation, predictive-validity verdict |
@@ -41,7 +41,7 @@ and are reported strictly apart:
 | 5 | **PREDICTIVE VALIDITY** | Has anything been validated against experiment or benchmark *for the configuration actually run*? | `phd_audit.md` §6 |
 
 The single most important structural result of this audit: **categories 1 and 5 are effectively
-independent here.** The test suite is largely green (329 passed) while the active evaluation path
+independent here.** The test suite is green (**333 passed, 0 failed**, refreshed 04-10-2026) while the active evaluation path
 contains thirteen CRITICAL scientific defects — because no test asserts a physical invariant of the
 active `hybrid` path. Green tests are evidence of category 1 only.
 
@@ -51,15 +51,26 @@ active `hybrid` path. Green tests are evidence of category 1 only.
 
 Environment: `.venv` (Python 3.12), Windows. All raw output preserved under `audit/`.
 
+> **Refresh (04-10-2026, after commits `a68fc35` / `9d252ce`).** The table below is the
+> **audit baseline** captured during Phase 1. Two figures have since changed and are restated here
+> rather than silently overwritten: **pytest is now `0 failed / 333 passed / 23 skipped`** (HIGH-10
+> was fixed by adding the missing `QIcon` import), and a **re-run of ruff** on the current tree
+> reports **3 244 diagnostics in 191 files** (UP006 857, W293 686, UP045 426, F401 329, I001 253,
+> F841 85, **F821 6**, F811 7) — written to `audit/ruff_output.json`. Two of the six `F821`s are
+> **new** and are registered as **HIGH-19**. `vulture --min-confidence 90` could not be re-run
+> (it now exceeds Python's recursion limit on this tree), so **41** remains the last verifiable
+> dead-code count. Raw Phase-1 artifacts (`ruff_report.json`, `pytest_output.txt`) are deliberately
+> **not** regenerated: they are the evidence for the baseline.
+
 | Tool | Version | Command | Result | Artifact |
 |---|---|---|---|---|
-| **ruff** | 0.16.7 | `ruff check --output-format=json .` | **3132 diagnostics in 192 files** | `audit/code_quality/ruff_report.json` (UTF-16) |
-| **vulture** | 2.16 | `vulture --min-confidence 90` | **41 dead-code candidates** | `audit/code_quality/dead_code_candidates.txt` |
+| **ruff** | 0.16.7 | `ruff check --output-format=json .` | **3132 diagnostics in 192 files** *(Phase-1 baseline; 3 244 / 191 after refresh — see note above)* | `audit/code_quality/ruff_report.json` (UTF-16) |
+| **vulture** | 2.16 | `vulture --min-confidence 90` | **41 dead-code candidates** *(not re-runnable after refresh)* | `audit/code_quality/dead_code_candidates.txt` |
 | **pyan3** | 2.8.1 | call-graph build | **959 nodes, 2225 edges** | `audit/code_quality/call_graph.dot` |
-| **pytest** (+pytest-cov 7.1.0) | — | `pytest tests/ --cov=. --cov-report=xml` | **4 failed, 329 passed, 23 skipped** in 190 s; **line coverage 37 %** (13 367 / 36 062) | `audit/runtime/pytest_output.txt`, `audit/runtime/coverage.xml` |
+| **pytest** (+pytest-cov 7.1.0) | — | `pytest tests/ --cov=. --cov-report=xml` | *(Phase-1 baseline)* **4 failed, 329 passed, 23 skipped** in 190 s; **line coverage 37 %** (13 367 / 36 062) — **refreshed 04-10-2026: 0 failed, 333 passed, 23 skipped** | `audit/runtime/pytest_output.txt`, `audit/runtime/coverage.xml` |
 | **jscpd** | — | duplicate detection | **NOT INSTALLED** — replaced by an independent in-house normalized-window scan (§3.3) | this file §3.3 |
 
-### 1.1 ruff — rule distribution (top 15 of 91 distinct codes)
+### 1.1 ruff — rule distribution (top 15 of 91 distinct codes, audit baseline)
 
 | Code | Count | Meaning | Software-quality verdict |
 |---|---:|---|---|
@@ -79,24 +90,28 @@ Environment: `.venv` (Python 3.12), Windows. All raw output preserved under `aud
 | UP015 | 16 | `open()` mode | style debt only |
 
 **Reading:** ~2 200 of 3 132 (≈ 70 %) are pure typing/whitespace modernization (UP*/W293/I001) and
-carry **zero** scientific risk. The audit-relevant subset is **F401 + F841 + F821 + F811 = 568 items**,
+carry **zero** scientific risk. The audit-relevant subset is **F401 + F841 + F821 + F811 = 568 items**
 of which the *scientifically dangerous* classes are:
 
-- **F821 — 5 undefined names**, all in the active or reachable path:
+- **F821 — undefined names: 5 at baseline, 6 now** (see the refresh note in §1):
 
   | Location | Undefined name | Consequence |
   |---|---|---|
   | `core/engine_surrogate/analytical_models.py:96` | `MiscibleRecoveryModel` | docstring/reference-only today; **HIGH-11** — a one-line refactor turns it into a runtime `NameError` inside the recovery path |
   | `core/engine_surrogate/analytical_models.py:218` | `ImmiscibleRecoveryModel` | same |
   | `core/engine_surrogate/analytical_models.py:341` | `BuckleyLeverettModel` | same |
-  | `core/geology/petrophysical_distribution.py:404` | `prev_field` | `NameError` on the (untested) branch — package covered at 17.6 % |
-  | `ui/widgets/fault_geometry_visualizer_widget.py:115` | `QIcon` | **explains 100 % of the 4 pytest failures** — **HIGH-10** |
+  | `core/geology/petrophysical_distribution.py:404` | `prev_field` | **false positive — corrected.** The baseline table below called this a `NameError` on the (untested) branch; re-reading the control flow shows `prev_field = field` at `:405` on the previous iteration and the read guarded by `if k > 0` at `:402`, so the name is always bound when used. Recorded in `audit/scientific_flaws.md` §6 ("do not fix"). |
+  | ~~`ui/widgets/fault_geometry_visualizer_widget.py:115`~~ | ~~`QIcon`~~ | **HIGH-10 — RESOLVED.** The import was added at `:19` in commit `a68fc35`; the four `NameError` failures in §1.3 are gone. |
+  | `ui/workbench/components/pyvista_reservoir_canvas.py:974` | `has_active_fault` | **HIGH-19 (new)** — never bound anywhere; the caprock 3-D block raises inside `try:…except Exception` (`:601`/`:1272`), so the canvas silently renders nothing |
+  | `ui/workbench/components/subsurface_data_viewer_widget.py:335` | `QToolTip` | **HIGH-19 (new)** — never imported; `btn_copy_table.clicked` handler (`:130`) has no `try/except`, so the slot raises after the clipboard is written |
 
-- **F811 — 5 redefinitions** (3 in `ui/main_window.py`, 1 `plot_ga_objective_distribution` in
-  `core/plotting_manager.py:1589` shadowing `:554`, 1 `TotalDegreeBasis` in `analysis/uq_engine.py:294`).
+- **F811 — 7 redefinitions** (5 at baseline: 3 in `ui/main_window.py`, 1 `plot_ga_objective_distribution` in
+  `core/plotting_manager.py:1589` shadowing `:554`, 1 `TotalDegreeBasis` in `analysis/uq_engine.py:294`;
+  +2 in the new `ui/workbench/components/subsurface_data_viewer_widget.py` — `render_fault_table:1322`
+  shadowing `:969` and `render_caprock_graph:1577` shadowing `:927`).
   The plotting one matters: a redefined function silently replaces the public plotting helper.
 
-- **F841 — 77 discarded computations**, concentrated in exactly the modules that generate science:
+- **F841 — 85 discarded computations** (77 at baseline), concentrated in exactly the modules that generate science:
   `core/optimisation_engine.py` (13), `core/engine_surrogate/profile_generator_fast.py` (8),
   `core/engine_surrogate/surrogate_engine.py` (6). In this codebase an unused assignment is a
   plausible symptom of a calculation that was *computed and then not wired up* — the same family as
@@ -115,7 +130,7 @@ Overall **37 %**. Per-package:
 | `ui` (aggregate) | 27.0 % | low, expected for GUI |
 | `ui.workers` | 25.8 % | low — these host the optimization execution path |
 | `ui.dialogs` | 10.2 % | very low |
-| `ui.workbench` | 9.8 % | very low (new untracked code) |
+| `ui.workbench` | 9.8 % | very low (new code, committed in `a68fc35`) |
 | `tests.validation` | 6.8 % | the benchmark configuration itself is barely executed |
 | `simulation` (legacy) | 1.2 % | dormant, consistent with the source-of-truth map |
 | `audit` | 0 % | tooling |
@@ -125,7 +140,17 @@ suite is *broad on the surrogate and thin everywhere data enters it* (`ui.worker
 `tests.validation`). The inputs that determine what the surrogate is asked to compute are the least
 tested region of the system.
 
-### 1.3 pytest failures — all four are one defect
+### 1.3 pytest failures — all four were one defect (**RESOLVED 04-10-2026**)
+
+> **Status: RESOLVED.** This subsection is retained as the pre-fix record. Commit `a68fc35` added
+> `from PyQt6.QtGui import QIcon` at `ui/widgets/fault_geometry_visualizer_widget.py:19`. Re-running
+> the suite gives **`333 passed, 23 skipped, 0 failed`** (356 collected), so the `AGENTS.md`
+> invariant #5 gate (`pytest tests/test_project_save_load.py -v`) is green again — verified together
+> with `tests/scientific` as `41 passed`. `audit/runtime/pytest_output.txt` is kept unchanged as the
+> **baseline** evidence for HIGH-10. Note that the fix closed the *instance*, not the *class*: two
+> fresh undefined names in `ui/workbench/` are registered as **HIGH-19**.
+
+Baseline output (04-10-2026, pre-fix):
 
 ```
 FAILED tests/test_project_save_load.py::test_data_management_widget_save_and_load      NameError: 'QIcon'
@@ -136,10 +161,12 @@ FAILED tests/ui/test_3d_well_interaction.py::test_screen_to_reservoir_ray_plane_
 
 Root cause: missing `from PyQt6.QtGui import QIcon` in
 `ui/widgets/fault_geometry_visualizer_widget.py` (ruff F821 at line 115). **SOFTWARE CORRECTNESS,
-HIGH-10.** Notably `tests/test_project_save_load.py` — the mandatory gate named in `AGENTS.md`
-invariant #5 — is currently **failing on main**, so the "always run this test" invariant cannot be
-satisfied green by construction until HIGH-10 is fixed (fix is a one-line import, outside this
-audit's mandate).
+HIGH-10.** At baseline `tests/test_project_save_load.py` — the mandatory gate named in `AGENTS.md`
+invariant #5 — was **failing on main**, so the "always run this test" invariant could not be
+satisfied green until HIGH-10 was fixed (the fix is a one-line import, outside this audit's
+mandate — and it was subsequently made by the repository owner, see the RESOLVED note above).
+**The governance lesson survives the fix:** presentation code could block a *scientific* gate, and
+no test failed for any scientific reason.
 
 Benchmark tests embedded in the run: `test_evaluation_speed` 71 ms/op, `test_batch_evaluation_speed`
 711 ms/op. Speed is explicitly **ranked last** in the truth hierarchy and is recorded here only for
@@ -182,14 +209,14 @@ either restates the code or pins the wrong answer. Recorded as **HIGH-18** (inte
 
 ### 2.1 Size and cohesion
 
-- **203 Python files, 77 471 lines** (excluding `agent_wiki/`, `audit/`, `logs/`, venv).
+- **209 Python files, 82 292 lines** (excluding `agent_wiki/`, `audit/`, `logs/`, venv; re-counted 04-10-2026 — the Phase-1 baseline was **203 files / 77 471 lines** measured before `a68fc35` landed, so the tree has grown by 6 files / ≈4 800 lines. Some of that growth was already on disk but **untracked** at baseline; it is now committed).
 - **19 files exceed 1 000 lines.** Top offenders:
 
   | Lines | File | Assessment |
   |---:|---|---|
   | 4 291 | `core/optimisation_engine.py` | god object: algorithms + packing + penalties + containment + reporting + sensitivity |
   | 3 413 | `ui/data_management_widget.py` | god widget |
-  | 2 385 | `ui/workbench/components/contextual_property_grid.py` | new, untracked |
+  | 2 385 | `ui/workbench/components/contextual_property_grid.py` | new in `a68fc35` |
   | 2 363 | `ui/optimization_widget.py` | god widget |
   | 2 207 | `core/data_models.py` | 60+ dataclasses, single module — this is the *schema*, and invariants #5 and part of #2 live here |
   | 1 748 | `core/plotting_manager.py` | contains a duplicate function definition (F811) |
@@ -251,15 +278,20 @@ false confidence. **Remediation is documentation-only** and was **completed in t
 `agent_wiki/` documentation files (22 `.md` + `dependency_graph.txt`) were corrected (invariant #3 rewritten,
 `source_of_truth_map.md` / `source_of_truth.md` NPV + EOS rows re-pointed at live code, all references to the
 four non-existent functions annotated, `test_matrix.md` regenerated, `deprecated/` claims corrected, three new
-pitfalls added), and the change-safety matrix received 17 added/amended rows. Two residual collisions worth
+pitfalls added), and the change-safety matrix received 17 added/amended rows. Those same files were
+**refreshed again on 04-10-2026** after HIGH-10 was resolved and HIGH-19 was registered (counts
+52 → 53, suite 329/4 → 333/0, two new change-safety rows for `ui/workbench/`, and a new pitfall #53).
+Two residual collisions worth
 knowing about:
 
-- `audit/scientific_flaws.md` (this audit, 52 findings) vs `agent_wiki/audit/scientific_flaws.md`
+- `audit/scientific_flaws.md` (this audit, **53 findings** after the 04-10-2026 refresh) vs
+  `agent_wiki/audit/scientific_flaws.md`
   (prior session, 18 `SCI-FLAW-*` rows) — **same base name, different files**. Cross-check is in
   `phd_audit.md` PART E.
 - `audit/report.md` and `audit/reports/scientific_audit_report.md` (prior-session automated audit outputs)
   still quote the pre-fix toolchain numbers (5 472 ruff warnings, 36 `F821`, 296 passed / 3 failed, 18 flaws).
-  Those are **stale baselines** — this audit measured 3 132 / 5 / 329-4 / 52. They are historical records and
+  Those are **stale baselines** — this audit measured 3 132 / 5 / 329-4 / 52 at Phase 1, and
+  3 244 / 6 / 333-0 / 53 after the 04-10-2026 refresh. They are historical records and
   were deliberately left unedited.
 
 ---
@@ -432,8 +464,9 @@ Applying the existing 4-tier scheme to the components this audit touched or exam
 | `core/engine_surrogate/profile_generator_fast.py` | CRITICAL | AMENDED — add CRIT-11 WAG/SWAG ×1000 asymmetry at `:1117` vs `:1210`. |
 | `core/optimisation_engine.py` | HIGH | AMENDED — matrix already warns about penalty dilution; **add**: inert genes (CRIT-13), containment key mismatch (CRIT-08), inert `_calculate_adaptive_penalty` incl. no-op `"death"` branch (MED-07), `is_feasible` non-enforcement (MED-08/14). |
 | `core/data_models.py` | CRITICAL | AMENDED — beyond constants: default recovery-model string (`"hybrid"`, HIGH-09) silently selects the evaluation model; changing it changes every result. |
-| `ui/widgets/fault_geometry_visualizer_widget.py` | LOW | **AMENDED to MEDIUM** — a missing import currently fails a mandatory test gate (HIGH-10); presentation code can block invariant #5. |
-| `ui/workbench/`, `ui/widgets/corey_relperm_*`, `fluids_pvt_*`, `well_network_*`, `core/geology/petrophysical_distribution.py` | HIGH | **NEW** — untracked, ~9 % coverage, contains F821 (`prev_field`). Untested code that is nonetheless imported by the app. |
+| `ui/widgets/fault_geometry_visualizer_widget.py` | LOW | **AMENDED to MEDIUM, then noted as RESOLVED** — a missing import failed a mandatory test gate (HIGH-10); presentation code can block invariant #5. Fixed by the owner in `a68fc35` (`QIcon` imported at `:19`); the tier is *not* restored to LOW, because the lesson — GUI files gate a scientific invariant — still applies. |
+| `ui/workbench/components/pyvista_reservoir_canvas.py`, `ui/workbench/components/subsurface_data_viewer_widget.py` | HIGH | **NEW (HIGH-19)** — two undefined names (`has_active_fault` at `:974`, `QToolTip` at `:335`) that ruff reports as `F821`. One is swallowed by `except Exception` (`:1272`) and silently blanks the 3-D caprock view; the other raises inside a Qt slot with no guard. Zero test coverage. Any edit here must re-run `ruff check` and manually exercise caprock rendering + *Copy Table*. |
+| `ui/workbench/`, `ui/widgets/corey_relperm_*`, `fluids_pvt_*`, `well_network_*` | HIGH | **NEW** — now **committed** (was untracked at Phase 1), ~9 % coverage. `core/geology/petrophysical_distribution.py:404` is listed with them for coverage reasons only: its `F821 prev_field` is a **false positive** (see `audit/scientific_flaws.md` §6) and must not be "fixed" reflexively. |
 | `scratch/` (21 files) | LOW | **NEW** — non-shipped experiment scripts duplicating widget code; excluded from risk but should not be imported by shipped modules. |
 | `tests/scientific/mathematical/test_singularity_and_overflow.py` | **CRITICAL** | **NEW** — a *test* that asserts physically wrong behaviour (`step > 0.40`, HIGH-02). Tests are usually LOW-tier; here the test encodes the defect, so changing the model requires changing the test, and the change must be justified physically, not to make CI green. |
 | `tests/scientific/co2/test_co2_breakthrough_physics.py`, `tests/scientific/conservation/test_mass_conservation.py`, `tests/scientific/co2/test_co2_trapping_mechanisms.py`, `tests/scientific/mathematical/test_analytical_identities.py`, `tests/scientific/dimensional/test_unit_consistency.py` | **CRITICAL** | **NEW (HIGH-18)** — verification-tier code. 5 of these tests import production symbols they never call (the Koval test re-derives `profile_generator_fast.py:958-969` by hand at `:38-46`) and 3 assert that a defect exists. Re-specifying them against production code is *higher* risk than changing engine source: a wrong re-specification converts a detectable defect into an undetectable one. Require a physical justification in the PR, not a green build. |
@@ -452,11 +485,16 @@ and produce a large, unexplained regression in results.
 Stated strictly as **SOFTWARE CORRECTNESS** (category 1), with no implication about physical or
 predictive validity:
 
-1. **The code runs, and fails loudly at the boundary.** 329 tests pass; the 4 failures are one missing
-   import. There are no bare `except:` clauses in the active engine and no NaN-propagation paths that
+1. **The code runs, and fails loudly at the boundary.** **333 tests pass and 0 fail** (04-10-2026
+   refresh; baseline was 329 pass / 4 fail, the 4 being one missing import — HIGH-10, now RESOLVED).
+   There are no bare `except:` clauses in the active engine and no NaN-propagation paths that
    reach selection unpenalized (`FAILURE_PENALTY` at `optimisation_engine.py:725-727, 1543, 1576`).
-2. **Style debt is large but scientifically inert** — ~70 % of 3 132 ruff findings are typing/whitespace.
-3. **The real software defects are data-flow defects**: 5 F821 undefined names, 77 discarded
+   *Counterweight:* the two new `F821`s (HIGH-19) are invisible to that suite — a `NameError` in
+   `pyvista_reservoir_canvas.py` is caught by `except Exception` and a `NameError` in a Qt slot is
+   outside the tests entirely, so "0 failed" now coexists with two reachable runtime defects.
+2. **Style debt is large but scientifically inert** — ~70 % of 3 132 ruff findings (3 244 after the
+   refresh) are typing/whitespace.
+3. **The real software defects are data-flow defects**: 6 F821 undefined names, 85 discarded
    computations, and above all the *produced-but-never-consumed* outputs behind CRIT-09/CRIT-10 and the
    inert-control family (CRIT-08, CRIT-13, MED-07/08/09/13).
 4. **Documentation was out of sync with code** in a way that actively misleads — **four** wiki-referenced
@@ -479,14 +517,15 @@ predictive validity:
 
 | Artifact | Path |
 |---|---|
-| Findings register (52) | `audit/scientific_flaws.md` |
+| Findings register (**53**) | `audit/scientific_flaws.md` |
 | Parameter provenance (91 rows) | `audit/parameter_provenance.csv` |
-| ruff JSON (UTF-16) | `audit/code_quality/ruff_report.json` |
+| ruff JSON (UTF-16, Phase-1 baseline) | `audit/code_quality/ruff_report.json` |
+| ruff JSON (UTF-8, 04-10-2026 refresh — 3 244 diagnostics, source of HIGH-19) | `audit/ruff_output.json` |
 | vulture output | `audit/code_quality/dead_code_candidates.txt` |
 | call graph | `audit/code_quality/call_graph.dot` |
-| pytest + coverage console | `audit/runtime/pytest_output.txt` |
+| pytest + coverage console (pre-fix baseline: 4 failed / 329 passed) | `audit/runtime/pytest_output.txt` |
 | coverage XML | `audit/runtime/coverage.xml` |
-| Reproducible numeric scripts (durable copies) | `agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/` (17 scripts) |
+| Reproducible numeric scripts (durable copies) | `agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/` (**18** scripts, incl. `v_recount.py` = register self-count) |
 | Originals of those scripts | `%TEMP%/opencode/audit_verify_*.py`, `v_*.py` (outside repo; run with `.venv\Scripts\python.exe -X utf8`) |
 | Simulation-run audit record (Verdict / Proposal / Relevant Files) | `agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/audit.md` |
 | Wiki corrections applied (MED-15 / MED-16) | 23 files under `agent_wiki/` — enumerated in §2.4 |

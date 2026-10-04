@@ -15,14 +15,16 @@ This documentation is designed for **reservoir engineers, AI pair-programmers, s
 | [**Data & Parameters**](data/inputs.md) | Input/output schemas, parameter registry, field unit definitions |
 | [**Development Guide**](development/common_pitfalls.md) | Change safety matrix, common pitfalls, safe modification rules |
 | [**Audit Reports**](audit/technical_debt.md) | Dead code, hardcoded values, [**data management**](audit/data_management_audit.md), [**optimization widget**](audit/optimization_widget_audit.md), [**dialogs, models, utils & widgets**](audit/dialogs_models_utils_widgets_audit.md), [**simulation run audits**](audit/simulation_run_audits/index.md), fallbacks, suspicious logic, [**resolved archive**](audit/resolved_issues.md) |
-| [**2026-10-04 Independent Audit**](../res_audit.md) | [Software quality & anti-patterns](../res_audit.md) · [Scientific/physics audit (`phd_audit.md`)](../phd_audit.md) · [**Flaw register — 52 findings**](../audit/scientific_flaws.md) · [Parameter provenance (91 rows)](../audit/parameter_provenance.csv) |
+| [**2026-10-04 Independent Audit**](../res_audit.md) | [Software quality & anti-patterns](../res_audit.md) · [Scientific/physics audit (`phd_audit.md`)](../phd_audit.md) · [**Flaw register — 53 findings**](../audit/scientific_flaws.md) · [Parameter provenance (91 rows)](../audit/parameter_provenance.csv) |
 | [**Verification**](verification/verification_strategy.md) | 7-level V&V hierarchy, conservation tests, convergence studies |
 | [**Validation**](validation/benchmarks.md) | SPE 5, CMG GEM reference benchmarks |
 | [**Decisions**](decisions/architecture_decisions.md) | Architecture & scientific rationale records (ADRs) |
 
 > [!WARNING]
-> **Audit status (2026-10-04).** An independent four-phase audit registered **52 findings (13 CRITICAL, 18 HIGH,
-> 16 MEDIUM, 5 LOW)** in [`audit/scientific_flaws.md`](../audit/scientific_flaws.md), and issued a
+> **Audit status (2026-10-04).** An independent four-phase audit registered **53 findings (13 CRITICAL, 19 HIGH,
+> 16 MEDIUM, 5 LOW)** in [`audit/scientific_flaws.md`](../audit/scientific_flaws.md) — of which **HIGH-10 is now
+> RESOLVED** (the missing `QIcon` import was fixed and the suite runs `333 passed / 0 failed`) while **HIGH-19 is
+> open** (two undefined names in `ui/workbench/` that no test reaches) — and issued a
 > **predictive-validity verdict of `NOT ESTABLISHED`** for the active `hybrid` path
 > ([`phd_audit.md`](../phd_audit.md) §C). Read the register before treating any wiki claim below as verified:
 > several invariants here were **not enforced by code** (they hold only by construction), and
