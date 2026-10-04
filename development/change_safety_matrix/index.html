@@ -3107,7 +3107,8 @@
 <p>[!IMPORTANT]
 <strong>Updated 2026-10-04 from the independent audit.</strong> Rows added or amended in this revision are marked
 <em>(AMENDED 2026-10-04)</em> or <em>(NEW 2026-10-04)</em>. The authoritative list with per-finding rationale is
-<code>res_audit.md</code> §5; the findings themselves are in <code>audit/scientific_flaws.md</code> (<strong>52 findings, 13 CRITICAL</strong>).
+<code>res_audit.md</code> §5; the findings themselves are in <code>audit/scientific_flaws.md</code> (<strong>53 findings, 13 CRITICAL / 19 HIGH</strong>,
+refreshed 2026-10-04 after HIGH-10 was resolved and HIGH-19 was registered).
 Two structural notes: (a) the previously listed <code>core/unified_engine/physics/eos/</code> <strong>does not exist</strong> in the
 tree, and (b) <code>tests/scientific/**</code> is classified <strong>CRITICAL</strong> here — verification code that asserts a defect
 is more dangerous than engine source, because it blocks the correct fix and prevents detecting a regression.</p>
@@ -3296,15 +3297,27 @@ is more dangerous than engine source, because it blocks the correct fix and prev
 </tr>
 <tr>
 <td style="text-align: left;"><code>ui/widgets/fault_geometry_visualizer_widget.py</code></td>
-<td style="text-align: center;"><strong>LOW → MEDIUM</strong> <em>(AMENDED 2026-10-04)</em></td>
+<td style="text-align: center;"><strong>LOW → MEDIUM</strong> <em>(AMENDED 2026-10-04; HIGH-10 RESOLVED)</em></td>
 <td style="text-align: left;">Fault geometry rendering</td>
-<td style="text-align: left;">A missing <code>QIcon</code> import (HIGH-10) currently fails 4 tests including the mandatory <code>tests/test_project_save_load.py</code> gate named in AGENTS.md invariant #5 — presentation code can block a scientific gate.</td>
+<td style="text-align: left;">A missing <code>QIcon</code> import (HIGH-10) failed 4 tests including the mandatory <code>tests/test_project_save_load.py</code> gate named in AGENTS.md invariant #5 — presentation code can block a scientific gate. <strong>Fixed</strong> (import added at <code>:19</code>), suite now <code>333 passed / 0 failed</code>; the MEDIUM tier stays because the governance lesson stands.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>ui/workbench/</code>, <code>ui/widgets/corey_relperm_*</code>, <code>fluids_pvt_*</code>, <code>well_network_*</code>, <code>core/geology/petrophysical_distribution.py</code></td>
-<td style="text-align: center;"><strong>HIGH</strong> <em>(NEW 2026-10-04)</em></td>
-<td style="text-align: left;">New workstation widgets / geology distribution</td>
-<td style="text-align: left;">Untracked, ~0–9 % coverage, contains an F821 (<code>prev_field</code>). Untested code that is nonetheless imported by the app.</td>
+<td style="text-align: left;"><code>ui/workbench/components/pyvista_reservoir_canvas.py</code></td>
+<td style="text-align: center;"><strong>HIGH</strong> <em>(NEW 2026-10-04, HIGH-19)</em></td>
+<td style="text-align: left;">3-D caprock / fault rendering</td>
+<td style="text-align: left;"><code>has_active_fault</code> at <code>:974</code> is bound nowhere in the repo. The caprock block sits inside <code>try:</code> (<code>:601</code>) … <code>except Exception</code> (<code>:1272</code>), so the resulting <code>NameError</code> is swallowed, <code>self.plotter.render()</code> is never reached and the canvas stays blank — while the log shows only an ERROR line. The checkbox is switched on programmatically by the <code>caprock</code> / <code>caprock_3d</code> tree entries (<code>subsurface_workbench_widget.py:755</code>, <code>:784</code>). Re-run <code>ruff check --select F821</code> and manually exercise caprock rendering after any edit.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/workbench/components/subsurface_data_viewer_widget.py</code></td>
+<td style="text-align: center;"><strong>HIGH</strong> <em>(NEW 2026-10-04, HIGH-19)</em></td>
+<td style="text-align: left;">Data-sheet export / clipboard</td>
+<td style="text-align: left;"><code>QToolTip</code> at <code>:335</code> is never imported; <code>_copy_table_to_clipboard</code> is wired straight to <code>btn_copy_table.clicked</code> (<code>:130</code>) with no <code>try/except</code>, so the slot raises <code>NameError</code> after the clipboard write. Also carries 2 <code>F811</code> redefinitions (<code>render_fault_table:1322</code> shadowing <code>:969</code>, <code>render_caprock_graph:1577</code> shadowing <code>:927</code>) — a redefinition silently replaces the earlier function.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/workbench/</code>, <code>ui/widgets/corey_relperm_*</code>, <code>fluids_pvt_*</code>, <code>well_network_*</code></td>
+<td style="text-align: center;"><strong>HIGH</strong> <em>(NEW 2026-10-04; AMENDED — now committed)</em></td>
+<td style="text-align: left;">New workstation widgets</td>
+<td style="text-align: left;">Now <strong>tracked</strong> (was untracked at audit time), ~0–9 % coverage, imported by the app but reached by no test. <code>core/geology/petrophysical_distribution.py</code> is covered for <strong>coverage</strong> reasons only: its <code>F821 prev_field</code> is a <strong>false positive</strong> (<code>prev_field = field</code> at <code>:405</code>, read at <code>:404</code> only under <code>if k &gt; 0</code>) and must not be "fixed" by initializing a dummy — see <code>audit/scientific_flaws.md</code> §6.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>scratch/</code></td>

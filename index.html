@@ -3149,7 +3149,7 @@
 </tr>
 <tr>
 <td><a href="../res_audit.md"><strong>2026-10-04 Independent Audit</strong></a></td>
-<td><a href="../res_audit.md">Software quality &amp; anti-patterns</a> · <a href="../phd_audit.md">Scientific/physics audit (<code>phd_audit.md</code>)</a> · <a href="../audit/scientific_flaws.md"><strong>Flaw register — 52 findings</strong></a> · <a href="../audit/parameter_provenance.csv">Parameter provenance (91 rows)</a></td>
+<td><a href="../res_audit.md">Software quality &amp; anti-patterns</a> · <a href="../phd_audit.md">Scientific/physics audit (<code>phd_audit.md</code>)</a> · <a href="../audit/scientific_flaws.md"><strong>Flaw register — 53 findings</strong></a> · <a href="../audit/parameter_provenance.csv">Parameter provenance (91 rows)</a></td>
 </tr>
 <tr>
 <td><a href="verification/verification_strategy/"><strong>Verification</strong></a></td>
@@ -3167,8 +3167,10 @@
 </table>
 <blockquote>
 <p>[!WARNING]
-<strong>Audit status (2026-10-04).</strong> An independent four-phase audit registered <strong>52 findings (13 CRITICAL, 18 HIGH,
-16 MEDIUM, 5 LOW)</strong> in <a href="../audit/scientific_flaws.md"><code>audit/scientific_flaws.md</code></a>, and issued a
+<strong>Audit status (2026-10-04).</strong> An independent four-phase audit registered <strong>53 findings (13 CRITICAL, 19 HIGH,
+16 MEDIUM, 5 LOW)</strong> in <a href="../audit/scientific_flaws.md"><code>audit/scientific_flaws.md</code></a> — of which <strong>HIGH-10 is now
+RESOLVED</strong> (the missing <code>QIcon</code> import was fixed and the suite runs <code>333 passed / 0 failed</code>) while <strong>HIGH-19 is
+open</strong> (two undefined names in <code>ui/workbench/</code> that no test reaches) — and issued a
 <strong>predictive-validity verdict of <code>NOT ESTABLISHED</code></strong> for the active <code>hybrid</code> path
 (<a href="../phd_audit.md"><code>phd_audit.md</code></a> §C). Read the register before treating any wiki claim below as verified:
 several invariants here were <strong>not enforced by code</strong> (they hold only by construction), and

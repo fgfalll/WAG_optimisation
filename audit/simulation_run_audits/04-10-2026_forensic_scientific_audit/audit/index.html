@@ -3111,7 +3111,7 @@
 <ul>
 <li><strong>Date</strong>: <code>04-10-2026</code></li>
 <li><strong>Run ID</strong>: <code>SIM-AUDIT-04-10-2026-01</code></li>
-<li><strong>Run Type</strong>: Reproducible numerical verification campaign (17 standalone scripts) + full pytest/coverage
+<li><strong>Run Type</strong>: Reproducible numerical verification campaign (18 standalone scripts) + full pytest/coverage
   static-analysis toolchain. <strong>Audit-only: no source code was modified.</strong></li>
 <li><strong>Engine</strong>: <code>core/engine_surrogate</code> (<code>SurrogateEngineWrapper</code> + <code>FastProfileGenerator</code>), production default
   <code>recovery_model_type = "hybrid"</code>, 10-year run, monthly time base, <code>T = 180 °F</code>.</li>
@@ -3119,6 +3119,23 @@
 <li><strong>Simulation Duration</strong>: <code>10 years</code> (monthly)</li>
 <li><strong>Verdict</strong>: <strong><code>FLAGGED</code></strong></li>
 </ul>
+<blockquote>
+<p><strong>Post-run refresh (04-10-2026, after commits <code>a68fc35</code> / <code>9d252ce</code>).</strong> The verdict and every
+physics number above are unchanged — no scientific code was touched. Three <em>software</em> facts did
+change and are recorded here rather than silently edited into the tables below:
+1. <strong>HIGH-10 RESOLVED</strong> — the missing <code>QIcon</code> import was added at
+   <code>ui/widgets/fault_geometry_visualizer_widget.py:19</code>; <code>pytest tests/ -q</code> now returns
+   <strong><code>0 failed / 333 passed / 23 skipped</code></strong>, so the <code>AGENTS.md</code> invariant #5 gate
+   (<code>tests/test_project_save_load.py</code>) is green again.
+2. <strong>HIGH-19 NEW</strong> — re-running ruff found two undefined names in the new workbench code
+   (<code>pyvista_reservoir_canvas.py:974</code> <code>has_active_fault</code>, <code>subsurface_data_viewer_widget.py:335</code>
+   <code>QToolTip</code>). One is swallowed by <code>except Exception</code> and silently blanks the 3-D caprock view;
+   the other raises in an unguarded Qt slot. Neither is reached by any test, so <strong>0 failures and
+   two reachable <code>NameError</code>s coexist</strong> — which is precisely the HIGH-18 point.
+3. <strong>Register size 52 → 53</strong> (13 CRITICAL / 19 HIGH / 16 MEDIUM / 5 LOW), re-derived by
+   <code>evidence_scripts/v_recount.py</code> (53 IDs parsed, 0 missing). Ruff is now <code>3244 / 191</code> with
+   <code>F821 6</code> (was <code>3132 / 192</code>, <code>F821 5</code>).</p>
+</blockquote>
 <hr />
 <h2 id="executive-summary-operational-proposal">Executive Summary &amp; Operational Proposal<a class="headerlink" href="#executive-summary-operational-proposal" title="Permanent link">&para;</a></h2>
 <h3 id="verdict-rationale">Verdict Rationale<a class="headerlink" href="#verdict-rationale" title="Permanent link">&para;</a></h3>
@@ -3255,8 +3272,8 @@
 </tr>
 <tr>
 <td style="text-align: left;">pytest (full suite)</td>
-<td style="text-align: left;"><code>4 failed / 329 passed / 23 skipped</code></td>
-<td style="text-align: left;">all 4 failures = one <code>QIcon</code> import (HIGH-10)</td>
+<td style="text-align: left;"><em>(baseline)</em> <code>4 failed / 329 passed / 23 skipped</code> → <strong>refresh 04-10-2026: <code>0 failed / 333 passed / 23 skipped</code></strong></td>
+<td style="text-align: left;">all 4 baseline failures = one <code>QIcon</code> import (<strong>HIGH-10, RESOLVED</strong>)</td>
 </tr>
 <tr>
 <td style="text-align: left;">pytest (<code>tests/scientific</code>)</td>
@@ -3270,8 +3287,8 @@
 </tr>
 <tr>
 <td style="text-align: left;">Ruff</td>
-<td style="text-align: left;"><code>3132</code> findings / <code>192</code> files (F821 5, F811 5, F401 345, F841 77)</td>
-<td style="text-align: left;">MED-13</td>
+<td style="text-align: left;"><em>(baseline)</em> <code>3132</code> findings / <code>192</code> files (F821 5, F811 5, F401 345, F841 77) → <strong>refresh: <code>3244</code> / <code>191</code> (F821 6, F811 7, F401 329, F841 85)</strong></td>
+<td style="text-align: left;">MED-13; the 2 new <code>F821</code> are <strong>HIGH-19</strong></td>
 </tr>
 </tbody>
 </table>
@@ -3361,7 +3378,7 @@ corrected accordingly.</p>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;">Reproducible evidence scripts (17)</td>
+<td style="text-align: left;">Reproducible evidence scripts (18)</td>
 <td style="text-align: left;"><a href="evidence_scripts/"><code>evidence_scripts/</code></a></td>
 </tr>
 <tr>
@@ -3397,8 +3414,12 @@ corrected accordingly.</p>
 <td style="text-align: left;"><a href="../evidence_scripts/v_tests2.py"><code>evidence_scripts/v_tests2.py</code></a></td>
 </tr>
 <tr>
-<td style="text-align: left;">Register cross-tab derivation (52 findings)</td>
+<td style="text-align: left;">Register cross-tab derivation (52 findings, superseded)</td>
 <td style="text-align: left;"><a href="../evidence_scripts/v_counts2.py"><code>evidence_scripts/v_counts2.py</code></a></td>
+</tr>
+<tr>
+<td style="text-align: left;">Register self-count, current (<strong>53</strong> findings)</td>
+<td style="text-align: left;"><a href="../evidence_scripts/v_recount.py"><code>evidence_scripts/v_recount.py</code></a></td>
 </tr>
 <tr>
 <td style="text-align: left;">Master flaw register</td>
@@ -3427,7 +3448,7 @@ corrected accordingly.</p>
 </tbody>
 </table>
 <blockquote>
-<p><strong>Note on file-name collision:</strong> <code>../../../audit/scientific_flaws.md</code> (this audit's register, 52 findings) is a
+<p><strong>Note on file-name collision:</strong> <code>../../../audit/scientific_flaws.md</code> (this audit's register, <strong>53</strong> findings) is a
 <strong>different file</strong> from <code>agent_wiki/audit/scientific_flaws.md</code> (a prior-session register, 18 SCI-FLAW rows).
 Cross-check between the two is in <code>phd_audit.md</code> PART E.</p>
 </blockquote>
@@ -3435,8 +3456,10 @@ Cross-check between the two is in <code>phd_audit.md</code> PART E.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>.venv<span class="se">\S</span>cripts<span class="se">\p</span>ython.exe<span class="w"> </span>-X<span class="w"> </span>utf8<span class="w"> </span>agent_wiki<span class="se">\a</span>udit<span class="se">\s</span>imulation_run_audits<span class="se">\0</span><span class="m">4</span>-10-2026_forensic_scientific_audit<span class="se">\e</span>vidence_scripts<span class="se">\v</span>_hcpvi.py
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>.venv<span class="se">\S</span>cripts<span class="se">\p</span>ython.exe<span class="w"> </span>-X<span class="w"> </span>utf8<span class="w"> </span>...<span class="se">\e</span>vidence_scripts<span class="se">\v</span>_engine.py
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>.venv<span class="se">\S</span>cripts<span class="se">\p</span>ython.exe<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests<span class="se">\s</span>cientific<span class="w"> </span>-q<span class="w">          </span><span class="c1"># 36 passed</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>.venv<span class="se">\S</span>cripts<span class="se">\p</span>ython.exe<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests<span class="se">\ </span>-q<span class="w">                    </span><span class="c1"># 4 failed / 329 passed / 23 skipped</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>.venv<span class="se">\S</span>cripts<span class="se">\p</span>yan3.exe<span class="w"> </span>...<span class="w">                                      </span><span class="c1"># 959 nodes / 2225 edges</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>.venv<span class="se">\S</span>cripts<span class="se">\p</span>ython.exe<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests<span class="se">\ </span>-q<span class="w">                    </span><span class="c1"># refresh: 0 failed / 333 passed / 23 skipped (baseline: 4 failed / 329 passed / 23 skipped)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>.venv<span class="se">\S</span>cripts<span class="se">\p</span>ython.exe<span class="w"> </span>-X<span class="w"> </span>utf8<span class="w"> </span>...<span class="se">\e</span>vidence_scripts<span class="se">\v</span>_recount.py<span class="w">   </span><span class="c1"># register self-count: 53 findings, 0 IDs unparsed</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>.venv<span class="se">\S</span>cripts<span class="se">\r</span>uff.exe<span class="w"> </span>check<span class="w"> </span>.<span class="w"> </span>--output-format<span class="w"> </span>json<span class="w"> </span>--no-cache<span class="w">       </span><span class="c1"># refresh: 3244 diagnostics, F821 6</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>.venv<span class="se">\S</span>cripts<span class="se">\p</span>yan3.exe<span class="w"> </span>...<span class="w">                                      </span><span class="c1"># 959 nodes / 2225 edges</span>
 </span></code></pre></div>
 <hr />
 <h2 id="categorical-separation-no-composite-score-is-issued">Categorical Separation (no composite score is issued)<a class="headerlink" href="#categorical-separation-no-composite-score-is-issued" title="Permanent link">&para;</a></h2>
@@ -3450,7 +3473,7 @@ Cross-check between the two is in <code>phd_audit.md</code> PART E.</p>
 <tbody>
 <tr>
 <td style="text-align: left;"><strong>SOFTWARE CORRECTNESS</strong></td>
-<td style="text-align: left;">Runs and fails loudly at the boundary; 4 test failures share one root cause; data-flow defects (dead constraints, inert genes, wrong profile keys) dominate.</td>
+<td style="text-align: left;">Runs and fails loudly at the boundary; the 4 baseline test failures shared one root cause and are now fixed (<strong>HIGH-10 RESOLVED</strong>, <code>0 failed / 333 passed</code>), but two new undefined names in <code>ui/workbench/</code> are reachable and untested (<strong>HIGH-19</strong>); data-flow defects (dead constraints, inert genes, wrong profile keys) dominate.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>NUMERICAL STABILIZATION</strong></td>

@@ -92,7 +92,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#top-52-traps-common-pitfalls-for-ai-agents" class="md-skip">
+        <a href="#top-53-traps-common-pitfalls-for-ai-agents" class="md-skip">
           Skip to content
         </a>
       
@@ -1676,6 +1676,15 @@
   <a href="#52-assuming-wiki-stated-invariants-are-enforced-by-code" class="md-nav__link">
     <span class="md-ellipsis">
       52. Assuming Wiki-Stated Invariants Are Enforced by Code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#53-treating-a-fixed-defect-as-a-fixed-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      53. Treating a Fixed Defect as a Fixed Class
     </span>
   </a>
   
@@ -3983,6 +3992,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#53-treating-a-fixed-defect-as-a-fixed-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      53. Treating a Fixed Defect as a Fixed Class
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4001,18 +4019,18 @@
   
 
 
-<h1 id="top-52-traps-common-pitfalls-for-ai-agents">Top 52 Traps &amp; Common Pitfalls for AI Agents<a class="headerlink" href="#top-52-traps-common-pitfalls-for-ai-agents" title="Permanent link">&para;</a></h1>
+<h1 id="top-53-traps-common-pitfalls-for-ai-agents">Top 53 Traps &amp; Common Pitfalls for AI Agents<a class="headerlink" href="#top-53-traps-common-pitfalls-for-ai-agents" title="Permanent link">&para;</a></h1>
 <p>This document highlights the most frequent misconceptions, resolved gotchas, and traps encountered when working with this codebase.</p>
 <blockquote>
 <p>[!IMPORTANT]
-<strong>Read first — 2026-10-04 independent audit.</strong> This list predates an audit that registered <strong>52 open findings
-(13 CRITICAL, 18 HIGH, 16 MEDIUM, 5 LOW)</strong>, of which only a subset is represented above. Before editing any
+<strong>Read first — 2026-10-04 independent audit.</strong> This list predates an audit that registered <strong>53 findings
+(13 CRITICAL, 19 HIGH, 16 MEDIUM, 5 LOW; 1 already RESOLVED, HIGH-10)</strong>, of which only a subset is represented above. Before editing any
 scientific code, consult:
 - <a href="../../audit/scientific_flaws.md"><code>audit/scientific_flaws.md</code></a> — the master flaw register (severity, category, <code>file:line</code>, evidence, remediation order);
 - <a href="../../res_audit.md"><code>res_audit.md</code></a> — software quality, anti-patterns, toolchain record, change-safety rows;
 - <a href="../../phd_audit.md"><code>phd_audit.md</code></a> — physical/mathematical reconstruction; predictive validity for the active <code>hybrid</code> path is <strong>NOT ESTABLISHED</strong>;
 - <a href="../../audit/parameter_provenance.csv"><code>audit/parameter_provenance.csv</code></a> — 91 parameters; <strong>48 (53 %) are <code>UNKNOWN — EVIDENCE REQUIRED</code></strong>.</p>
-<p>Traps <strong>50–52</strong> below were added from that audit.</p>
+<p>Traps <strong>50–53</strong> below were added from that audit (53 covers HIGH-19, registered 2026-10-04 after the workbench commit).</p>
 </blockquote>
 <hr />
 <h3 id="1-modifying-compositional_engine-expecting-application-results-to-change">1. Modifying <code>compositional_engine</code> Expecting Application Results to Change<a class="headerlink" href="#1-modifying-compositional_engine-expecting-application-results-to-change" title="Permanent link">&para;</a></h3>
@@ -4310,7 +4328,7 @@ scientific code, consult:
 </ul>
 <h3 id="50-treating-a-green-pytest-as-analytical-verification">50. Treating a Green <code>pytest</code> as Analytical Verification<a class="headerlink" href="#50-treating-a-green-pytest-as-analytical-verification" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Trap</strong>: Reading <code>36 passed</code> in <code>tests/scientific/</code> (or <code>329 passed</code> overall) as evidence that the physics is verified.</li>
+<li><strong>Trap</strong>: Reading <code>36 passed</code> in <code>tests/scientific/</code> (or <code>333 passed / 0 failed</code> overall) as evidence that the physics is verified.</li>
 <li><strong>Reality</strong>: 5 of the 36 scientific tests import production symbols they <strong>never call</strong> — <code>test_koval_fractional_flow_mobility_monotonicity</code> imports <code>FastProfileGenerator</code> and then re-derives <code>profile_generator_fast.py:958-969</code> by hand at <code>:38-46</code> — and 3 tests assert <strong>that a defect exists</strong> (<code>step &gt; 0.40</code>, <code>eff_high_sgc &lt; eff_low_sgc</code>, <code>truncation_fraction &gt; 0.20</code>), so <em>fixing</em> the physics turns the suite red. 6 more never import production code at all. Consequence: the <em>Analytical Verification</em> rung of the evidence hierarchy reports PASS for items where the test either restates the code or pins the wrong answer. <strong>HIGH-18.</strong></li>
 <li><strong>Rule</strong>: Before trusting any test, confirm it (a) executes the symbol under test, (b) asserts the physically correct value, and (c) would fail if the defect were introduced <em>or</em> removed.</li>
 </ul>
@@ -4325,6 +4343,12 @@ scientific code, consult:
 <li><strong>Trap</strong>: Reading <code>README.md</code> invariants #3/#10 (mass conservation, closed-loop carbon accounting) as runtime guarantees.</li>
 <li><strong>Reality</strong>: <span class="arithmatex">\(M_{\text{recycled}} \le M_{\text{produced}}\)</span> holds <strong>by construction</strong>, not by enforcement — recycled is capped as <code>min(prod·η_recycle, inj)</code> at <code>optimisation_engine.py:871-872</code>, so no code asserts it; and the second half is uncheckable because <code>total_leakage_tonne ≡ 0.0</code> (CRIT-10, HIGH-05) while <code>cum_stored = inj − prod</code> (<code>surrogate_engine.py:543</code>) <strong>ignores leakage entirely</strong>. Measured on a 10-yr run: inj 36 525 000 MSCF = purchased 34 994 496 + recycled 1 530 504 (exact) ✓.</li>
 <li><strong>Rule</strong>: An invariant that cannot be violated is not an invariant that has been tested. Distinguish <em>holds by construction</em> from <em>asserted</em> — see <code>res_audit.md</code> §2.4.</li>
+</ul>
+<h3 id="53-treating-a-fixed-defect-as-a-fixed-class">53. Treating a Fixed Defect as a Fixed Class<a class="headerlink" href="#53-treating-a-fixed-defect-as-a-fixed-class" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Trap</strong>: Reading <code>333 passed / 0 failed</code> (and the HIGH-10 fix) as "the missing-import problem is gone".</li>
+<li><strong>Reality</strong>: HIGH-10 was one missing <code>from PyQt6.QtGui import QIcon</code>. Two commits later the <strong>same defect class</strong> is back in <code>ui/workbench/</code>: <code>pyvista_reservoir_canvas.py:974</code> uses <code>has_active_fault</code>, which is bound nowhere in the repository, and <code>subsurface_data_viewer_widget.py:335</code> uses <code>QToolTip</code>, which is never imported. The first is swallowed by <code>except Exception</code> at <code>:1272</code>, so the 3-D caprock view silently renders nothing when the checkbox (turned on automatically by the <code>caprock</code> / <code>caprock_3d</code> tree entries at <code>subsurface_workbench_widget.py:755</code>, <code>:784</code>) is enabled; the second raises inside the <code>btn_copy_table.clicked</code> slot, which has no guard. Neither is reached by any test, so the suite still reports 0 failures. <strong>HIGH-19.</strong></li>
+<li><strong>Rule</strong>: <code>F821</code> is a release gate, not a lint preference — run <code>ruff check --select F821</code> before committing UI code, and never close a defect without asking whether the <em>pattern</em> still exists elsewhere. Note the counter-example: <code>F821</code> on <code>petrophysical_distribution.py:404</code> (<code>prev_field</code>) is a <strong>false positive</strong> (bound at <code>:405</code>, read only under <code>if k &gt; 0</code>) — see <code>audit/scientific_flaws.md</code> §6; a blanket "fix every F821" rule would corrupt working control flow.</li>
 </ul>
 
 
