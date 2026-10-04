@@ -115,7 +115,7 @@ This document catalogs logic, equations, and code paths that are mathematically 
 - **Consequence**: The header value reported to the user as "Final Optimized NPV" is roughly half ($0.51\times$) of the true project NPV because `_calculate_breakthrough_economic_impact()` applies an ad-hoc multiplier $\in [0.5, 1.2]$ to the financial NPV and the result is mislabeled as NPV rather than "Objective Fitness Score".
 - **Severity**: Critical (Causes a 50% discrepancy in reported project financial value; violates standard financial math by scaling discounted cash flows with an arbitrary scalar).
 - **Status**: Open.
-- **Recommended fix**: Model breakthrough economic consequences directly through actual fluid cash flows (water/gas processing costs and separator upgrade capex in `_calculate_engine_npv`), do not multiply cash-flow NPV by arbitrary factors, and clearly label `objective_function_value` as "Optimizer Fitness" rather than "NPV".
+- **Recommended fix**: Model breakthrough economic consequences directly through actual fluid cash flows (water/gas processing costs and separator upgrade capex in the inline NPV block at `core/engine_surrogate/surrogate_models.py:507-530` — corrected 2026-10-04: `_calculate_engine_npv` does not exist, grep → 0 hits), do not multiply cash-flow NPV by arbitrary factors, and clearly label `objective_function_value` as "Optimizer Fitness" rather than "NPV".
 
 ---
 
@@ -336,7 +336,7 @@ This document catalogs logic, equations, and code paths that are mathematically 
 - **Observed Defect**:
   - The optimizer selects `pressure` as an unconstrained decision variable (pinned to the upper search bound $4,450\text{ psia}$ in run `Export-hybrid-ga-bo-20260917-115129`).
   - This $4,450\text{ psia}$ is fed directly to `AnalyticalSurrogate.predict()` and `PhDHybridSurrogate.calculate_recovery()`, maximizing ultimate recovery ($RF = 41.47\%$) and driving miscibility weight $\omega \approx 1.0$.
-  - However, the 0D material balance tank ODE (`_solve_pressure_ode_stiff`) calculates in-situ reservoir pressure independently based on voidage replacement and fluid compressibility, simulating dynamic pressures between $3,080\text{ psia}$ and $3,335\text{ psia}$ across the entire 15-year life.
+  - However, the 0D material balance tank ODE (then `_solve_pressure_ode_stiff`; **superseded 2026-10-04 — removed from the codebase, grep → 0 hits; replaced by the inline damped increment in `evaluate_scenario()`**) calculates in-situ reservoir pressure independently based on voidage replacement and fluid compressibility, simulating dynamic pressures between $3,080\text{ psia}$ and $3,335\text{ psia}$ across the entire 15-year life.
   - At no point during the 15-year project does the simulated reservoir ever reach $4,450\text{ psia}$ (the actual maximum is $3,478\text{ psia}$ post-shut-in).
 - **Consequence**: Recovery factor and displacement efficiency are evaluated under a phantom high-pressure regime that is completely decoupled by $\sim 1,350\text{ psi}$ from the actual reservoir depletion state.
 - **Status**: Open.
@@ -393,7 +393,7 @@ The following modules, functions, and mathematical derivations were rigorously r
 3. **Koval Heterogeneity & Viscosity Ratio Derivations**:
    - Heterogeneity factor $H = 1/(1-V_{DP})^2$ and effective viscosity ratio $E_{\text{eff}} = (0.78 + 0.22 M^{0.25})^4$ accurately reproduce Koval (1963) SPE-145-PA equations.
 4. **Stiff 0D Tank Pressure ODE Integration**:
-   - `_solve_pressure_ode_stiff()` using Backward Differentiation Formulas (BDF) successfully eliminates explicit Euler numerical oscillations.
+   - *(superseded 2026-10-04)* The then-`_solve_pressure_ode_stiff()` BDF integrator was subsequently removed along with `solve_ivp` (grep → 0 hits); the current path is the inline damped explicit increment $dP = q\Delta t/(V_p c_t + J_{\text{eff}}\Delta t)$ with a $\pm450\text{ psi/step}$ limiter. The oscillation risk it was introduced to remove still applies to the explicit form whenever the limiter binds.
 5. **Analytical MMP Published Correlations**:
    - Yellig & Metcalfe (1980) pure CO₂ polynomial coefficients verified against SPE-7477-PA.
    - Yuan et al. (2005) multi-component MMP coefficients verified against SPE-89359-PA with corrected intercept ($1.356$).

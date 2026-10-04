@@ -46,7 +46,7 @@ This document details the **4 remaining active duplicate subsystems**, highlight
 ### Duplicate 4: CO₂ Trapping & Material Balance
 - **Implementation A**: [analysis/material_balance.py](file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py) (`MaterialBalanceTracker`)
   - *Details*: Post-run material balance calculation for UI charts. Contains the double-subtraction defect for recycled CO₂.
-- **Implementation B**: [core/engine_surrogate/surrogate_engine.py](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py) (`_calculate_co2_purchased_recycled`)
+- **Implementation B**: [core/engine_surrogate/surrogate_engine.py](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py) (inline purchased/recycled split at `:592-596`, `:607-614` — corrected 2026-10-04: there is no `_calculate_co2_purchased_recycled` method, grep → 0 hits)
   - *Details*: Real-time mass calculation used to drive cash flows and storage metrics during optimization.
 - **Active Runtime Choice**: `surrogate_engine.py` is authoritative for optimization; `material_balance.py` is for post-processing.
 - **Recommendation**: Correct `analysis/material_balance.py` to match the mass accounting of `surrogate_engine.py`.

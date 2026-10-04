@@ -2,7 +2,23 @@
 
 ## 1. Test Suite Architecture
 
-The dedicated scientific verification test suite is located in `tests/scientific/`. It comprises **42 test items across 16 subdirectories**, organized strictly by scientific verification discipline.
+The dedicated scientific verification test suite is located in `tests/scientific/`. It comprises **36 test items across 15 subdirectories**, organized strictly by scientific verification discipline.
+
+> [!CAUTION]
+> **Regenerated 2026-10-04 (MED-16).** The previous version of this page declared **42 items across 16 subdirectories**
+> and listed tests that do not exist. Ground truth is now `pytest --collect-only tests/scientific`:
+>
+> | Check | Value |
+> |---|---|
+> | Collected test functions | **36** (was claimed: 42) |
+> | Subdirectories | **15** (was claimed: 16) |
+> | Listed here but **absent from `tests/`** | **6** — marked `REMOVED` in the verdict column |
+> | Renamed since the table was written | 1 (`…_mobility_inversion` → `…_mobility_monotonicity`) |
+> | Present but previously unlisted | 2 (`test_profile_generator_co2_breakthrough_gas_rate_increases_with_mobility`, `test_alston_impurity_mmp_trend`) |
+>
+> **Read verdicts with care (HIGH-18).** Three of these tests assert *that a defect exists* rather than the
+> physically correct value, and five import production symbols they never call. A `PASSED` result for those items
+> is **not** analytical verification. See `res_audit.md` §1.4 and `audit/scientific_flaws.md` HIGH-18.
 
 ---
 
@@ -15,17 +31,17 @@ The dedicated scientific verification test suite is located in `tests/scientific
 | | `test_arps_rate_cumulative_derivative_identity` | $\frac{d}{dt}[N_p(t)] \equiv q(t)$ (SymPy) | `analytical_models.py:410` | **VERIFIED** |
 | | `test_v_dp_near_unity_singularity` | $H_k = 10^{V_{DP}/(1-V_{DP})^2}$ as $V_{DP} \to 0.999$ | `surrogate_models.py:125` | **VERIFIED** |
 | | `test_cronquist_mmp_singularity_at_55_api` | Published Cronquist (1978) $P_{MMP} = 15.988 \cdot T_F^Y$ with $MW_{C5+} = 4247.986 \cdot \text{API}^{-0.87}$ at $\text{API} \ge 55^\circ$ | `evaluation/mmp.py:115` | **VERIFIED** |
-| | `test_mobility_ratio_unit_limit_singularity` | $M \to 1.0$ limit in Craig sweep | `surrogate_models.py:175` | **CONTRADICTED BY TEST (SCI-FLAW-16)** |
+| | `test_mobility_ratio_unit_limit_singularity` | $M \to 1.0$ limit in Craig sweep | `surrogate_models.py:175` | **PASSES, BUT ASSERTS THE DEFECT** — `assert step > 0.40` pins the 48 % cliff (HIGH-02). Not verification. |
 | **`physics/`** | `test_oil_compressibility_positivity` | $c_o = -\frac{1}{B_o}\frac{\partial B_o}{\partial P} > 0$ | `data_integration_engine.py:347, 433` | **VERIFIED [RESOLVED: SCI-FLAW-02]** |
 | | `test_liquid_viscosity_pressure_derivative` | $\frac{\partial\mu_o}{\partial P} > 0$ and $\frac{\partial\mu_g}{\partial P} > 0$ | `data_integration_engine.py:349, 352, 437, 443` | **VERIFIED [RESOLVED: SCI-FLAW-03]** |
-| | `test_co2_density_thermal_expansion` | $\frac{\partial\rho}{\partial T} < 0$ (Isobaric expansion) | `unified_engine/co2_properties.py:140` | **CONTRADICTED BY TEST (SCI-FLAW-04)** |
-| | `test_cubic_eos_z_factor_bounds` | $Z_L \in [0.01, 0.40]$, $Z_V \in [0.70, 1.20]$ | `unified_engine/eos/__init__.py:180` | **VERIFIED** |
-| | `test_phase_label_assignment` | $Z < 0.8 \implies \text{Liquid}$, $Z \ge 0.8 \implies \text{Vapor}$ | `unified_engine/eos/__init__.py:195` | **CONTRADICTED BY TEST (SCI-FLAW-08)** |
-| | `test_peng_robinson_fugacity_equation_structure`| $\ln\phi_i$ includes $2\sqrt{2}B$ denominator term | `unified_engine/eos/__init__.py:206` | **CONTRADICTED BY TEST (SCI-FLAW-18)** |
-| | `test_corey_relative_permeability_bounds` | $k_{ro}(S_{wi}) = k_{ro}^0$, $k_{ro}(1 - S_{or}) = 0$ | `unified_engine/relative_permeability.py` | **VERIFIED** |
-| | `test_bg_discrepancy_between_modules` | $B_g \approx 0.5\text{ RB/MSCF}$ vs $5.0\text{ RB/MSCF}$ | `optimisation_engine.py:98` | **CONTRADICTED BY TEST (SCI-FLAW-12)** |
+| | `test_co2_density_thermal_expansion` | $\frac{\partial\rho}{\partial T} < 0$ (Isobaric expansion) | `unified_engine/co2_properties.py:140` — **path deleted** | **REMOVED — TEST DOES NOT EXIST** (0 hits in `tests/`); the cited module is deleted too. No test enforces this (MED-16). |
+| | `test_cubic_eos_z_factor_bounds` | $Z_L \in [0.01, 0.40]$, $Z_V \in [0.70, 1.20]$ | `unified_engine/eos/__init__.py:180` — **path deleted** | **REMOVED — TEST DOES NOT EXIST** (0 hits in `tests/`) (MED-16). |
+| | `test_phase_label_assignment` | $Z < 0.8 \implies \text{Liquid}$, $Z \ge 0.8 \implies \text{Vapor}$ | `unified_engine/eos/__init__.py:195` — **path deleted** | **REMOVED — TEST DOES NOT EXIST** (0 hits in `tests/`) (MED-16). |
+| | `test_peng_robinson_fugacity_equation_structure`| $\ln\phi_i$ includes $2\sqrt{2}B$ denominator term | `unified_engine/eos/__init__.py:206` — **path deleted** | **REMOVED — TEST DOES NOT EXIST** (0 hits in `tests/`) (MED-16). |
+| | `test_corey_relative_permeability_bounds` | $k_{ro}(S_{wi}) = k_{ro}^0$, $k_{ro}(1 - S_{or}) = 0$ | `unified_engine/relative_permeability.py` — **path deleted** (`core/engine_surrogate/relative_permeability.py` exists but is not in the evaluation path — MED-05) | **REMOVED — TEST DOES NOT EXIST** (0 hits in `tests/`) (MED-16). |
+| | `test_bg_discrepancy_between_modules` | $B_g \approx 0.5\text{ RB/MSCF}$ vs $5.0\text{ RB/MSCF}$ | `optimisation_engine.py:98` (constant now at `:85`) | **REMOVED — TEST DOES NOT EXIST** (0 hits in `tests/`), yet the underlying defect is **worse than described**: the active `pvt_state` $B_g$ is 31.7× below textbook (**CRIT-04**, measured `model/textbook = 0.032` at all pressures). No test guards it. |
 | **`conservation/`** | `test_cumulative_oil_recovery_mass_bound` | $N_p(\infty) \le \text{OOIP} \cdot \frac{1 - S_{wi} - S_{or}}{1 - S_{wi}}$ | `surrogate_models.py:510` | **VERIFIED** |
-| | `test_pore_volume_vs_ooip_recovery_bound_discrepancy` | $RF \le 1 - S_{wi} - S_{or}$ (Pore vol vs OOIP bound) | `analytical_models.py:881` | **CONTRADICTED BY TEST (SCI-FLAW-11)** |
+| | `test_pore_volume_vs_ooip_recovery_bound_discrepancy` | $RF \le 1 - S_{wi} - S_{or}$ (Pore vol vs OOIP bound) | `analytical_models.py:881` — **never imported by this test** | **PASSES, BUT ASSERTS THE DEFECT** — `assert truncation_fraction > 0.20`, with the "code" value hard-coded rather than read from source; cannot detect a fix (SCI-FLAW-11, HIGH-18). |
 | | `test_closed_loop_carbon_balance_invariant` | $\sum M_{\text{inj}} = \sum M_{\text{purchased}} + \sum M_{\text{recycled}}$ | `surrogate_engine.py:460` | **VERIFIED** |
 | | `test_material_balance_analyzer_closed_loop` | $M_{\text{stored}} = \sum q_{\text{inj}} - \sum q_{\text{prod}}$ | `material_balance.py:75` | **VERIFIED** |
 | **`limiting_cases/`** | `test_zero_permeability_limit` | $k = 0 \implies q_o = 0, q_{\text{inj}} = 0$ | `surrogate_engine.py:340` | **VERIFIED** |
@@ -33,7 +49,7 @@ The dedicated scientific verification test suite is located in `tests/scientific
 | | `test_asymptotic_recovery_limit` | $\lim_{t \to \infty} q_o(t) = 0$, $N_p \le \text{EUR}$ | `profile_generator_fast.py:320` | **VERIFIED** |
 | | `test_miscibility_weight_limiting_bounds` | $\omega(P \le P_{\text{min}}) = 0$, $\omega(P \ge \text{MMP}) = 1$ | `recovery_models.py:120` | **VERIFIED** |
 | **`symmetry/`** | `test_pattern_symmetry_five_spot` | $\mathcal{R}_{\pi/2}$ 5-spot grid symmetry invariance | `surrogate_models.py:310` | **VERIFIED** |
-| **`dimensional/`** | `test_darcy_inflow_dimensions` | $[q] = [L^3/T]$, $[J] = [L^4 T / M]$ (Pint) | `surrogate_engine.py:330` | **VERIFIED** |
+| **`dimensional/`** | `test_darcy_inflow_dimensions` | $[q] = [L^3/T]$, $[J] = [L^4 T / M]$ (Pint) | `surrogate_engine.py:330` — **never imported by this test** | **VERIFIED (unit homogeneity only)** — the test invents `J = 2.0·J_unit` locally; it does not execute engine code (HIGH-18). |
 | | `test_tank_material_balance_pressure_increment_dimensions` | $[\Delta P] = [M / L / T^2]$ (Pint) | `surrogate_engine.py:405` | **VERIFIED** |
 | | `test_co2_mass_conversion_factor` | $1\text{ MSCF CO}_2 = 0.05299\text{ tonne}$ (Pint) | `surrogate_models.py:26` | **VERIFIED** |
 | **`boundary_conditions/`**| `test_epa_class_vi_pressure_ceiling_enforcement` | $P_{\text{sandface}} \le 0.90 P_{\text{frac}}$ | `surrogate_engine.py:343` | **VERIFIED** |
@@ -42,9 +58,11 @@ The dedicated scientific verification test suite is located in `tests/scientific
 | **`numerical/`** | `test_pressure_oscillation_under_dynamic_injection` | $\Delta^2 P$ non-oscillatory under smooth injection | `surrogate_engine.py:410` | **VERIFIED** |
 | **`convergence/`** | `test_temporal_refinement_convergence` | Refinement sensitivity: monthly vs weekly $< 5\%$ | `surrogate_engine.py:180` | **VERIFIED** |
 | **`solver/`** | `test_pressure_material_balance_discrete_residual` | $\|(V_p c_t + J_{\text{eff}}\Delta t)\Delta P - q_{\text{net}}\Delta t\| \le 10^{-12}$ | `surrogate_engine.py:405` | **VERIFIED** |
-| **`co2/`** | `test_koval_fractional_flow_mobility_inversion`| $\partial F_{\text{CO2}} / \partial M > 0$ | `profile_generator_fast.py:895`| **CONTRADICTED BY TEST (SCI-FLAW-01)** |
-| | `test_inverted_critical_gas_trapping` | $\text{Trapping} = 1.0 - S_{gc}$ | `surrogate_models.py:238` | **CONTRADICTED BY TEST (SCI-FLAW-17)** |
+| **`co2/`** | `test_koval_fractional_flow_mobility_monotonicity` *(renamed; was `…_mobility_inversion`)* | $\partial F_{\text{CO2}} / \partial M > 0$ | `profile_generator_fast.py:958-969` (was `:895`) | **VERIFIED — SCI-FLAW-01 RESOLVED**, but **not by this test**: the test imports `FastProfileGenerator` and never calls it, re-deriving the formula inline at `:38-46` (HIGH-18). The resolution rests on the source read. |
+| | `test_profile_generator_co2_breakthrough_gas_rate_increases_with_mobility` *(previously unlisted)* | $M \uparrow \Rightarrow q_{\text{CO2,post-BT}} \uparrow$ | `profile_generator_fast.py::_generate_gas_profile` | **VERIFIED** — genuinely executes production code. |
+| | `test_inverted_critical_gas_trapping` | $\text{Trapping} = 1.0 - S_{gc}$ | `surrogate_models.py:238` | **PASSES, BUT ASSERTS THE DEFECT** — `assert eff_high_sgc < eff_low_sgc` enshrines the inverted trapping law (HIGH-15, SCI-FLAW-17). |
 | | `test_yuan_impurity_mmp_trend` | $\text{MMP}(\text{pure CO}_2) < \text{MMP}(\text{CO}_2 + \text{CH}_4)$ | `evaluation/mmp.py:310` | **VERIFIED** |
+| | `test_alston_impurity_mmp_trend` *(previously unlisted)* | Alston et al. (1985) impurity trend | `evaluation/mmp.py` | **VERIFIED** |
 | | `test_standing_bo_as_api_estimator` | $B_o$ correlated to API gravity | `evaluation/mmp.py:240` | **VERIFIED** |
 | **`reference_solutions/`**| `test_independent_welge_reference_solution` | Welge tangent benchmark error $< 1.0\%$ | `reference_solutions/` | **VERIFIED** |
 | | `test_analytical_vs_trapezoidal_arps_eur` | Analytical Arps EUR benchmark error $< 0.1\%$ | `reference_solutions/` | **VERIFIED** |

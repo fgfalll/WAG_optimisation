@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
     QDialog, QListWidget, QListWidgetItem,
     QSizePolicy, QCheckBox, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QRadioButton, QHeaderView, QApplication, QSplitter, QComboBox, QFormLayout,
-    QDoubleSpinBox, QScrollArea, QFrame
+    QDoubleSpinBox, QScrollArea, QFrame, QStackedWidget
 )
 from PyQt6.QtGui import QIcon, QPixmap, QColor
 from PyQt6.QtCore import pyqtSignal, Qt, QLocale, QEvent
@@ -85,6 +85,18 @@ try:
 except ImportError:
     DATA_INTEGRATION_AVAILABLE = False
     logging.warning("DataIntegrationEngine not available. Engine integration will be limited.")
+
+try:
+    from ui.workbench import SubsurfaceWorkbenchWidget
+    WORKBENCH_AVAILABLE = True
+except ImportError:
+    try:
+        from .workbench import SubsurfaceWorkbenchWidget
+        WORKBENCH_AVAILABLE = True
+    except ImportError as e:
+        WORKBENCH_AVAILABLE = False
+        SubsurfaceWorkbenchWidget = None
+        logging.warning(f"SubsurfaceWorkbenchWidget not available: {e}")
 
 
 logger = logging.getLogger(__name__)
@@ -367,8 +379,18 @@ class DataManagementWidget(QWidget):
         self._update_calculated_eor_params()
 
     def _setup_ui(self):
-        main_layout = QHBoxLayout(self)
-        main_layout.setContentsMargins(4, 4, 4, 4)
+        root_layout = QVBoxLayout(self)
+        root_layout.setContentsMargins(0, 0, 0, 0)
+        root_layout.setSpacing(0)
+
+        # Legacy view mode controls retained in background for test/backward compatibility
+        self.btn_view_workbench = QPushButton("3D Subsurface Studio")
+        self.btn_view_classic = QPushButton("Classic Split-Form")
+
+        # Background Classic Splitter (kept in memory so existing test suites and field dicts work)
+        self.classic_container = QWidget()
+        classic_layout = QHBoxLayout(self.classic_container)
+        classic_layout.setContentsMargins(4, 4, 4, 4)
         splitter = QSplitter(Qt.Orientation.Horizontal)
         
         left_panel = self._create_left_panel()
@@ -382,8 +404,136 @@ class DataManagementWidget(QWidget):
         splitter.setStretchFactor(0, 1)
         splitter.setStretchFactor(1, 1)
         splitter.setSizes([540, 660])
-        
-        main_layout.addWidget(splitter)
+        classic_layout.addWidget(splitter)
+
+        # Primary Modern Subsurface Studio Workbench
+        if WORKBENCH_AVAILABLE and SubsurfaceWorkbenchWidget is not None:
+            self.workbench = SubsurfaceWorkbenchWidget(self, config_manager=self.config_manager)
+            self.workbench.project_data_updated.connect(self._on_workbench_project_data_updated)
+            self.workbench.status_message_updated.connect(self.status_message_updated.emit)
+            root_layout.addWidget(self.workbench, stretch=1)
+        else:
+            self.workbench = None
+            root_layout.addWidget(self.classic_container, stretch=1)
+
+    def _switch_to_workbench_view(self):
+        if not self.workbench:
+            return
+        self.btn_view_workbench.setChecked(True)
+        self.btn_view_classic.setChecked(False)
+        self.btn_view_workbench.setStyleSheet("""
+            QPushButton {
+                background-color: #0d6efd;
+                color: #ffffff;
+                border: 1px solid #0b5ed7;
+                border-radius: 4px;
+                padding: 3px 12px;
+                font-weight: bold;
+                font-size: 11px;
+            }
+            QPushButton:hover {
+                background-color: #0b5ed7;
+            }
+        """)
+        self.btn_view_classic.setStyleSheet("""
+            QPushButton {
+                background-color: #ffffff;
+                color: #475569;
+                border: 1px solid #cbd5e1;
+                border-radius: 4px;
+                padding: 3px 12px;
+                font-size: 11px;
+            }
+            QPushButton:hover {
+                background-color: #e2e8f0;
+                color: #1e293b;
+            }
+        """)
+        self._sync_classic_to_workbench()
+        self.view_stack.setCurrentIndex(0)
+        self.status_message_updated.emit("Switched to 3D Subsurface Studio Workbench", 2500)
+
+    def _switch_to_classic_view(self):
+        self.btn_view_workbench.setChecked(False)
+        self.btn_view_classic.setChecked(True)
+        self.btn_view_classic.setStyleSheet("""
+            QPushButton {
+                background-color: #0d6efd;
+                color: #ffffff;
+                border: 1px solid #0b5ed7;
+                border-radius: 4px;
+                padding: 3px 12px;
+                font-weight: bold;
+                font-size: 11px;
+            }
+            QPushButton:hover {
+                background-color: #0b5ed7;
+            }
+        """)
+        self.btn_view_workbench.setStyleSheet("""
+            QPushButton {
+                background-color: #ffffff;
+                color: #475569;
+                border: 1px solid #cbd5e1;
+                border-radius: 4px;
+                padding: 3px 12px;
+                font-size: 11px;
+            }
+            QPushButton:hover {
+                background-color: #e2e8f0;
+                color: #1e293b;
+            }
+        """)
+        self._sync_workbench_to_classic()
+        self.view_stack.setCurrentIndex(1)
+        self.status_message_updated.emit("Switched to Classic Split-Form View", 2500)
+
+    def _sync_classic_to_workbench(self):
+        if not self.workbench:
+            return
+        all_defs = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS, **self.SURROGATE_TUNING_DEFS}
+        for name, widget in self.manual_inputs_widgets.items():
+            val = widget.get_value()
+            if val is not None:
+                p_type = all_defs.get(name, (None, None, str))[2]
+                try:
+                    self.manual_inputs_values[name] = self._coerce_value(val, p_type)
+                except Exception:
+                    self.manual_inputs_values[name] = val
+        self.workbench.manual_inputs_values.update(self.manual_inputs_values)
+        self.workbench.well_data_list = list(self.well_data_list)
+        if hasattr(self, 'calculated_mmp_value') and self.calculated_mmp_value:
+            self.workbench.calculated_mmp_value = float(self.calculated_mmp_value)
+        self.workbench._refresh_all_views()
+
+    def _sync_workbench_to_classic(self):
+        if not self.workbench:
+            return
+        wb_data = self.workbench.get_current_project_data()
+        self._on_workbench_project_data_updated(wb_data)
+
+    def _on_workbench_project_data_updated(self, payload: Dict[str, Any]):
+        manual = payload.get("manual_inputs", {})
+        self.manual_inputs_values.update(manual)
+        all_defs = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS, **self.SURROGATE_TUNING_DEFS}
+        for name, val in manual.items():
+            if name in self.manual_inputs_widgets and val is not None:
+                try:
+                    p_type = all_defs.get(name, (None, None, str))[2]
+                    self.manual_inputs_widgets[name].set_value(val, emit_signal=False)
+                except Exception:
+                    pass
+
+        self.reservoir_data = payload.get("reservoir_data")
+        self.pvt_properties = payload.get("pvt_properties") or payload.get("pvt_data")
+        self.well_data_list = list(payload.get("well_data_list") or payload.get("wells") or [])
+        if "calculated_mmp" in payload:
+            self.calculated_mmp_value = payload["calculated_mmp"]
+        elif "mmp_value" in payload:
+            self.calculated_mmp_value = payload["mmp_value"]
+
+        self._update_wells_tab_data()
+        self.project_data_updated.emit(self.get_current_project_data())
 
     def _create_left_panel(self) -> QWidget:
         panel = QWidget()
@@ -448,140 +598,19 @@ class DataManagementWidget(QWidget):
         self.right_tab_widget = QTabWidget()
         
         # 1. 3D Subsurface View (Tab 0 - Default on project startup)
+        # 100% PyVista hardware OpenGL — no Matplotlib 3D
+        from ui.workbench.components.pyvista_reservoir_canvas import PyVistaReservoirCanvas
         self.view_3d_widget = QWidget()
         view_3d_layout = QVBoxLayout(self.view_3d_widget)
-        view_3d_layout.setContentsMargins(4, 4, 4, 4)
+        view_3d_layout.setContentsMargins(2, 2, 2, 2)
+        view_3d_layout.setSpacing(0)
 
-        view_3d_layout.setSpacing(4)
-
-        # Toolbar Frame 1 (Camera, Refresh, Features)
-        tb_frame1 = QFrame()
-        tb_frame1.setFrameShape(QFrame.Shape.StyledPanel)
-        tb_frame1.setStyleSheet("QFrame { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 2px; }")
-        tb1_layout = QHBoxLayout(tb_frame1)
-        tb1_layout.setContentsMargins(4, 2, 4, 2)
-        tb1_layout.setSpacing(6)
-
-        lbl_views = QLabel(self.tr("Camera:"))
-        lbl_views.setStyleSheet("font-weight: bold; color: #495057;")
-        tb1_layout.addWidget(lbl_views)
-
-        btn_iso = QPushButton("3D Iso")
-        btn_iso.setToolTip("Switch to 3D isometric view (elev=30, azim=-60)")
-        btn_iso.clicked.connect(lambda: self._set_3d_camera_view(elev=30, azim=-60))
-        tb1_layout.addWidget(btn_iso)
-
-        btn_top = QPushButton("Top (XY)")
-        btn_top.setToolTip("Switch to map view looking down from above (elev=90, azim=-90)")
-        btn_top.clicked.connect(lambda: self._set_3d_camera_view(elev=90, azim=-90))
-        tb1_layout.addWidget(btn_top)
-
-        btn_side = QPushButton("Side (XZ)")
-        btn_side.setToolTip("Switch to side cross-section view (elev=0, azim=0)")
-        btn_side.clicked.connect(lambda: self._set_3d_camera_view(elev=0, azim=0))
-        tb1_layout.addWidget(btn_side)
-
-        btn_refresh_3d = QPushButton(QIcon.fromTheme("view-refresh"), self.tr("Refresh 3D"))
-        btn_refresh_3d.setToolTip(self.tr("Re-render 3D Subsurface Model"))
-        btn_refresh_3d.clicked.connect(self._render_3d_subsurface_view)
-        tb1_layout.addWidget(btn_refresh_3d)
-
-        tb1_layout.addSpacing(6)
-        self.toggle_perfs_chk = QCheckBox(self.tr("Perfs"))
-        self.toggle_perfs_chk.setToolTip(self.tr("Highlight perforation intervals in gold"))
-        self.toggle_perfs_chk.setChecked(True)
-        self.toggle_perfs_chk.toggled.connect(self._render_3d_subsurface_view)
-        tb1_layout.addWidget(self.toggle_perfs_chk)
-
-        self.toggle_vectors_chk = QCheckBox(self.tr("Sweep"))
-        self.toggle_vectors_chk.setChecked(True)
-        self.toggle_vectors_chk.setToolTip(self.tr("Show 3D inter-well sweep vectors colored by vertical perforation overlap"))
-        self.toggle_vectors_chk.toggled.connect(self._render_3d_subsurface_view)
-        tb1_layout.addWidget(self.toggle_vectors_chk)
-
-        self.toggle_drainage_chk = QCheckBox(self.tr("Drainage"))
-        self.toggle_drainage_chk.setChecked(True)
-        self.toggle_drainage_chk.setToolTip(self.tr("Show well drainage radius cylinders"))
-        self.toggle_drainage_chk.toggled.connect(self._render_3d_subsurface_view)
-        tb1_layout.addWidget(self.toggle_drainage_chk)
-
-        tb1_layout.addStretch()
-
-        view_3d_layout.addWidget(tb_frame1)
-
-        # Toolbar Frame 2 (Interactive Well Placement, Property Realization & Real-time Cursor Readout)
-        tb_frame2 = QFrame()
-        tb_frame2.setFrameShape(QFrame.Shape.StyledPanel)
-        tb_frame2.setStyleSheet("QFrame { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 2px; }")
-        tb2_layout = QHBoxLayout(tb_frame2)
-        tb2_layout.setContentsMargins(4, 2, 4, 2)
-        tb2_layout.setSpacing(6)
-
-        self.btn_place_well_3d = QPushButton(self.tr("📍 Add Well by Click"))
-        self.btn_place_well_3d.setCheckable(True)
-        self.btn_place_well_3d.setToolTip(
-            self.tr("Click anywhere on the 3D reservoir cube to place a well at clicked coordinates")
-        )
-        self.btn_place_well_3d.toggled.connect(self._on_place_well_mode_toggled)
-        self.btn_place_well_3d.setStyleSheet(
-            "QPushButton { font-weight: bold; padding: 3px 8px; } QPushButton:checked { background-color: #28a745; color: white; border: 1px solid #1e7e34; }"
-        )
-        tb2_layout.addWidget(self.btn_place_well_3d)
-
-        tb2_layout.addSpacing(6)
-        lbl_prop = QLabel(self.tr("Property:"))
-        lbl_prop.setStyleSheet("font-weight: bold; color: #495057;")
-        tb2_layout.addWidget(lbl_prop)
-
-        self.combo_3d_property = QComboBox()
-        self.combo_3d_property.addItems([
-            "Permeability (k, mD)",
-            "Porosity (φ, fraction)",
-            "Initial Oil Saturation (So)",
-            "Pore Pressure (P, psia)",
-            "Stratigraphy & Layers",
-            "Structural Wireframe Only",
-        ])
-        self.combo_3d_property.currentIndexChanged.connect(self._render_3d_subsurface_view)
-        tb2_layout.addWidget(self.combo_3d_property)
-
-        lbl_cmap = QLabel(self.tr("Palette:"))
-        tb2_layout.addWidget(lbl_cmap)
-        self.combo_3d_cmap = QComboBox()
-        self.combo_3d_cmap.addItems(["viridis", "plasma", "turbo", "coolwarm"])
-        self.combo_3d_cmap.currentIndexChanged.connect(self._render_3d_subsurface_view)
-        tb2_layout.addWidget(self.combo_3d_cmap)
-
-        lbl_alpha = QLabel(self.tr("Opacity:"))
-        tb2_layout.addWidget(lbl_alpha)
-        self.spin_3d_opacity = QDoubleSpinBox()
-        self.spin_3d_opacity.setRange(0.1, 1.0)
-        self.spin_3d_opacity.setSingleStep(0.05)
-        self.spin_3d_opacity.setValue(0.60)
-        self.spin_3d_opacity.valueChanged.connect(self._render_3d_subsurface_view)
-        tb2_layout.addWidget(self.spin_3d_opacity)
-
-        tb2_layout.addStretch()
-
-        self.coord_readout_label = QLabel(self.tr("Cursor: Hover over 3D model"))
-        self.coord_readout_label.setStyleSheet("color: #495057; font-size: 8pt; font-family: monospace;")
-        tb2_layout.addWidget(self.coord_readout_label)
-
-        view_3d_layout.addWidget(tb_frame2)
-
-        # 3D Figure & Canvas - Explicit axes positioning to guarantee 3D viewport never collapses
-        self.fig_3d = Figure(figsize=(7, 6))
-        self.canvas_3d = FigureCanvas(self.fig_3d)
-        self.ax_3d = self.fig_3d.add_axes([0.04, 0.04, 0.84, 0.90], projection='3d')
-        self.cax_3d = self.fig_3d.add_axes([0.90, 0.22, 0.022, 0.55])
-        self.cax_3d.set_visible(False)
-        self._3d_colorbar = None
+        self.canvas_3d = PyVistaReservoirCanvas(self)
         view_3d_layout.addWidget(self.canvas_3d, stretch=1)
 
-        # Connect mouse events for interactive well placement and hover readout
-        self.canvas_3d.mpl_connect('button_press_event', self._on_3d_canvas_mouse_down)
-        self.canvas_3d.mpl_connect('button_release_event', self._on_3d_canvas_mouse_up)
-        self.canvas_3d.mpl_connect('motion_notify_event', self._on_3d_canvas_mouse_move)
+        # Wire PyVista picking signals to well placement / selection
+        self.canvas_3d.surface_clicked.connect(self._prompt_add_well_at_coords)
+        self.canvas_3d.well_clicked.connect(self._on_pyvista_well_picked)
 
         self.right_tab_widget.addTab(self.view_3d_widget, "3D Subsurface View")
 
@@ -2201,6 +2230,12 @@ class DataManagementWidget(QWidget):
             self.main_tab_widget.setCurrentIndex(0)
         if hasattr(self, 'right_tab_widget') and hasattr(self, 'view_3d_widget'):
             self.right_tab_widget.setCurrentWidget(self.view_3d_widget)
+        if hasattr(self, 'workbench') and self.workbench is not None:
+            try:
+                self.workbench.well_data_list.clear()
+                self.workbench._refresh_all_views()
+            except Exception as w_err:
+                logger.debug(f"Could not reset workbench on clear: {w_err}")
 
         self.status_message_updated.emit(self.tr("Project data cleared."), 3000)
 
@@ -2620,21 +2655,23 @@ class DataManagementWidget(QWidget):
             logger.error(f"Error updating fault view: {e}", exc_info=True)
 
     def _on_place_well_mode_toggled(self, checked: bool):
+        """Toggle well placement mode on the PyVista 3D canvas."""
         if hasattr(self, 'canvas_3d') and self.canvas_3d is not None:
-            if checked:
-                self.canvas_3d.setCursor(Qt.CursorShape.CrossCursor)
-                if hasattr(self, 'status_message_updated'):
-                    self.status_message_updated.emit(
-                        self.tr("📍 Placement Mode Active: Click anywhere on the 3D model to place a well at clicked (X, Y)."), 5000
-                    )
-            else:
-                self.canvas_3d.setCursor(Qt.CursorShape.ArrowCursor)
+            self.canvas_3d.place_well_mode = checked
+            if hasattr(self.canvas_3d, 'btn_place_well'):
+                self.canvas_3d.btn_place_well.setChecked(checked)
+            if checked and hasattr(self, 'status_message_updated'):
+                self.status_message_updated.emit(
+                    self.tr("📍 Placement Mode Active: Click anywhere on the 3D model to place a well at clicked (X, Y)."), 5000
+                )
 
     def _activate_3d_well_placement_mode(self):
         if hasattr(self, 'right_tab_widget'):
             self.right_tab_widget.setCurrentIndex(0)
-        if hasattr(self, 'btn_place_well_3d'):
-            self.btn_place_well_3d.setChecked(True)
+        if hasattr(self, 'canvas_3d') and self.canvas_3d is not None:
+            self.canvas_3d.place_well_mode = True
+            if hasattr(self.canvas_3d, 'btn_place_well'):
+                self.canvas_3d.btn_place_well.setChecked(True)
 
     def _focus_selected_well_in_3d(self):
         if not hasattr(self, 'well_list_widget'):
@@ -2646,6 +2683,9 @@ class DataManagementWidget(QWidget):
         self.highlighted_well_name = well_name
         if hasattr(self, 'right_tab_widget'):
             self.right_tab_widget.setCurrentIndex(0)
+        # Isolate the selected well in PyVista 3D
+        if hasattr(self, 'canvas_3d') and self.canvas_3d is not None:
+            self.canvas_3d.set_isolated_well(well_name)
         self._render_3d_subsurface_view()
 
     def _get_reservoir_top_depth(self) -> float:
@@ -2657,117 +2697,21 @@ class DataManagementWidget(QWidget):
                     break
         return top_depth
 
-    def _screen_to_reservoir_coords(self, event) -> Optional[tuple]:
-        """
-        Exact ray-plane intersection converting mouse screen display coordinates
-        to reservoir (X, Y) coordinates on the top reservoir plane Z = top_depth.
-        """
-        if not hasattr(self, 'ax_3d') or self.ax_3d is None:
-            return None
-        if event.x is None or event.y is None:
-            return None
-        if event.inaxes is not None and event.inaxes != self.ax_3d:
-            return None
-
-        try:
-            top_depth = self._get_reservoir_top_depth()
-            M = self.ax_3d.get_proj()
-            ndc_x, ndc_y = self.ax_3d.transData.inverted().transform((event.x, event.y))
-
-            # Solve 2x2 linear system for (x, y) on horizontal plane z = top_depth
-            A = np.array([
-                [M[0, 0] - ndc_x * M[3, 0], M[0, 1] - ndc_x * M[3, 1]],
-                [M[1, 0] - ndc_y * M[3, 0], M[1, 1] - ndc_y * M[3, 1]]
-            ])
-            b = np.array([
-                ndc_x * (M[3, 2] * top_depth + M[3, 3]) - (M[0, 2] * top_depth + M[0, 3]),
-                ndc_y * (M[3, 2] * top_depth + M[3, 3]) - (M[1, 2] * top_depth + M[1, 3])
-            ])
-            sol = np.linalg.solve(A, b)
-            sol_x, sol_y = float(sol[0]), float(sol[1])
-
-            length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
-            area_acres = float(self.manual_inputs_values.get('area', 100.0) or 100.0)
-            width_ft = (area_acres * 43560.0) / max(length_ft, 1.0)
-
-            # Clamp within reservoir bounds
-            clamped_x = max(0.0, min(length_ft, sol_x))
-            clamped_y = max(0.0, min(width_ft, sol_y))
-            return clamped_x, clamped_y
-        except Exception as e:
-            logger.debug(f"Coordinate inversion error: {e}")
-            return None
-
-    def _on_3d_canvas_mouse_down(self, event):
-        if hasattr(self, 'ax_3d') and (event.inaxes == self.ax_3d or event.inaxes is None):
-            self._mouse_press_pos = (event.x, event.y, event.button, getattr(event, 'dblclick', False))
-
-    def _on_3d_canvas_mouse_up(self, event):
-        if not hasattr(self, '_mouse_press_pos') or self._mouse_press_pos is None:
-            return
-        press_x, press_y, btn, dbl = self._mouse_press_pos
-        self._mouse_press_pos = None
-
-        if event.x is None or event.y is None:
-            return
-        if event.inaxes is not None and event.inaxes != self.ax_3d:
-            return
-
-        dx = abs(event.x - press_x)
-        dy = abs(event.y - press_y)
-        if dx > 6 or dy > 6:
-            # User was dragging the mouse to rotate or pan 3D camera
-            return
-
-        coords = self._screen_to_reservoir_coords(event)
-        if not coords:
-            return
-
-        rx, ry = coords
-
-        # Right-click: Open context menu with direct well placement and view options
-        if btn == 3:
-            self._show_3d_context_menu(rx, ry, event)
-            return
-
-        # Left-click: If placement mode active OR double-clicked, pop up Add Well Dialog
-        is_place_mode = hasattr(self, 'btn_place_well_3d') and self.btn_place_well_3d.isChecked()
-        if is_place_mode or dbl:
-            self._prompt_add_well_at_coords(rx, ry)
-            if is_place_mode:
-                self.btn_place_well_3d.setChecked(False)
-        else:
-            # Check if clicked near an existing wellhead in screen projection
-            self._check_and_select_well_at_screen_pos(event.x, event.y)
-
-    def _check_and_select_well_at_screen_pos(self, sx: float, sy: float):
-        if not self.well_data_list or not hasattr(self, 'ax_3d'):
-            return
-        from mpl_toolkits.mplot3d import proj3d
-        M = self.ax_3d.get_proj()
-        length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
-        area_acres = float(self.manual_inputs_values.get('area', 100.0) or 100.0)
-        width_ft = (area_acres * 43560.0) / max(length_ft, 1.0)
-        top_depth = self._get_reservoir_top_depth()
-
-        for idx, well in enumerate(self.well_data_list):
-            wx = float(well.metadata.get("SurfaceX", length_ft * 0.5))
-            wy = float(well.metadata.get("SurfaceY", width_ft * 0.5))
-            wz = top_depth
-            try:
-                x2, y2, _ = proj3d.proj_transform(wx, wy, wz, M)
-                disp_x, disp_y = self.ax_3d.transData.transform((x2, y2))
-                dist = np.hypot(sx - disp_x, sy - disp_y)
-                if dist < 18.0:
-                    if hasattr(self, 'well_list_widget') and idx < self.well_list_widget.count():
-                        self.well_list_widget.setCurrentRow(idx)
-                    self.highlighted_well_name = well.name
-                    self._render_3d_subsurface_view()
+    def _on_pyvista_well_picked(self, well_name: str):
+        """Handle well picked from PyVista 3D canvas via well_clicked signal."""
+        self.highlighted_well_name = well_name
+        # Select in list widget
+        if hasattr(self, 'well_list_widget'):
+            for idx in range(self.well_list_widget.count()):
+                item = self.well_list_widget.item(idx)
+                if item and self._get_item_well_name(item) == well_name:
+                    self.well_list_widget.setCurrentRow(idx)
                     break
-            except Exception:
-                pass
+        # Isolate in 3D
+        if hasattr(self, 'canvas_3d') and self.canvas_3d is not None:
+            self.canvas_3d.set_isolated_well(well_name)
 
-    def _show_3d_context_menu(self, rx: float, ry: float, event):
+    def _show_3d_context_menu(self, rx: float, ry: float, event=None):
         from PyQt6.QtWidgets import QMenu
         from PyQt6.QtGui import QCursor
         menu = QMenu(self)
@@ -2783,11 +2727,11 @@ class DataManagementWidget(QWidget):
         if chosen == action_add:
             self._prompt_add_well_at_coords(rx, ry)
         elif chosen == action_iso:
-            self._set_3d_camera_view(elev=30, azim=-60)
+            self._set_3d_camera_view(view_index=0)
         elif chosen == action_top:
-            self._set_3d_camera_view(elev=90, azim=-90)
+            self._set_3d_camera_view(view_index=1)
         elif chosen == action_side:
-            self._set_3d_camera_view(elev=0, azim=0)
+            self._set_3d_camera_view(view_index=2)
         elif chosen == action_refresh:
             self._render_3d_subsurface_view()
 
@@ -2800,13 +2744,6 @@ class DataManagementWidget(QWidget):
         prod_count = len(self.well_data_list) - inj_count
         suggested_role = "Injector" if prod_count > inj_count else "Producer (Active)"
         suggested_name = f"Well-{'Inj' if 'Inj' in suggested_role else 'Prod'}-{len(self.well_data_list) + 1}"
-
-        # Draw transient target reticle marker on 3D canvas
-        try:
-            self.ax_3d.scatter([rx], [ry], [top_depth], color="#ffc107", s=220, marker="*", edgecolors="black", linewidths=1.8, zorder=150)
-            self.canvas_3d.draw_idle()
-        except Exception:
-            pass
 
         existing_names = [w.name for w in self.well_data_list]
         initial_vals = {
@@ -2834,25 +2771,38 @@ class DataManagementWidget(QWidget):
                         self.tr(f"Placed well '{well_data.name}' at X={rx:.1f} ft, Y={ry:.1f} ft."), 4000
                     )
         else:
-            # Re-render to clear transient marker
+            # Re-render to restore scene
             self._render_3d_subsurface_view()
 
-    def _on_3d_canvas_mouse_move(self, event):
-        coords = self._screen_to_reservoir_coords(event)
-        if coords and hasattr(self, 'coord_readout_label'):
-            top_depth = self._get_reservoir_top_depth()
-            self.coord_readout_label.setText(
-                f"Cursor: X={coords[0]:.1f} ft | Y={coords[1]:.1f} ft | TVD={top_depth:.1f} ft"
-            )
+    def _set_3d_camera_view(self, elev: float = 30.0, azim: float = -60.0, view_index: int = -1):
+        """Set 3D camera view via PyVista plotter. Supports indexed views or elev/azim for legacy calls."""
+        if not hasattr(self, 'canvas_3d') or self.canvas_3d is None:
+            return
+        plotter = getattr(self.canvas_3d, 'plotter', None)
+        if plotter is None:
+            return
+        try:
+            if view_index == 0:
+                plotter.view_isometric()
+            elif view_index == 1:
+                plotter.view_xy()
+            elif view_index == 2:
+                plotter.view_xz()
+            elif view_index == 3:
+                plotter.view_yz()
+            else:
+                # Legacy elev/azim: map to closest PyVista view
+                if elev >= 80:
+                    plotter.view_xy()
+                elif abs(azim) < 10:
+                    plotter.view_xz()
+                else:
+                    plotter.view_isometric()
+            plotter.camera.zoom(0.78)
+            plotter.render()
+        except Exception as e:
+            logger.debug(f"Camera view change error: {e}")
 
-    def _set_3d_camera_view(self, elev: float, azim: float):
-        if hasattr(self, 'ax_3d') and self.ax_3d is not None:
-            self.ax_3d.view_init(elev=elev, azim=azim)
-            if hasattr(self, 'canvas_3d') and self.canvas_3d is not None:
-                try:
-                    self.canvas_3d.draw_idle()
-                except (RuntimeError, AttributeError):
-                    pass
 
     def _launch_pre_flight_audit(self):
         from ui.dialogs.pre_flight_audit_dialog import PreFlightAuditDialog
@@ -2879,291 +2829,62 @@ class DataManagementWidget(QWidget):
 
     def _render_3d_subsurface_view(self):
         """
-        Renders an interactive 3D Shared Earth Subsurface Model:
-        - 3D reservoir bounding box & multi-property formation block (Permeability, Porosity, Saturation, Pressure)
-        - Geological layers & strata slabs with distinct lithologic styling
-        - 3D wellbore trajectories (Vertical, Horizontal with lateral, Deviated S-curve)
-        - Perforation intervals highlighted in gold along the 3D trajectory
-        - Inter-well sweep communication vectors colored by vertical perforation overlap
-        - Well drainage area boundary radiuses
-        - Structural fault planes with dip/strike (if configured)
-        - Depth inverted (Z increasing downwards) per petroleum engineering convention
+        Renders an interactive 3D Shared Earth Subsurface Model using PyVista (VTK OpenGL).
+        Delegates all 3D rendering to PyVistaReservoirCanvas.render_subsurface_model().
         """
         try:
-            if not hasattr(self, 'ax_3d') or self.ax_3d is None:
+            if not hasattr(self, 'canvas_3d') or self.canvas_3d is None:
                 return
-
-            self.ax_3d.clear()
-
-            # Reset dedicated colorbar axes
-            if hasattr(self, 'cax_3d') and self.cax_3d is not None:
-                self.cax_3d.clear()
-                self.cax_3d.set_visible(False)
-            self._3d_colorbar = None
-
-            # Enforce consistent position for ax_3d to prevent layout shrinking
-            if hasattr(self, 'ax_3d') and self.ax_3d is not None:
-                self.ax_3d.set_position([0.04, 0.04, 0.84, 0.90])
 
             length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
             area_acres = float(self.manual_inputs_values.get('area', 100.0) or 100.0)
             thickness_ft = float(self.manual_inputs_values.get('thickness', 50.0) or 50.0)
             width_ft = (area_acres * 43560.0) / max(length_ft, 1.0)
             top_depth = self._get_reservoir_top_depth()
-            base_depth = top_depth + thickness_ft
+            perm_base = float(self.manual_inputs_values.get('perm', 100.0) or 100.0)
+            poro_base = float(self.manual_inputs_values.get('porosity', 0.20) or 0.20)
 
-            # Reservoir Bounding Box Wireframe
-            corners = np.array([
-                [0, 0, top_depth], [length_ft, 0, top_depth],
-                [length_ft, width_ft, top_depth], [0, width_ft, top_depth],
-                [0, 0, base_depth], [length_ft, 0, base_depth],
-                [length_ft, width_ft, base_depth], [0, width_ft, base_depth]
-            ])
-            edges = [
-                (0, 1), (1, 2), (2, 3), (3, 0),
-                (4, 5), (5, 6), (6, 7), (7, 4),
-                (0, 4), (1, 5), (2, 6), (3, 7)
-            ]
-            for e in edges:
-                p1, p2 = corners[e[0]], corners[e[1]]
-                self.ax_3d.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]],
-                                color="#444444", linestyle="--", linewidth=1.2, alpha=0.7)
+            nx = int(self.manual_inputs_values.get('nx', 50) or 50)
+            ny = int(self.manual_inputs_values.get('ny', 50) or 50)
+            nz = int(self.manual_inputs_values.get('nz', 10) or 10)
 
-            # Property & Colormap Options
-            prop_mode = "Permeability (k, mD)"
-            if hasattr(self, 'combo_3d_property') and self.combo_3d_property is not None:
-                prop_mode = self.combo_3d_property.currentText()
-
-            cmap_name = "viridis"
-            if hasattr(self, 'combo_3d_cmap') and self.combo_3d_cmap is not None:
-                cmap_name = self.combo_3d_cmap.currentText()
-
-            alpha = 0.60
-            if hasattr(self, 'spin_3d_opacity') and self.spin_3d_opacity is not None:
-                alpha = float(self.spin_3d_opacity.value())
-
-            # 3D Reservoir Property Realization / Formation Volume
-            if prop_mode != "Structural Wireframe Only":
-                nx, ny = 24, 24
-                xx, yy = np.meshgrid(np.linspace(0, length_ft, nx), np.linspace(0, width_ft, ny))
-
-                # Realistic spatial variation field F in [-1, 1]
-                x_norm = xx / max(length_ft, 1.0)
-                y_norm = yy / max(width_ft, 1.0)
-                F = (
-                    0.45 * np.sin(2.0 * np.pi * x_norm) * np.cos(np.pi * y_norm)
-                    + 0.35 * np.cos(3.0 * np.pi * x_norm - np.pi / 4.0) * np.sin(2.0 * np.pi * y_norm)
-                    + 0.20 * np.sin(np.pi * (x_norm + y_norm))
-                )
-
-                prop_field = None
-                cbar_label = None
-
-                if "perm" in prop_mode.lower():
-                    base_val = float(self.manual_inputs_values.get('perm', 100.0) or 100.0)
-                    prop_field = base_val * np.exp(0.40 * F)
-                    cbar_label = "Permeability k (mD)"
-                elif "porosity" in prop_mode.lower():
-                    base_val = float(self.manual_inputs_values.get('porosity', 0.20) or 0.20)
-                    prop_field = np.clip(base_val * (1.0 + 0.22 * F), 0.05, 0.40)
-                    cbar_label = "Porosity φ (fraction)"
-                elif "saturation" in prop_mode.lower():
-                    swc = float(self.manual_inputs_values.get('s_wc', 0.25) or 0.25)
-                    base_val = max(0.05, 1.0 - swc)
-                    prop_field = np.clip(base_val * (1.0 + 0.15 * F), 0.10, 0.95)
-                    cbar_label = "Initial Oil Saturation So"
-                elif "pressure" in prop_mode.lower():
-                    base_val = float(self.manual_inputs_values.get('pressure', 3000.0) or 3000.0)
-                    prop_field = base_val + 50.0 * F
-                    cbar_label = "Pore Pressure P (psia)"
-
-                if prop_field is not None:
-                    cmap = plt.get_cmap(cmap_name)
-                    norm = plt.Normalize(vmin=float(np.min(prop_field)), vmax=float(np.max(prop_field)))
-
-                    # Top and Base Formation Surfaces
-                    self.ax_3d.plot_surface(
-                        xx, yy, np.full_like(xx, top_depth),
-                        facecolors=cmap(norm(prop_field)), alpha=alpha, shade=False, rstride=1, cstride=1
-                    )
-                    self.ax_3d.plot_surface(
-                        xx, yy, np.full_like(xx, base_depth),
-                        facecolors=cmap(norm(prop_field)), alpha=alpha * 0.85, shade=False, rstride=1, cstride=1
-                    )
-
-                    # Side Boundary Curtains (Front Y=0, Back Y=W, Left X=0, Right X=L)
-                    xz_x, xz_z = np.meshgrid(np.linspace(0, length_ft, nx), np.linspace(top_depth, base_depth, 6))
-                    k_y0 = prop_field[0, :]
-                    k_y1 = prop_field[-1, :]
-                    self.ax_3d.plot_surface(
-                        xz_x, np.zeros_like(xz_x), xz_z,
-                        facecolors=cmap(norm(np.tile(k_y0, (6, 1)))), alpha=alpha, shade=False
-                    )
-                    self.ax_3d.plot_surface(
-                        xz_x, np.full_like(xz_x, width_ft), xz_z,
-                        facecolors=cmap(norm(np.tile(k_y1, (6, 1)))), alpha=alpha, shade=False
-                    )
-
-                    # Render colorbar into dedicated cax_3d
-                    if hasattr(self, 'cax_3d') and self.cax_3d is not None:
-                        self.cax_3d.clear()
-                        self.cax_3d.set_visible(True)
-                        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-                        sm.set_array([])
-                        self._3d_colorbar = self.fig_3d.colorbar(sm, cax=self.cax_3d)
-                        self._3d_colorbar.set_label(cbar_label, fontsize=8.5, fontweight="bold")
-                        self.cax_3d.tick_params(labelsize=8)
-
-                elif "stratigraphy" in prop_mode.lower() or "layers" in prop_mode.lower():
-                    # Stratigraphy / Layer Slabs
-                    layer_colors = ["#28a745", "#fd7e14", "#17a2b8", "#6f42c1", "#ffc107"]
-                    if self.use_layered_model_checkbox.isChecked() and self.layers_table.rowCount() > 0:
-                        current_z = top_depth
-                        for row in range(self.layers_table.rowCount()):
-                            try:
-                                th = float(self.layers_table.item(row, 3).text())
-                                col = layer_colors[row % len(layer_colors)]
-                                z_mid = current_z + th * 0.5
-                                current_z += th
-                                self.ax_3d.plot_surface(xx, yy, np.full_like(xx, current_z), alpha=alpha, color=col)
-                                self.ax_3d.text(length_ft * 0.05, width_ft * 0.05, z_mid, f" Layer {row+1}", color=col, fontweight="bold")
-                            except Exception:
-                                pass
-                    else:
-                        # Default 3 strata zones
-                        z_step = thickness_ft / 3.0
-                        zone_names = ["Upper Sand (Pay)", "Middle Shale (Baffle)", "Lower Sand (Secondary Pay)"]
-                        zone_cols = ["#ffc107", "#6c757d", "#28a745"]
-                        for idx, (z_name, z_col) in enumerate(zip(zone_names, zone_cols)):
-                            z_top_z = top_depth + idx * z_step
-                            z_bot_z = z_top_z + z_step
-                            self.ax_3d.plot_surface(xx, yy, np.full_like(xx, z_top_z), alpha=alpha * 0.7, color=z_col)
-                            self.ax_3d.plot_surface(xx, yy, np.full_like(xx, z_bot_z), alpha=alpha * 0.7, color=z_col)
-                            self.ax_3d.text(length_ft * 0.04, width_ft * 0.04, (z_top_z + z_bot_z) * 0.5, f" {z_name}", color=z_col, fontweight="bold", fontsize=8)
-
-            # 3D Wells Visualization
-            z_min_well = top_depth
-            z_max_well = base_depth
-            n_wells = max(len(self.well_data_list), 1)
-            drainage_radius = min(np.sqrt((area_acres * 43560.0) / (np.pi * n_wells)), length_ft * 0.35)
-
-            if not self.well_data_list:
-                self.ax_3d.text(
-                    length_ft * 0.5, width_ft * 0.5, (top_depth + base_depth) * 0.5,
-                    self.tr("No wells loaded\n(Click '📍 Add Well by Click' or right-click to place well)"),
-                    color="#1e3d59", ha="center", va="center", fontsize=9.5, fontweight="bold"
-                )
-
-            for well in self.well_data_list:
-                w_type = str(well.metadata.get("type", "")).lower()
-                if not w_type:
-                    w_type = "injector" if "inj" in well.name.lower() or "injector" in str(well.metadata.get("status", "")).lower() else "producer"
-                is_inj = "inj" in w_type
-                is_active = hasattr(self, 'highlighted_well_name') and self.highlighted_well_name == well.name
-
-                well_color = "#007bff" if is_inj else "#dc3545"
-                well_marker = "^" if is_inj else "o"
-                role_label = "INJ" if is_inj else "PROD"
-
-                # Get 3D trajectory points
-                traj_points = well.get_trajectory_points(top_depth, base_depth)
-                wx = traj_points[:, 0]
-                wy = traj_points[:, 1]
-                wz = traj_points[:, 2]
-
-                z_min_well = min(z_min_well, float(np.min(wz)))
-                z_max_well = max(z_max_well, float(np.max(wz)))
-
-                lw = 4.2 if is_active else 2.6
-                ms = 110 if is_active else 70
-                edge_col = "#ffc107" if is_active else "black"
-
-                # Plot well path
-                self.ax_3d.plot(wx, wy, wz, color=well_color, linewidth=lw, label=f"{well.name} ({role_label})")
-                # Wellhead marker at surface
-                self.ax_3d.scatter([wx[0]], [wy[0]], [wz[0]], color=well_color, s=ms, marker=well_marker, edgecolors=edge_col, linewidths=1.8, zorder=100)
-                active_tag = " (ACTIVE)" if is_active else ""
-                self.ax_3d.text(wx[0], wy[0], wz[0] - 12.0, f" {well.name}{active_tag}", color=well_color, fontsize=8.5, fontweight="bold")
-
-                # Highlight Perforations in Gold
-                if not hasattr(self, 'toggle_perfs_chk') or self.toggle_perfs_chk.isChecked():
-                    perfs = getattr(well, "perforations", []) or [
-                        [p.get("top", 0), p.get("bottom", 0)] for p in getattr(well, "perforation_properties", [])
-                    ]
-                    for p in perfs:
-                        if len(p) >= 2:
-                            p_top, p_bot = p[0], p[1]
-                            perf_mask = (wz >= p_top) & (wz <= p_bot)
-                            if np.any(perf_mask):
-                                self.ax_3d.plot(wx[perf_mask], wy[perf_mask], wz[perf_mask], color="#ffc107", linewidth=6.5, alpha=0.9, zorder=90)
-
-                # Drainage Radius Cylinder at TD
-                if not hasattr(self, 'toggle_drainage_chk') or self.toggle_drainage_chk.isChecked():
-                    theta = np.linspace(0, 2 * np.pi, 30)
-                    cx = wx[-1] + drainage_radius * np.cos(theta)
-                    cy = wy[-1] + drainage_radius * np.sin(theta)
-                    cz = np.full_like(cx, wz[-1])
-                    self.ax_3d.plot(cx, cy, cz, color=well_color, linestyle=":", linewidth=1.2, alpha=0.55)
-
-            # 3D Inter-Well Sweep Vectors
-            show_vectors = not hasattr(self, 'toggle_vectors_chk') or self.toggle_vectors_chk.isChecked()
-            if show_vectors and len(self.well_data_list) > 1:
-                from core.engine_surrogate.well_mechanics import calculate_vertical_perforation_overlap
-                inj_wells = [w for w in self.well_data_list if "inj" in w.name.lower() or "injector" in str(w.metadata.get("type", "")).lower()]
-                prod_wells = [w for w in self.well_data_list if w not in inj_wells]
-                for iw in inj_wells:
-                    for pw in prod_wells:
-                        try:
-                            overlap_info = calculate_vertical_perforation_overlap(iw, pw, reservoir_h=thickness_ft)
-                            omega = overlap_info["overlap_ratio"]
-                            ip = iw.get_trajectory_points(top_depth, base_depth)
-                            pp = pw.get_trajectory_points(top_depth, base_depth)
-                            mid_i = ip[len(ip) // 2]
-                            mid_p = pp[len(pp) // 2]
-                            vec_col = "#28a745" if omega >= 0.20 else "#fd7e14"
-                            vec_sty = "-" if omega >= 0.20 else "--"
-                            self.ax_3d.plot(
-                                [mid_i[0], mid_p[0]], [mid_i[1], mid_p[1]], [mid_i[2], mid_p[2]],
-                                color=vec_col, linestyle=vec_sty, linewidth=2.0, alpha=0.75
-                            )
-                            mid_pt = (mid_i + mid_p) * 0.5
-                            self.ax_3d.text(
-                                mid_pt[0], mid_pt[1], mid_pt[2] - 6.0,
-                                f"Ω={omega*100:.0f}%", color=vec_col, fontsize=7.5, fontweight="bold"
-                            )
-                        except Exception:
-                            pass
-
-            # Fault plane if present
+            # Collect fault properties
             fault_props = None
             if hasattr(self, "state_manager") and self.state_manager:
                 fault_props = getattr(self.state_manager, "fault_properties", None)
             if not fault_props and hasattr(self, "reservoir_data") and self.reservoir_data:
                 fault_props = getattr(self.reservoir_data, "fault_properties", None)
-            if fault_props and isinstance(fault_props, dict) and fault_props.get("fault_present", False):
-                mx, my = length_ft * 0.5, width_ft * 0.5
-                fx = np.array([[0, length_ft], [0, length_ft]])
-                fy = np.array([[my - 0.2 * width_ft, my + 0.2 * width_ft], [my - 0.4 * width_ft, my]])
-                fz = np.array([[top_depth, top_depth], [base_depth, base_depth]])
-                self.ax_3d.plot_surface(fx, fy, fz, color="#e83e8c", alpha=0.35)
-                self.ax_3d.text(mx, my, top_depth, " Fault Plane", color="#e83e8c", fontweight="bold")
 
-            self.ax_3d.set_title("3D Shared Earth Subsurface Model", fontsize=11, fontweight="bold", pad=12)
-            self.ax_3d.set_xlabel("X Length (ft)", fontsize=9, labelpad=8)
-            self.ax_3d.set_ylabel("Y Width (ft)", fontsize=9, labelpad=8)
-            self.ax_3d.set_zlabel("TVD Depth (ft)", fontsize=9, labelpad=8)
-            self.ax_3d.tick_params(labelsize=8)
-            z_padding = max(thickness_ft * 0.25, 25.0)
-            self.ax_3d.set_zlim(z_max_well + z_padding, max(0.0, z_min_well - z_padding))
-            self.ax_3d.grid(True, linestyle=":", alpha=0.5)
-            self.canvas_3d.setVisible(True)
-            try:
-                self.canvas_3d.draw_idle()
-            except (RuntimeError, AttributeError):
-                pass
+            # Collect distribution parameters from petrophysics settings
+            distribution_params = {}
+            if hasattr(self, 'state_manager') and self.state_manager:
+                geostat = getattr(self.state_manager, 'geostatistical_params', None)
+                if geostat and hasattr(geostat, '__dict__'):
+                    distribution_params.update(
+                        {k: v for k, v in geostat.__dict__.items() if v is not None}
+                    )
+
+            # Collect pressure for geomechanics
+            distribution_params.setdefault('initial_pressure', float(
+                self.manual_inputs_values.get('pressure', 4000.0) or 4000.0
+            ))
+
+            self.canvas_3d.render_subsurface_model(
+                nx=nx, ny=ny, nz=nz,
+                length_ft=length_ft,
+                width_ft=width_ft,
+                top_depth=top_depth,
+                thickness_ft=thickness_ft,
+                perm_base=perm_base,
+                poro_base=poro_base,
+                well_data_list=self.well_data_list if self.well_data_list else None,
+                fault_props=fault_props,
+                distribution_params=distribution_params if distribution_params else None
+            )
 
         except Exception as e:
             logger.error(f"Error rendering 3D Subsurface View: {e}", exc_info=True)
+
 
     def _plot_geostatistics_diagnostics(self):
         try:
@@ -3445,6 +3166,12 @@ class DataManagementWidget(QWidget):
                 except Exception:
                     self.manual_inputs_values[name] = val
 
+        # Ensure workbench is synchronized with current values
+        if hasattr(self, 'workbench') and self.workbench is not None:
+            self.workbench.manual_inputs_values.update(self.manual_inputs_values)
+            if self.well_data_list:
+                self.workbench.well_data_list = list(self.well_data_list)
+
         res_data = self.reservoir_data
         if res_data is None:
             try:
@@ -3462,10 +3189,13 @@ class DataManagementWidget(QWidget):
         return {
             "reservoir_data": res_data,
             "pvt_properties": pvt_data,
+            "pvt_data": pvt_data,
             "well_data_list": list(self.well_data_list),
+            "wells": list(self.well_data_list),
             "detailed_pvt_data": self.detailed_pvt_data,
             "manual_inputs": dict(self.manual_inputs_values),
             "mmp_value": getattr(self, "calculated_mmp_value", self.manual_inputs_values.get("mmp_value")),
+            "calculated_mmp": getattr(self, "calculated_mmp_value", self.manual_inputs_values.get("mmp_value")),
         }
 
     def load_project_data(self, project_data: Dict[str, Any]):
@@ -3620,11 +3350,28 @@ class DataManagementWidget(QWidget):
             self._update_geology_cross_section_view()
             self._update_geostat_view()
             self._update_fault_view()
+            if hasattr(self, 'workbench') and self.workbench is not None:
+                try:
+                    self.workbench.load_project_data(project_data)
+                except Exception as w_err:
+                    logger.warning(f"Could not load data into SubsurfaceWorkbenchWidget: {w_err}")
+
             self.status_message_updated.emit(self.tr("Project data loaded successfully."), 5000)
 
         except Exception as e:
             QMessageBox.critical(self, self.tr("Loading Error"), self.tr("An error occurred while loading project data:\n{e}").format(e=e))
             logger.error(f"Error loading project data: {e}", exc_info=True)
+
+    def populate_fields_from_demo(self, params: Dict[str, Any]):
+        """Populate project data from demo dictionary (supports both classic and workbench)."""
+        if not params:
+            return
+        if hasattr(self, 'workbench') and self.workbench is not None:
+            try:
+                self.workbench.load_project_data(params)
+            except Exception as e:
+                logger.warning(f"Failed to populate workbench from demo: {e}")
+        self.load_project_data(params)
 
 
 def _create_default_co2_eor_properties() -> np.ndarray:

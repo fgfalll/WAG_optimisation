@@ -1,0 +1,92 @@
+Parameter,Value,Unit,Source Code Location,Provenance,Status
+CO2 density (tonnes/MSCF) - canonical field default,0.053,tonne/MSCF,core/data_models.py:725; core/engine_surrogate/analytical_models.py:37; core/engine_surrogate/surrogate_models.py:26,EMPIRICAL,ACCEPTABLE - matches 1.838 kg/m3 x 28.3168 m3/MSCF / 1000 = 0.05204 within 1.9%; but 5 competing constants exist (see MED-01)
+CO2 density - storage/PVT constant,0.05254,tonne/MSCF,core/data_models.py:1858-1860,EMPIRICAL,INCONSISTENT with 0.053 default - 0.9% spread (MED-01)
+CO2 density - PVT module constant,0.05295,tonne/MSCF,core/engine_surrogate/pvt_state.py:42,EMPIRICAL,INCONSISTENT with 0.053 default (MED-01)
+CO2 density - fast profile generator default,0.05297,tonne/MSCF,core/engine_surrogate/profile_generator_fast.py:794,EMPIRICAL,INCONSISTENT with 0.053 default (MED-01)
+CO2 standard density (SC conditions),1.838,kg/m3,core/engine_surrogate/pvt_state.py:41,LITERATURE,OK - NIST/CRC value for CO2 at 60 F and 14.7 psia
+CO2 mass per MSCF (docstring),52.046,kg/MSCF,core/engine_surrogate/pvt_state.py:175,LITERATURE,OK arithmetic (28.3168 m3 x 1.838 kg/m3) but contradicts 0.053 t/MSCF=53 kg (MED-02)
+Comment: CO2 density in lb/ft3,0.1234,lb/ft3,core/engine_surrogate/analytical_models.py:35,UNKNOWN,EVIDENCE REQUIRED - wrong; true value 1.838 kg/m3 = 0.1147 lb/ft3 (MED-01)
+Comment: CO2 density in t/MSCF (analytical_models),0.056,tonne/MSCF,core/engine_surrogate/analytical_models.py:36,UNKNOWN,EVIDENCE REQUIRED - contradicts its own constant 0.053 on the next line (MED-01)
+default_gas_fvf (B_g),0.005,RB/scf (assumed),core/data_models.py:917; core/engine_surrogate/profile_generator_fast.py:1109,UNKNOWN,EVIDENCE REQUIRED - unit unstated; plausible as RB/scf (0.005 RB/scf = 5 RB/MSCF) but used without x1000 at profile_generator_fast.py:1117 causing CRIT-11
+CO2 leakage base rate,0.05,tonne/day/psi overpressure,core/engine_surrogate/geomechanics_fault.py:177,UNKNOWN,EVIDENCE REQUIRED - no cited source; drives all caprock leakage magnitudes (MED)
+CO2 leakage breach multiplier,5.0,dimensionless,core/engine_surrogate/geomechanics_fault.py:179,UNKNOWN,EVIDENCE REQUIRED - arbitrary 5x jump when is_caprock_breached
+CO2 leakage overpressure exponent,1.5,dimensionless,core/engine_surrogate/geomechanics_fault.py:177,UNKNOWN,EVIDENCE REQUIRED - no cited source
+fault_slip_transmissibility_multiplier,10.0,dimensionless,core/data_models.py:1567,UNKNOWN,EVIDENCE REQUIRED - 10x fault transmissibility multiplier has no cited basis
+penalty base fraction (generation < threshold),0.05,fraction,core/optimisation_engine.py:1328,CALIBRATED,EVIDENCE REQUIRED - tuned heuristic; hard-coded fraction of failure_penalty
+penalty base fraction (late generations),0.10,fraction,core/optimisation_engine.py:1343,CALIBRATED,EVIDENCE REQUIRED - tuned heuristic
+nominal_drawdown,500.0,psi,core/engine_surrogate/surrogate_engine.py:420,UNKNOWN,EVIDENCE REQUIRED - makes J = q/500 tautological; no kh/skin derivation (HIGH-07)
+mu_inj_eff (dry CO2),0.05,cP,core/engine_surrogate/surrogate_engine.py:430,UNKNOWN,"EVIDENCE REQUIRED - plausible magnitude for supercritical CO2 but hard-coded, no citation"
+mu_inj_eff (WAG water),0.50,cP,core/engine_surrogate/surrogate_engine.py:430,UNKNOWN,EVIDENCE REQUIRED - hard-coded water viscosity; ignores T and salinity
+mobility_ratio_factor,0.001,1/(bbl/d),core/engine_surrogate/profile_generator_fast.py:1103,UNKNOWN,EVIDENCE REQUIRED - mobility_ratio = rate x 0.001 is not a mobility ratio; compared against threshold 2.0 (MED)
+high_mobility_threshold,2.0,dimensionless,core/engine_surrogate/profile_generator_fast.py:1104,UNKNOWN,EVIDENCE REQUIRED - threshold has no physical derivation (MED)
+s_ref (fractional-flow reference saturation),0.40,dimensionless,core/engine_surrogate/profile_generator_fast.py:967,UNKNOWN,EVIDENCE REQUIRED - hard-coded; undocumented choice of SOF endpoint
+HybridSurrogate alpha (C7+ interpolation),0.95 + 0.05*(c7_plus-0.3),dimensionless,core/engine_surrogate/analytical_models.py:458,UNKNOWN,"EVIDENCE REQUIRED - inert: reads c7_plus_fraction but engine writes c7_plus, so alpha is constant 0.95 (CRIT-13)"
+x_co2 normalization factor,0.135,fraction of OOIP,core/engine_surrogate/surrogate_engine.py:502,UNKNOWN,EVIDENCE REQUIRED - hard-coded denominator for solvent fraction scaling (MED)
+y_co2 clip range,0.05 - 0.95,fraction,core/engine_surrogate/surrogate_engine.py:356,UNKNOWN,EVIDENCE REQUIRED - imposes >=5% CO2 in gas phase at cum_inj=0 (LOW-01)
+y_co2 decay constant,1000.0,MSCF,core/engine_surrogate/surrogate_engine.py:356,UNKNOWN,EVIDENCE REQUIRED - hard-coded scale for CO2 gas-phase fraction
+Hall-Yarborough linear Z coefficients (0.06422 / -0.00332),0.06422 / -0.00332,1/Ppr,core/engine_surrogate/pvt_state.py:366,UNKNOWN,EVIDENCE REQUIRED - labelled Hall-Yarborough but is a truncated linear expansion; not the HY virial equation (CRIT-05)
+B_g constant (hydrocarbon),0.1587,8.3145 x 0.3594 (as used),core/engine_surrogate/pvt_state.py:373,UNKNOWN,EVIDENCE REQUIRED - wrong by 31.7x; correct 0.02827 x 5.6146 x 1000/1000 = 5.035 for RB/MSCF (CRIT-04)
+c_g mixing coefficients (0.35 / 0.85),0.35 / 0.85,dimensionless,core/engine_surrogate/pvt_state.py:392,UNKNOWN,EVIDENCE REQUIRED - 4-12x too high for dense CO2; discontinuous at 1500 psi (HIGH-17)
+CO2 viscosity polynomial (0.235 / 0.395 / -0.041),0.235 / 0.395 / -0.041,1/rho_r^n,core/engine_surrogate/pvt_state.py:222,UNKNOWN,EVIDENCE REQUIRED - attributed to Fenghour/Vesovic but coefficients not from those sources; mu/mu0 = 0.589 at rho_r=1 vs expected ~3.4 (HIGH-16)
+CO2 critical density (viscosity),467.6,kg/m3,core/engine_surrogate/pvt_state.py:221,LITERATURE,OK - CO2 critical density 467.6 kg/m3 (IUPAC) but only used in the mis-fit polynomial (HIGH-16)
+CO2 dilute-gas viscosity coefficient,1.00697e-6,Pa.s/sqrt(K),core/engine_surrogate/pvt_state.py:218,LITERATURE,OK form for dilute-gas limit; values in polynomial branch unverified
+Peng-Robinson a coefficient factor,0.45724,-,core/engine_surrogate/pvt_state.py:114,LITERATURE,OK - standard PR kappa1/0.45724 formulation
+Peng-Robinson b coefficient factor,0.07780,-,core/engine_surrogate/pvt_state.py:115,LITERATURE,OK - standard PR 0.0778 formulation
+PR alpha exponent m (CO2),0.37464 + 1.54226w - 0.26992w^2,-,core/engine_surrogate/pvt_state.py:111,LITERATURE,OK - standard PR alpha correlation
+Vasquez-Beggs R_s constants (API>30),0.0178 / 1.1870 / 23.931,-,core/engine_surrogate/pvt_state.py:239-241,LITERATURE,OK - Vasquez-Beggs (1980) coefficients for API>30
+R_s_CO2 saturation scaling,650.0 * (API/35) * (P/2500)^0.85 * (560/T_R),SCF/STB,core/engine_surrogate/pvt_state.py:260-261,UNKNOWN,EVIDENCE REQUIRED - attributed to Emera-Sarma/Simon-Graue but functional form is not from those papers (MED)
+Oil swelling sf_max form,1.05 + 0.35*tanh((P-500)/2000),RB/RB,core/engine_surrogate/pvt_state.py:279,UNKNOWN,EVIDENCE REQUIRED - Simon-Graue swelling magnitudes quoted but constants not from the paper (MED)
+DARCY_TRANSMISSIBILITY_CONSTANT,0.001127,-,core/engine_surrogate/well_mechanics.py:28,LITERATURE,OK - standard field-unit Darcy constant
+DARCY_FIELD_CONSTANT (with 2pi),0.00708,-,core/engine_surrogate/well_mechanics.py:27,LITERATURE,"OK - 2*pi*0.001127 = 0.00708; correctly used at well_mechanics.py:50,108"
+Peaceman WI radial factor,0.00708,-,core/engine_surrogate/surrogate_engine.py:306; core/engine_surrogate/well_mechanics.py:50,LITERATURE,OK - correct field-unit Peaceman constant
+Missing 2pi in WI formula,6.2832,dimensionless,core/engine_surrogate/well_mechanics.py:220,UNKNOWN,EVIDENCE REQUIRED - that call site omits 2pi (6.28x low) while line 27 documents it (MED-03)
+oil_price_usd_per_bbl,70.0,USD/bbl,core/data_models.py:566,CALIBRATED,Market default - acceptable as a user-editable default
+co2_purchase_cost_usd_per_tonne,50.0,USD/tonne,core/data_models.py:567,CALIBRATED,Market default - acceptable as a user-editable default
+co2_recycle_cost_usd_per_tonne,15.0,USD/tonne,core/data_models.py:568,CALIBRATED,Market default - acceptable
+co2_storage_credit_usd_per_tonne,25.0,USD/tonne,core/data_models.py:569,CALIBRATED,Market default - acceptable
+variable_opex_usd_per_bbl,5.0,USD/bbl,core/data_models.py:575,CALIBRATED,Market default - but ignored by surrogate NPV (HIGH-08)
+discount_rate_fraction,0.10,1/yr,core/data_models.py:572,CALIBRATED,Typical oilfield default - acceptable
+capex_usd,5000000,USD,core/data_models.py:573,UNKNOWN,"EVIDENCE REQUIRED - generic placeholder, no project linkage"
+carbon_tax_usd_per_tonne (EconomicParameters),0.0,USD/tonne,core/data_models.py:576,CALIBRATED,User-configurable default of zero
+carbon_tax_usd_per_tonne (AdvancedEngineParams),75.0,USD/tonne,core/data_models.py:1734,CALIBRATED,DEFAULT MISMATCH: 75.0 vs 0.0 in EconomicParameters - which one applies depends on code path
+carbon tax floor in remediation cost,100.0,USD/tonne,core/objectives/wrapper.py:97,UNKNOWN,"EVIDENCE REQUIRED - max(carbon_tax, 100.0) silently overrides any configured value below 100 (HIGH-13)"
+failure_penalty (module constant),-1e12,-,core/optimisation_engine.py:96,UNKNOWN,EVIDENCE REQUIRED - magnitude arbitrary; duplicated at data_models.py:1709 (MED)
+failure_penalty (AdvancedEngineParams),-1e12,-,core/data_models.py:1709,UNKNOWN,EVIDENCE REQUIRED - duplicate of optimisation_engine.py:96 (MED)
+containment_pressure_weight (w_p),0.5,-,core/objectives/storage.py:87,CALIBRATED,EVIDENCE REQUIRED - PhD formula weights not traceable to a publication
+containment_seal_weight (w_s),0.3,-,core/objectives/storage.py:88,CALIBRATED,EVIDENCE REQUIRED - same
+containment_structure_weight (w_t),0.2,-,core/objectives/storage.py:89,CALIBRATED,EVIDENCE REQUIRED - same
+containment_safety_margin (gamma_safety),1.0,-,core/objectives/storage.py:86,UNKNOWN,EVIDENCE REQUIRED - defaults to 1.0 (no safety discount)
+fracture_pressure_limit_fraction (lambda_limit),0.9,-,core/objectives/storage.py:90,LITERATURE,OK - 0.9 x P_frac is consistent with EPA Class VI practice (invariant #4)
+reservoir_seal_integrity_factor (fallback),0.9,-,core/objectives/storage.py:91,UNKNOWN,EVIDENCE REQUIRED - getattr fallback never populated from AdvancedEngineParams (CRIT-08)
+structural_trapping_factor (fallback),0.85,-,core/objectives/storage.py:92,UNKNOWN,EVIDENCE REQUIRED - getattr fallback never populated from AdvancedEngineParams; makes floor S_cont = 0.44 > 0.3 threshold (CRIT-08)
+containment_critical_threshold,0.3,-,core/data_models.py:1730,UNKNOWN,EVIDENCE REQUIRED - pruning threshold with no cited safety standard
+structural_trapping_factor (Co2StorageParams),0.2,-,core/data_models.py:1596,EMPIRICAL,EVIDENCE REQUIRED - defined but NOT read by storage.py (CRIT-08)
+reservoir_seal_integrity_factor (Co2StorageParams),0.9,-,core/data_models.py:1588,EMPIRICAL,EVIDENCE REQUIRED - defined but NOT read by storage.py (CRIT-08)
+min_transition_alpha / max,0.8 / 1.2,-,core/data_models.py:945-946,UNKNOWN,EVIDENCE REQUIRED - gene is inert in the active engine (CRIT-13)
+min_transition_beta / max,2.0 / 10.0,-,core/data_models.py:947-948,UNKNOWN,EVIDENCE REQUIRED - gene is inert in the active engine (CRIT-13)
+locked_transition_alpha / beta,1.0 / 5.0,-,core/data_models.py:976-977,CALIBRATED,Comment says 'Curve fitting - not operational' - confirms non-physical fitting (CRIT-13)
+default transition_alpha / beta,0.15 / 0.50,-,core/data_models.py:1701-1702,UNKNOWN,EVIDENCE REQUIRED - defaults differ from locked values and from recovery_models defaults (CRIT-13)
+Craig (1971) 5-spot areal sweep,0.517 - 0.072*log10(M),fraction,core/engine_surrogate/analytical_models.py:311; core/engine_surrogate/surrogate_models.py:168,LITERATURE,"FORM OK - standard Craig fit, but E_A=1.0 for M<=1 creates a 48.3% cliff (HIGH-02)"
+Craig areal sweep clip lower bound,0.10,fraction,core/engine_surrogate/analytical_models.py:312,UNKNOWN,EVIDENCE REQUIRED - floor masks the M<=1 discontinuity
+Johnson (1956) vertical sweep,1 - V_DP^0.7,fraction,core/engine_surrogate/analytical_models.py:316; core/engine_surrogate/surrogate_models.py:198,LITERATURE,OK - standard Johnson asymptote
+Koval E_eff correlation,(0.78 + 0.22*M^0.25)^4,-,core/engine_surrogate/analytical_models.py (E_eff path),LITERATURE,OK - standard Koval/Hele-Shaw effective-fractional-flow form (verified correct)
+Koval H exponent (analytical),1/(1-v)^2,-,"core/engine_surrogate/analytical_models.py:174,534,726",LITERATURE,OK - consistent with data_models.py:57
+Koval H exponent (engine breakthrough),10^(v/(1-v)),-,core/engine_surrogate/surrogate_engine.py:894-895,UNKNOWN,EVIDENCE REQUIRED - 1.14x to 1e95 higher than the analytical form (HIGH-06)
+RF floor (miscible branch),0.05,frac OOIP,"core/engine_surrogate/analytical_models.py:193,200",UNKNOWN,EVIDENCE REQUIRED - hard floor sets RF=0.05 at hcpvi=0 (HIGH-03)
+RF floor (immiscible branch),0.10,frac OOIP,core/engine_surrogate/analytical_models.py:326,UNKNOWN,EVIDENCE REQUIRED - RF is identically 0.10 over the tested grid (CRIT-07)
+RF floor (hybrid branch),0.05,frac OOIP,core/engine_surrogate/analytical_models.py:475,UNKNOWN,EVIDENCE REQUIRED - hard floor (HIGH-03)
+RF clip upper bounds,0.85 / 0.80 / 0.75,fraction,"core/engine_surrogate/analytical_models.py:200,475; surrogate_engine.py:510",UNKNOWN,"EVIDENCE REQUIRED - post-hoc clamps mask underlying model error (HIGH-01, HIGH-03)"
+displacement_eff clip,0.05 - 0.95,fraction,core/engine_surrogate/analytical_models.py:193,UNKNOWN,EVIDENCE REQUIRED - floor contributes to the 0.05 RF plateau (HIGH-03)
+trapping_eff clip lower bound,0.10,fraction,core/engine_surrogate/surrogate_models.py:243,UNKNOWN,EVIDENCE REQUIRED - interacts with inverted gas_trapping = 1 - s_gc (HIGH-15)
+gas_trapping formula,1 - s_gc,fraction,core/engine_surrogate/surrogate_models.py:238,UNKNOWN,EVIDENCE REQUIRED - physically inverted (s_gc=0.05 gives 0.95 trapped); test asserts the inversion (HIGH-15)
+S_GC_CRITICAL,0.05,fraction,core/engine_surrogate/surrogate_models.py:31,EMPIRICAL,Plausible textbook value - but used inverted (HIGH-15)
+S_OR_BASE,0.25,fraction,core/engine_surrogate/surrogate_models.py:32,EMPIRICAL,Typical residual oil saturation - acceptable default
+COREY_N_OIL / COREY_N_GAS,2.0 / 2.0,-,core/engine_surrogate/surrogate_models.py:29-30,LITERATURE,OK - Corey (1954) exponents
+E_d under-saturation term (1 - swi - sor),0.45 vs 0.60,fraction,core/engine_surrogate/surrogate_engine.py:509; core/engine_surrogate/analytical_models.py:814,UNKNOWN,EVIDENCE REQUIRED - omits (1-swi) denominator vs correct form at surrogate_models.py:234 (HIGH-01)
+total compressibility c_o,1.0e-5,1/psi,core/engine_surrogate/surrogate_engine.py:315,UNKNOWN,"EVIDENCE REQUIRED - constant oil compressibility contradicts PVT module, which returns negative (expanding) values (CRIT-03)"
+c_w (water compressibility),3.0e-6,1/psi,core/engine_surrogate/surrogate_engine.py:316,LITERATURE,OK - typical brine compressibility
+c_f (rock compressibility),4.0e-6,1/psi,core/engine_surrogate/surrogate_engine.py:317,LITERATURE,OK - typical pore compressibility
+c_o in PVT state,1.2e-5,1/psi,core/engine_surrogate/pvt_state.py:303,UNKNOWN,EVIDENCE REQUIRED - used in undersaturated branch; no bubble point exists (CRIT-03)
+oil swelling sf_max ceiling,1.45,RB/RB,core/engine_surrogate/pvt_state.py:279,LITERATURE,Range matches Simon-Graue but the pressure law does not (see above)
+solution gas clip,0 - 4000,SCF/STB,core/engine_surrogate/pvt_state.py:244,LITERATURE,OK - plausible R_s range
+RF rescale factor used in NPV,RF at target pressure,-,"core/engine_surrogate/surrogate_engine.py:165,171-174",UNKNOWN,EVIDENCE REQUIRED - NPV and reported RF come from different evaluations (CRIT-02)

@@ -11,7 +11,7 @@ It combines:
    - Bayesian Optimization (`bayesian-optimization`)
    - Particle Swarm Optimization (`pyswarms`)
    - Differential Evolution (`scipy.optimize.differential_evolution`)
-3. **Simulation Engine**: Single, direct physics-informed simulation engine (`core/engine_surrogate`). All legacy engines (`compositional_engine`, `unified_engine`, `engine_simple`) and `EngineFactory` are deprecated and relocated to `deprecated/` to eliminate confusion.
+3. **Simulation Engine**: Single, direct physics-informed simulation engine (`core/engine_surrogate`). All legacy engines (`compositional_engine`, `unified_engine`, `engine_simple`) and `EngineFactory` are **absent from the working copy** — they were deleted, not relocated (corrected 2026-10-04, MED-16; no `deprecated/` directory exists).
 4. **Economic & Environmental Objectives**: Engine-owned cash flow modeling (NPV) and carbon accounting, coupled with EPA Class VI geomechanical containment checks and environmental leakage penalties (`core/objectives/wrapper.py`).
 
 ---
@@ -65,11 +65,16 @@ The codebase has been refactored from a multi-engine abstraction to a **clean, s
   - **Standardized 4-Stream Delivery**: Delivers comprehensive daily, monthly, and annual profiles for (1) Crude Oil, (2) Natural Gas, (3) Water / Formation Brine, and (4) Injection Agent (CO₂ & WAG water, with compressor capacity constraints).
 - **Performance**: Extremely fast (~5–15 ms per scenario evaluation), enabling thousands of optimization iterations with full physical integrity.
 
-### B. Legacy Engines & Factory (DEPRECATED - Moved to `deprecated/`)
-- `deprecated/core/engine_factory.py`: Removed to eliminate confusing layers of indirection.
-- `deprecated/core/compositional_engine/`: 1D finite-volume solver moved to `deprecated/`.
-- `deprecated/core/unified_engine/`: 3D grid solver with scientific flaws (SCI-FLAW-04, SCI-FLAW-08) moved to `deprecated/`.
-- `deprecated/core/engine_simple/`: 0D tank model moved to `deprecated/`.
+### B. Legacy Engines & Factory (REMOVED FROM THE TREE — not relocated)
+> ⚠️ **Corrected 2026-10-04 (MED-16).** Earlier text claimed these trees were *"moved to `deprecated/`"*. No
+> `deprecated/` directory exists (`Test-Path deprecated` = `False`), nor do `core/unified_engine/`,
+> `compositional_engine/` or `core/engine_simple/`. The legacy code was **deleted**. The entries below record
+> what used to live here so old references in tests/CI logs can be recognized — they are not current paths.
+
+- `core/engine_factory.py`: **Removed** to eliminate confusing layers of indirection.
+- `core/compositional_engine/`: 1D finite-volume solver, **Removed** (retained in no directory).
+- `core/unified_engine/`: 3D grid solver carrying scientific flaws (SCI-FLAW-04, -08, -18), **Removed** — so those three findings can no longer be re-verified against source.
+- `core/engine_simple/`: 0D tank model, **Removed**.
 
 ---
 

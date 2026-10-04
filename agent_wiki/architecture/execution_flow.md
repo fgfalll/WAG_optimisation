@@ -67,7 +67,7 @@ When a user clicks **"Run Simulation"** or when the metaheuristic optimizer eval
    Strictly re-normalizes profile arrays so cumulative volume matches $N_p$.
 
 ### Step 6: Pressure Evolution via Coupled IPR & Material Balance
-1. Inside `SurrogateEngine._calculate_pressure_profile()`:
+1. Inside `SurrogateEngine.evaluate_scenario()` ⚠️ *(name corrected 2026-10-04, MED-15 — there is no `_calculate_pressure_profile()` method; the update is inline)*:
    - Gas injection converted via dynamic $B_{g,\text{dynamic}}$ to RB/day.
    - Dynamic Koval fractional flow $f_g(t_D)$ tracks voidage replacement.
    - Producer deliverability: Darcy/Vogel drawdown ($J_{\text{prod}} \times (P - P_{\text{min}})$).
@@ -77,9 +77,9 @@ When a user clicks **"Run Simulation"** or when the metaheuristic optimizer eval
    - Single-step pressure derivative bounded to $\pm 450\text{ psi/step}$.
 
 ### Step 7: Engine-Owned NPV & Carbon Balance Accounting
-1. Inside `SurrogateEngine`:
-   - `_calculate_co2_purchased_recycled()` computes fresh vs recycled gas streams.
-   - `_calculate_engine_npv()` discounts project cash flows (oil revenues minus CAPEX, OPEX, fresh gas purchases, recycling compression, and water disposal).
+1. Inside `SurrogateEngine` / `PhDHybridSurrogate` (**names corrected 2026-10-04, MED-15 — the functions below did not exist under their previously documented names**):
+   - **CO₂ purchased vs recycled** is computed *inline* in `SurrogateEngine.evaluate_scenario()`: annual make-up at `surrogate_engine.py:592-596`, rate and cumulative streams at `:607-614`. (Previously documented as `_calculate_co2_purchased_recycled()` — grep → 0 hits.)
+   - **NPV** is computed *inline* in `PhDHybridSurrogate.predict()` at `surrogate_models.py:507-530`, then republished as the profile key `npv` (`surrogate_engine.py:172`, `:692`). (Previously documented as `_calculate_engine_npv()` — grep → 0 hits.) Its cost model omits four inputs the engine supplies — **HIGH-08**.
    - Returns complete `SimulationResults` dictionary to `SurrogateEngineWrapper`.
 
 ### Step 8: Multi-Objective Fitness & Penalty Evaluation

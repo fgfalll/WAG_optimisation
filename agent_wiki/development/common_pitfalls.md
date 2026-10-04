@@ -1,6 +1,17 @@
-# Top 49 Traps & Common Pitfalls for AI Agents
+# Top 52 Traps & Common Pitfalls for AI Agents
 
 This document highlights the most frequent misconceptions, resolved gotchas, and traps encountered when working with this codebase.
+
+> [!IMPORTANT]
+> **Read first — 2026-10-04 independent audit.** This list predates an audit that registered **52 open findings
+> (13 CRITICAL, 18 HIGH, 16 MEDIUM, 5 LOW)**, of which only a subset is represented above. Before editing any
+> scientific code, consult:
+> - [`audit/scientific_flaws.md`](../../audit/scientific_flaws.md) — the master flaw register (severity, category, `file:line`, evidence, remediation order);
+> - [`res_audit.md`](../../res_audit.md) — software quality, anti-patterns, toolchain record, change-safety rows;
+> - [`phd_audit.md`](../../phd_audit.md) — physical/mathematical reconstruction; predictive validity for the active `hybrid` path is **NOT ESTABLISHED**;
+> - [`audit/parameter_provenance.csv`](../../audit/parameter_provenance.csv) — 91 parameters; **48 (53 %) are `UNKNOWN — EVIDENCE REQUIRED`**.
+>
+> Traps **50–52** below were added from that audit.
 
 ---
 
@@ -31,7 +42,16 @@ This document highlights the most frequent misconceptions, resolved gotchas, and
 
 ### 7. Editing `core/objectives/economic.py` for NPV Changes
 - **Trap**: Modifying `core/objectives/economic.py` to change NPV calculation logic.
-- **Reality**: `surrogate_engine._calculate_engine_npv` calculates NPV directly. `core/objectives/economic.py` is ignored by the optimizer.
+- **Reality**: NPV is written **inline** in `PhDHybridSurrogate.predict()`
+  (`core/engine_surrogate/surrogate_models.py:507-530`) and republished as the profile key `npv`
+  (`surrogate_engine.py:172`, `:692`); `core/objectives/wrapper.py:50-53` only consumes it and
+  subtracts containment/remediation penalties. `core/objectives/economic.py` is imported by
+  `core/objectives/__init__.py` but is never called in the evaluation path.
+  ⚠️ Corrected 2026-10-04 (MED-15): the previously cited `surrogate_engine._calculate_engine_npv`
+  **does not exist** (grep → 0 hits); neither do `_calculate_co2_purchased_recycled`,
+  `_solve_pressure_ode` and `_calculate_pressure_profile`. Verify method names against
+  `SurrogateEngine` before citing them — it exposes only `evaluate_scenario`, `_build_params_dict`,
+  `_error_result`, `get_performance_stats`, `reset_performance_stats`.
 
 ### 8. `UnboundLocalError` on `econ_params` [RESOLVED]
 - **Trap**: Testing the fallback path in `OptimizationEngine.evaluate_for_analysis()` when `simulation_engine is None`.
@@ -238,6 +258,21 @@ This document highlights the most frequent misconceptions, resolved gotchas, and
   - Used `.flat[0]` for safe permeability extraction across scalar, 1D, and 3D arrays in `load_project_data()`.
   - Added `@results.setter` to `OptimizationEngine.results`.
   - Added [tests/test_project_save_load.py](file:///d:/rep/4.6/co2eor_optimizer/tests/test_project_save_load.py) covering end-to-end roundtrip serialization, legacy compatibility, and UI restoration.
+
+### 50. Treating a Green `pytest` as Analytical Verification
+- **Trap**: Reading `36 passed` in `tests/scientific/` (or `329 passed` overall) as evidence that the physics is verified.
+- **Reality**: 5 of the 36 scientific tests import production symbols they **never call** — `test_koval_fractional_flow_mobility_monotonicity` imports `FastProfileGenerator` and then re-derives `profile_generator_fast.py:958-969` by hand at `:38-46` — and 3 tests assert **that a defect exists** (`step > 0.40`, `eff_high_sgc < eff_low_sgc`, `truncation_fraction > 0.20`), so *fixing* the physics turns the suite red. 6 more never import production code at all. Consequence: the *Analytical Verification* rung of the evidence hierarchy reports PASS for items where the test either restates the code or pins the wrong answer. **HIGH-18.**
+- **Rule**: Before trusting any test, confirm it (a) executes the symbol under test, (b) asserts the physically correct value, and (c) would fail if the defect were introduced *or* removed.
+
+### 51. Believing the Verification Matrix (`verification/test_matrix.md`)
+- **Trap**: Using the master test matrix to decide what is covered.
+- **Reality**: It declares **42 test items across 16 subdirectories**; `pytest --collect-only tests/scientific` returns **36 in 15**. Six of its listed tests **do not exist anywhere in `tests/`** (`test_co2_density_thermal_expansion`, `test_cubic_eos_z_factor_bounds`, `test_phase_label_assignment`, `test_peng_robinson_fugacity_equation_structure`, `test_corey_relative_permeability_bounds`, `test_bg_discrepancy_between_modules`) and five of those cite the deleted `unified_engine/` tree; one was renamed (`…_mobility_inversion` → `…_monotonicity`); two exist but are unlisted. **MED-16.**
+- **Rule**: Regenerate coverage claims from `pytest --collect-only`, never by hand; verify every cited path with `Test-Path`.
+
+### 52. Assuming Wiki-Stated Invariants Are Enforced by Code
+- **Trap**: Reading `README.md` invariants #3/#10 (mass conservation, closed-loop carbon accounting) as runtime guarantees.
+- **Reality**: $M_{\text{recycled}} \le M_{\text{produced}}$ holds **by construction**, not by enforcement — recycled is capped as `min(prod·η_recycle, inj)` at `optimisation_engine.py:871-872`, so no code asserts it; and the second half is uncheckable because `total_leakage_tonne ≡ 0.0` (CRIT-10, HIGH-05) while `cum_stored = inj − prod` (`surrogate_engine.py:543`) **ignores leakage entirely**. Measured on a 10-yr run: inj 36 525 000 MSCF = purchased 34 994 496 + recycled 1 530 504 (exact) ✓.
+- **Rule**: An invariant that cannot be violated is not an invariant that has been tested. Distinguish *holds by construction* from *asserted* — see `res_audit.md` §2.4.
 
 
 

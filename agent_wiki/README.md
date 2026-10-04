@@ -10,14 +10,24 @@ This documentation is designed for **reservoir engineers, AI pair-programmers, s
 
 | Section | Purpose |
 |---|---|
-| [**Architecture**](architecture/overview.md) | Engine routing, module map, execution flow, dependency graph, [**Shared Earth Workstation**](architecture/shared_earth_workstation.md) |
+| [**Architecture**](architecture/overview.md) | Engine routing, module map, execution flow, dependency graph, [**Shared Earth Workstation**](architecture/shared_earth_workstation.md), [**Subsurface Studio**](architecture/subsurface_studio_workbench.md), [**Model QA/QC & Self-Assurance**](architecture/model_qa_qc_and_self_assurance.md) |
 | [**Physics Models**](physics/reservoir_model.md) | Reservoir geometry, PVT, CO₂ properties, displacement, Koval, Todd-Longstaff |
 | [**Data & Parameters**](data/inputs.md) | Input/output schemas, parameter registry, field unit definitions |
 | [**Development Guide**](development/common_pitfalls.md) | Change safety matrix, common pitfalls, safe modification rules |
 | [**Audit Reports**](audit/technical_debt.md) | Dead code, hardcoded values, [**data management**](audit/data_management_audit.md), [**optimization widget**](audit/optimization_widget_audit.md), [**dialogs, models, utils & widgets**](audit/dialogs_models_utils_widgets_audit.md), [**simulation run audits**](audit/simulation_run_audits/index.md), fallbacks, suspicious logic, [**resolved archive**](audit/resolved_issues.md) |
+| [**2026-10-04 Independent Audit**](../res_audit.md) | [Software quality & anti-patterns](../res_audit.md) · [Scientific/physics audit (`phd_audit.md`)](../phd_audit.md) · [**Flaw register — 52 findings**](../audit/scientific_flaws.md) · [Parameter provenance (91 rows)](../audit/parameter_provenance.csv) |
 | [**Verification**](verification/verification_strategy.md) | 7-level V&V hierarchy, conservation tests, convergence studies |
 | [**Validation**](validation/benchmarks.md) | SPE 5, CMG GEM reference benchmarks |
 | [**Decisions**](decisions/architecture_decisions.md) | Architecture & scientific rationale records (ADRs) |
+
+> [!WARNING]
+> **Audit status (2026-10-04).** An independent four-phase audit registered **52 findings (13 CRITICAL, 18 HIGH,
+> 16 MEDIUM, 5 LOW)** in [`audit/scientific_flaws.md`](../audit/scientific_flaws.md), and issued a
+> **predictive-validity verdict of `NOT ESTABLISHED`** for the active `hybrid` path
+> ([`phd_audit.md`](../phd_audit.md) §C). Read the register before treating any wiki claim below as verified:
+> several invariants here were **not enforced by code** (they hold only by construction), and
+> `verification/test_matrix.md` listed six tests that do not exist (MED-16). Physics defects in PVT
+> (`B_g` 31.7× too small, Z > 1 in the dense-gas region, `dBo/dP > 0`) remain **open** — see CRIT-03/04/05.
 
 ---
 
@@ -26,13 +36,26 @@ This documentation is designed for **reservoir engineers, AI pair-programmers, s
 Before reading or modifying any file in this repository, keep the following **core facts** in mind:
 
 1. **The Single Active Simulation Engine is `core/engine_surrogate` (Intermediate Physics-Informed Simulator)**:
-   The name "Surrogate" signifies an **intermediate, physics-informed reduced-order reservoir simulator** positioned between full 3D multi-block compositional numerical solvers and classical 0D material balance. It operates as a general reservoir simulator embedded with specialized CO₂ EOR expertise (solvent dissolution, oil swelling, viscosity reduction, Koval viscous fingering, Todd-Longstaff partial miscibility, and EPA Class VI geomechanical integrity). All legacy engines (`compositional_engine`, `unified_engine`, `engine_simple`) and the intermediate `EngineFactory` have been deprecated and relocated into `deprecated/` to eliminate confusion. All simulation evaluations route directly to `SurrogateEngineWrapper` (`core/engine_surrogate/surrogate_engine.py`).
+   The name "Surrogate" signifies an **intermediate, physics-informed reduced-order reservoir simulator** positioned between full 3D multi-block compositional numerical solvers and classical 0D material balance. It operates as a general reservoir simulator embedded with specialized CO₂ EOR expertise (solvent dissolution, oil swelling, viscosity reduction, Koval viscous fingering, Todd-Longstaff partial miscibility, and EPA Class VI geomechanical integrity). All legacy engines (`compositional_engine`, `unified_engine`, `engine_simple`) and the intermediate `EngineFactory` are **absent from the working tree** — `deprecated/`, `core/unified_engine/`, `compositional_engine/` and `core/Phys_engine_full/` all return `Test-Path = False` (corrected 2026-10-04: earlier text claimed they had been "relocated into `deprecated/`"; no such directory exists — see MED-16). All simulation evaluations route directly to `SurrogateEngineWrapper` (`core/engine_surrogate/surrogate_engine.py`).
 
 2. **`FastProfileGenerator` is the Single Source of Truth for Profiles**:
-   All production, injection, and rate profiles are synthesized via `core/engine_surrogate/profile_generator_fast.py`. The legacy classes in `core/simulation/injection_schemes.py` and `core/simulation/profile_generator.py` are deprecated wrappers.
+   All production, injection, and rate profiles are synthesized via `core/engine_surrogate/profile_generator_fast.py`. `core/simulation/profile_generator.py` is a deprecated re-export shim (`from core.engine_surrogate.profile_generator_fast import FastProfileGenerator`). ⚠️ `core/simulation/injection_schemes.py`, cited here previously, **does not exist** (grep → 0 hits; corrected 2026-10-04).
 
-3. **NPV and CO₂ Accounting are Engine-Owned**:
-   NPV calculation and CO₂ purchased/recycled volumes are computed directly inside `core/engine_surrogate/surrogate_engine.py` (`_calculate_engine_npv` and `_calculate_co2_purchased_recycled`). The wrapper in `core/objectives/wrapper.py` is a consumer that reads engine results.
+3. **NPV and CO₂ Accounting are Engine-Owned** (names corrected 2026-10-04 — see MED-15):
+   - **CO₂ purchased vs recycled** is computed *inline* inside `SurrogateEngine.evaluate_scenario()`
+     (`core/engine_surrogate/surrogate_engine.py:592-596` annual make-up, `:607-614` rate and
+     cumulative profiles).
+   - **NPV** is computed *inline* inside `PhDHybridSurrogate.predict()`
+     (`core/engine_surrogate/surrogate_models.py:507-530`) and republished by the engine as the
+     `npv` profile key (`surrogate_engine.py:172`, `:692`).
+   - The wrapper `core/objectives/wrapper.py:ObjectiveFunctions._calculate_objective_functions()`
+     is a **consumer** (`:50-53` reads `profiles["npv"]`, then applies containment/remediation
+     penalties) — see **CRIT-02**, which shows the reported NPV and the reported RF can come from
+     two different evaluations.
+   - ⚠️ There is **no** method named `_calculate_engine_npv`, `_calculate_co2_purchased_recycled`,
+     `_solve_pressure_ode` or `_calculate_pressure_profile` anywhere in the repository (grep: 0 hits).
+     `SurrogateEngine` exposes only `evaluate_scenario`, `_build_params_dict`, `_error_result`,
+     `get_performance_stats`, `reset_performance_stats`.
 
 4. **Tank Pressure Uses Coupled Darcy/Vogel IPR & Damped Material Balance**:
    The legacy `solve_ivp` pressure ODE has been superseded by an explicit, physics-based deliverability and material balance model in `surrogate_engine.py`:

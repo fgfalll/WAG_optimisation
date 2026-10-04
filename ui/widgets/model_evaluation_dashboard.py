@@ -202,7 +202,7 @@ class ModelEvaluationDashboard(QWidget):
         left_layout.setContentsMargins(0, 0, 0, 0)
         self.fig_tab5 = Figure(figsize=(7, 5), tight_layout=True)
         self.canvas_tab5 = FigureCanvas(self.fig_tab5)
-        self.ax_tab5_3d = self.fig_tab5.add_subplot(121, projection='3d')
+        self.ax_tab5_3d = self.fig_tab5.add_subplot(121)
         self.ax_tab5_quadrant = self.fig_tab5.add_subplot(122)
         left_layout.addWidget(self.canvas_tab5)
         splitter.addWidget(left_widget)
@@ -378,7 +378,9 @@ class ModelEvaluationDashboard(QWidget):
         res_rel = stone_1_three_phase_relperm(sw=sw_arr, sg=0.15)
         self.ax_tab2_relperm.plot(sw_arr, res_rel["krw"], color="#2980b9", lw=2, label="krw (Water)")
         self.ax_tab2_relperm.plot(sw_arr, res_rel["kro"], color="#27ae60", lw=2, label="kro (Stone I Oil)")
-        self.ax_tab2_relperm.plot(sw_arr, res_rel["krg"], color="#c0392b", lw=2, label="krg (Gas Sg=0.15)")
+        krg_val = res_rel["krg"]
+        krg_arr = np.full_like(sw_arr, float(krg_val)) if np.size(krg_val) == 1 else krg_val
+        self.ax_tab2_relperm.plot(sw_arr, krg_arr, color="#c0392b", lw=2, label="krg (Gas Sg=0.15)")
         self.ax_tab2_relperm.set_title("Stone I 3-Phase Rel-Perm (Sg = 0.15)", fontsize=9, fontweight="bold")
         self.ax_tab2_relperm.set_xlabel("Water Saturation Sw", fontsize=8)
         self.ax_tab2_relperm.set_ylabel("Relative Permeability", fontsize=8)
@@ -601,16 +603,17 @@ class ModelEvaluationDashboard(QWidget):
 
             # Color by Time-of-Flight (tau)
             tau_years = np.linspace(0.1, 8.5 + abs(offset) * 0.02, len(sx))
-            self.ax_tab5_3d.plot(sx, sy, sz, color="#3498db", alpha=0.65, lw=1.5)
+            self.ax_tab5_3d.plot(sx, sy, color="#0284c7", alpha=0.70, lw=1.8)
 
-        # Plot Wells
-        self.ax_tab5_3d.scatter([inj_coords[0]], [inj_coords[1]], [inj_coords[2]], color="#007bff", marker="^", s=70, label="Injector")
-        self.ax_tab5_3d.scatter([prod_coords[0]], [prod_coords[1]], [prod_coords[2]], color="#dc3545", marker="o", s=70, label="Producer")
-        self.ax_tab5_3d.set_title("3D Pollock Streamline Time-of-Flight", fontsize=9, fontweight="bold")
-        self.ax_tab5_3d.set_xlabel("X (ft)", fontsize=8)
-        self.ax_tab5_3d.set_ylabel("Y (ft)", fontsize=8)
-        self.ax_tab5_3d.set_zlabel("TVD (ft)", fontsize=8)
-        self.ax_tab5_3d.legend(fontsize=7)
+        # Plot Bounding Box & Wells
+        self.ax_tab5_3d.plot([0, length_ft, length_ft, 0, 0], [0, 0, width_ft, width_ft, 0], color="#64748b", linestyle="--", lw=1.2)
+        self.ax_tab5_3d.scatter([inj_coords[0]], [inj_coords[1]], color="#007bff", marker="^", s=90, label="Injector", edgecolors="black", zorder=5)
+        self.ax_tab5_3d.scatter([prod_coords[0]], [prod_coords[1]], color="#dc3545", marker="o", s=90, label="Producer", edgecolors="black", zorder=5)
+        self.ax_tab5_3d.set_title("Areal Pollock Streamlines & Conformance", fontsize=9, fontweight="bold")
+        self.ax_tab5_3d.set_xlabel("X Distance (ft)", fontsize=8)
+        self.ax_tab5_3d.set_ylabel("Y Distance (ft)", fontsize=8)
+        self.ax_tab5_3d.grid(True, linestyle=":", alpha=0.5)
+        self.ax_tab5_3d.legend(fontsize=7, loc="upper right")
 
         # 2. Flooding Efficiency Quadrants (Offset Oil Produced vs Fluid Injected)
         self.ax_tab5_quadrant.clear()

@@ -19,9 +19,10 @@
 
 ## 2. Numerical Limitations
 
-1. **Pressure ODE Stiff Solver Limits**:
-   - The 0D tank material balance ODE is solved using `scipy.integrate.solve_ivp(method="BDF")`.
-   - If cumulative production volume exceeds injection and initial compressible expansion, the pressure equation can attempt to cross below zero. The ODE system clips pressure to $\max(P, 100.0\text{ psi})$ to prevent negative values and singular gas compressibilities ($c_g = 1/P$).
+1. **Pressure Update — damped explicit material balance** ⚠️ *(corrected 2026-10-04: `solve_ivp` and `_solve_pressure_ode_stiff` are **no longer in the codebase**; grep → 0 hits)*:
+   - The pressure increment is now written inline in `SurrogateEngine.evaluate_scenario()` as
+     $dP = q\,\Delta t/(V_p c_t + J_{\text{eff}}\Delta t)$, with a per-step limiter of $\pm450\text{ psi/step}$ and an EPA Class VI ceiling $P \le 0.90\,P_{\text{frac}}$.
+   - Because it is explicit, a step larger than $\max(\Delta P_{\text{limiter}}, 450\text{ psi})$ is silently truncated rather than rejected: the scheme has **no error estimator**, so stability is enforced by clipping, not by adaptivity (see `res_audit.md` §4.1 for the stabilization-vs-physics separation).
 2. **Fixed Time Resolution**:
    - Dynamic profiles are synthesized at discrete daily, monthly, or annual time points.
    - Rapid WAG cycles ($< 15\text{ days}$) evaluated with `"annual"` time resolution will suffer numerical aliasing, as multiple WAG cycles collapse into a single time point.
@@ -44,7 +45,7 @@
 
 1. **Uncoupled Parameter Pressure Optimization**:
    - The optimizer treats `pressure` as an unconstrained decision variable fed to `AnalyticalSurrogate.predict()`, maximizing analytical recovery factor at the search upper bound (e.g. $4,450\text{ psia}$).
-   - However, the dynamic tank material balance ODE (`_solve_pressure_ode_stiff`) calculates in-situ reservoir pressure independently ($\sim 3,080 - 3,335\text{ psia}$), creating an unphysical $\sim 1,350\text{ psi}$ discrepancy between optimization assumptions and reservoir reality.
+   - However, the dynamic tank pressure update (now the inline damped material balance in `evaluate_scenario()`; the previously cited `_solve_pressure_ode_stiff` / `solve_ivp` path **no longer exists**, grep → 0 hits — corrected 2026-10-04) calculates in-situ reservoir pressure independently ($\sim 3,080 - 3,335\text{ psia}$), creating an unphysical $\sim 1,350\text{ psi}$ discrepancy between optimization assumptions and reservoir reality.
 2. **Sub-PVI Throughput Displacement Overprediction**:
    - Analytical Koval displacement curves can predict $>40\%$ OOIP incremental tertiary recovery at cumulative throughputs $< 0.5\text{ HCPVI}$ ($0.27\text{ Net PVI}$) under continuous gas injection.
    - U.S. DOE/NETL and SPE field data demonstrate that continuous adverse-mobility gas floods ($M=50$) achieve at most $7\% - 15\%$ OOIP incremental recovery at such low throughputs due to severe viscous fingering and gravity override.

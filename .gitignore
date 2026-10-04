@@ -58,3 +58,6 @@ nul
 
 # ── Large generated call graph (do not track in Git) ────────
 agent_wiki/architecture/call_graph.txt
+
+# ── Scratch / temporary verification directory ─────────────
+scratch/

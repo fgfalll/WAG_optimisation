@@ -62,13 +62,13 @@ sequenceDiagram
     Engine->>ProfGen: generate_profile(ooip, recovery_factor, injection_rate, ...)
     ProfGen-->>Engine: profile_result (oil, water, gas, CO2, time_vector)
     
-    Note over Engine,Solver: 3. Dynamic Tank Material Balance
-    Engine->>Solver: solve_ivp(_pressure_ode_system, method='BDF')
-    Solver-->>Engine: dynamic pressure_profile array
+    Note over Engine,Solver: 3. Dynamic Tank Material Balance (inline — `solve_ivp` no longer used)
+    Engine->>Engine: dP = q·Δt / (V_p·c_t + J_eff·Δt)
+    Engine-->>Engine: pressure_profile array
     
     Note over Engine: 4. CO2 Accounting & Economics
-    Engine->>Engine: _calculate_co2_purchased_recycled(...)
-    Engine->>Engine: _calculate_engine_npv(...)
+    Engine->>Engine: inline purchased/recycled split (surrogate_engine.py:592-596, 607-614)
+    Engine->>PhdSurrogate: npv computed inline (surrogate_models.py:507-530)
     
     Engine-->>Wrap: Full results dict (RF, NPV, profiles, storage_eff)
     Wrap-->>Opt: Full results dict

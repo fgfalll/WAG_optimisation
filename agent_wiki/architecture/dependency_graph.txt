@@ -26,10 +26,10 @@ sequenceDiagram
         Hybrid-->>Surv: Ultimate Recovery Factor (RF)
         Surv->>PGF: generate_profiles(eor_params, rf, operational_params)
         PGF-->>Surv: oil, water, gas rate profiles
-        Surv->>ODE: solve_ivp(tank_pressure_ode, y0=p_init)
-        ODE-->>Surv: pressure_profile (psi)
-        Surv->>Surv: _calculate_co2_purchased_recycled(injection, gas_prod)
-        Surv->>Surv: _calculate_engine_npv(profiles, econ_params)
+        Surv->>Surv: dP = q*dt/(Vp*ct + Jeff*dt)   (inline; solve_ivp removed)
+        Surv-->>Surv: pressure_profile (psi)
+        Surv->>Surv: inline purchased/recycled split (surrogate_engine.py:592-596,607-614)
+        Surv->>Hybrid: npv computed inline (surrogate_models.py:507-530)
         Surv-->>Wrap: SimulationResults(profiles, npv, rf, stored_co2)
         Wrap-->>Opt: SimulationResults
         Opt->>Obj: evaluate_fitness(results, constraints)

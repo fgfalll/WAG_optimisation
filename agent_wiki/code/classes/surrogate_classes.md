@@ -20,16 +20,16 @@
   Coordinates the full 20-year monthly simulation run:
   1. Computes ultimate recovery factor $RF$ via `analytical_surrogate.predict_recovery()`.
   2. Synthesizes oil, water, and gas profiles via `profile_generator.generate_profiles()`.
-  3. Evaluates reservoir pressure history $P(t)$ via `_calculate_pressure_profile()`.
-  4. Evaluates fresh vs recycled CO₂ streams via `_calculate_co2_purchased_recycled()`.
-  5. Computes net discounted cash flow via `_calculate_engine_npv()`.
+  3. Evaluates reservoir pressure history $P(t)$ **inline in `evaluate_scenario()`** (there is no `_calculate_pressure_profile()` method; grep → 0 hits).
+  4. Splits fresh vs recycled CO₂ **inline** (`surrogate_engine.py:592-596`, `:607-614`); there is no `_calculate_co2_purchased_recycled()` method (grep → 0 hits).
+  5. Receives NPV computed **inline** in `PhDHybridSurrogate.predict()` (`surrogate_models.py:507-530`, republished at `surrogate_engine.py:172,692`); there is no `_calculate_engine_npv()` method (grep → 0 hits).
   6. Evaluates trapped carbon via `CO2StorageSurrogate.calculate_storage()`.
   7. Packages results into typed `SimulationResults`.
-- `_calculate_pressure_profile(profiles: Dict[str, np.ndarray]) -> np.ndarray`:
+- ~~`_calculate_pressure_profile(...)`~~ — **does not exist** (grep → 0 hits, corrected 2026-10-04); the pressure update is written inline in `evaluate_scenario()`:
   Solves explicit damped material balance pressure increments:
   $$dP = \frac{(q_{\text{inj,actual}} - q_{\text{prod,actual}}) \cdot \Delta t}{V_p \cdot c_t + J_{\text{eff}} \cdot \Delta t}$$
   Enforces sandface injection ceiling ($P \le 0.90 \times P_{\text{frac}}$) and producer minimum drawdown ($P_{wf} \ge P_{\text{min}}$).
-- `_calculate_co2_purchased_recycled(profiles: Dict[str, np.ndarray]) -> Tuple[np.ndarray, np.ndarray]`:
+- ~~`_calculate_co2_purchased_recycled(...)`~~ — **does not exist** (grep → 0 hits, corrected 2026-10-04); the split is written inline at `surrogate_engine.py:592-596,607-614`:
   Tracks fresh make-up CO₂ and recycled produced CO₂, ensuring cumulative recycled gas never exceeds cumulative produced gas.
 
 ---

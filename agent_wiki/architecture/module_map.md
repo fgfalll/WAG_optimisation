@@ -56,11 +56,14 @@ The active codebase consists of **202 Python modules** comprising **~85,530 line
 - [core/objectives/storage.py](file:///d:/rep/4.6/co2eor_optimizer/core/objectives/storage.py): CO₂ storage efficiency and geomechanical containment scoring.
 - [core/objectives/economic.py](file:///d:/rep/4.6/co2eor_optimizer/core/objectives/economic.py): Standalone cash flow and NPV utilities.
 
-#### 6. Deprecated Subsystems (`deprecated/core/`)
-- `deprecated/core/compositional_engine/`: 3D multi-block compositional simulator sandbox.
-- `deprecated/core/unified_engine/`: Legacy monolithic simulator and EOS sandbox.
-- `deprecated/core/engine_simple/`: 0D material balance prototype.
-- `deprecated/core/engine_factory.py`: Legacy multi-engine router.
-- `deprecated/core/engine_surrogate/`: Response surface ML prototypes (`response_surfaces.py`, `feature_transformer.py`, `training_data.py`, `model_factory.py`).
-- `deprecated/core/geology/geology_engine.py`: Uncalibrated `GeologyEngine`.
-- `deprecated/core/simulation/`: Legacy `recovery_models.py` and `profile_generator.py`.
+#### 6. Retired Subsystems — **deleted from the tree** (corrected 2026-10-04, MED-16)
+> ⚠️ There is **no `deprecated/` directory** (`Test-Path deprecated` = `False`). The entries below are a record of
+> what was removed, not current paths. Verify with `Test-Path` before citing any of them.
+
+- ~~`deprecated/core/compositional_engine/`~~: 3D multi-block compositional simulator — **deleted**.
+- ~~`deprecated/core/unified_engine/`~~: Legacy monolithic simulator and EOS sandbox — **deleted** (carried SCI-FLAW-04/-08/-18, which can no longer be re-verified).
+- ~~`deprecated/core/engine_simple/`~~: 0D material balance prototype — **deleted**.
+- ~~`deprecated/core/engine_factory.py`~~: Legacy multi-engine router — **deleted**.
+- ~~`deprecated/core/engine_surrogate/`~~: Response surface ML prototypes — **deleted**.
+- ~~`deprecated/core/geology/geology_engine.py`~~: Uncalibrated `GeologyEngine` — **deleted** (`core/geology/geology_engine.py` = `False`; the lazy shim in `core/geology/__init__.py` is therefore a shim to nothing).
+- **Still present (never relocated):** `core/simulation/recovery_models.py` and `core/simulation/profile_generator.py` exist and are dormant behind `RECOVERY_MODELS_AVAILABLE = False` (HIGH-11); `analysis/profiler.py` also still exists. `core/simulation/injection_schemes.py` does **not** exist (cited by `README.md` invariant #2 and `source_of_truth.md`).

@@ -20,7 +20,7 @@ In a rigorous reservoir simulation of Carbon Capture, Utilization, and Storage (
 
 ### A. Mass Balance in Primary Surrogate Engine (`core/engine_surrogate`)
 - **Status**: **Semi-Analytical Material Balance**.
-- **Implementation**: [SurrogateEngine._calculate_co2_purchased_recycled()](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L950)
+- **Implementation**: [SurrogateEngine.evaluate_scenario() — inline purchased/recycled split](file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L592) *(corrected 2026-10-04: there is no `_calculate_co2_purchased_recycled()` method — grep → 0 hits)*
 - **Equation**:
   $$\text{Purchased CO}_2 = \text{Total Injected CO}_2 - \text{Recycled CO}_2$$
   where recycled CO₂ begins only after CO₂ breakthrough:

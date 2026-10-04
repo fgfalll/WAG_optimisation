@@ -206,7 +206,6 @@ class WellScheduleEntry:
     trigger_condition: Optional[str] = None
     trigger_value: Optional[float] = None
 
-
 @dataclasses.dataclass
 class WellOperationalSchedule:
     """Complete operational schedule for a single well."""
@@ -215,6 +214,94 @@ class WellOperationalSchedule:
     entries: List[WellScheduleEntry] = dataclasses.field(default_factory=list)
     control_mode: str = "bhp"
     max_operations: int = 100
+
+
+@dataclasses.dataclass
+class FaultData:
+    """Comprehensive geological, kinematic, and geomechanical model for a reservoir fault."""
+    id: str = "F-1"
+    name: str = "Fault F-1"
+    strike: float = 45.0  # Strike azimuth in degrees (0-360)
+    dip: float = 70.0     # Dip angle in degrees from horizontal (0-90)
+    dip_direction: str = "SE"
+    throw: float = 45.0   # Vertical throw in feet
+    heave: float = 16.4   # Horizontal heave in feet
+    length: float = 3500.0# Fault strike trace length in feet
+    center_x: float = 1000.0 # Fault center X in feet
+    center_y: float = 1000.0 # Fault center Y in feet
+    z_top: float = 4800.0 # Fault upper termination depth TVD ft
+    z_base: float = 5250.0# Fault lower termination depth TVD ft
+    transmissibility_multiplier: float = 0.15 # Cross-fault fluid transmissibility (0=sealing, 1=open)
+    damage_zone_width: float = 80.0 # Fault damage zone total width in feet
+    friction_coefficient: float = 0.60 # Byerlee friction coefficient mu
+    cohesion: float = 0.0 # Fault cohesion in psi
+    shale_gouge_ratio: float = 32.0 # SGR % along fault surface
+    slip_tendency: float = 0.42 # Resolved Ts = tau / sigma_n'
+    dilation_tendency: float = 0.35 # Resolved Td = (sigma_1 - sigma_n) / (sigma_1 - sigma_3)
+    coulomb_stress_change: float = 0.0 # Inter-fault Coulomb stress transfer delta_CFS in psi
+    is_active: bool = True
+
+    def calculate_resolved_stresses(
+        self,
+        sv_psi: float,
+        sh_psi: float,
+        pore_pressure_psi: float,
+        sh_azimuth_deg: float = 90.0,
+        biot_alpha: float = 0.85
+    ) -> Dict[str, float]:
+        """Resolves normal stress, shear stress, and slip tendency on the 3D fault plane."""
+        theta = np.radians(self.dip)
+        alpha = np.radians(self.strike - sh_azimuth_deg)
+
+        # Normal stress on fault plane
+        sin_t = np.sin(theta)
+        cos_t = np.cos(theta)
+        sin_a = np.sin(alpha)
+        cos_a = np.cos(alpha)
+
+        # 3D stress tensor projection (assuming vertical Sv, horizontal Shmin and SHmax)
+        sigma_n = sv_psi * (cos_t**2) + sh_psi * (sin_t**2) * (sin_a**2) + sh_psi * 1.15 * (sin_t**2) * (cos_a**2)
+        # Effective normal stress
+        sigma_n_eff = max(sigma_n - biot_alpha * pore_pressure_psi, 10.0)
+
+        # Shear stress magnitude on plane
+        tau = 0.5 * abs(sv_psi - sh_psi) * np.sin(2.0 * theta) * max(abs(sin_a), 0.2)
+        ts = tau / sigma_n_eff
+        mu = max(self.friction_coefficient, 0.1)
+
+        # Critical pore pressure increase for reactivation
+        delta_p_crit = (sigma_n - (tau - self.cohesion) / mu) / biot_alpha - pore_pressure_psi
+
+        self.slip_tendency = float(np.clip(ts, 0.0, 1.5))
+        return {
+            "sigma_n_psi": float(sigma_n),
+            "sigma_n_eff_psi": float(sigma_n_eff),
+            "tau_psi": float(tau),
+            "slip_tendency": float(self.slip_tendency),
+            "delta_p_crit_psi": float(delta_p_crit),
+            "is_critically_stressed": bool(ts >= mu)
+        }
+
+
+@dataclasses.dataclass
+class CaprockLayer:
+    """Stratigraphic confining unit layer for caprock seal integrity analysis."""
+    name: str = "Unit C1 - Basal Marine Shale"
+    thickness_ft: float = 120.0
+    lithology: str = "Illite-Smectite Shale"
+    youngs_modulus_gpa: float = 18.5
+    poissons_ratio: float = 0.28
+    tensile_strength_psi: float = 250.0
+    cohesion_psi: float = 450.0
+    friction_angle_deg: float = 32.0
+    entry_pressure_psi: float = 2200.0
+    permeability_nd: float = 10.0
+    description: str = "Primary high-capillarity regional marine shale seal"
+
+    def max_sustainable_column_ft(self, brine_grad_psi_ft: float = 0.465, co2_grad_psi_ft: float = 0.215) -> float:
+        """Calculates maximum sustainable buoyant CO2 column height before capillary breakthrough."""
+        delta_rho_g = max(brine_grad_psi_ft - co2_grad_psi_ft, 0.05)
+        return float(self.entry_pressure_psi / delta_rho_g)
 
 
 @dataclasses.dataclass

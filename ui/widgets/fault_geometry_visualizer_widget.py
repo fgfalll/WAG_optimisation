@@ -16,12 +16,16 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox, QLabel,
     QPushButton, QDoubleSpinBox, QSlider, QFrame
 )
-from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QIcon
-
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
+from PyQt6.QtCore import pyqtSignal, Qt
+try:
+    import pyvista as pv
+    from pyvistaqt import QtInteractor
+    PYVISTA_AVAILABLE = True
+except ImportError:
+    PYVISTA_AVAILABLE = False
+    pv = None
+    QtInteractor = None
 
 logger = logging.getLogger(__name__)
 
@@ -116,11 +120,17 @@ class FaultGeometryVisualizerWidget(QWidget):
 
         main_layout.addWidget(control_frame)
 
-        # 3D Matplotlib Canvas
-        self.fig = Figure(figsize=(8, 5))
-        self.canvas = FigureCanvas(self.fig)
-        self.ax_3d = self.fig.add_subplot(111, projection='3d')
-        main_layout.addWidget(self.canvas, stretch=1)
+        # 3D Viewport: Pure PyVista Hardware OpenGL
+        if PYVISTA_AVAILABLE and QtInteractor is not None:
+            self.plotter = QtInteractor(self)
+            self.plotter.set_background("#ffffff")
+            self.plotter.add_axes(color="#334155", line_width=1.5)
+            main_layout.addWidget(self.plotter, stretch=1)
+        else:
+            self.plotter = None
+            lbl_err = QLabel("PyVista is required for 3D subsurface renders.")
+            lbl_err.setStyleSheet("color: #dc2626; padding: 20px; font-weight: bold;")
+            main_layout.addWidget(lbl_err, stretch=1)
 
         # Bottom Status Bar
         self.status_label = QLabel("Fault Seal: Sealing (SGR: 42.0%) | Slip Tendency: Low | Safe Standoff: Verified")
@@ -184,7 +194,12 @@ class FaultGeometryVisualizerWidget(QWidget):
 
     def render_fault_3d(self):
         try:
-            self.ax_3d.clear()
+            if not PYVISTA_AVAILABLE or self.plotter is None:
+                return
+
+            self.plotter.clear()
+            self.plotter.set_background("#ffffff")
+            self.plotter.add_axes(color="#334155", line_width=1.5)
 
             length = self.length_ft
             width = self.width_ft
@@ -197,22 +212,9 @@ class FaultGeometryVisualizerWidget(QWidget):
             throw = self.throw_spin.value()
             sgr = self._calculate_sgr()
 
-            # 1. Reservoir Bounding Box Wireframe
-            corners = np.array([
-                [0, 0, top_z], [length, 0, top_z],
-                [length, width, top_z], [0, width, top_z],
-                [0, 0, base_z], [length, 0, base_z],
-                [length, width, base_z], [0, width, base_z]
-            ])
-            edges = [
-                (0, 1), (1, 2), (2, 3), (3, 0),
-                (4, 5), (5, 6), (6, 7), (7, 4),
-                (0, 4), (1, 5), (2, 6), (3, 7)
-            ]
-            for e in edges:
-                p1, p2 = corners[e[0]], corners[e[1]]
-                self.ax_3d.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]],
-                                color="#6c757d", linestyle="--", linewidth=1.0, alpha=0.5)
+            # 1. Reservoir Bounding Box Wireframe (TVD mapped to negative Z)
+            box = pv.Box(bounds=[0, length, 0, width, -base_z, -top_z])
+            self.plotter.add_mesh(box, style="wireframe", color="#64748b", line_width=1.5)
 
             # 2. 3D Fault Plane Mesh
             # Orient fault through reservoir centroid
@@ -221,18 +223,12 @@ class FaultGeometryVisualizerWidget(QWidget):
             dy = 0.5 * width * np.sin(strike_rad)
             dip_offset = (thickness / max(np.tan(dip_rad), 0.1))
 
-            fx = np.array([
-                [mx - dx, mx + dx],
-                [mx - dx + dip_offset * np.sin(strike_rad), mx + dx + dip_offset * np.sin(strike_rad)]
-            ])
-            fy = np.array([
-                [my - dy, my + dy],
-                [my - dy - dip_offset * np.cos(strike_rad), my + dy - dip_offset * np.cos(strike_rad)]
-            ])
-            fz = np.array([
-                [top_z - 10.0, top_z - 10.0],
-                [base_z + 10.0, base_z + 10.0]
-            ])
+            p1 = [mx - dx, my - dy, -(top_z - 10.0)]
+            p2 = [mx + dx, my + dy, -(top_z - 10.0)]
+            p3 = [mx + dx + dip_offset * np.sin(strike_rad), my + dy - dip_offset * np.cos(strike_rad), -(base_z + 10.0)]
+            p4 = [mx - dx + dip_offset * np.sin(strike_rad), my - dy - dip_offset * np.cos(strike_rad), -(base_z + 10.0)]
+
+            fault_quad = pv.PolyData(np.array([p1, p2, p3, p4]), faces=[4, 0, 1, 2, 3])
 
             # Color-code based on SGR seal rating
             if sgr < 20.0:
@@ -244,14 +240,18 @@ class FaultGeometryVisualizerWidget(QWidget):
                 seal_text = f"TRANSITIONAL SEAL (SGR: {sgr:.1f}%)"
                 style = "color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba;"
             else:
-                fault_color = "#28a745"  # Sealing barrier
+                fault_color = "#10b981"  # Sealing barrier
                 seal_text = f"SEALING SHALE SMEAR (SGR: {sgr:.1f}% > 30%)"
                 style = "color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb;"
 
-            self.ax_3d.plot_surface(fx, fy, fz, color=fault_color, alpha=0.45)
-            self.ax_3d.plot_wireframe(fx, fy, fz, color=fault_color, linewidth=1.5)
-            self.ax_3d.text(mx, my, top_z - 15.0, f" Fault Plane (Throw: {throw:.0f}ft)",
-                            color=fault_color, fontweight="bold", fontsize=9)
+            self.plotter.add_mesh(
+                fault_quad,
+                color=fault_color,
+                opacity=0.75,
+                show_edges=True,
+                edge_color="#9f1239" if sgr < 20.0 else "#047857",
+                line_width=2.0
+            )
 
             # 3. Wells & Standoff Check
             min_dist = 99999.0
@@ -272,19 +272,34 @@ class FaultGeometryVisualizerWidget(QWidget):
                     min_dist = dist
                     closest_well = name
 
-                wz = np.linspace(top_z, base_z, 15)
-                wx = np.full_like(wz, sx)
-                wy = np.full_like(wz, sy)
-                self.ax_3d.plot(wx, wy, wz, color=well_color, linewidth=2.5, label=f"{name}")
-                self.ax_3d.scatter([sx], [sy], [top_z], color=well_color, s=50)
+                pts = np.column_stack([np.full(15, sx), np.full(15, sy), -np.linspace(top_z, base_z, 15)])
+                spline = pv.Spline(pts, n_points=20)
+                self.plotter.add_mesh(spline.tube(radius=max(length * 0.008, 12.0)), color=well_color, smooth_shading=True)
+                head = pv.Sphere(radius=max(length * 0.016, 22.0), center=[sx, sy, -top_z])
+                self.plotter.add_mesh(head, color=well_color)
 
-                # Standoff buffer cylinder (250 ft radius)
+                # Standoff buffer cylinder (250 ft radius) if encroaching
                 if dist < 250.0:
-                    theta = np.linspace(0, 2 * np.pi, 20)
-                    cx = sx + 250.0 * np.cos(theta)
-                    cy = sy + 250.0 * np.sin(theta)
-                    cz = np.full_like(cx, base_z)
-                    self.ax_3d.plot(cx, cy, cz, color="#ff0000", linestyle=":", lw=1.5)
+                    buffer_cyl = pv.Cylinder(
+                        center=(sx, sy, -(top_z + base_z) * 0.5),
+                        direction=(0, 0, 1),
+                        radius=250.0,
+                        height=thickness,
+                        resolution=24
+                    )
+                    self.plotter.add_mesh(buffer_cyl, color="#ef4444", opacity=0.25)
+
+            # 4. 3D Billboard label
+            self.plotter.add_point_labels(
+                np.array([[mx, my, -top_z]]),
+                [f"Fault (Throw: {throw:.0f} ft) | {seal_text}"],
+                point_color=fault_color,
+                text_color="#0f172a",
+                font_size=10,
+                bold=True,
+                shape_color="#ffffff",
+                shape_opacity=0.90
+            )
 
             # Update Status Bar
             if min_dist < 250.0:
@@ -296,14 +311,14 @@ class FaultGeometryVisualizerWidget(QWidget):
             self.status_label.setText(f"{seal_text} | {standoff_msg}")
             self.status_label.setStyleSheet(style + " font-weight: bold; padding: 4px 8px; border-radius: 4px;")
 
-            self.ax_3d.set_title("3D Fault Plane & Shale Gouge Ratio (SGR)", fontsize=11, fontweight="bold")
-            self.ax_3d.set_xlabel("X Length (ft)", fontsize=9)
-            self.ax_3d.set_ylabel("Y Width (ft)", fontsize=9)
-            self.ax_3d.set_zlabel("TVD Depth (ft)", fontsize=9)
-            self.ax_3d.set_zlim(base_z + 20.0, top_z - 20.0)
-            self.ax_3d.grid(True, linestyle=":", alpha=0.5)
+            # Apply geological Z-exaggeration and camera reset
+            z_aspect = max(length, width) / max(thickness, 10.0)
+            self.plotter.set_scale(zscale=float(np.clip(z_aspect * 0.15, 1.2, 8.0)))
+            self.plotter.view_isometric()
+            self.plotter.reset_camera()
+            self.plotter.camera.zoom(0.85)
+            self.plotter.render()
 
-            self.canvas.draw()
             self.fault_updated.emit(self.get_fault_parameters())
 
         except Exception as e:

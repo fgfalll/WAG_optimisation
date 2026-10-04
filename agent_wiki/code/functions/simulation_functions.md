@@ -13,18 +13,18 @@ Coordinates the entire surrogate simulation pipeline. Evaluates candidate operat
 1. Unpacks input dictionaries into `EORParameters` and `OperationalParameters`.
 2. Invokes `PhDHybridRecoveryModel.predict_recovery()` to calculate ultimate $RF$.
 3. Calls `FastProfileGenerator.generate_profiles()` to generate monthly time-series for oil, water, and gas.
-4. Computes reservoir pressure history $P(t)$ using coupled deliverability material balance (`_calculate_pressure_profile()`).
-5. Evaluates CO₂ recycling vs make-up purchase (`_calculate_co2_purchased_recycled()`).
-6. Computes field discounted cash flow (`_calculate_engine_npv()`).
+4. Computes reservoir pressure history $P(t)$ using coupled deliverability material balance **inline in `evaluate_scenario()`** (there is no `_calculate_pressure_profile()` method — grep → 0 hits; MED-15).
+5. Evaluates CO₂ recycling vs make-up purchase **inline at `surrogate_engine.py:592-596,607-614`** (there is no `_calculate_co2_purchased_recycled()` method — grep → 0 hits).
+6. Computes field discounted cash flow **inline in `PhDHybridSurrogate.predict()` at `surrogate_models.py:507-530`** (there is no `_calculate_engine_npv()` method — grep → 0 hits).
 7. Evaluates carbon storage trapping mechanisms (`CO2StorageSurrogate.calculate_storage()`).
 8. Verifies mass balance and returns structured results.
 
 ---
 
-## 2. `_calculate_pressure_profile()`
+## 2. `_calculate_pressure_profile()` ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)
 
-- **File**: `core/engine_surrogate/surrogate_engine.py`
-- **Signature**: `def _calculate_pressure_profile(self, profiles: Dict[str, np.ndarray]) -> np.ndarray`
+- **File**: `core/engine_surrogate/surrogate_engine.py` (written **inline** in `evaluate_scenario()`)
+- **Signature**: *none — no such method exists; do not import or call it*
 - **Modification Risk**: **CRITICAL**
 
 ### Physical Formulation
@@ -39,10 +39,10 @@ Where:
 
 ---
 
-## 3. `_calculate_co2_purchased_recycled()`
+## 3. `_calculate_co2_purchased_recycled()` ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)
 
-- **File**: `core/engine_surrogate/surrogate_engine.py`
-- **Signature**: `def _calculate_co2_purchased_recycled(self, profiles: Dict[str, np.ndarray]) -> Tuple[np.ndarray, np.ndarray]`
+- **File**: `core/engine_surrogate/surrogate_engine.py` (written **inline** at `:592-596` annual, `:607-614` rate/cumulative)
+- **Signature**: *none — no such method exists; the split is inline code inside `evaluate_scenario()`*
 - **Modification Risk**: **HIGH**
 
 ### Mass Balance Rule

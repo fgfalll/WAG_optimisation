@@ -23,7 +23,7 @@ This document summarizes the core code inventory across active subsystems in the
 - **`surrogate_engine.py`**:
   - `SurrogateEngine`: High-speed semi-analytical simulation engine.
   - `SurrogateEngineWrapper`: Adapter implementing standard engine interface for `EngineFactory`.
-  - Methods: `evaluate_scenario()`, `_calculate_engine_npv()`, `_calculate_co2_purchased_recycled()`, `_solve_pressure_ode()`.
+  - Methods: `evaluate_scenario()`, `_build_params_dict()`, `_error_result()`, `get_performance_stats()`, `reset_performance_stats()`. ⚠️ Corrected 2026-10-04 (MED-15): the previously listed `_calculate_engine_npv()`, `_calculate_co2_purchased_recycled()` and `_solve_pressure_ode()` **do not exist** (grep → 0 hits). CO₂ split is inline at `:592-596,607-614`; NPV is computed in `PhDHybridSurrogate.predict()` (`surrogate_models.py:507-530`).
 - **`analytical_models.py`**:
   - `AnalyticalSurrogate`: Facade for analytical displacement and recovery models.
   - `PhDHybridRecoveryModel`: Hybrid Koval/Buckley-Leverett miscible/immiscible recovery calculation.

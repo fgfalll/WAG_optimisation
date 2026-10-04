@@ -33,11 +33,11 @@ Its primary design goal is high-speed simulation: evaluating a 20-year field dev
    - Bounds production by sandface drawdown: $q_{\text{prod,actual}} = \min(q_{\text{target}}, J_{\text{prod}} \cdot (P - P_{\text{min}}))$.
    - Bounds injection by EPA Class VI caprock fracture limit: $q_{\text{inj,actual}} = \min(q_{\text{target}}, J_{\text{inj}} \cdot (0.90 P_{\text{frac}} - P))$.
 3. **Closed-Loop CO₂ Accounting**:
-   - `_calculate_co2_purchased_recycled()` separates gross injection into purchased (make-up) fresh CO₂ and recycled produced CO₂:
+   - Gross injection is split into purchased (make-up) fresh CO₂ and recycled produced CO₂ **inline** in `SurrogateEngine.evaluate_scenario()` at `surrogate_engine.py:592-596` (annual) and `:607-614` (rate/cumulative); there is **no** `_calculate_co2_purchased_recycled()` method (grep → 0 hits):
      $$\text{Gross Injected} = \text{Purchased Fresh} + \text{Recycled Produced}$$
-   - Verifies that recycled gas never exceeds cumulative produced gas.
+   - Recycled gas can never exceed cumulative produced gas **by construction** (clamped as `min(prod·η_recycle, inj)` at `optimisation_engine.py:871-872`); nothing asserts it (**CRIT-10**).
 4. **Engine-Owned NPV**:
-   - `_calculate_engine_npv()` computes discounted cash flow over the field lifetime:
+   - NPV is computed **inline** in `PhDHybridSurrogate.predict()` at `surrogate_models.py:507-530` (republished as profile key `npv` at `surrogate_engine.py:172,692`); there is **no** `_calculate_engine_npv()` method (grep → 0 hits). Its documented form is:
      $$\text{NPV} = \sum_{t=1}^N \frac{R_{\text{oil}}(t) - C_{\text{CO2,fresh}}(t) - C_{\text{CO2,recycle}}(t) - C_{\text{water}}(t) - \text{OPEX}(t)}{(1 + r)^t} - \text{CAPEX}$$
 
 ### Invariants & Traps

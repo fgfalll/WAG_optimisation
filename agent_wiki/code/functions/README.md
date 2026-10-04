@@ -14,9 +14,9 @@ Future AI agents can use this guide to directly identify function signatures, ma
 | :--- | :--- | :--- | :---: |
 | **`evaluate_scenario()`** | `core/engine_surrogate/surrogate_engine.py` | Primary simulation pipeline evaluator producing 20-year profiles and metrics. | **CRITICAL** |
 | **`generate_profiles()`** | `core/engine_surrogate/profile_generator_fast.py` | Vectorized time-series synthesis with mass-conserved WAG phase buffering. | **HIGH** |
-| **`_calculate_pressure_profile()`**| `core/engine_surrogate/surrogate_engine.py` | Solves deliverability-coupled tank material balance pressure increments $dP(t)$. | **CRITICAL** |
-| **`_calculate_co2_purchased_recycled()`** | `core/engine_surrogate/surrogate_engine.py` | Closed-loop accounting of fresh purchased CO₂ vs recycled produced CO₂. | **HIGH** |
-| **`_calculate_engine_npv()`** | `core/engine_surrogate/surrogate_engine.py` | Discounted cash flow NPV including oil revenue, OPEX, CAPEX, and CO₂ costs. | **HIGH** |
+| **`_calculate_pressure_profile()`** *(does not exist — grep → 0 hits)* | `core/engine_surrogate/surrogate_engine.py` | The deliverability-coupled tank material-balance increment $dP(t)$ is written **inline** in `evaluate_scenario()` (MED-15). | **CRITICAL** |
+| **`_calculate_co2_purchased_recycled()`** *(does not exist — grep → 0 hits)* | `core/engine_surrogate/surrogate_engine.py` | Closed-loop accounting of fresh purchased CO₂ vs recycled produced CO₂, computed **inline** at `:592-596` and `:607-614` (MED-15). | **HIGH** |
+| **`_calculate_engine_npv()`** *(does not exist — grep → 0 hits)* | `core/engine_surrogate/surrogate_models.py:507-530` | Discounted cash flow NPV is computed **inline** in `PhDHybridSurrogate.predict()` (oil revenue, CAPEX; OPEX/CO₂ recycle/water costs omitted — HIGH-08) and republished as key `npv` at `surrogate_engine.py:172,692`. | **HIGH** |
 | **`calculate_mmp()`** | `evaluation/mmp.py` | Computes Minimum Miscibility Pressure across 5 empirical correlations. | **HIGH** |
 | **`predict_recovery()`** | `core/engine_surrogate/analytical_models.py` | Hybrid Koval/Buckley-Leverett miscible/immiscible ultimate recovery factor $RF$. | **CRITICAL** |
 | **`_calculate_heterogeneity_factor()`** | `core/engine_surrogate/analytical_models.py` | Koval heterogeneity multiplier $H_k = 1 / (1 - 0.80 V_{DP})^2$. | **CRITICAL** |
