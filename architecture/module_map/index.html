@@ -719,9 +719,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#6-deprecated-subsystems-deprecatedcore" class="md-nav__link">
+  <a href="#6-retired-subsystems-deleted-from-the-tree-corrected-2026-10-04-med-16" class="md-nav__link">
     <span class="md-ellipsis">
-      6. Deprecated Subsystems (deprecated/core/)
+      6. Retired Subsystems — deleted from the tree (corrected 2026-10-04, MED-16)
     </span>
   </a>
   
@@ -3215,9 +3215,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#6-deprecated-subsystems-deprecatedcore" class="md-nav__link">
+  <a href="#6-retired-subsystems-deleted-from-the-tree-corrected-2026-10-04-med-16" class="md-nav__link">
     <span class="md-ellipsis">
-      6. Deprecated Subsystems (deprecated/core/)
+      6. Retired Subsystems — deleted from the tree (corrected 2026-10-04, MED-16)
     </span>
   </a>
   
@@ -3357,15 +3357,19 @@
 <li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/storage.py">core/objectives/storage.py</a>: CO₂ storage efficiency and geomechanical containment scoring.</li>
 <li><a href="file:///d:/rep/4.6/co2eor_optimizer/core/objectives/economic.py">core/objectives/economic.py</a>: Standalone cash flow and NPV utilities.</li>
 </ul>
-<h4 id="6-deprecated-subsystems-deprecatedcore">6. Deprecated Subsystems (<code>deprecated/core/</code>)<a class="headerlink" href="#6-deprecated-subsystems-deprecatedcore" title="Permanent link">&para;</a></h4>
+<h4 id="6-retired-subsystems-deleted-from-the-tree-corrected-2026-10-04-med-16">6. Retired Subsystems — <strong>deleted from the tree</strong> (corrected 2026-10-04, MED-16)<a class="headerlink" href="#6-retired-subsystems-deleted-from-the-tree-corrected-2026-10-04-med-16" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>⚠️ There is <strong>no <code>deprecated/</code> directory</strong> (<code>Test-Path deprecated</code> = <code>False</code>). The entries below are a record of
+what was removed, not current paths. Verify with <code>Test-Path</code> before citing any of them.</p>
+</blockquote>
 <ul>
-<li><code>deprecated/core/compositional_engine/</code>: 3D multi-block compositional simulator sandbox.</li>
-<li><code>deprecated/core/unified_engine/</code>: Legacy monolithic simulator and EOS sandbox.</li>
-<li><code>deprecated/core/engine_simple/</code>: 0D material balance prototype.</li>
-<li><code>deprecated/core/engine_factory.py</code>: Legacy multi-engine router.</li>
-<li><code>deprecated/core/engine_surrogate/</code>: Response surface ML prototypes (<code>response_surfaces.py</code>, <code>feature_transformer.py</code>, <code>training_data.py</code>, <code>model_factory.py</code>).</li>
-<li><code>deprecated/core/geology/geology_engine.py</code>: Uncalibrated <code>GeologyEngine</code>.</li>
-<li><code>deprecated/core/simulation/</code>: Legacy <code>recovery_models.py</code> and <code>profile_generator.py</code>.</li>
+<li>~~<code>deprecated/core/compositional_engine/</code>~~: 3D multi-block compositional simulator — <strong>deleted</strong>.</li>
+<li>~~<code>deprecated/core/unified_engine/</code>~~: Legacy monolithic simulator and EOS sandbox — <strong>deleted</strong> (carried SCI-FLAW-04/-08/-18, which can no longer be re-verified).</li>
+<li>~~<code>deprecated/core/engine_simple/</code>~~: 0D material balance prototype — <strong>deleted</strong>.</li>
+<li>~~<code>deprecated/core/engine_factory.py</code>~~: Legacy multi-engine router — <strong>deleted</strong>.</li>
+<li>~~<code>deprecated/core/engine_surrogate/</code>~~: Response surface ML prototypes — <strong>deleted</strong>.</li>
+<li>~~<code>deprecated/core/geology/geology_engine.py</code>~~: Uncalibrated <code>GeologyEngine</code> — <strong>deleted</strong> (<code>core/geology/geology_engine.py</code> = <code>False</code>; the lazy shim in <code>core/geology/__init__.py</code> is therefore a shim to nothing).</li>
+<li><strong>Still present (never relocated):</strong> <code>core/simulation/recovery_models.py</code> and <code>core/simulation/profile_generator.py</code> exist and are dormant behind <code>RECOVERY_MODELS_AVAILABLE = False</code> (HIGH-11); <code>analysis/profiler.py</code> also still exists. <code>core/simulation/injection_schemes.py</code> does <strong>not</strong> exist (cited by <code>README.md</code> invariant #2 and <code>source_of_truth.md</code>).</li>
 </ul>
 
 

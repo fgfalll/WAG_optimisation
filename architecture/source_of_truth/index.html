@@ -3187,20 +3187,20 @@
 <tr>
 <td style="text-align: left;"><strong>Simulation Engine</strong></td>
 <td style="text-align: left;"><code>core/engine_surrogate/surrogate_engine.py</code> (<code>SurrogateEngineWrapper</code>, <code>SurrogateEngine</code>)</td>
-<td style="text-align: left;"><code>core/unified_engine/</code><br><code>core/compositional_engine/</code><br><code>core/engine_simple/</code></td>
-<td style="text-align: left;"><strong>100% of scenario evaluations route to SurrogateEngine</strong>. Modifying dormant engines has zero effect on optimization runs.</td>
+<td style="text-align: left;"><code>core/unified_engine/</code><br><code>core/compositional_engine/</code><br><code>core/engine_simple/</code> — <strong>all deleted from the tree</strong></td>
+<td style="text-align: left;"><strong>100% of scenario evaluations route to SurrogateEngine</strong>. The "dormant" engines no longer exist (corrected 2026-10-04, MED-16), so modifying them is impossible rather than merely ineffective.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Profile Generation</strong></td>
 <td style="text-align: left;"><code>core/engine_surrogate/profile_generator_fast.py</code> (<code>FastProfileGenerator</code>)</td>
-<td style="text-align: left;"><code>core/simulation/profile_generator.py</code><br><code>core/simulation/injection_schemes.py</code></td>
-<td style="text-align: left;"><code>core/simulation/</code> classes are legacy wrappers emitting deprecation warnings.</td>
+<td style="text-align: left;"><code>core/simulation/profile_generator.py</code> <em>(exists — re-export shim)</em><br><code>core/simulation/injection_schemes.py</code> <em>(</em><em>does not exist</em><em> — grep → 0 hits)</em></td>
+<td style="text-align: left;"><code>core/simulation/profile_generator.py</code> re-exports <code>FastProfileGenerator</code>; there is no <code>injection_schemes.py</code> to be legacy.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Recovery Factor &amp; Displacement</strong></td>
 <td style="text-align: left;"><code>core/engine_surrogate/analytical_models.py</code> (<code>PhDHybridRecoveryModel</code>, <code>AnalyticalSurrogate</code>)</td>
-<td style="text-align: left;"><code>core/simulation/recovery_models.py</code><br><code>core/unified_engine/physics/multiphase_flow.py</code></td>
-<td style="text-align: left;">Computes Koval <span class="arithmatex">\(H_k\)</span>, Todd-Longstaff <span class="arithmatex">\(M_e\)</span>, Craig <span class="arithmatex">\(E_A\)</span>, and miscibility transition.</td>
+<td style="text-align: left;"><code>core/simulation/recovery_models.py</code> <em>(exists, dormant behind <code>RECOVERY_MODELS_AVAILABLE = False</code> — HIGH-11)</em><br><code>core/unified_engine/physics/multiphase_flow.py</code> <em>(deleted)</em></td>
+<td style="text-align: left;">Computes Koval <span class="arithmatex">\(H_k\)</span>, Todd-Longstaff <span class="arithmatex">\(M_e\)</span>, Craig <span class="arithmatex">\(E_A\)</span>, and miscibility transition. CRIT-06/CRIT-07 and HIGH-02 live here.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Deliverability &amp; Inflow Performance (IPR)</strong></td>
@@ -3210,21 +3210,21 @@
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Tank Pressure &amp; Material Balance</strong></td>
-<td style="text-align: left;"><code>core/engine_surrogate/surrogate_engine.py</code> (<code>_calculate_pressure_profile</code>)</td>
-<td style="text-align: left;"><code>scipy.integrate.solve_ivp</code> ODE solver in <code>surrogate_engine.py</code> (legacy)</td>
-<td style="text-align: left;">Explicit coupled deliverability and damped material balance pressure formulation.</td>
+<td style="text-align: left;"><code>core/engine_surrogate/surrogate_engine.py</code> — inline in <code>SurrogateEngine.evaluate_scenario()</code> (damped increment <span class="arithmatex">\(dP = q\Delta t/(V_p c_t + J_{\text{eff}}\Delta t)\)</span>)</td>
+<td style="text-align: left;"><code>scipy.integrate.solve_ivp</code> ODE solver (removed)</td>
+<td style="text-align: left;">⚠️ Corrected 2026-10-04: <strong>there is no <code>_calculate_pressure_profile</code> or <code>_solve_pressure_ode</code> method</strong> (grep → 0 hits). The pressure update is written inline; cite line numbers from <code>evaluate_scenario()</code>.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Thermodynamic Equation of State (EOS)</strong></td>
-<td style="text-align: left;"><code>core/unified_engine/physics/eos/</code> (<code>PengRobinsonEOS</code>, <code>ReservoirFluid</code>)</td>
-<td style="text-align: left;"><code>core/compositional_engine/pvt/</code></td>
-<td style="text-align: left;">The cubic Peng-Robinson EOS in <code>unified_engine/physics/eos/</code> is the active EOS package used for PVT studies.</td>
+<td style="text-align: left;"><code>core/engine_surrogate/pvt_state.py</code> (<code>SolventExtendedPVTEngine</code>, Peng–Robinson)</td>
+<td style="text-align: left;"><code>core/unified_engine/physics/eos/</code>, <code>core/compositional_engine/pvt/</code> — <strong>both removed from the tree</strong></td>
+<td style="text-align: left;">⚠️ Corrected 2026-10-04: this row previously named <code>core/unified_engine/physics/eos/</code> as <em>active</em>; that path does not exist, and the claim contradicted <code>source_of_truth_map.md</code> in the same wiki. <code>pvt_state.py</code> is the only EOS in the repository. Its Z-factor and <span class="arithmatex">\(B_g\)</span> are flagged <strong>CRIT-05 / CRIT-04</strong>.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>CO₂ Physical Properties</strong></td>
-<td style="text-align: left;"><code>core/unified_engine/physics/co2_properties.py</code> (<code>CO2Properties</code>)</td>
-<td style="text-align: left;">Simple correlation constants in legacy scripts</td>
-<td style="text-align: left;">Authoritative for CO₂ density, viscosity, and solubility.</td>
+<td style="text-align: left;"><code>core/engine_surrogate/pvt_state.py</code> (<code>SolventExtendedPVTEngine</code> — PR density, <span class="arithmatex">\(B_{\text{CO2}} = 327.362/\rho\)</span>)</td>
+<td style="text-align: left;"><code>core/unified_engine/physics/co2_properties.py</code> — <strong>removed from the tree</strong></td>
+<td style="text-align: left;">⚠️ Corrected 2026-10-04: the previously cited <code>co2_properties.py</code> does not exist anywhere (grep = 0). Cite <code>pvt_state.py</code> instead; MED-02 records that the Span–Wagner correlation advertised in its docstring is not implemented.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Minimum Miscibility Pressure (MMP)</strong></td>
@@ -3240,9 +3240,9 @@
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Economic NPV Calculation</strong></td>
-<td style="text-align: left;"><code>core/engine_surrogate/surrogate_engine.py</code> (<code>_calculate_engine_npv</code>)</td>
+<td style="text-align: left;"><code>core/engine_surrogate/surrogate_models.py</code> — <strong>inline</strong> in <code>PhDHybridSurrogate.predict()</code> (<code>:507-530</code>), republished as profile key <code>npv</code> by <code>surrogate_engine.py:172,692</code></td>
 <td style="text-align: left;"><code>core/objectives/economic.py</code><br><code>evaluation/economic_analyzer.py</code></td>
-<td style="text-align: left;">Discounted cash flow (oil revenue minus CO₂ purchase, recycling, water handling, OPEX, and capital).</td>
+<td style="text-align: left;">⚠️ Corrected 2026-10-04 (MED-15): <strong><code>_calculate_engine_npv</code> does not exist</strong> (grep → 0 hits). Discounted cash flow (oil revenue minus CO₂ purchase, recycling, water handling, OPEX, and capital) is written inline in <code>predict()</code>; <code>wrapper.py:50-53</code> consumes the key.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Multi-Objective Evaluation</strong></td>

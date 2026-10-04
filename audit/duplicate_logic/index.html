@@ -3234,7 +3234,7 @@ This document catalogs <strong>only active, open items</strong>. For resolved fl
 <ul>
 <li><strong>Implementation A</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/analysis/material_balance.py">analysis/material_balance.py</a> (<code>MaterialBalanceTracker</code>)</li>
 <li><em>Details</em>: Post-run material balance calculation for UI charts. Contains the double-subtraction defect for recycled CO₂.</li>
-<li><strong>Implementation B</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py">core/engine_surrogate/surrogate_engine.py</a> (<code>_calculate_co2_purchased_recycled</code>)</li>
+<li><strong>Implementation B</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py">core/engine_surrogate/surrogate_engine.py</a> (inline purchased/recycled split at <code>:592-596</code>, <code>:607-614</code> — corrected 2026-10-04: there is no <code>_calculate_co2_purchased_recycled</code> method, grep → 0 hits)</li>
 <li><em>Details</em>: Real-time mass calculation used to drive cash flows and storage metrics during optimization.</li>
 <li><strong>Active Runtime Choice</strong>: <code>surrogate_engine.py</code> is authoritative for optimization; <code>material_balance.py</code> is for post-processing.</li>
 <li><strong>Recommendation</strong>: Correct <code>analysis/material_balance.py</code> to match the mass accounting of <code>surrogate_engine.py</code>.</li>

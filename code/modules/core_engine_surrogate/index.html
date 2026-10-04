@@ -3352,11 +3352,11 @@
 <li>Bounds production by sandface drawdown: <span class="arithmatex">\(q_{\text{prod,actual}} = \min(q_{\text{target}}, J_{\text{prod}} \cdot (P - P_{\text{min}}))\)</span>.</li>
 <li>Bounds injection by EPA Class VI caprock fracture limit: <span class="arithmatex">\(q_{\text{inj,actual}} = \min(q_{\text{target}}, J_{\text{inj}} \cdot (0.90 P_{\text{frac}} - P))\)</span>.</li>
 <li><strong>Closed-Loop CO₂ Accounting</strong>:</li>
-<li><code>_calculate_co2_purchased_recycled()</code> separates gross injection into purchased (make-up) fresh CO₂ and recycled produced CO₂:
+<li>Gross injection is split into purchased (make-up) fresh CO₂ and recycled produced CO₂ <strong>inline</strong> in <code>SurrogateEngine.evaluate_scenario()</code> at <code>surrogate_engine.py:592-596</code> (annual) and <code>:607-614</code> (rate/cumulative); there is <strong>no</strong> <code>_calculate_co2_purchased_recycled()</code> method (grep → 0 hits):
      $<span class="arithmatex">\(\text{Gross Injected} = \text{Purchased Fresh} + \text{Recycled Produced}\)</span>$</li>
-<li>Verifies that recycled gas never exceeds cumulative produced gas.</li>
+<li>Recycled gas can never exceed cumulative produced gas <strong>by construction</strong> (clamped as <code>min(prod·η_recycle, inj)</code> at <code>optimisation_engine.py:871-872</code>); nothing asserts it (<strong>CRIT-10</strong>).</li>
 <li><strong>Engine-Owned NPV</strong>:</li>
-<li><code>_calculate_engine_npv()</code> computes discounted cash flow over the field lifetime:
+<li>NPV is computed <strong>inline</strong> in <code>PhDHybridSurrogate.predict()</code> at <code>surrogate_models.py:507-530</code> (republished as profile key <code>npv</code> at <code>surrogate_engine.py:172,692</code>); there is <strong>no</strong> <code>_calculate_engine_npv()</code> method (grep → 0 hits). Its documented form is:
      $<span class="arithmatex">\(\text{NPV} = \sum_{t=1}^N \frac{R_{\text{oil}}(t) - C_{\text{CO2,fresh}}(t) - C_{\text{CO2,recycle}}(t) - C_{\text{water}}(t) - \text{OPEX}(t)}{(1 + r)^t} - \text{CAPEX}\)</span>$</li>
 </ol>
 <h3 id="invariants-traps">Invariants &amp; Traps<a class="headerlink" href="#invariants-traps" title="Permanent link">&para;</a></h3>

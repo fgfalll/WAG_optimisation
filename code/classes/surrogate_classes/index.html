@@ -3259,16 +3259,16 @@
   Coordinates the full 20-year monthly simulation run:</li>
 <li>Computes ultimate recovery factor <span class="arithmatex">\(RF\)</span> via <code>analytical_surrogate.predict_recovery()</code>.</li>
 <li>Synthesizes oil, water, and gas profiles via <code>profile_generator.generate_profiles()</code>.</li>
-<li>Evaluates reservoir pressure history <span class="arithmatex">\(P(t)\)</span> via <code>_calculate_pressure_profile()</code>.</li>
-<li>Evaluates fresh vs recycled CO₂ streams via <code>_calculate_co2_purchased_recycled()</code>.</li>
-<li>Computes net discounted cash flow via <code>_calculate_engine_npv()</code>.</li>
+<li>Evaluates reservoir pressure history <span class="arithmatex">\(P(t)\)</span> <strong>inline in <code>evaluate_scenario()</code></strong> (there is no <code>_calculate_pressure_profile()</code> method; grep → 0 hits).</li>
+<li>Splits fresh vs recycled CO₂ <strong>inline</strong> (<code>surrogate_engine.py:592-596</code>, <code>:607-614</code>); there is no <code>_calculate_co2_purchased_recycled()</code> method (grep → 0 hits).</li>
+<li>Receives NPV computed <strong>inline</strong> in <code>PhDHybridSurrogate.predict()</code> (<code>surrogate_models.py:507-530</code>, republished at <code>surrogate_engine.py:172,692</code>); there is no <code>_calculate_engine_npv()</code> method (grep → 0 hits).</li>
 <li>Evaluates trapped carbon via <code>CO2StorageSurrogate.calculate_storage()</code>.</li>
 <li>Packages results into typed <code>SimulationResults</code>.</li>
-<li><code>_calculate_pressure_profile(profiles: Dict[str, np.ndarray]) -&gt; np.ndarray</code>:
+<li>~~<code>_calculate_pressure_profile(...)</code>~~ — <strong>does not exist</strong> (grep → 0 hits, corrected 2026-10-04); the pressure update is written inline in <code>evaluate_scenario()</code>:
   Solves explicit damped material balance pressure increments:
   $<span class="arithmatex">\(dP = \frac{(q_{\text{inj,actual}} - q_{\text{prod,actual}}) \cdot \Delta t}{V_p \cdot c_t + J_{\text{eff}} \cdot \Delta t}\)</span>$
   Enforces sandface injection ceiling (<span class="arithmatex">\(P \le 0.90 \times P_{\text{frac}}\)</span>) and producer minimum drawdown (<span class="arithmatex">\(P_{wf} \ge P_{\text{min}}\)</span>).</li>
-<li><code>_calculate_co2_purchased_recycled(profiles: Dict[str, np.ndarray]) -&gt; Tuple[np.ndarray, np.ndarray]</code>:
+<li>~~<code>_calculate_co2_purchased_recycled(...)</code>~~ — <strong>does not exist</strong> (grep → 0 hits, corrected 2026-10-04); the split is written inline at <code>surrogate_engine.py:592-596,607-614</code>:
   Tracks fresh make-up CO₂ and recycled produced CO₂, ensuring cumulative recycled gas never exceeds cumulative produced gas.</li>
 </ul>
 <hr />

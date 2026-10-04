@@ -3104,6 +3104,14 @@
 <h1 id="source-of-truth-architecture-map">Source-of-Truth Architecture Map<a class="headerlink" href="#source-of-truth-architecture-map" title="Permanent link">&para;</a></h1>
 <p>Due to iterative development and PhD research milestones, several critical physical and numerical calculations exist in multiple versions across the codebase.</p>
 <p>This document provides the <strong>definitive Source of Truth map</strong> to prevent future development from editing dead or superseded files.</p>
+<blockquote>
+<p>[!CAUTION]
+<strong>Path verification (2026-10-04, MED-16).</strong> Every path below beginning with <code>deprecated/</code> — and the trees
+<code>core/unified_engine/</code>, <code>compositional_engine/</code>, <code>core/Phys_engine_full/</code>, <code>core/engine_simple/</code> — <strong>does not
+exist</strong> in the working copy (<code>Test-Path</code> = <code>False</code>). The retired engines were deleted, not relocated. Treat
+the "Competing / Legacy" column as a <em>historical record only</em>; never cite those paths as current file
+locations, and confirm any path with <code>Test-Path</code> before editing it.</p>
+</blockquote>
 <hr />
 <h2 id="1-master-source-of-truth-matrix">1. Master Source-of-Truth Matrix<a class="headerlink" href="#1-master-source-of-truth-matrix" title="Permanent link">&para;</a></h2>
 <table>
@@ -3140,10 +3148,10 @@
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Net Present Value (NPV)</strong></td>
-<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py">core/engine_surrogate/surrogate_engine.py</a> (<code>_calculate_engine_npv</code>)</td>
-<td style="text-align: left;"><code>core/objectives/economic.py</code> (<code>calculate_npv</code>)</td>
-<td style="text-align: left;"><code>surrogate_engine.py</code> calculates annual CO₂ purchased and recycled directly with breakthrough awareness. <code>economic.py</code> is an unused generic utility.</td>
-<td style="text-align: left;"><strong>Modify <code>surrogate_engine._calculate_engine_npv</code></strong>. Changes to <code>core/objectives/economic.py</code> will have zero effect on optimizer evaluations.</td>
+<td style="text-align: left;"><a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_models.py">core/engine_surrogate/surrogate_models.py</a> — computed <strong>inline</strong> in <code>PhDHybridSurrogate.predict()</code> (<code>:507-530</code>), then republished by <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py">surrogate_engine.py</a> as the <code>npv</code> profile key (<code>:172</code>, <code>:692</code>)</td>
+<td style="text-align: left;"><code>core/objectives/economic.py</code> (<code>calculate_npv</code>) — loaded via <code>core/objectives/__init__.py</code> but <strong>never called</strong> in the evaluation path; <code>evaluation/economic_analyzer.py</code></td>
+<td style="text-align: left;">⚠️ Corrected 2026-10-04 (MED-15): <strong>there is no <code>_calculate_engine_npv</code> method</strong> (grep for <code>def _calculate_engine_npv</code> → 0 hits). <code>surrogate_engine.py</code> contains only <code>evaluate_scenario</code>, <code>_build_params_dict</code>, <code>_error_result</code>, <code>get_performance_stats</code>, <code>reset_performance_stats</code>. Consumer: <code>core/objectives/wrapper.py:50-53</code> reads <code>profiles["npv"]</code> then applies penalties — and <strong>CRIT-02</strong> shows reported NPV and reported RF can come from two different evaluations.</td>
+<td style="text-align: left;"><strong>Modify <code>PhDHybridSurrogate.predict()</code> (<code>surrogate_models.py:507-530</code>)</strong> to change NPV. Changes to <code>core/objectives/economic.py</code> will have zero effect on optimizer evaluations.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>CO₂ Storage Accounting</strong></td>

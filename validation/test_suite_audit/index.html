@@ -3242,7 +3242,7 @@ Execution duration: <strong>225.22s</strong> (~3m 45s).</p>
 <p>All 95+ previous historical test failures have been resolved:</p>
 <ol>
 <li><strong><code>ValueError: economic_params is required for NPV calculation</code></strong>:</li>
-<li><strong>Resolution</strong>: Added automatic fallback to instance-level economic parameters and sensible defaults in <code>surrogate_engine._calculate_engine_npv</code> when not explicitly supplied.</li>
+<li><strong>Resolution</strong>: Added automatic fallback to instance-level economic parameters and sensible defaults in the NPV block of <code>PhDHybridSurrogate.predict()</code> / <code>surrogate_engine.py</code> when not explicitly supplied. ⚠️ Corrected 2026-10-04: <code>surrogate_engine._calculate_engine_npv</code> <strong>does not exist</strong> (grep → 0 hits — MED-15).</li>
 <li><strong><code>UnboundLocalError: cannot access local variable 'econ_params'</code></strong>:</li>
 <li><strong>Resolution</strong>: Properly scoped and initialized <code>econ_params = self.economic_params</code> at function entry in <code>optimisation_engine.evaluate_for_analysis()</code>.</li>
 <li><strong><code>ValueError: The truth value of an empty array is ambiguous</code></strong>:</li>

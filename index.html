@@ -3129,7 +3129,7 @@
 <tbody>
 <tr>
 <td><a href="architecture/overview/"><strong>Architecture</strong></a></td>
-<td>Engine routing, module map, execution flow, dependency graph, <a href="architecture/shared_earth_workstation/"><strong>Shared Earth Workstation</strong></a></td>
+<td>Engine routing, module map, execution flow, dependency graph, <a href="architecture/shared_earth_workstation/"><strong>Shared Earth Workstation</strong></a>, <a href="architecture/subsurface_studio_workbench/"><strong>Subsurface Studio</strong></a>, <a href="architecture/model_qa_qc_and_self_assurance/"><strong>Model QA/QC &amp; Self-Assurance</strong></a></td>
 </tr>
 <tr>
 <td><a href="physics/reservoir_model/"><strong>Physics Models</strong></a></td>
@@ -3148,6 +3148,10 @@
 <td>Dead code, hardcoded values, <a href="audit/data_management_audit/"><strong>data management</strong></a>, <a href="audit/optimization_widget_audit/"><strong>optimization widget</strong></a>, <a href="audit/dialogs_models_utils_widgets_audit/"><strong>dialogs, models, utils &amp; widgets</strong></a>, <a href="audit/simulation_run_audits/"><strong>simulation run audits</strong></a>, fallbacks, suspicious logic, <a href="audit/resolved_issues/"><strong>resolved archive</strong></a></td>
 </tr>
 <tr>
+<td><a href="../res_audit.md"><strong>2026-10-04 Independent Audit</strong></a></td>
+<td><a href="../res_audit.md">Software quality &amp; anti-patterns</a> · <a href="../phd_audit.md">Scientific/physics audit (<code>phd_audit.md</code>)</a> · <a href="../audit/scientific_flaws.md"><strong>Flaw register — 52 findings</strong></a> · <a href="../audit/parameter_provenance.csv">Parameter provenance (91 rows)</a></td>
+</tr>
+<tr>
 <td><a href="verification/verification_strategy/"><strong>Verification</strong></a></td>
 <td>7-level V&amp;V hierarchy, conservation tests, convergence studies</td>
 </tr>
@@ -3161,21 +3165,46 @@
 </tr>
 </tbody>
 </table>
+<blockquote>
+<p>[!WARNING]
+<strong>Audit status (2026-10-04).</strong> An independent four-phase audit registered <strong>52 findings (13 CRITICAL, 18 HIGH,
+16 MEDIUM, 5 LOW)</strong> in <a href="../audit/scientific_flaws.md"><code>audit/scientific_flaws.md</code></a>, and issued a
+<strong>predictive-validity verdict of <code>NOT ESTABLISHED</code></strong> for the active <code>hybrid</code> path
+(<a href="../phd_audit.md"><code>phd_audit.md</code></a> §C). Read the register before treating any wiki claim below as verified:
+several invariants here were <strong>not enforced by code</strong> (they hold only by construction), and
+<code>verification/test_matrix.md</code> listed six tests that do not exist (MED-16). Physics defects in PVT
+(<code>B_g</code> 31.7× too small, Z &gt; 1 in the dense-gas region, <code>dBo/dP &gt; 0</code>) remain <strong>open</strong> — see CRIT-03/04/05.</p>
+</blockquote>
 <hr />
 <h2 id="critical-architectural-invariants">⚡ Critical Architectural Invariants<a class="headerlink" href="#critical-architectural-invariants" title="Permanent link">&para;</a></h2>
 <p>Before reading or modifying any file in this repository, keep the following <strong>core facts</strong> in mind:</p>
 <ol>
 <li>
 <p><strong>The Single Active Simulation Engine is <code>core/engine_surrogate</code> (Intermediate Physics-Informed Simulator)</strong>:
-   The name "Surrogate" signifies an <strong>intermediate, physics-informed reduced-order reservoir simulator</strong> positioned between full 3D multi-block compositional numerical solvers and classical 0D material balance. It operates as a general reservoir simulator embedded with specialized CO₂ EOR expertise (solvent dissolution, oil swelling, viscosity reduction, Koval viscous fingering, Todd-Longstaff partial miscibility, and EPA Class VI geomechanical integrity). All legacy engines (<code>compositional_engine</code>, <code>unified_engine</code>, <code>engine_simple</code>) and the intermediate <code>EngineFactory</code> have been deprecated and relocated into <code>deprecated/</code> to eliminate confusion. All simulation evaluations route directly to <code>SurrogateEngineWrapper</code> (<code>core/engine_surrogate/surrogate_engine.py</code>).</p>
+   The name "Surrogate" signifies an <strong>intermediate, physics-informed reduced-order reservoir simulator</strong> positioned between full 3D multi-block compositional numerical solvers and classical 0D material balance. It operates as a general reservoir simulator embedded with specialized CO₂ EOR expertise (solvent dissolution, oil swelling, viscosity reduction, Koval viscous fingering, Todd-Longstaff partial miscibility, and EPA Class VI geomechanical integrity). All legacy engines (<code>compositional_engine</code>, <code>unified_engine</code>, <code>engine_simple</code>) and the intermediate <code>EngineFactory</code> are <strong>absent from the working tree</strong> — <code>deprecated/</code>, <code>core/unified_engine/</code>, <code>compositional_engine/</code> and <code>core/Phys_engine_full/</code> all return <code>Test-Path = False</code> (corrected 2026-10-04: earlier text claimed they had been "relocated into <code>deprecated/</code>"; no such directory exists — see MED-16). All simulation evaluations route directly to <code>SurrogateEngineWrapper</code> (<code>core/engine_surrogate/surrogate_engine.py</code>).</p>
 </li>
 <li>
 <p><strong><code>FastProfileGenerator</code> is the Single Source of Truth for Profiles</strong>:
-   All production, injection, and rate profiles are synthesized via <code>core/engine_surrogate/profile_generator_fast.py</code>. The legacy classes in <code>core/simulation/injection_schemes.py</code> and <code>core/simulation/profile_generator.py</code> are deprecated wrappers.</p>
+   All production, injection, and rate profiles are synthesized via <code>core/engine_surrogate/profile_generator_fast.py</code>. <code>core/simulation/profile_generator.py</code> is a deprecated re-export shim (<code>from core.engine_surrogate.profile_generator_fast import FastProfileGenerator</code>). ⚠️ <code>core/simulation/injection_schemes.py</code>, cited here previously, <strong>does not exist</strong> (grep → 0 hits; corrected 2026-10-04).</p>
 </li>
 <li>
-<p><strong>NPV and CO₂ Accounting are Engine-Owned</strong>:
-   NPV calculation and CO₂ purchased/recycled volumes are computed directly inside <code>core/engine_surrogate/surrogate_engine.py</code> (<code>_calculate_engine_npv</code> and <code>_calculate_co2_purchased_recycled</code>). The wrapper in <code>core/objectives/wrapper.py</code> is a consumer that reads engine results.</p>
+<p><strong>NPV and CO₂ Accounting are Engine-Owned</strong> (names corrected 2026-10-04 — see MED-15):</p>
+</li>
+<li><strong>CO₂ purchased vs recycled</strong> is computed <em>inline</em> inside <code>SurrogateEngine.evaluate_scenario()</code>
+     (<code>core/engine_surrogate/surrogate_engine.py:592-596</code> annual make-up, <code>:607-614</code> rate and
+     cumulative profiles).</li>
+<li><strong>NPV</strong> is computed <em>inline</em> inside <code>PhDHybridSurrogate.predict()</code>
+     (<code>core/engine_surrogate/surrogate_models.py:507-530</code>) and republished by the engine as the
+     <code>npv</code> profile key (<code>surrogate_engine.py:172</code>, <code>:692</code>).</li>
+<li>The wrapper <code>core/objectives/wrapper.py:ObjectiveFunctions._calculate_objective_functions()</code>
+     is a <strong>consumer</strong> (<code>:50-53</code> reads <code>profiles["npv"]</code>, then applies containment/remediation
+     penalties) — see <strong>CRIT-02</strong>, which shows the reported NPV and the reported RF can come from
+     two different evaluations.</li>
+<li>
+<p>⚠️ There is <strong>no</strong> method named <code>_calculate_engine_npv</code>, <code>_calculate_co2_purchased_recycled</code>,
+     <code>_solve_pressure_ode</code> or <code>_calculate_pressure_profile</code> anywhere in the repository (grep: 0 hits).
+     <code>SurrogateEngine</code> exposes only <code>evaluate_scenario</code>, <code>_build_params_dict</code>, <code>_error_result</code>,
+     <code>get_performance_stats</code>, <code>reset_performance_stats</code>.</p>
 </li>
 <li>
 <p><strong>Tank Pressure Uses Coupled Darcy/Vogel IPR &amp; Damped Material Balance</strong>:

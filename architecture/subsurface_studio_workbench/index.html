@@ -10,13 +10,9 @@
       
       
       
-        <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/architecture/overview/">
+        <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/architecture/subsurface_studio_workbench/">
       
       
-        <link rel="prev" href="../..">
-      
-      
-        <link rel="next" href="../module_map/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +20,7 @@
     
     
       
-        <title>Overview - CO₂ EOR Optimizer — Technical Documentation</title>
+        <title>Accessible Subsurface Studio Architecture (Model Tree + Contextual Property Grid) - CO₂ EOR Optimizer — Technical Documentation</title>
       
     
     
@@ -92,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#system-architecture-overview" class="md-skip">
+        <a href="#accessible-subsurface-studio-architecture-model-tree-contextual-property-grid" class="md-skip">
           Skip to content
         </a>
       
@@ -128,7 +124,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              Accessible Subsurface Studio Architecture (Model Tree + Contextual Property Grid)
             
           </span>
         </div>
@@ -251,13 +247,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../overview/" class="md-tabs__link">
           
   
     
@@ -514,10 +508,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -536,22 +528,21 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -562,7 +553,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Architecture
@@ -573,30 +564,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Overview
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -605,88 +576,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-executive-architecture-summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Executive Architecture Summary
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-high-level-subsystem-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. High-Level Subsystem Diagram
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-simulation-engine-reality" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Simulation Engine Reality
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Simulation Engine Reality">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#a-coreengine_surrogate-active-intermediate-physics-informed-simulator" class="md-nav__link">
-    <span class="md-ellipsis">
-      A. core/engine_surrogate (ACTIVE - Intermediate Physics-Informed Simulator)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#b-legacy-engines-factory-removed-from-the-tree-not-relocated" class="md-nav__link">
-    <span class="md-ellipsis">
-      B. Legacy Engines &amp; Factory (REMOVED FROM THE TREE — not relocated)
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-subsystem-coupling-data-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      4. Subsystem Coupling &amp; Data Flow
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3108,46 +2997,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-executive-architecture-summary" class="md-nav__link">
+  <a href="#1-architectural-paradigm-the-3-zone-unobstructed-studio" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Executive Architecture Summary
+      1. Architectural Paradigm: The 3-Zone Unobstructed Studio
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-high-level-subsystem-diagram" class="md-nav__link">
+  <a href="#2-core-architectural-pillars" class="md-nav__link">
     <span class="md-ellipsis">
-      2. High-Level Subsystem Diagram
+      2. Core Architectural Pillars
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-simulation-engine-reality" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Simulation Engine Reality
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Simulation Engine Reality">
+    <nav class="md-nav" aria-label="2. Core Architectural Pillars">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#a-coreengine_surrogate-active-intermediate-physics-informed-simulator" class="md-nav__link">
+  <a href="#21-zone-1-hierarchical-model-tree-with-attached-sheets-graphs-uiworkbenchcomponentsmodel_tree_widgetpy" class="md-nav__link">
     <span class="md-ellipsis">
-      A. core/engine_surrogate (ACTIVE - Intermediate Physics-Informed Simulator)
+      2.1 Zone 1: Hierarchical Model Tree with Attached Sheets &amp; Graphs (ui/workbench/components/model_tree_widget.py)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#b-legacy-engines-factory-removed-from-the-tree-not-relocated" class="md-nav__link">
+  <a href="#22-zone-2-native-pyvistaqt-3d-viewport-uiworkbenchcomponentspyvista_reservoir_canvaspy" class="md-nav__link">
     <span class="md-ellipsis">
-      B. Legacy Engines &amp; Factory (REMOVED FROM THE TREE — not relocated)
+      2.2 Zone 2: Native PyVistaQt 3D Viewport (ui/workbench/components/pyvista_reservoir_canvas.py)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-zone-3-full-screen-subsurface-data-graph-workstation-viewer-uiworkbenchcomponentssubsurface_data_viewer_widgetpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 Zone 3: Full-Screen Subsurface Data &amp; Graph Workstation Viewer (ui/workbench/components/subsurface_data_viewer_widget.py)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-removal-of-diagnostic-drawer" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Removal of Diagnostic Drawer
     </span>
   </a>
   
@@ -3159,9 +3057,123 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-subsystem-coupling-data-flow" class="md-nav__link">
+  <a href="#3-bi-directional-event-flow" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Subsystem Coupling &amp; Data Flow
+      3. Bi-Directional Event Flow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-subsystem-file-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Subsystem File Layout
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-parameter-input-side-panel-faults-caprock-containment" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Parameter Input Side Panel, Faults &amp; Caprock Containment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Parameter Input Side Panel, Faults & Caprock Containment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-bounded-parameter-side-panel-input-box-outline-styling" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Bounded Parameter Side Panel &amp; Input Box Outline Styling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-fault-parameter-suite-3d-realistic-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Fault Parameter Suite &amp; 3D Realistic Geometry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-caprock-positioning-geological-styling-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 Caprock Positioning &amp; Geological Styling Standard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-3d-viewport-camera-preservation-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.4 3D Viewport Camera Preservation Protocol
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-stratigraphy-cross-section-viewport-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.5 Stratigraphy &amp; Cross-Section Viewport Enhancements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-universal-right-click-context-menus" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.6 Universal Right-Click Context Menus
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-corey-relative-permeability-geostatistical-middle-screen-workstations" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.7 Corey Relative Permeability &amp; Geostatistical Middle-Screen Workstations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#58-structural-fault-system-caprock-confining-seal-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.8 Structural Fault System &amp; Caprock Confining Seal Architecture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#59-data-management-tab-status-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.9 Data Management Tab Status &amp; Roadmap
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-visual-verification-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Visual Verification Artifacts
     </span>
   </a>
   
@@ -3185,113 +3197,200 @@
   
 
 
-<h1 id="system-architecture-overview">System Architecture Overview<a class="headerlink" href="#system-architecture-overview" title="Permanent link">&para;</a></h1>
-<h2 id="1-executive-architecture-summary">1. Executive Architecture Summary<a class="headerlink" href="#1-executive-architecture-summary" title="Permanent link">&para;</a></h2>
-<p>The <strong>CO₂ EOR Optimizer</strong> is a scientific application built in Python for optimizing Carbon Dioxide Enhanced Oil Recovery (CO₂-EOR) operations alongside Carbon Capture, Utilization, and Storage (CCUS).</p>
-<p>It combines:
-1. <strong>PyQt6 Desktop GUI</strong>: Interactive management of reservoir properties, well schedules, injection schemes, and optimization runs (<code>main.py</code>, <code>ui/</code>).
-2. <strong>Optimization Orchestrator</strong>: Heuristic and metaheuristic algorithms (<code>core/optimisation_engine.py</code>):
-   - Genetic Algorithm (PyGAD)
-   - Bayesian Optimization (<code>bayesian-optimization</code>)
-   - Particle Swarm Optimization (<code>pyswarms</code>)
-   - Differential Evolution (<code>scipy.optimize.differential_evolution</code>)
-3. <strong>Simulation Engine</strong>: Single, direct physics-informed simulation engine (<code>core/engine_surrogate</code>). All legacy engines (<code>compositional_engine</code>, <code>unified_engine</code>, <code>engine_simple</code>) and <code>EngineFactory</code> are <strong>absent from the working copy</strong> — they were deleted, not relocated (corrected 2026-10-04, MED-16; no <code>deprecated/</code> directory exists).
-4. <strong>Economic &amp; Environmental Objectives</strong>: Engine-owned cash flow modeling (NPV) and carbon accounting, coupled with EPA Class VI geomechanical containment checks and environmental leakage penalties (<code>core/objectives/wrapper.py</code>).</p>
-<hr />
-<h2 id="2-high-level-subsystem-diagram">2. High-Level Subsystem Diagram<a class="headerlink" href="#2-high-level-subsystem-diagram" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>graph TD
-    A[main.py: App Entry Point] --&gt; B[ui/main_window.py: PyQt6 Interface]
-    B --&gt; C[ui/optimization_widget.py]
-    B --&gt; D[ui/data_management_widget.py]
-
-    C --&gt; E[core/optimisation_engine.py: OptimizationEngine]
-
-    E --&gt;|DIRECT INSTANTIATION| G[core/engine_surrogate: Primary Physics-Informed Simulator]
-
-    subgraph Deprecated Subsystems (deprecated/)
-        H[deprecated/core/compositional_engine: 1D Finite Volume Solver]
-        I[deprecated/core/unified_engine: Detailed 3D Grid &amp; Solvers]
-        K[deprecated/core/engine_simple: Material Balance Engine]
-        F[deprecated/core/engine_factory.py: EngineFactory]
-    end
-
-    G --&gt; N[core/engine_surrogate/analytical_models.py: Koval &amp; PhD Hybrid Recovery]
-    G --&gt; O[core/engine_surrogate/profile_generator_fast.py: FastProfileGenerator &amp; Composite IPR]
-    G --&gt; P[core/engine_surrogate/pvt_state.py: SolventExtendedPVTEngine &amp; PR-EOS]
-    G --&gt; S_GEO[core/engine_surrogate/geomechanics_fault.py: GeomechanicsFaultModel]
-
-    G --&gt; Q[Results: RF, Cumulative Oil, Profiles, NPV, Storage Metrics]
-    Q --&gt; E
-    E --&gt; R[core/objectives/wrapper.py: Objective Evaluation]
-    R --&gt; S[Class VI Geomechanical Penalty &amp; Fitness Evaluation]</code></pre>
-<hr />
-<h2 id="3-simulation-engine-reality">3. Simulation Engine Reality<a class="headerlink" href="#3-simulation-engine-reality" title="Permanent link">&para;</a></h2>
-<p>The codebase has been refactored from a multi-engine abstraction to a <strong>clean, single-engine architecture</strong>:</p>
-<h3 id="a-coreengine_surrogate-active-intermediate-physics-informed-simulator">A. <code>core/engine_surrogate</code> (ACTIVE - Intermediate Physics-Informed Simulator)<a class="headerlink" href="#a-coreengine_surrogate-active-intermediate-physics-informed-simulator" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Status</strong>: <strong>100% Active Production Engine</strong>.</li>
-<li><strong>Nature</strong>: An <strong>intermediate, physics-informed reduced-order reservoir simulator</strong> that sits between full 3D compositional grid solvers and simple 0D tank models. It functions as a general reservoir simulator with specialized CO₂ EOR domain physics (solvent dissolution, swelling, viscosity reduction, viscous fingering, and geomechanics), NOT an empirical curve-fit or machine learning proxy.</li>
-<li><strong>Implementation</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py">SurrogateEngineWrapper</a> directly wraps <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py">SurrogateEngine</a>.</li>
-<li><strong>Physical Approach</strong>:</li>
-<li><strong>Thermodynamic State &amp; PVT</strong>: <code>core/engine_surrogate/pvt_state.py</code> (<code>SolventExtendedPVTEngine</code>) decouples hydrodynamic saturation (<span class="arithmatex">\(S_g\)</span>) from solvent composition (<span class="arithmatex">\(x_{\text{CO2}}\)</span>). Pure CO₂ density is evaluated via analytical cubic Peng-Robinson EOS. Tracks oil swelling <span class="arithmatex">\(S_F(P, x_{\text{CO2}})\)</span>, viscosity reduction <span class="arithmatex">\(\mu_o(P, x_{\text{CO2}})\)</span>, mixture gas properties, and surface stage separation.</li>
-<li><strong>Authentic Viscous Fingering</strong>: Koval (1963) and Todd-Longstaff (1972) with monotonic mobility acceleration (<span class="arithmatex">\(\partial f_g / \partial M &gt; 0\)</span>) where effective Koval factor <span class="arithmatex">\(K = H_k \cdot E_{\text{eff}}\)</span>.</li>
-<li><strong>Geomechanics &amp; Containment</strong>: <code>core/engine_surrogate/geomechanics_fault.py</code> (<code>GeomechanicsFaultModel</code>) simulates in-situ stress paths (<span class="arithmatex">\(\Delta \sigma_h = \gamma_h \Delta P\)</span>), Mohr-Coulomb fault slip tendency (<span class="arithmatex">\(T_s\)</span>), caprock shear/tensile safety margins, and dynamic geological leakage.</li>
-<li><strong>Deliverability &amp; Inflow</strong>: Composite Vogel-Darcy IPR clamped to physical reservoir limits.</li>
-<li><strong>Pressure &amp; Material Balance</strong>: Dual-pressure Voidage Replacement Ratio (VRR) tracking local injection vs production volumes and deliverability-coupled implicit material balance (<span class="arithmatex">\(dP = (q_{\text{net,IPR}} \cdot \Delta t) / (V_p \cdot c_t + J_{\text{eff}} \cdot \Delta t)\)</span>).</li>
-<li><strong>Standardized 4-Stream Delivery</strong>: Delivers comprehensive daily, monthly, and annual profiles for (1) Crude Oil, (2) Natural Gas, (3) Water / Formation Brine, and (4) Injection Agent (CO₂ &amp; WAG water, with compressor capacity constraints).</li>
-<li><strong>Performance</strong>: Extremely fast (~5–15 ms per scenario evaluation), enabling thousands of optimization iterations with full physical integrity.</li>
-</ul>
-<h3 id="b-legacy-engines-factory-removed-from-the-tree-not-relocated">B. Legacy Engines &amp; Factory (REMOVED FROM THE TREE — not relocated)<a class="headerlink" href="#b-legacy-engines-factory-removed-from-the-tree-not-relocated" title="Permanent link">&para;</a></h3>
+<h1 id="accessible-subsurface-studio-architecture-model-tree-contextual-property-grid">Accessible Subsurface Studio Architecture (Model Tree + Contextual Property Grid)<a class="headerlink" href="#accessible-subsurface-studio-architecture-model-tree-contextual-property-grid" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p>⚠️ <strong>Corrected 2026-10-04 (MED-16).</strong> Earlier text claimed these trees were <em>"moved to <code>deprecated/</code>"</em>. No
-<code>deprecated/</code> directory exists (<code>Test-Path deprecated</code> = <code>False</code>), nor do <code>core/unified_engine/</code>,
-<code>compositional_engine/</code> or <code>core/engine_simple/</code>. The legacy code was <strong>deleted</strong>. The entries below record
-what used to live here so old references in tests/CI logs can be recognized — they are not current paths.</p>
+<p>[!NOTE]
+This document specifies the architectural paradigm for the <strong>Accessible 3D Subsurface Studio Workbench</strong> (<code>ui/workbench/</code>), replacing the legacy dual-splitter panels with a professional CAD/simulation engineering workspace (Petrel/CMG/Blender style).</p>
 </blockquote>
+<hr />
+<h2 id="1-architectural-paradigm-the-3-zone-unobstructed-studio">1. Architectural Paradigm: The 3-Zone Unobstructed Studio<a class="headerlink" href="#1-architectural-paradigm-the-3-zone-unobstructed-studio" title="Permanent link">&para;</a></h2>
+<p>Complex reservoir studies demand that engineers can configure foundational parameters without visual obstruction and without "tab ping-pong". Rather than floating transient overlays or rigid side-by-side tab splits, the Subsurface Studio operates on a <strong>3-zone docked workspace</strong>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│ CENTER WORKSTATION STACK: Single Active View (3D Studio | Cross-Section | PVT | Wells | Sheets/Graphs) │
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├────────────────────┬───────────────────────────────────────────────────┬───────────────────────────────┤
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│ MODEL TREE         │ CENTER WORKSTATION (FULL HEIGHT 100% VIEWPORT)    │ CONTEXTUAL PROPERTY GRID      │
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│ (Left Dock, 260px) │ (Center View Stack 0-9, 100% Height, No Drawer)   │ (Right Dock, 388-550px)       │
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│                    │                                                   │ (Auto-hidden on Sheets/Dash)  │
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│ - Reservoir        │  [ View 0: 3D Studio - Native PyVista Viewport ]  │  Active: "Permeability X"     │
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   - Grid Dim       │  [ View 1: Geology Cross-Section 2D Canvas ]      │  Value:      [ 150.0 ] mD     │
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│     Grid Table     │  [ View 2: Geostatistics Variogram Workstation ]  │  Distribution: Gaussian       │
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│     Grid Graph     │  [ View 3: Corey Rel-Perm &amp; Welge Displacement ]  │  Range:      [ 1200.0 ] ft    │
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   - Volumetrics    │  [ View 4: 3D Fault Slip &amp; Geomechanics ]         │  ──────────────────────────── │
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│     OOIP Table     │  [ View 5: Model Quality Assurance (QA/QC) Gate ] │  [ Apply &amp; Sync to Project ]  │
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│     OOIP Graph     │  [ View 6: Multi-Domain Surveillance Dashboard ]  │                               │
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│ - Petrophysics     │  [ View 7: Fluids &amp; PVT Thermodynamics Workstation│                               │
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   - Rock / Relperm │  [ View 8: Well Network Workstation (Full Screen)]│                               │
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│ - Well Network     │  [ View 9: Subsurface Data &amp; Graph Viewer Sheet ] │                               │
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│   Master Inventory │                                                   │                               │
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│   - [PROD] Well-1  │                                                   │                               │
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│     Trajectory     │                                                   │                               │
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│     IPR Curve      │                                                   │                               │
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>└────────────────────┴───────────────────────────────────────────────────┴───────────────────────────────┘
+</span></code></pre></div>
+<hr />
+<h2 id="2-core-architectural-pillars">2. Core Architectural Pillars<a class="headerlink" href="#2-core-architectural-pillars" title="Permanent link">&para;</a></h2>
+<h3 id="21-zone-1-hierarchical-model-tree-with-attached-sheets-graphs-uiworkbenchcomponentsmodel_tree_widgetpy">2.1 Zone 1: Hierarchical Model Tree with Attached Sheets &amp; Graphs (<code>ui/workbench/components/model_tree_widget.py</code>)<a class="headerlink" href="#21-zone-1-hierarchical-model-tree-with-attached-sheets-graphs-uiworkbenchcomponentsmodel_tree_widgetpy" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>core/engine_factory.py</code>: <strong>Removed</strong> to eliminate confusing layers of indirection.</li>
-<li><code>core/compositional_engine/</code>: 1D finite-volume solver, <strong>Removed</strong> (retained in no directory).</li>
-<li><code>core/unified_engine/</code>: 3D grid solver carrying scientific flaws (SCI-FLAW-04, -08, -18), <strong>Removed</strong> — so those three findings can no longer be re-verified against source.</li>
-<li><code>core/engine_simple/</code>: 0D tank model, <strong>Removed</strong>.</li>
+<li>Acts as the project's structural mental map with attached engineering items:</li>
+<li>Parent nodes contain attached child nodes for <strong>Sheets &amp; Tables</strong> and <strong>Graphs</strong>.</li>
+<li>High-DPI vector icons (<code>table</code>, <code>graph</code>, <code>well_prod</code>, <code>well_inj</code>, <code>faults</code>, <code>uic</code>, <code>pvt</code>, <code>geostat</code>).</li>
+<li>Selecting any attached sheet, table, or graph immediately renders it in <strong>full screen in the middle</strong> with a breadcrumb header and navigation back to 3D Studio.</li>
+</ul>
+<h3 id="22-zone-2-native-pyvistaqt-3d-viewport-uiworkbenchcomponentspyvista_reservoir_canvaspy">2.2 Zone 2: Native PyVistaQt 3D Viewport (<code>ui/workbench/components/pyvista_reservoir_canvas.py</code>)<a class="headerlink" href="#22-zone-2-native-pyvistaqt-3d-viewport-uiworkbenchcomponentspyvista_reservoir_canvaspy" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Powered by <code>pyvista</code> and <code>pyvistaqt</code> (<code>QtInteractor</code>).</li>
+<li>Full 100% viewport height with <strong>zero bottom drawer obstruction</strong>.</li>
+<li><strong>Volumetric Reservoir Mesh</strong>: Full <code>pv.StructuredGrid</code> with hexahedral cell blocks and scalar property colormaps (Permeability, Porosity, Saturation, Pressure).</li>
+<li><strong>True 3D Wellbores</strong>: Continuous 3D spline tubes with gold perforation collar sleeves.</li>
+<li><strong>Sub-Millisecond Hardware Raycast Picking</strong>: Wellbore tubes and reservoir cells raycast-picked in real time.</li>
+</ul>
+<h3 id="23-zone-3-full-screen-subsurface-data-graph-workstation-viewer-uiworkbenchcomponentssubsurface_data_viewer_widgetpy">2.3 Zone 3: Full-Screen Subsurface Data &amp; Graph Workstation Viewer (<code>ui/workbench/components/subsurface_data_viewer_widget.py</code>)<a class="headerlink" href="#23-zone-3-full-screen-subsurface-data-graph-workstation-viewer-uiworkbenchcomponentssubsurface_data_viewer_widgetpy" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Dedicated full-screen View 9 in <code>self.center_stack</code>.</li>
+<li><strong>Interactive Spreadsheet View (<code>QTableWidget</code>)</strong>:</li>
+<li>Live text search and filtering across all columns.</li>
+<li>"Copy Table (TSV)" one-click export for Excel/Notepad.</li>
+<li>"Export CSV" file export.</li>
+<li>Alternating row zebra striping and aligned numerical formatting.</li>
+<li><strong>Scientific 2D Graph View (<code>FigureCanvasQTAgg</code>)</strong>:</li>
+<li>High-resolution matplotlib canvas with formatted gridlines and legends.</li>
+<li>"Save Graph (PNG)" high-DPI image export.</li>
+<li>Generators for all domain sheets and graphs:</li>
+<li>Grid Coordinates &amp; Layer Tops</li>
+<li>Volumetric OOIP &amp; HCPV Material Balance</li>
+<li>Stratigraphic Zonal Tops</li>
+<li>Petrophysical Summary &amp; Porosity-Permeability Cross-Plot</li>
+<li>Corey Relative Permeability Endpoints</li>
+<li>Geostatistical Variogram Parameters</li>
+<li>Black Oil Numerical PVT Table</li>
+<li>Solvent Swelling &amp; Viscosity Reduction Data Table</li>
+<li>Minimum Miscibility Pressure (MMP) Benchmark Correlations Table</li>
+<li>10-Component Detailed PR-78 Composition Table</li>
+<li>Fluid Contacts &amp; Hydrostatic Depth Table</li>
+<li>Master Well Network Inventory Schedule</li>
+<li>Individual Well Deviation Surveys &amp; Trajectory Tables</li>
+<li>Caprock Geomechanical Properties &amp; Mohr-Coulomb Envelopes</li>
+<li>Fault Slip Tendency &amp; SGR Analysis Table</li>
+<li>EPA Class VI Safe Injection Ceilings &amp; In-Situ Stress Gradient Graphs</li>
+</ul>
+<h3 id="24-removal-of-diagnostic-drawer">2.4 Removal of Diagnostic Drawer<a class="headerlink" href="#24-removal-of-diagnostic-drawer" title="Permanent link">&para;</a></h3>
+<ul>
+<li>The diagnostic bottom drawer has been completely removed to provide 100% unobstructed full-screen height for all middle views and workstations.</li>
 </ul>
 <hr />
-<h2 id="4-subsystem-coupling-data-flow">4. Subsystem Coupling &amp; Data Flow<a class="headerlink" href="#4-subsystem-coupling-data-flow" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">From Subsystem</th>
-<th style="text-align: left;">To Subsystem</th>
-<th style="text-align: left;">Transferred Data</th>
-<th style="text-align: left;">Invariant Rule</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>ui/optimization_widget.py</code></td>
-<td style="text-align: left;"><code>core/optimisation_engine.py</code></td>
-<td style="text-align: left;"><code>OptimizationConfig</code>, <code>ReservoirData</code></td>
-<td style="text-align: left;">Units must be Field (psi, STB, MSCF, ft).</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>core/optimisation_engine.py</code></td>
-<td style="text-align: left;"><code>core/engine_surrogate/surrogate_engine.py</code></td>
-<td style="text-align: left;"><code>EORParameters</code>, <code>ReservoirData</code>, <code>OperationalParameters</code>, <code>EconomicParameters</code></td>
-<td style="text-align: left;">Directly instantiated <code>SurrogateEngineWrapper</code>. Never scale recovery by well count.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>core/engine_surrogate/</code></td>
-<td style="text-align: left;"><code>core/objectives/wrapper.py</code></td>
-<td style="text-align: left;"><code>SimulationResults</code> dict containing <code>npv</code>, <code>rf</code>, <code>storage_efficiency</code>, profiles</td>
-<td style="text-align: left;">Wrapper is a dumb consumer; NPV and storage are computed in-engine.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>core/objectives/wrapper.py</code></td>
-<td style="text-align: left;"><code>core/optimisation_engine.py</code></td>
-<td style="text-align: left;">Multi-objective fitness score, constraint penalties</td>
-<td style="text-align: left;">Unphysical candidates receive <span class="arithmatex">\(-10^{12}\)</span> or <code>NaN</code> to prevent survival.</td>
-</tr>
-</tbody>
-</table>
+<h2 id="3-bi-directional-event-flow">3. Bi-Directional Event Flow<a class="headerlink" href="#3-bi-directional-event-flow" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TD
+    UserTreeClick[User Clicks Tree Leaf: Table or Graph] --&gt;|Domain &amp; Key Dispatch| Router[_on_tree_node_selected]
+    Router --&gt;|If Table / Graph| DataViewer[SubsurfaceDataViewerWidget Renders Full Screen View 9]
+    Router --&gt;|If 3D Studio| View0[PyVista Canvas View 0 Full Screen]
+    Router --&gt;|If Workstation| DedicatedViews[Views 1-8: Cross-Section, PVT, Wells, Geostat, Faults]
+    DataViewer --&gt;|Click 'Back to 3D Studio'| View0</code></pre>
+<hr />
+<h2 id="4-subsystem-file-layout">4. Subsystem File Layout<a class="headerlink" href="#4-subsystem-file-layout" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ui/workbench/
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── subsurface_workbench_widget.py          # Master Workbench container (Tree + 10 Center Stack Views + Auto-collapsing Right Panel)
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── components/
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│   ├── model_tree_widget.py                # Hierarchical tree with attached Table and Graph nodes
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│   ├── subsurface_data_viewer_widget.py    # Full-screen interactive spreadsheet &amp; scientific graph viewer
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│   ├── pyvista_reservoir_canvas.py         # Native PyVistaQt 3D Viewport with hardware raycast picking (100% Height)
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│   ├── contextual_property_grid.py         # Bounded property sheet with real-time validation and sync
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│   ├── visual_audit_gate_widget.py         # Native QA/QC verification gate
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│   ├── fault_caprock_manager_dialog.py     # Multi-fault network, inter-fault stress transfer, and caprock dialog
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│   └── subsurface_icons.py                 # Vector-drawn high-DPI QIcon generators (table, graph, well, etc.)
+</span></code></pre></div>
+<hr />
+<h2 id="5-parameter-input-side-panel-faults-caprock-containment">5. Parameter Input Side Panel, Faults &amp; Caprock Containment<a class="headerlink" href="#5-parameter-input-side-panel-faults-caprock-containment" title="Permanent link">&para;</a></h2>
+<h3 id="51-bounded-parameter-side-panel-input-box-outline-styling">5.1 Bounded Parameter Side Panel &amp; Input Box Outline Styling<a class="headerlink" href="#51-bounded-parameter-side-panel-input-box-outline-styling" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Viewport Protection</strong>: The center 3D viewport is marked un-collapsible (<code>setCollapsible(1, False)</code>). The parameter input panel is constrained between <code>min=330px</code> and <code>max=460px</code> when expanded, preventing accidental takeover or concealment of the 3D studio.</li>
+<li><strong>Vertical Toggle Button Strip (<code>toggle_strip</code>)</strong>: A 28px vertical bar holding <code>btn_toggle_params</code> provides 1-click collapse to a sleek 32px bar and instant restoration to 370px.</li>
+<li><strong>Clean Flat Panel &amp; Crisp Input Outlines</strong>:</li>
+<li>The parameter panel frame and vertical toggle strip are completely borderless (<code>border: none;</code>).</li>
+<li>Strict, high-contrast borders are applied exclusively to editable input elements: <code>QLineEdit</code>, <code>QDoubleSpinBox</code>, <code>QSpinBox</code>, and <code>QComboBox</code>. Spinboxes include dedicated subcontrols and padding to ensure numeric values and unit badges never overlap.</li>
+</ul>
+<h3 id="52-fault-parameter-suite-3d-realistic-geometry">5.2 Fault Parameter Suite &amp; 3D Realistic Geometry<a class="headerlink" href="#52-fault-parameter-suite-3d-realistic-geometry" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Editable Properties</strong>: Fault Name/ID, Dip angle (<span class="arithmatex">\(10^\circ - 90^\circ\)</span>), Strike angle (<span class="arithmatex">\(0^\circ - 360^\circ\)</span>), Transmissibility multiplier (<span class="arithmatex">\(0.0 - 1.0\)</span>), Throw / Displacement (<span class="arithmatex">\(0 - 500\text{ ft}\)</span>), Friction coefficient <span class="arithmatex">\(\mu\)</span> (<span class="arithmatex">\(0.1 - 1.0\)</span>), Cohesion <span class="arithmatex">\(S_0\)</span>, and center coordinates <span class="arithmatex">\((X, Y)\)</span>.</li>
+<li><strong>Mohr-Coulomb Slip Stability</strong>: Dynamic calculation and readout of slip tendency <span class="arithmatex">\(T_s = \tau / \sigma_n'\)</span> with stability classification.</li>
+<li><strong>3D Quad Plane</strong>: Rendered as an authentic oriented quad mesh cutting cleanly across reservoir layers.</li>
+</ul>
+<h3 id="53-caprock-positioning-geological-styling-standard">5.3 Caprock Positioning &amp; Geological Styling Standard<a class="headerlink" href="#53-caprock-positioning-geological-styling-standard" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Elevation Inversion Invariant</strong>: In VTK/OpenGL Cartesian space, <span class="arithmatex">\(+Z\)</span> is UP, whereas geological depth (TVD) increases downwards. Elevation must be mapped as <span class="arithmatex">\(Z_{\text{vis}} = -TVD\)</span>. Consequently, shallower confining units (<span class="arithmatex">\(Z \in [-5000, -4850]\)</span> ft) are positioned strictly <strong>above</strong> the reservoir interval (<span class="arithmatex">\(Z \in [-5050, -5000]\)</span> ft).</li>
+<li><strong>Petrel / CMG Visual Conventions</strong>:</li>
+<li><strong>High-Contrast Sealing Interface</strong>: A distinct cyan sealing contact horizon plane (<code>#00f2fe</code>, opacity 0.95, line width 2.0) is rendered at <span class="arithmatex">\(Z = -top\_depth\)</span>.</li>
+<li><strong>Lithology-Specific Shading</strong>: Dense marine shale is rendered in dark slate-navy (<code>#1e293b</code>, opacity 0.72, edge wireframe <code>#38bdf8</code>), anhydrite/evaporite in crystalline ice-lavender (<code>#3b4252</code>, edge <code>#81a1c1</code>), siltstone in olive-slate (<code>#334155</code>), and dense carbonate in deep teal-slate (<code>#264653</code>).</li>
+<li><strong>3D Billboard CAD Badge</strong>: Displays lithology type, thickness, and capillary entry pressure <span class="arithmatex">\(P_{\text{entry}}\)</span> directly above the formation.</li>
+</ul>
+<h3 id="54-3d-viewport-camera-preservation-protocol">5.4 3D Viewport Camera Preservation Protocol<a class="headerlink" href="#54-3d-viewport-camera-preservation-protocol" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Smooth Parameter Tweaking (Zero View Jumps)</strong>: On the initial render, the camera centers on the newly constructed reservoir geometry (<code>view_isometric()</code>, <code>reset_camera()</code>, <code>zoom(0.85)</code>).</li>
+<li><strong>State Tracking (<code>_has_rendered_mesh</code>)</strong>: On all subsequent parameter edits, colormap adjustments, property changes, or overlay toggles, the user's active camera position is preserved before rebuilding actors and restored immediately afterwards. The user never loses their chosen vantage point or zoom level.</li>
+</ul>
+<h3 id="55-stratigraphy-cross-section-viewport-enhancements">5.5 Stratigraphy &amp; Cross-Section Viewport Enhancements<a class="headerlink" href="#55-stratigraphy-cross-section-viewport-enhancements" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Spacious Horizontal Top Toolbar</strong>: Eliminates vertical squishing. Hosts orientation selector, property dropdown, colormap selector, overlay checkboxes (Caprock Seal, Wells &amp; Perfs, Fault Trace, Sub-Layers), stepping buttons, smooth slider, slice coordinate badge, and a center reset button.</li>
+<li><strong>Index Preservation</strong>: Slice position is cached and preserved during property updates and view switching (<code>_update_slider_range(preserve_value=True)</code>).</li>
+<li><strong>True TVD Axis &amp; Data Fidelity</strong>: Renders authentic reservoir intervals with depth increasing downwards, overlying caprock seal layer with shale hatching, projected wellbores with perforation sleeves, and fault trace with slip throw displacement.</li>
+</ul>
+<h3 id="56-universal-right-click-context-menus">5.6 Universal Right-Click Context Menus<a class="headerlink" href="#56-universal-right-click-context-menus" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Viewport Canvas</strong>: Right-click brings up actions for camera angle presets, resetting camera, selecting active scalar property, colormap palettes, slicing modes, overlay toggles, and PNG export.</li>
+<li><strong>Cross-Section Canvas</strong>: Right-click provides instant orientation switching (In-line, Cross-line, Areal, VPC), palette controls, overlay toggles, center slice jumping, and high-res export.</li>
+<li><strong>Hierarchical Model Tree</strong>: Right-click context menu provides domain-specific engineering actions (<code>Add Well</code>, <code>Add Stratigraphic Layer</code>, <code>Run Model QA/QC Audit</code>, <code>Synchronize Model Data</code>, <code>Expand All</code>, <code>Collapse All</code>).</li>
+<li><strong>Corey Rel-Perm Canvas</strong>: Right-click menu provides Copy Image, Save Plot (PNG/PDF), Export Rel-Perm CSV Table, Toggle Semi-Log Scale, Toggle Grid, and Reset View.</li>
+<li><strong>Geostatistics Canvas</strong>: Right-click menu provides Copy Image, Save Plot (PNG/PDF), Export SGS Realization Grid (CSV), Export Semivariogram Table (CSV), Toggle Colorbar, Toggle Grid, and Reset Zoom.</li>
+</ul>
+<h3 id="57-corey-relative-permeability-geostatistical-middle-screen-workstations">5.7 Corey Relative Permeability &amp; Geostatistical Middle-Screen Workstations<a class="headerlink" href="#57-corey-relative-permeability-geostatistical-middle-screen-workstations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Dedicated Middle-Screen Workstation (View 3)</strong>:</li>
+<li>Relative permeability plots relocated from cramped side panels to a dedicated full-width workstation (<code>CoreyRelPermWorkstationWidget</code>).</li>
+<li>Supports Dual-System plots (Water-Oil and Gas-Liquid), Buckley-Leverett Fractional Flow with Welge tangent line (<span class="arithmatex">\(S_{wf}, \bar{S}_{w,BT}\)</span>, recovery efficiency <span class="arithmatex">\(E_D\)</span>), Advancing Saturation Shock Profile <span class="arithmatex">\(S_w(x_D)\)</span>, and Comparative Wettability Overlay with Craig's rule crossover diagnosis (<span class="arithmatex">\(S_w^*\)</span>).</li>
+<li><strong>Geostatistics Visualizer &amp; Physical Variogram Scaling (View 2)</strong>:</li>
+<li>Top panel simplified: numerical parameter spinboxes moved to the side panel; top bar retained strictly for plotting settings.</li>
+<li>Physical unit alignment: Lag distance <span class="arithmatex">\(h\)</span> is converted from grid cells to reservoir feet (<span class="arithmatex">\(h = \text{cells} \times \Delta x\)</span>).</li>
+</ul>
+<h3 id="58-structural-fault-system-caprock-confining-seal-architecture">5.8 Structural Fault System &amp; Caprock Confining Seal Architecture<a class="headerlink" href="#58-structural-fault-system-caprock-confining-seal-architecture" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Dedicated Manager Window (<code>FaultAndCaprockDialog</code>)</strong>:</li>
+<li>Full structural setup accessible from central header and property grid.</li>
+<li>Tab 1: Structural Fault System Manager with <code>+ Add Fault</code>, <code>Duplicate</code>, <code>Delete</code>, and structural presets (Conjugate Graben, Step-Faults, Relay Segments, Single Major Boundary).</li>
+<li>Tab 2: Multi-Fault Coulomb Stress Transfer (<span class="arithmatex">\(\Delta CFS = \Delta \tau - \mu(\Delta \sigma_n - \Delta P)\)</span>) interaction matrix and dislocation attenuation canvas.</li>
+<li>Tab 3: Caprock Confining Stratigraphy with lithology, mechanical moduli, and live EPA Class VI containment cards.</li>
+<li><strong>Dynamic Model Tree Fault Items</strong>:</li>
+<li>Each fault appears dynamically under <code>Structural Geology &amp; Faults</code> as <code>[FLT] {name}</code> with sub-nodes:<ul>
+<li><code>Geometry &amp; Kinematics (Table)</code></li>
+<li><code>Isolated 3D Fault Surface (3D View)</code></li>
+<li><code>Slip Tendency &amp; Reactivation (Graph)</code></li>
+<li><code>Juxtaposition &amp; SGR Profile (Graph)</code></li>
+</ul>
+</li>
+<li><strong>Isolated Fault 3D Mode</strong>:</li>
+<li>Renders the reservoir outer envelope as a faint bounding wireframe (<code>opacity=0.35</code>) while prominently rendering the selected 3D fault surface with SGR colormap, dip arrows, and strike traces.</li>
+<li><strong>Geomechanical Reservoir Coupling</strong>:</li>
+<li>Multi-fault cumulative structural offset (summing throw <span class="arithmatex">\(\Delta Z_i\)</span> and heave <span class="arithmatex">\(d_{\text{heave}, i}\)</span>).</li>
+<li>Damage zone petrophysical permeability and porosity modulation.</li>
+</ul>
+<h3 id="59-data-management-tab-status-roadmap">5.9 Data Management Tab Status &amp; Roadmap<a class="headerlink" href="#59-data-management-tab-status-roadmap" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Current Status</strong>: Active development in progress (<code>ui/data_management_widget.py</code>).</li>
+<li><strong>Pending Updates</strong>:</li>
+<li>QA/QC Modernization: Synchronize with the new <code>ModelQualityAssuranceWidget</code> and eliminate legacy "Pre-Flight" references.</li>
+<li>UI/UX Polish: Remove custom inline CSS in favor of clean standard Qt design.</li>
+<li>Bugfixes &amp; Invariant Hardening: Robust handling of grid permeability formats (scalar, 1D flattened, and 3D arrays via <code>PERMX.flat[0]</code>) and complete round-trip serialization.</li>
+</ul>
+<hr />
+<h2 id="6-visual-verification-artifacts">6. Visual Verification Artifacts<a class="headerlink" href="#6-visual-verification-artifacts" title="Permanent link">&para;</a></h2>
+<p>The following interface screenshots have been verified and archived:</p>
+<ul>
+<li><code>scratch/bench_fault_caprock_dialog_tab1.png</code>: Fault &amp; Caprock Manager Dialog (Tab 1: Structural Fault System)</li>
+<li><code>scratch/bench_fault_caprock_dialog_tab2.png</code>: Fault &amp; Caprock Manager Dialog (Tab 2: Inter-Fault Stress Transfer)</li>
+<li><code>scratch/bench_fault_caprock_dialog_tab3.png</code>: Fault &amp; Caprock Manager Dialog (Tab 3: Caprock Confining Stratigraphy)</li>
+<li><code>scratch/bench_fault_system_table_view.png</code>: Master Fault Inventory Table View</li>
+<li><code>scratch/bench_fault_inter_stress_view.png</code>: Inter-Fault Coulomb Stress Transfer Graph View</li>
+<li><code>scratch/bench_current_qa_qc_gate.png</code>: Model Quality Assurance Gatekeeper View</li>
+<li><code>scratch/bench_data_management_tab.png</code>: Data Management Tab (In Development)</li>
+</ul>
 
 
 
@@ -3324,44 +3423,6 @@ what used to live here so old references in tests/CI logs can be recognized — 
       
         <footer class="md-footer">
   
-    
-      
-      <nav class="md-footer__inner md-grid" aria-label="Footer" >
-        
-          
-          <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
-            </div>
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              <div class="md-ellipsis">
-                Home
-              </div>
-            </div>
-          </a>
-        
-        
-          
-          <a href="../module_map/" class="md-footer__link md-footer__link--next" aria-label="Next: Module Map">
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              <div class="md-ellipsis">
-                Module Map
-              </div>
-            </div>
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
-            </div>
-          </a>
-        
-      </nav>
     
   
   <div class="md-footer-meta md-typeset">

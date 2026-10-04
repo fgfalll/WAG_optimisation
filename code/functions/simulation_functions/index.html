@@ -2810,13 +2810,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-_calculate_pressure_profile" class="md-nav__link">
+  <a href="#2-_calculate_pressure_profile-does-not-exist-grep-0-hits-corrected-2026-10-04-med-15" class="md-nav__link">
     <span class="md-ellipsis">
-      2. _calculate_pressure_profile()
+      2. _calculate_pressure_profile() ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. _calculate_pressure_profile()">
+    <nav class="md-nav" aria-label="2. _calculate_pressure_profile() ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2834,13 +2834,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-_calculate_co2_purchased_recycled" class="md-nav__link">
+  <a href="#3-_calculate_co2_purchased_recycled-does-not-exist-grep-0-hits-corrected-2026-10-04-med-15" class="md-nav__link">
     <span class="md-ellipsis">
-      3. _calculate_co2_purchased_recycled()
+      3. _calculate_co2_purchased_recycled() ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. _calculate_co2_purchased_recycled()">
+    <nav class="md-nav" aria-label="3. _calculate_co2_purchased_recycled() ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3171,13 +3171,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-_calculate_pressure_profile" class="md-nav__link">
+  <a href="#2-_calculate_pressure_profile-does-not-exist-grep-0-hits-corrected-2026-10-04-med-15" class="md-nav__link">
     <span class="md-ellipsis">
-      2. _calculate_pressure_profile()
+      2. _calculate_pressure_profile() ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. _calculate_pressure_profile()">
+    <nav class="md-nav" aria-label="2. _calculate_pressure_profile() ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3195,13 +3195,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-_calculate_co2_purchased_recycled" class="md-nav__link">
+  <a href="#3-_calculate_co2_purchased_recycled-does-not-exist-grep-0-hits-corrected-2026-10-04-med-15" class="md-nav__link">
     <span class="md-ellipsis">
-      3. _calculate_co2_purchased_recycled()
+      3. _calculate_co2_purchased_recycled() ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. _calculate_co2_purchased_recycled()">
+    <nav class="md-nav" aria-label="3. _calculate_co2_purchased_recycled() ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3250,17 +3250,17 @@
 <li>Unpacks input dictionaries into <code>EORParameters</code> and <code>OperationalParameters</code>.</li>
 <li>Invokes <code>PhDHybridRecoveryModel.predict_recovery()</code> to calculate ultimate <span class="arithmatex">\(RF\)</span>.</li>
 <li>Calls <code>FastProfileGenerator.generate_profiles()</code> to generate monthly time-series for oil, water, and gas.</li>
-<li>Computes reservoir pressure history <span class="arithmatex">\(P(t)\)</span> using coupled deliverability material balance (<code>_calculate_pressure_profile()</code>).</li>
-<li>Evaluates CO₂ recycling vs make-up purchase (<code>_calculate_co2_purchased_recycled()</code>).</li>
-<li>Computes field discounted cash flow (<code>_calculate_engine_npv()</code>).</li>
+<li>Computes reservoir pressure history <span class="arithmatex">\(P(t)\)</span> using coupled deliverability material balance <strong>inline in <code>evaluate_scenario()</code></strong> (there is no <code>_calculate_pressure_profile()</code> method — grep → 0 hits; MED-15).</li>
+<li>Evaluates CO₂ recycling vs make-up purchase <strong>inline at <code>surrogate_engine.py:592-596,607-614</code></strong> (there is no <code>_calculate_co2_purchased_recycled()</code> method — grep → 0 hits).</li>
+<li>Computes field discounted cash flow <strong>inline in <code>PhDHybridSurrogate.predict()</code> at <code>surrogate_models.py:507-530</code></strong> (there is no <code>_calculate_engine_npv()</code> method — grep → 0 hits).</li>
 <li>Evaluates carbon storage trapping mechanisms (<code>CO2StorageSurrogate.calculate_storage()</code>).</li>
 <li>Verifies mass balance and returns structured results.</li>
 </ol>
 <hr />
-<h2 id="2-_calculate_pressure_profile">2. <code>_calculate_pressure_profile()</code><a class="headerlink" href="#2-_calculate_pressure_profile" title="Permanent link">&para;</a></h2>
+<h2 id="2-_calculate_pressure_profile-does-not-exist-grep-0-hits-corrected-2026-10-04-med-15">2. <code>_calculate_pressure_profile()</code> ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)<a class="headerlink" href="#2-_calculate_pressure_profile-does-not-exist-grep-0-hits-corrected-2026-10-04-med-15" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>File</strong>: <code>core/engine_surrogate/surrogate_engine.py</code></li>
-<li><strong>Signature</strong>: <code>def _calculate_pressure_profile(self, profiles: Dict[str, np.ndarray]) -&gt; np.ndarray</code></li>
+<li><strong>File</strong>: <code>core/engine_surrogate/surrogate_engine.py</code> (written <strong>inline</strong> in <code>evaluate_scenario()</code>)</li>
+<li><strong>Signature</strong>: <em>none — no such method exists; do not import or call it</em></li>
 <li><strong>Modification Risk</strong>: <strong>CRITICAL</strong></li>
 </ul>
 <h3 id="physical-formulation">Physical Formulation<a class="headerlink" href="#physical-formulation" title="Permanent link">&para;</a></h3>
@@ -3273,10 +3273,10 @@ Where:
 - Sandface injection ceiling: <span class="arithmatex">\(P(t) \le 0.90 \times P_{\text{frac}}\)</span> (EPA Class VI limit).
 - Numerical step limiter: <span class="arithmatex">\(|dP_t| \le 450\text{ psi/step}\)</span>.</p>
 <hr />
-<h2 id="3-_calculate_co2_purchased_recycled">3. <code>_calculate_co2_purchased_recycled()</code><a class="headerlink" href="#3-_calculate_co2_purchased_recycled" title="Permanent link">&para;</a></h2>
+<h2 id="3-_calculate_co2_purchased_recycled-does-not-exist-grep-0-hits-corrected-2026-10-04-med-15">3. <code>_calculate_co2_purchased_recycled()</code> ⚠️ DOES NOT EXIST (grep → 0 hits; corrected 2026-10-04, MED-15)<a class="headerlink" href="#3-_calculate_co2_purchased_recycled-does-not-exist-grep-0-hits-corrected-2026-10-04-med-15" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>File</strong>: <code>core/engine_surrogate/surrogate_engine.py</code></li>
-<li><strong>Signature</strong>: <code>def _calculate_co2_purchased_recycled(self, profiles: Dict[str, np.ndarray]) -&gt; Tuple[np.ndarray, np.ndarray]</code></li>
+<li><strong>File</strong>: <code>core/engine_surrogate/surrogate_engine.py</code> (written <strong>inline</strong> at <code>:592-596</code> annual, <code>:607-614</code> rate/cumulative)</li>
+<li><strong>Signature</strong>: <em>none — no such method exists; the split is inline code inside <code>evaluate_scenario()</code></em></li>
 <li><strong>Modification Risk</strong>: <strong>HIGH</strong></li>
 </ul>
 <h3 id="mass-balance-rule">Mass Balance Rule<a class="headerlink" href="#mass-balance-rule" title="Permanent link">&para;</a></h3>

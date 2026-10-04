@@ -3088,21 +3088,21 @@
 <td style="text-align: center;"><strong>HIGH</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>_calculate_pressure_profile()</code></strong></td>
+<td style="text-align: left;"><strong><code>_calculate_pressure_profile()</code></strong> <em>(does not exist — grep → 0 hits)</em></td>
 <td style="text-align: left;"><code>core/engine_surrogate/surrogate_engine.py</code></td>
-<td style="text-align: left;">Solves deliverability-coupled tank material balance pressure increments <span class="arithmatex">\(dP(t)\)</span>.</td>
+<td style="text-align: left;">The deliverability-coupled tank material-balance increment <span class="arithmatex">\(dP(t)\)</span> is written <strong>inline</strong> in <code>evaluate_scenario()</code> (MED-15).</td>
 <td style="text-align: center;"><strong>CRITICAL</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>_calculate_co2_purchased_recycled()</code></strong></td>
+<td style="text-align: left;"><strong><code>_calculate_co2_purchased_recycled()</code></strong> <em>(does not exist — grep → 0 hits)</em></td>
 <td style="text-align: left;"><code>core/engine_surrogate/surrogate_engine.py</code></td>
-<td style="text-align: left;">Closed-loop accounting of fresh purchased CO₂ vs recycled produced CO₂.</td>
+<td style="text-align: left;">Closed-loop accounting of fresh purchased CO₂ vs recycled produced CO₂, computed <strong>inline</strong> at <code>:592-596</code> and <code>:607-614</code> (MED-15).</td>
 <td style="text-align: center;"><strong>HIGH</strong></td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong><code>_calculate_engine_npv()</code></strong></td>
-<td style="text-align: left;"><code>core/engine_surrogate/surrogate_engine.py</code></td>
-<td style="text-align: left;">Discounted cash flow NPV including oil revenue, OPEX, CAPEX, and CO₂ costs.</td>
+<td style="text-align: left;"><strong><code>_calculate_engine_npv()</code></strong> <em>(does not exist — grep → 0 hits)</em></td>
+<td style="text-align: left;"><code>core/engine_surrogate/surrogate_models.py:507-530</code></td>
+<td style="text-align: left;">Discounted cash flow NPV is computed <strong>inline</strong> in <code>PhDHybridSurrogate.predict()</code> (oil revenue, CAPEX; OPEX/CO₂ recycle/water costs omitted — HIGH-08) and republished as key <code>npv</code> at <code>surrogate_engine.py:172,692</code>.</td>
 <td style="text-align: center;"><strong>HIGH</strong></td>
 </tr>
 <tr>

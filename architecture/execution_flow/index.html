@@ -3323,7 +3323,7 @@
 </ol>
 <h3 id="step-6-pressure-evolution-via-coupled-ipr-material-balance">Step 6: Pressure Evolution via Coupled IPR &amp; Material Balance<a class="headerlink" href="#step-6-pressure-evolution-via-coupled-ipr-material-balance" title="Permanent link">&para;</a></h3>
 <ol>
-<li>Inside <code>SurrogateEngine._calculate_pressure_profile()</code>:</li>
+<li>Inside <code>SurrogateEngine.evaluate_scenario()</code> ⚠️ <em>(name corrected 2026-10-04, MED-15 — there is no <code>_calculate_pressure_profile()</code> method; the update is inline)</em>:</li>
 <li>Gas injection converted via dynamic <span class="arithmatex">\(B_{g,\text{dynamic}}\)</span> to RB/day.</li>
 <li>Dynamic Koval fractional flow <span class="arithmatex">\(f_g(t_D)\)</span> tracks voidage replacement.</li>
 <li>Producer deliverability: Darcy/Vogel drawdown (<span class="arithmatex">\(J_{\text{prod}} \times (P - P_{\text{min}})\)</span>).</li>
@@ -3334,9 +3334,9 @@
 </ol>
 <h3 id="step-7-engine-owned-npv-carbon-balance-accounting">Step 7: Engine-Owned NPV &amp; Carbon Balance Accounting<a class="headerlink" href="#step-7-engine-owned-npv-carbon-balance-accounting" title="Permanent link">&para;</a></h3>
 <ol>
-<li>Inside <code>SurrogateEngine</code>:</li>
-<li><code>_calculate_co2_purchased_recycled()</code> computes fresh vs recycled gas streams.</li>
-<li><code>_calculate_engine_npv()</code> discounts project cash flows (oil revenues minus CAPEX, OPEX, fresh gas purchases, recycling compression, and water disposal).</li>
+<li>Inside <code>SurrogateEngine</code> / <code>PhDHybridSurrogate</code> (<strong>names corrected 2026-10-04, MED-15 — the functions below did not exist under their previously documented names</strong>):</li>
+<li><strong>CO₂ purchased vs recycled</strong> is computed <em>inline</em> in <code>SurrogateEngine.evaluate_scenario()</code>: annual make-up at <code>surrogate_engine.py:592-596</code>, rate and cumulative streams at <code>:607-614</code>. (Previously documented as <code>_calculate_co2_purchased_recycled()</code> — grep → 0 hits.)</li>
+<li><strong>NPV</strong> is computed <em>inline</em> in <code>PhDHybridSurrogate.predict()</code> at <code>surrogate_models.py:507-530</code>, then republished as the profile key <code>npv</code> (<code>surrogate_engine.py:172</code>, <code>:692</code>). (Previously documented as <code>_calculate_engine_npv()</code> — grep → 0 hits.) Its cost model omits four inputs the engine supplies — <strong>HIGH-08</strong>.</li>
 <li>Returns complete <code>SimulationResults</code> dictionary to <code>SurrogateEngineWrapper</code>.</li>
 </ol>
 <h3 id="step-8-multi-objective-fitness-penalty-evaluation">Step 8: Multi-Objective Fitness &amp; Penalty Evaluation<a class="headerlink" href="#step-8-multi-objective-fitness-penalty-evaluation" title="Permanent link">&para;</a></h3>

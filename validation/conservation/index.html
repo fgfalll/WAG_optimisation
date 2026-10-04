@@ -3222,7 +3222,7 @@
 <h3 id="a-mass-balance-in-primary-surrogate-engine-coreengine_surrogate">A. Mass Balance in Primary Surrogate Engine (<code>core/engine_surrogate</code>)<a class="headerlink" href="#a-mass-balance-in-primary-surrogate-engine-coreengine_surrogate" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Status</strong>: <strong>Semi-Analytical Material Balance</strong>.</li>
-<li><strong>Implementation</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L950">SurrogateEngine._calculate_co2_purchased_recycled()</a></li>
+<li><strong>Implementation</strong>: <a href="file:///d:/rep/4.6/co2eor_optimizer/core/engine_surrogate/surrogate_engine.py#L592">SurrogateEngine.evaluate_scenario() — inline purchased/recycled split</a> <em>(corrected 2026-10-04: there is no <code>_calculate_co2_purchased_recycled()</code> method — grep → 0 hits)</em></li>
 <li><strong>Equation</strong>:
   $<span class="arithmatex">\(\text{Purchased CO}_2 = \text{Total Injected CO}_2 - \text{Recycled CO}_2\)</span>$
   where recycled CO₂ begins only after CO₂ breakthrough:

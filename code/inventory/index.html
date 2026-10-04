@@ -3216,7 +3216,7 @@
 <li><strong><code>surrogate_engine.py</code></strong>:</li>
 <li><code>SurrogateEngine</code>: High-speed semi-analytical simulation engine.</li>
 <li><code>SurrogateEngineWrapper</code>: Adapter implementing standard engine interface for <code>EngineFactory</code>.</li>
-<li>Methods: <code>evaluate_scenario()</code>, <code>_calculate_engine_npv()</code>, <code>_calculate_co2_purchased_recycled()</code>, <code>_solve_pressure_ode()</code>.</li>
+<li>Methods: <code>evaluate_scenario()</code>, <code>_build_params_dict()</code>, <code>_error_result()</code>, <code>get_performance_stats()</code>, <code>reset_performance_stats()</code>. ⚠️ Corrected 2026-10-04 (MED-15): the previously listed <code>_calculate_engine_npv()</code>, <code>_calculate_co2_purchased_recycled()</code> and <code>_solve_pressure_ode()</code> <strong>do not exist</strong> (grep → 0 hits). CO₂ split is inline at <code>:592-596,607-614</code>; NPV is computed in <code>PhDHybridSurrogate.predict()</code> (<code>surrogate_models.py:507-530</code>).</li>
 <li><strong><code>analytical_models.py</code></strong>:</li>
 <li><code>AnalyticalSurrogate</code>: Facade for analytical displacement and recovery models.</li>
 <li><code>PhDHybridRecoveryModel</code>: Hybrid Koval/Buckley-Leverett miscible/immiscible recovery calculation.</li>

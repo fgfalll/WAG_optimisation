@@ -3121,7 +3121,45 @@
 
 <h1 id="master-verification-test-matrix-test-mapping-to-equations-invariants">Master Verification Test Matrix: Test Mapping to Equations &amp; Invariants<a class="headerlink" href="#master-verification-test-matrix-test-mapping-to-equations-invariants" title="Permanent link">&para;</a></h1>
 <h2 id="1-test-suite-architecture">1. Test Suite Architecture<a class="headerlink" href="#1-test-suite-architecture" title="Permanent link">&para;</a></h2>
-<p>The dedicated scientific verification test suite is located in <code>tests/scientific/</code>. It comprises <strong>42 test items across 16 subdirectories</strong>, organized strictly by scientific verification discipline.</p>
+<p>The dedicated scientific verification test suite is located in <code>tests/scientific/</code>. It comprises <strong>36 test items across 15 subdirectories</strong>, organized strictly by scientific verification discipline.</p>
+<blockquote>
+<p>[!CAUTION]
+<strong>Regenerated 2026-10-04 (MED-16).</strong> The previous version of this page declared <strong>42 items across 16 subdirectories</strong>
+and listed tests that do not exist. Ground truth is now <code>pytest --collect-only tests/scientific</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Collected test functions</td>
+<td><strong>36</strong> (was claimed: 42)</td>
+</tr>
+<tr>
+<td>Subdirectories</td>
+<td><strong>15</strong> (was claimed: 16)</td>
+</tr>
+<tr>
+<td>Listed here but <strong>absent from <code>tests/</code></strong></td>
+<td><strong>6</strong> — marked <code>REMOVED</code> in the verdict column</td>
+</tr>
+<tr>
+<td>Renamed since the table was written</td>
+<td>1 (<code>…_mobility_inversion</code> → <code>…_mobility_monotonicity</code>)</td>
+</tr>
+<tr>
+<td>Present but previously unlisted</td>
+<td>2 (<code>test_profile_generator_co2_breakthrough_gas_rate_increases_with_mobility</code>, <code>test_alston_impurity_mmp_trend</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Read verdicts with care (HIGH-18).</strong> Three of these tests assert <em>that a defect exists</em> rather than the
+physically correct value, and five import production symbols they never call. A <code>PASSED</code> result for those items
+is <strong>not</strong> analytical verification. See <code>res_audit.md</code> §1.4 and <code>audit/scientific_flaws.md</code> HIGH-18.</p>
+</blockquote>
 <hr />
 <h2 id="2-complete-traceability-mapping">2. Complete Traceability Mapping<a class="headerlink" href="#2-complete-traceability-mapping" title="Permanent link">&para;</a></h2>
 <table>
@@ -3175,7 +3213,7 @@
 <td style="text-align: left;"><code>test_mobility_ratio_unit_limit_singularity</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(M \to 1.0\)</span> limit in Craig sweep</td>
 <td style="text-align: left;"><code>surrogate_models.py:175</code></td>
-<td style="text-align: left;"><strong>CONTRADICTED BY TEST (SCI-FLAW-16)</strong></td>
+<td style="text-align: left;"><strong>PASSES, BUT ASSERTS THE DEFECT</strong> — <code>assert step &gt; 0.40</code> pins the 48 % cliff (HIGH-02). Not verification.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong><code>physics/</code></strong></td>
@@ -3195,43 +3233,43 @@
 <td style="text-align: left;"></td>
 <td style="text-align: left;"><code>test_co2_density_thermal_expansion</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\frac{\partial\rho}{\partial T} &lt; 0\)</span> (Isobaric expansion)</td>
-<td style="text-align: left;"><code>unified_engine/co2_properties.py:140</code></td>
-<td style="text-align: left;"><strong>CONTRADICTED BY TEST (SCI-FLAW-04)</strong></td>
+<td style="text-align: left;"><code>unified_engine/co2_properties.py:140</code> — <strong>path deleted</strong></td>
+<td style="text-align: left;"><strong>REMOVED — TEST DOES NOT EXIST</strong> (0 hits in <code>tests/</code>); the cited module is deleted too. No test enforces this (MED-16).</td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
 <td style="text-align: left;"><code>test_cubic_eos_z_factor_bounds</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(Z_L \in [0.01, 0.40]\)</span>, <span class="arithmatex">\(Z_V \in [0.70, 1.20]\)</span></td>
-<td style="text-align: left;"><code>unified_engine/eos/__init__.py:180</code></td>
-<td style="text-align: left;"><strong>VERIFIED</strong></td>
+<td style="text-align: left;"><code>unified_engine/eos/__init__.py:180</code> — <strong>path deleted</strong></td>
+<td style="text-align: left;"><strong>REMOVED — TEST DOES NOT EXIST</strong> (0 hits in <code>tests/</code>) (MED-16).</td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
 <td style="text-align: left;"><code>test_phase_label_assignment</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(Z &lt; 0.8 \implies \text{Liquid}\)</span>, <span class="arithmatex">\(Z \ge 0.8 \implies \text{Vapor}\)</span></td>
-<td style="text-align: left;"><code>unified_engine/eos/__init__.py:195</code></td>
-<td style="text-align: left;"><strong>CONTRADICTED BY TEST (SCI-FLAW-08)</strong></td>
+<td style="text-align: left;"><code>unified_engine/eos/__init__.py:195</code> — <strong>path deleted</strong></td>
+<td style="text-align: left;"><strong>REMOVED — TEST DOES NOT EXIST</strong> (0 hits in <code>tests/</code>) (MED-16).</td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
 <td style="text-align: left;"><code>test_peng_robinson_fugacity_equation_structure</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\ln\phi_i\)</span> includes <span class="arithmatex">\(2\sqrt{2}B\)</span> denominator term</td>
-<td style="text-align: left;"><code>unified_engine/eos/__init__.py:206</code></td>
-<td style="text-align: left;"><strong>CONTRADICTED BY TEST (SCI-FLAW-18)</strong></td>
+<td style="text-align: left;"><code>unified_engine/eos/__init__.py:206</code> — <strong>path deleted</strong></td>
+<td style="text-align: left;"><strong>REMOVED — TEST DOES NOT EXIST</strong> (0 hits in <code>tests/</code>) (MED-16).</td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
 <td style="text-align: left;"><code>test_corey_relative_permeability_bounds</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(k_{ro}(S_{wi}) = k_{ro}^0\)</span>, <span class="arithmatex">\(k_{ro}(1 - S_{or}) = 0\)</span></td>
-<td style="text-align: left;"><code>unified_engine/relative_permeability.py</code></td>
-<td style="text-align: left;"><strong>VERIFIED</strong></td>
+<td style="text-align: left;"><code>unified_engine/relative_permeability.py</code> — <strong>path deleted</strong> (<code>core/engine_surrogate/relative_permeability.py</code> exists but is not in the evaluation path — MED-05)</td>
+<td style="text-align: left;"><strong>REMOVED — TEST DOES NOT EXIST</strong> (0 hits in <code>tests/</code>) (MED-16).</td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
 <td style="text-align: left;"><code>test_bg_discrepancy_between_modules</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(B_g \approx 0.5\text{ RB/MSCF}\)</span> vs <span class="arithmatex">\(5.0\text{ RB/MSCF}\)</span></td>
-<td style="text-align: left;"><code>optimisation_engine.py:98</code></td>
-<td style="text-align: left;"><strong>CONTRADICTED BY TEST (SCI-FLAW-12)</strong></td>
+<td style="text-align: left;"><code>optimisation_engine.py:98</code> (constant now at <code>:85</code>)</td>
+<td style="text-align: left;"><strong>REMOVED — TEST DOES NOT EXIST</strong> (0 hits in <code>tests/</code>), yet the underlying defect is <strong>worse than described</strong>: the active <code>pvt_state</code> <span class="arithmatex">\(B_g\)</span> is 31.7× below textbook (<strong>CRIT-04</strong>, measured <code>model/textbook = 0.032</code> at all pressures). No test guards it.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong><code>conservation/</code></strong></td>
@@ -3244,8 +3282,8 @@
 <td style="text-align: left;"></td>
 <td style="text-align: left;"><code>test_pore_volume_vs_ooip_recovery_bound_discrepancy</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(RF \le 1 - S_{wi} - S_{or}\)</span> (Pore vol vs OOIP bound)</td>
-<td style="text-align: left;"><code>analytical_models.py:881</code></td>
-<td style="text-align: left;"><strong>CONTRADICTED BY TEST (SCI-FLAW-11)</strong></td>
+<td style="text-align: left;"><code>analytical_models.py:881</code> — <strong>never imported by this test</strong></td>
+<td style="text-align: left;"><strong>PASSES, BUT ASSERTS THE DEFECT</strong> — <code>assert truncation_fraction &gt; 0.20</code>, with the "code" value hard-coded rather than read from source; cannot detect a fix (SCI-FLAW-11, HIGH-18).</td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
@@ -3300,8 +3338,8 @@
 <td style="text-align: left;"><strong><code>dimensional/</code></strong></td>
 <td style="text-align: left;"><code>test_darcy_inflow_dimensions</code></td>
 <td style="text-align: left;"><span class="arithmatex">\([q] = [L^3/T]\)</span>, <span class="arithmatex">\([J] = [L^4 T / M]\)</span> (Pint)</td>
-<td style="text-align: left;"><code>surrogate_engine.py:330</code></td>
-<td style="text-align: left;"><strong>VERIFIED</strong></td>
+<td style="text-align: left;"><code>surrogate_engine.py:330</code> — <strong>never imported by this test</strong></td>
+<td style="text-align: left;"><strong>VERIFIED (unit homogeneity only)</strong> — the test invents <code>J = 2.0·J_unit</code> locally; it does not execute engine code (HIGH-18).</td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
@@ -3361,23 +3399,37 @@
 </tr>
 <tr>
 <td style="text-align: left;"><strong><code>co2/</code></strong></td>
-<td style="text-align: left;"><code>test_koval_fractional_flow_mobility_inversion</code></td>
+<td style="text-align: left;"><code>test_koval_fractional_flow_mobility_monotonicity</code> <em>(renamed; was <code>…_mobility_inversion</code>)</em></td>
 <td style="text-align: left;"><span class="arithmatex">\(\partial F_{\text{CO2}} / \partial M &gt; 0\)</span></td>
-<td style="text-align: left;"><code>profile_generator_fast.py:895</code></td>
-<td style="text-align: left;"><strong>CONTRADICTED BY TEST (SCI-FLAW-01)</strong></td>
+<td style="text-align: left;"><code>profile_generator_fast.py:958-969</code> (was <code>:895</code>)</td>
+<td style="text-align: left;"><strong>VERIFIED — SCI-FLAW-01 RESOLVED</strong>, but <strong>not by this test</strong>: the test imports <code>FastProfileGenerator</code> and never calls it, re-deriving the formula inline at <code>:38-46</code> (HIGH-18). The resolution rests on the source read.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>test_profile_generator_co2_breakthrough_gas_rate_increases_with_mobility</code> <em>(previously unlisted)</em></td>
+<td style="text-align: left;"><span class="arithmatex">\(M \uparrow \Rightarrow q_{\text{CO2,post-BT}} \uparrow\)</span></td>
+<td style="text-align: left;"><code>profile_generator_fast.py::_generate_gas_profile</code></td>
+<td style="text-align: left;"><strong>VERIFIED</strong> — genuinely executes production code.</td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
 <td style="text-align: left;"><code>test_inverted_critical_gas_trapping</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\text{Trapping} = 1.0 - S_{gc}\)</span></td>
 <td style="text-align: left;"><code>surrogate_models.py:238</code></td>
-<td style="text-align: left;"><strong>CONTRADICTED BY TEST (SCI-FLAW-17)</strong></td>
+<td style="text-align: left;"><strong>PASSES, BUT ASSERTS THE DEFECT</strong> — <code>assert eff_high_sgc &lt; eff_low_sgc</code> enshrines the inverted trapping law (HIGH-15, SCI-FLAW-17).</td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
 <td style="text-align: left;"><code>test_yuan_impurity_mmp_trend</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\text{MMP}(\text{pure CO}_2) &lt; \text{MMP}(\text{CO}_2 + \text{CH}_4)\)</span></td>
 <td style="text-align: left;"><code>evaluation/mmp.py:310</code></td>
+<td style="text-align: left;"><strong>VERIFIED</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><code>test_alston_impurity_mmp_trend</code> <em>(previously unlisted)</em></td>
+<td style="text-align: left;">Alston et al. (1985) impurity trend</td>
+<td style="text-align: left;"><code>evaluation/mmp.py</code></td>
 <td style="text-align: left;"><strong>VERIFIED</strong></td>
 </tr>
 <tr>

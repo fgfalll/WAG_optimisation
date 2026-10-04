@@ -3525,6 +3525,26 @@ All documented flaws, disconnected parameters, missing visualizers, and anti-pat
 <td style="text-align: left;">Central GUI tab for entering reservoir, PVT, well, and surrogate tuning parameters; dispatches <code>project_data_updated</code> signal.</td>
 </tr>
 <tr>
+<td style="text-align: left;"><strong>Stratigraphy &amp; Cross-Section Viewer</strong></td>
+<td style="text-align: left;"><code>ui/widgets/geology_cross_section_widget.py</code></td>
+<td style="text-align: left;">Interactive orthogonal IJK slicing (XZ, YZ, XY) with facies colormaps and Vertical Proportion Curves (VPC).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Geostatistics Visualizer Widget</strong></td>
+<td style="text-align: left;"><code>ui/widgets/geostatistics_visualizer_widget.py</code></td>
+<td style="text-align: left;">Real-time 1D experimental vs theoretical semivariogram fitting, 2D SGS permeability heatmaps, and Dykstra-Parsons <span class="arithmatex">\(V_{DP}\)</span>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fault &amp; Containment Visualizer</strong></td>
+<td style="text-align: left;"><code>ui/widgets/fault_geometry_visualizer_widget.py</code></td>
+<td style="text-align: left;">3D fault plane mesh embedded in formation bounding box, SGR seal integrity rating, Coulomb stress <span class="arithmatex">\(\Delta\text{CFS}\)</span>, and well standoff detection.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Shared Earth Visual Audit Modal</strong></td>
+<td style="text-align: left;"><code>ui/dialogs/visual_audit_modal.py</code></td>
+<td style="text-align: left;">Unified 3-tab pre-flight visual data confirmation gate enforcing ISO 27914 and EPA Class VI model verification.</td>
+</tr>
+<tr>
 <td style="text-align: left;"><strong>PVT Detailed Editor Dialog</strong></td>
 <td style="text-align: left;"><code>ui/widgets/pvt_editor_dialog.py</code></td>
 <td style="text-align: left;">Multi-tab dialog for editing black-oil tables (<code>PVTO</code>, <code>PVTG</code>, <code>PVTW</code>) and running Peng-Robinson / SRK EOS flashes.</td>

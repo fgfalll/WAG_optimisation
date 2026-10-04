@@ -3103,6 +3103,15 @@
 
 <h1 id="change-safety-classification-matrix">Change-Safety Classification Matrix<a class="headerlink" href="#change-safety-classification-matrix" title="Permanent link">&para;</a></h1>
 <p>Before modifying any file in this repository, AI agents and developers must consult this classification matrix to assess the scientific and software risks of the proposed change.</p>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>Updated 2026-10-04 from the independent audit.</strong> Rows added or amended in this revision are marked
+<em>(AMENDED 2026-10-04)</em> or <em>(NEW 2026-10-04)</em>. The authoritative list with per-finding rationale is
+<code>res_audit.md</code> §5; the findings themselves are in <code>audit/scientific_flaws.md</code> (<strong>52 findings, 13 CRITICAL</strong>).
+Two structural notes: (a) the previously listed <code>core/unified_engine/physics/eos/</code> <strong>does not exist</strong> in the
+tree, and (b) <code>tests/scientific/**</code> is classified <strong>CRITICAL</strong> here — verification code that asserts a defect
+is more dangerous than engine source, because it blocks the correct fix and prevents detecting a regression.</p>
+</blockquote>
 <hr />
 <h2 id="1-risk-tier-definitions">1. Risk Tier Definitions<a class="headerlink" href="#1-risk-tier-definitions" title="Permanent link">&para;</a></h2>
 <table>
@@ -3162,8 +3171,8 @@
 <tr>
 <td style="text-align: left;"><code>core/engine_surrogate/surrogate_engine.py</code></td>
 <td style="text-align: center;"><strong>CRITICAL</strong></td>
-<td style="text-align: left;">0D pressure ODE, CO₂ mass balance, NPV calculation</td>
-<td style="text-align: left;">Can cause numerical solver divergence, negative pressures, or invalid economic decisions.</td>
+<td style="text-align: left;">Inline damped material balance (was a <code>solve_ivp</code> ODE — removed), CO₂ mass balance, NPV pass-through</td>
+<td style="text-align: left;">Can cause pressure divergence, negative pressures, or invalid economic decisions. <em>(AMENDED 2026-10-04)</em> Add: HCPVI cancellation at <code>:491-497</code> (CRIT-01), dual-ledger NPV (CRIT-02), post-hoc profile rescale (CRIT-12), WAG/SWAG ×1000 asymmetry (CRIT-11). <strong>Line-number edits here invalidate CRIT-01/02/11/12 references.</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>core/engine_surrogate/profile_generator_fast.py</code></td>
@@ -3191,15 +3200,15 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>core/objectives/wrapper.py</code></td>
-<td style="text-align: center;"><strong>HIGH</strong></td>
+<td style="text-align: center;"><strong>CRITICAL</strong> <em>(AMENDED 2026-10-04: HIGH → CRITICAL)</em></td>
 <td style="text-align: left;">Multi-objective scoring and metric aggregation</td>
-<td style="text-align: left;">Reintroducing Class E synthetic modifiers (e.g. storage from RF) or magic fallbacks (<code>1e6</code>) falsifies results. Missing or unphysical profiles must strictly evaluate to <code>NaN</code> to trigger full pruning.</td>
+<td style="text-align: left;">Reintroducing Class E synthetic modifiers (e.g. storage from RF) or magic fallbacks (<code>1e6</code>) falsifies results. Missing or unphysical profiles must strictly evaluate to <code>NaN</code> to trigger full pruning. <strong>Why the upgrade:</strong> CRIT-09 and CRIT-10 show its Class-VI sandface and leakage constraint blocks <strong>cannot execute</strong> (they read a profile key that is never populated, <code>profiles.get("pressure")</code> vs <code>yearly_pressure</code>/<code>monthly_pressure</code>) — code that looks protective but never runs invites false confidence, and its reported NPV/RF can come from two different evaluations (CRIT-02).</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>core/unified_engine/physics/eos/</code></td>
-<td style="text-align: center;"><strong>HIGH</strong></td>
-<td style="text-align: left;">Cubic EOS root finding and thermodynamic properties</td>
-<td style="text-align: left;">Iterative solver stagnation or unphysical negative densities.</td>
+<td style="text-align: center;">~~HIGH~~ <strong>n/a</strong> <em>(AMENDED 2026-10-04)</em></td>
+<td style="text-align: left;"><em>Path does not exist</em> — the tree was deleted, not relocated (MED-16)</td>
+<td style="text-align: left;">Editing it is impossible; citing it wastes effort. The live EOS is <code>core/engine_surrogate/pvt_state.py</code> — see its row below.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>utils/project_file_handler.py</code> &amp; save/load in <code>ui/</code></td>
@@ -3236,6 +3245,84 @@
 <td style="text-align: center;"><strong>LOW</strong></td>
 <td style="text-align: left;">User settings persistence</td>
 <td style="text-align: left;">Corrupt JSON preferences file (handled gracefully by defaults).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>core/engine_surrogate/pvt_state.py</code></td>
+<td style="text-align: center;"><strong>CRITICAL</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">Peng–Robinson Z, <span class="arithmatex">\(B_o\)</span>, <span class="arithmatex">\(B_g\)</span>, <span class="arithmatex">\(\mu\)</span> mixture state</td>
+<td style="text-align: left;">Hosts CRIT-03 (no bubble point, <span class="arithmatex">\(dBo/dP &gt; 0\)</span>), CRIT-04 (<span class="arithmatex">\(B_g\)</span> 31.7× too small), CRIT-05 (Z &gt; 1 in the dense-gas region), HIGH-12/16/17. Any edit must re-verify: sign of <span class="arithmatex">\(dBo/dP\)</span>, magnitude of <span class="arithmatex">\(B_g\)</span> vs textbook, Z against Standing–Katz, and the <span class="arithmatex">\(\mu_{\text{CO2}}\)</span> correlation.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>core/engine_surrogate/surrogate_models.py</code></td>
+<td style="text-align: center;"><strong>CRITICAL</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">Reported NPV, trapping, areal sweep</td>
+<td style="text-align: left;">Hosts the reported NPV (<code>:507-530</code>, CRIT-02/HIGH-08), the inverted trapping law (<code>:238</code>, HIGH-15), and the M = 1 Craig cliff (<code>:164-182</code>, HIGH-02). Previously unlisted.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>core/objectives/storage.py</code></td>
+<td style="text-align: center;"><strong>CRITICAL</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">Plume-containment score</td>
+<td style="text-align: left;">Unpopulated <code>getattr</code> fallbacks make the containment floor exceed the pruning threshold, so the constraint can <strong>never</strong> prune (CRIT-08).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>core/engine_surrogate/geomechanics_fault.py</code></td>
+<td style="text-align: center;"><strong>HIGH</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">Leakage law, caprock/fault failure</td>
+<td style="text-align: left;">Leakage constants plus the clip/threshold mismatch that reports "breached" with zero leakage (HIGH-05); leakage is structurally zero (CRIT-10).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>core/engine_surrogate/well_mechanics.py</code></td>
+<td style="text-align: center;"><strong>HIGH</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">Peaceman productivity/injectivity index</td>
+<td style="text-align: left;">Two Darcy constants coexist; the inter-well transmissibility omits the <span class="arithmatex">\(2\pi\)</span> factor (6.3× low, MED-03), and invalid input returns a sentinel <code>1.0</code> (MED-04).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>core/engine_surrogate/relative_permeability.py</code></td>
+<td style="text-align: center;"><strong>MEDIUM</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">Corey <span class="arithmatex">\(k_r\)</span> curves</td>
+<td style="text-align: left;"><strong>Not in the evaluation path</strong> (MED-05) — edits change dashboards only. Documenting it as <em>diagnostic</em> beats pretending it governs results; its <span class="arithmatex">\(s_{org}\)</span> denominator is wrong (MED-06).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>core/simulation/recovery_models.py</code></td>
+<td style="text-align: center;"><strong>MEDIUM</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">Legacy recovery models</td>
+<td style="text-align: left;">Dormant behind <code>RECOVERY_MODELS_AVAILABLE = False</code> (HIGH-11); carries SCI-FLAW-09/-10. Enabling the flag without first fixing its <code>NameError</code>s turns dormant defects into live ones.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>core/data_integration_engine.py</code></td>
+<td style="text-align: center;"><strong>MEDIUM</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">UI/input PVT table generation</td>
+<td style="text-align: left;">Its <span class="arithmatex">\(B_o\)</span>/<span class="arithmatex">\(\mu(P)\)</span> signs were <strong>corrected</strong> in a previous round (<code>:431</code> <span class="arithmatex">\(dBo/dP&lt;0\)</span>, <code>:435</code>/<code>:441</code> <span class="arithmatex">\(d\mu/dP&gt;0\)</span>); re-breaking the sign would revive SCI-FLAW-02/-03, which the active <code>pvt_state.py</code> already exhibits (CRIT-03).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/widgets/fault_geometry_visualizer_widget.py</code></td>
+<td style="text-align: center;"><strong>LOW → MEDIUM</strong> <em>(AMENDED 2026-10-04)</em></td>
+<td style="text-align: left;">Fault geometry rendering</td>
+<td style="text-align: left;">A missing <code>QIcon</code> import (HIGH-10) currently fails 4 tests including the mandatory <code>tests/test_project_save_load.py</code> gate named in AGENTS.md invariant #5 — presentation code can block a scientific gate.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ui/workbench/</code>, <code>ui/widgets/corey_relperm_*</code>, <code>fluids_pvt_*</code>, <code>well_network_*</code>, <code>core/geology/petrophysical_distribution.py</code></td>
+<td style="text-align: center;"><strong>HIGH</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">New workstation widgets / geology distribution</td>
+<td style="text-align: left;">Untracked, ~0–9 % coverage, contains an F821 (<code>prev_field</code>). Untested code that is nonetheless imported by the app.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>scratch/</code></td>
+<td style="text-align: center;"><strong>LOW</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">Non-shipped experiment scripts</td>
+<td style="text-align: left;">Should never be imported by shipped modules; excluded from risk otherwise.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>tests/scientific/**</code></td>
+<td style="text-align: center;"><strong>CRITICAL</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">Scientific verification suite</td>
+<td style="text-align: left;">Verification-tier code. 5 of 36 tests import production symbols they never call; 3 assert <strong>that a defect exists</strong> (<code>step &gt; 0.40</code>, <code>eff_high_sgc &lt; eff_low_sgc</code>, <code>truncation_fraction &gt; 0.20</code>). Re-specifying them against production code is higher risk than changing engine source: a wrong re-specification converts a detectable defect into an undetectable one. Require physical justification in the PR, not a green build (<strong>HIGH-18</strong>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>agent_wiki/verification/test_matrix.md</code>, <code>agent_wiki/architecture/overview.md</code>, <code>agent_wiki/architecture/module_map.md</code></td>
+<td style="text-align: center;"><strong>MEDIUM</strong> <em>(NEW 2026-10-04)</em></td>
+<td style="text-align: left;">Coverage/architecture claims</td>
+<td style="text-align: left;">Declared 42 tests/16 subdirectories (actual 36/15), listed 6 tests that do not exist, and cited a <code>deprecated/</code> tree that is not in the repository (<strong>MED-16</strong>). Regenerate counts from <code>pytest --collect-only</code>; never hand-edit them.</td>
 </tr>
 </tbody>
 </table>
