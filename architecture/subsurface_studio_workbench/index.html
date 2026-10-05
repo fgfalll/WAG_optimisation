@@ -13,6 +13,10 @@
         <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/architecture/subsurface_studio_workbench/">
       
       
+        <link rel="prev" href="../shared_earth_workstation/">
+      
+      
+        <link rel="next" href="../model_qa_qc_and_self_assurance/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -20,7 +24,7 @@
     
     
       
-        <title>Accessible Subsurface Studio Architecture (Model Tree + Contextual Property Grid) - CO₂ EOR Optimizer — Technical Documentation</title>
+        <title>Subsurface Studio - CO₂ EOR Optimizer — Technical Documentation</title>
       
     
     
@@ -124,7 +128,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Accessible Subsurface Studio Architecture (Model Tree + Contextual Property Grid)
+              Subsurface Studio
             
           </span>
         </div>
@@ -247,10 +251,12 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../overview/" class="md-tabs__link">
           
   
@@ -330,14 +336,8 @@
   
     
     
-      
-  
-  
-  
-    
-    
       <li class="md-tabs__item">
-        <a href="../../audit/simulation_run_audits/" class="md-tabs__link">
+        <a href="../../audit/agent_checklist/" class="md-tabs__link">
           
   
     
@@ -346,9 +346,6 @@
 
         </a>
       </li>
-    
-  
-
     
   
 
@@ -508,8 +505,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -525,24 +524,31 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -553,7 +559,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Architecture
@@ -677,6 +683,294 @@
   
   <span class="md-ellipsis">
     Subsystem Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shared_earth_workstation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Shared Earth Workstation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Subsurface Studio
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Subsurface Studio
+  </span>
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-architectural-paradigm-the-3-zone-unobstructed-studio" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Architectural Paradigm: The 3-Zone Unobstructed Studio
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-core-architectural-pillars" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Core Architectural Pillars
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Core Architectural Pillars">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-zone-1-hierarchical-model-tree-with-attached-sheets-graphs-uiworkbenchcomponentsmodel_tree_widgetpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 Zone 1: Hierarchical Model Tree with Attached Sheets &amp; Graphs (ui/workbench/components/model_tree_widget.py)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-zone-2-native-pyvistaqt-3d-viewport-uiworkbenchcomponentspyvista_reservoir_canvaspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 Zone 2: Native PyVistaQt 3D Viewport (ui/workbench/components/pyvista_reservoir_canvas.py)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-zone-3-full-screen-subsurface-data-graph-workstation-viewer-uiworkbenchcomponentssubsurface_data_viewer_widgetpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3 Zone 3: Full-Screen Subsurface Data &amp; Graph Workstation Viewer (ui/workbench/components/subsurface_data_viewer_widget.py)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-removal-of-diagnostic-drawer" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.4 Removal of Diagnostic Drawer
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bi-directional-event-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Bi-Directional Event Flow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-subsystem-file-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Subsystem File Layout
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-parameter-input-side-panel-faults-caprock-containment" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Parameter Input Side Panel, Faults &amp; Caprock Containment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Parameter Input Side Panel, Faults & Caprock Containment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-bounded-parameter-side-panel-input-box-outline-styling" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Bounded Parameter Side Panel &amp; Input Box Outline Styling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-fault-parameter-suite-3d-realistic-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Fault Parameter Suite &amp; 3D Realistic Geometry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-caprock-positioning-geological-styling-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 Caprock Positioning &amp; Geological Styling Standard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-3d-viewport-camera-preservation-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.4 3D Viewport Camera Preservation Protocol
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-stratigraphy-cross-section-viewport-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.5 Stratigraphy &amp; Cross-Section Viewport Enhancements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-universal-right-click-context-menus" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.6 Universal Right-Click Context Menus
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-corey-relative-permeability-geostatistical-middle-screen-workstations" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.7 Corey Relative Permeability &amp; Geostatistical Middle-Screen Workstations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#58-structural-fault-system-caprock-confining-seal-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.8 Structural Fault System &amp; Caprock Confining Seal Architecture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#59-data-management-tab-status-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.9 Data Management Tab Status &amp; Roadmap
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-visual-verification-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Visual Verification Artifacts
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model_qa_qc_and_self_assurance/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Model QA/QC & Assurance
   </span>
   
 
@@ -1115,6 +1409,10 @@
       
         
       
+        
+      
+        
+      
     
     
       
@@ -1204,6 +1502,48 @@
   
   <span class="md-ellipsis">
     Safe Modification Rules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/continuity_gate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Continuity Gate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/finding_registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Finding Registry
   </span>
   
 
@@ -1324,6 +1664,8 @@
       
         
       
+        
+      
     
     
       
@@ -1365,11 +1707,36 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../audit/agent_checklist/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Agent Pre-Flight Checklist
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1388,7 +1755,7 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_1" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_2" >
         
           
           
@@ -1404,19 +1771,61 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_1">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
             <span class="md-nav__icon md-icon"></span>
             Simulation Run Audits
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    05-10-2026 Round 2 Verification (FLAGGED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    04-10-2026 Forensic Audit (FLAGGED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1446,10 +1855,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_1_2" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_6_1_2" id="__nav_6_1_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6_2_4" id="__nav_6_2_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1460,8 +1869,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_1_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_1_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2_4">
             <span class="md-nav__icon md-icon"></span>
             24-09-2026 Baseline Run
           </label>
@@ -3423,6 +3832,44 @@ This document specifies the architectural paradigm for the <strong>Accessible 3D
       
         <footer class="md-footer">
   
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../shared_earth_workstation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Shared Earth Workstation">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Shared Earth Workstation
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../model_qa_qc_and_self_assurance/" class="md-footer__link md-footer__link--next" aria-label="Next: Model QA/QC &amp; Assurance">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Model QA/QC & Assurance
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
     
   
   <div class="md-footer-meta md-typeset">
