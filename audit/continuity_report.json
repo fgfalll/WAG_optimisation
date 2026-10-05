@@ -213,29 +213,22 @@
   ],
   "wiki_issues": [
     {
-      "path": "audit\\scientific_flaws.md",
-      "line": 4,
-      "kind": "STALE_COUNT",
-      "detail": "document quotes 17 findings but the register contains 73",
-      "severity": "MEDIUM"
-    },
-    {
       "path": "agent_wiki\\README.md",
-      "line": 116,
+      "line": 117,
       "kind": "UNENFORCED_INVARIANT",
       "detail": "'strictly balanced' asserted without enforcement (leakage is identically zero (HIGH-23))",
       "severity": "LOW"
     },
     {
       "path": "agent_wiki\\README.md",
-      "line": 121,
+      "line": 122,
       "kind": "UNENFORCED_INVARIANT",
       "detail": "'strictly capped' asserted without enforcement (containment is an artefact of a clip, not a solved constraint)",
       "severity": "LOW"
     },
     {
       "path": "agent_wiki\\README.md",
-      "line": 112,
+      "line": 113,
       "kind": "UNENFORCED_INVARIANT",
       "detail": "'mass-conserving' asserted without enforcement (hold-by-construction, never asserted)",
       "severity": "LOW"
@@ -260,13 +253,6 @@
       "kind": "F821_UNDEFINED_NAME",
       "detail": "core\\engine_surrogate\\analytical_models.py:358:26: F821 Undefined name `BuckleyLeverettModel`",
       "severity": "HIGH"
-    },
-    {
-      "path": "agent_wiki\\development\\common_pitfalls.md",
-      "line": 1,
-      "kind": "STALE_COUNT",
-      "detail": "title says 'Top 53 Traps' but there are 58 traps (max index 58); ordering/duplication suspected",
-      "severity": "MEDIUM"
     }
   ],
   "counts": {

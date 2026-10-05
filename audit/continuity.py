@@ -701,25 +701,60 @@ class WikiIssue:
 
 
 def parse_status_labels(register: Path) -> dict[str, str]:
-    """Extract the `**Status:**` label attached to each finding heading."""
+    """Extract the `**Status:**` label attached to each finding.
+
+    Handles both layouts present in the register:
+      * its own line   ``- **Status:** RESOLVED - ...``
+      * inline at the end of the preceding field
+        ``- **Evidence & Citation:** ... **Status:** NEW``
+    and the compact table form ``| **CRIT-16** | ... | NEW |``.
+    """
     text = register.read_text(encoding="utf-8")
     out: dict[str, str] = {}
     current: Optional[str] = None
+
+    status_re = re.compile(r"\*\*Status:\*\*\s*(.+?)\s*$")
+
     for line in text.splitlines():
         m = re.match(r"^###\s+((?:CRIT|HIGH|MED|LOW)-\d+)", line)
         if m:
             current = m.group(1)
             continue
+
+        # Compact table row: | **CRIT-16** | cat | ... | NEW |
+        mt = re.match(r"^\|\s*\*\*((?:CRIT|HIGH|MED|LOW)-\d+)\*\*\s*\|(.*)\|\s*$", line)
+        if mt:
+            cells = [c.strip() for c in mt.group(2).split("|")]
+            tail = cells[-1] if cells else ""
+            if tail:
+                out[mt.group(1)] = tail
+            continue
+
         if current:
-            ms = re.match(r"^-\s+\*\*Status:\*\*\s+(.+)", line.strip())
+            ms = status_re.search(line)
             if ms:
                 out[current] = ms.group(1).strip()
                 current = None
-            # table form
-            mt = re.search(r"\*\*((?:CRIT|HIGH|MED|LOW)-\d+)\*\*\s*\|", line)
-            if mt:
-                pass
     return out
+
+
+def resolve_claims(register: Path = REGISTER) -> dict[str, str]:
+    """Derive the RESOLVED-claim set FROM THE REGISTER, not from a hardcoded dict.
+
+    A hardcoded table can silently diverge from the document it claims to
+    describe - which is the very defect class this module exists to catch. The
+    curated RESOLVED_CLAIMS entries are merged in for probes the register does
+    not yet cover, but the register always wins on conflict.
+    """
+    derived: dict[str, str] = {}
+    for fid, status in parse_status_labels(register).items():
+        head = status.upper()
+        # Only treat it as a *claim of resolution* if the label leads with one.
+        if re.match(r"^(RESOLVED|PARTIALLY RESOLVED|CONFIRMED BUT INERT)\b", head):
+            derived[fid] = "RESOLVED"
+    merged = dict(RESOLVED_CLAIMS)
+    merged.update(derived)
+    return merged
 
 
 def check_wiki(register: Path = REGISTER) -> list[WikiIssue]:
@@ -919,6 +954,7 @@ def run_checks(only: Optional[str] = None) -> list[CheckResult]:
     """Run the probe suite. Never mutates repository state."""
     import os
 
+    claims = resolve_claims()
     cwd = os.getcwd()
     if str(REPO_ROOT) not in sys.path:
         sys.path.insert(0, str(REPO_ROOT))
@@ -928,7 +964,7 @@ def run_checks(only: Optional[str] = None) -> list[CheckResult]:
         for chk in CHECKS:
             if only and chk.finding_id != only:
                 continue
-            claimed = RESOLVED_CLAIMS.get(chk.finding_id, "n/a (invariant)")
+            claimed = claims.get(chk.finding_id, "n/a (invariant)")
             try:
                 verdict, evidence, measured = chk.probe()
             except Exception as exc:  # noqa: BLE001
@@ -943,7 +979,7 @@ def run_checks(only: Optional[str] = None) -> list[CheckResult]:
                 evidence_tier=chk.evidence_tier,
                 residual=None if verdict == CONFIRMED else evidence,
                 should_reopen=(
-                    RESOLVED_CLAIMS.get(chk.finding_id) == "RESOLVED"
+                    claims.get(chk.finding_id) == "RESOLVED"
                     and verdict in (PARTIAL, REGRESSED, STILL_OPEN, CONFIRMED_INERT)
                 ),
             ))
