@@ -3148,8 +3148,24 @@
 <td>Dead code, hardcoded values, <a href="audit/data_management_audit/"><strong>data management</strong></a>, <a href="audit/optimization_widget_audit/"><strong>optimization widget</strong></a>, <a href="audit/dialogs_models_utils_widgets_audit/"><strong>dialogs, models, utils &amp; widgets</strong></a>, <a href="audit/simulation_run_audits/"><strong>simulation run audits</strong></a>, fallbacks, suspicious logic, <a href="audit/resolved_issues/"><strong>resolved archive</strong></a></td>
 </tr>
 <tr>
+<td><a href="audit/agent_checklist/"><strong>Agent Showcase Checklist</strong></a></td>
+<td><strong>Automated Master Pre-Flight</strong>: verified flaws, parameter provenances, safe harbor rules, and static diagnostic anchors</td>
+</tr>
+<tr>
+<td><a href="development/continuity_gate/"><strong>Continuity Gate</strong></a></td>
+<td><strong>Autouse</strong>: <code>python -m audit.continuity check</code> re-measures every <code>RESOLVED</code> claim, checks wiki/code drift, and enforces 1-commit-1-issue</td>
+</tr>
+<tr>
+<td><a href="development/finding_registry/"><strong>Finding Registry</strong></a></td>
+<td><strong>Required</strong>: <code>python -m audit --register new\|validate\|issue</code> — the flaw register is machine-generated; never hand-write a finding</td>
+</tr>
+<tr>
 <td><a href="../res_audit.md"><strong>2026-10-04 Independent Audit</strong></a></td>
-<td><a href="../res_audit.md">Software quality &amp; anti-patterns</a> · <a href="../phd_audit.md">Scientific/physics audit (<code>phd_audit.md</code>)</a> · <a href="../audit/scientific_flaws.md"><strong>Flaw register — 53 findings</strong></a> · <a href="../audit/parameter_provenance.csv">Parameter provenance (91 rows)</a></td>
+<td><a href="../res_audit.md">Software quality &amp; anti-patterns</a> · <a href="../phd_audit.md">Scientific/physics audit (<code>phd_audit.md</code>)</a> · <a href="../audit/scientific_flaws.md"><strong>Flaw register — 73 findings</strong></a> · <a href="../audit/parameter_provenance.csv">Parameter provenance — 112 rows</a></td>
+</tr>
+<tr>
+<td><a href="audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit/"><strong>2026-10-05 Round-2 Audit</strong></a></td>
+<td><strong>Verdict <code>FLAGGED</code></strong> — adversarial verification of the uncommitted 05-10-2026 remediation; <strong>11 new findings</strong>, 8 "RESOLVED" marks reversed or downgraded</td>
 </tr>
 <tr>
 <td><a href="verification/verification_strategy/"><strong>Verification</strong></a></td>
@@ -3167,15 +3183,34 @@
 </table>
 <blockquote>
 <p>[!WARNING]
-<strong>Audit status (2026-10-04).</strong> An independent four-phase audit registered <strong>53 findings (13 CRITICAL, 19 HIGH,
-16 MEDIUM, 5 LOW)</strong> in <a href="../audit/scientific_flaws.md"><code>audit/scientific_flaws.md</code></a> — of which <strong>HIGH-10 is now
-RESOLVED</strong> (the missing <code>QIcon</code> import was fixed and the suite runs <code>333 passed / 0 failed</code>) while <strong>HIGH-19 is
-open</strong> (two undefined names in <code>ui/workbench/</code> that no test reaches) — and issued a
-<strong>predictive-validity verdict of <code>NOT ESTABLISHED</code></strong> for the active <code>hybrid</code> path
-(<a href="../phd_audit.md"><code>phd_audit.md</code></a> §C). Read the register before treating any wiki claim below as verified:
-several invariants here were <strong>not enforced by code</strong> (they hold only by construction), and
-<code>verification/test_matrix.md</code> listed six tests that do not exist (MED-16). Physics defects in PVT
-(<code>B_g</code> 31.7× too small, Z &gt; 1 in the dense-gas region, <code>dBo/dP &gt; 0</code>) remain <strong>open</strong> — see CRIT-03/04/05.</p>
+<strong>Audit status — read before trusting any "RESOLVED" mark below.</strong></p>
+<p><strong>Round 2 (<code>05-10-2026</code>, verdict <code>FLAGGED</code>)</strong> adversarially re-audited the uncommitted remediation
+of the 17 findings the 04-10-2026 round had marked RESOLVED. Verdict: <strong>11 CONFIRMED · 4 PARTIALLY
+RESOLVED · 1 REGRESSED (CRIT-12) · 1 CONFIRMED-but-inert (CRIT-06)</strong>, and <strong>11 new findings</strong> were
+registered (CRIT-14…CRIT-21, HIGH-20/21/23/24/25/26, MED-17…MED-22) — see
+<a href="audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit/"><code>audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md</code></a>
+and issues <a href="https://github.com/fgfalll/WAG_optimisation/issues/7">#7</a>–<a href="https://github.com/fgfalll/WAG_optimisation/issues/15">#15</a>.</p>
+<p>The <strong>live, most consequential defects</strong> are now:
+- <strong>CRIT-14</strong> — a <code>mobility_ratio</code> override makes recovery <strong>exactly independent of oil viscosity</strong>
+  in all three recovery models (measured: RF identical to 6 decimals for μ_o = 0.5 → 100 cP).
+- <strong>CRIT-15</strong> — the default HCPVI (7.69) pins the Koval sweep at its 0.95 clip for <strong>every</strong>
+  mobility ratio.
+- <strong>CRIT-17</strong> — the CRIT-12 "fix" broke saturation closure: <code>S_o + S_w &gt; 1</code> on <strong>27 %</strong> of timesteps.
+- <strong>HIGH-23</strong> — leakage is <em>identically zero</em> while the storage credit is paid on <strong>leakage-blind</strong>
+  stored mass: <strong>leaked CO₂ would be paid for, not charged for</strong>.
+- <strong>CRIT-19 / CRIT-20</strong> — the previously inert <code>gravity_factor</code> gene is now an active ±20 % fudge on
+  recovery, and the miscibility weight no longer depends on composition.</p>
+<p>Genuinely fixed and worth keeping: <code>B_g</code> constant (CRIT-04), Z-factor (CRIT-05), HCPVI
+dimensionality (CRIT-01), the NPV double-evaluation defect (CRIT-02), the immiscible-limb gradient
+(CRIT-07), and the <code>rf_max_physical</code> OOIP normalisation (HIGH-01).</p>
+<p>The suite reports <strong>335 passed / 0 failed</strong> while every defect above is live — see HIGH-18: green is
+not evidence. <strong>Predictive validity for the active <code>hybrid</code> path remains <code>NOT ESTABLISHED</code>.</strong></p>
+<p><strong>Prior round (<code>04-10-2026</code>).</strong> An independent four-phase audit registered <strong>53 findings (13 CRITICAL,
+19 HIGH, 16 MEDIUM, 5 LOW)</strong> in <a href="../audit/scientific_flaws.md"><code>audit/scientific_flaws.md</code></a> and issued a
+<strong>predictive-validity verdict of <code>NOT ESTABLISHED</code></strong> (<a href="../phd_audit.md"><code>phd_audit.md</code></a> §C). Read the register
+before treating any wiki claim below as verified: several invariants here were <strong>not enforced by code</strong>
+(they hold only by construction), and <code>verification/test_matrix.md</code> listed six tests that do not exist
+(MED-16).</p>
 </blockquote>
 <hr />
 <h2 id="critical-architectural-invariants">⚡ Critical Architectural Invariants<a class="headerlink" href="#critical-architectural-invariants" title="Permanent link">&para;</a></h2>
@@ -3190,18 +3225,23 @@ several invariants here were <strong>not enforced by code</strong> (they hold on
    All production, injection, and rate profiles are synthesized via <code>core/engine_surrogate/profile_generator_fast.py</code>. <code>core/simulation/profile_generator.py</code> is a deprecated re-export shim (<code>from core.engine_surrogate.profile_generator_fast import FastProfileGenerator</code>). ⚠️ <code>core/simulation/injection_schemes.py</code>, cited here previously, <strong>does not exist</strong> (grep → 0 hits; corrected 2026-10-04).</p>
 </li>
 <li>
-<p><strong>NPV and CO₂ Accounting are Engine-Owned</strong> (names corrected 2026-10-04 — see MED-15):</p>
+<p><strong>NPV and CO₂ Accounting are Engine-Owned</strong> (corrected 2026-10-05 — NPV moved out of <code>surrogate_models.py</code>):</p>
 </li>
 <li><strong>CO₂ purchased vs recycled</strong> is computed <em>inline</em> inside <code>SurrogateEngine.evaluate_scenario()</code>
-     (<code>core/engine_surrogate/surrogate_engine.py:592-596</code> annual make-up, <code>:607-614</code> rate and
+     (<code>core/engine_surrogate/surrogate_engine.py:615-620</code> annual make-up, <code>:660-670</code> rate and
      cumulative profiles).</li>
-<li><strong>NPV</strong> is computed <em>inline</em> inside <code>PhDHybridSurrogate.predict()</code>
-     (<code>core/engine_surrogate/surrogate_models.py:507-530</code>) and republished by the engine as the
-     <code>npv</code> profile key (<code>surrogate_engine.py:172</code>, <code>:692</code>).</li>
+<li><strong>NPV</strong> is now computed <em>inline</em> inside <code>SurrogateEngine.evaluate_scenario()</code>
+     (<code>core/engine_surrogate/surrogate_engine.py:622-651</code>) from the simulated annual streams, and
+     republished as the <code>npv</code> profile key. ⚠️ <strong>CRIT-02 is genuinely fixed</strong> — measured
+     <code>cumulative_oil_stb == OOIP × recovery_factor</code> to <code>5.8e-10</code> STB, and
+     <code>Σ(oil_profile·Δt) == Σ(annual_oil_stb)</code> exactly. The older inline NPV in
+     <code>surrogate_models.py:507-530</code> still exists but is now <strong>shadowed</strong>.</li>
+<li>⚠️ <strong>The cash flow is truncated (CRIT-18).</strong> <code>annual_rev</code> is oil + storage credit only:
+     <code>annual_hc_gas_mscf</code> is allocated, accumulated and published but never referenced in the
+     revenue term, so 216 810 MSCF/15 yr of gas sales contribute $0. Since <code>npv</code> is the primary
+     optimisation objective, the optimiser ranks on a partial model.</li>
 <li>The wrapper <code>core/objectives/wrapper.py:ObjectiveFunctions._calculate_objective_functions()</code>
-     is a <strong>consumer</strong> (<code>:50-53</code> reads <code>profiles["npv"]</code>, then applies containment/remediation
-     penalties) — see <strong>CRIT-02</strong>, which shows the reported NPV and the reported RF can come from
-     two different evaluations.</li>
+     is a <strong>consumer</strong> (reads <code>profiles["npv"]</code>, then applies containment/remediation penalties).</li>
 <li>
 <p>⚠️ There is <strong>no</strong> method named <code>_calculate_engine_npv</code>, <code>_calculate_co2_purchased_recycled</code>,
      <code>_solve_pressure_ode</code> or <code>_calculate_pressure_profile</code> anywhere in the repository (grep: 0 hits).
@@ -3221,11 +3261,12 @@ several invariants here were <strong>not enforced by code</strong> (they hold on
 </li>
 <li>
 <p><strong>Thermodynamic Rigor via Solvent-Extended PVT (<code>core/engine_surrogate/pvt_state.py</code>)</strong>:
-   Transport saturation (<span class="arithmatex">\(S_g\)</span>) is strictly decoupled from composition (<span class="arithmatex">\(x_{\text{CO2}}, y_{\text{CO2}}\)</span>). Fluid properties (<span class="arithmatex">\(B_o, \mu_o, S_F, B_{\text{CO2}}\)</span>) evolve with dissolved solvent concentration <span class="arithmatex">\(x_{\text{CO2}}\)</span> and pressure without requiring costly iterative per-timestep flash equations. Pure CO₂ supercritical density is evaluated via Peng-Robinson EOS (<span class="arithmatex">\(\sim 400-950\text{ kg/m}^3\)</span>, <span class="arithmatex">\(B_{\text{CO2}} = 327.36 / \rho\)</span>). Degassing and surface shrinkage are tracked via multi-stage flash separation.</p>
+   Transport saturation (<span class="arithmatex">\(S_g\)</span>) is decoupled from composition (<span class="arithmatex">\(x_{\text{CO2}}, y_{\text{CO2}}\)</span>). Fluid properties (<span class="arithmatex">\(B_o, \mu_o, S_F, B_{\text{CO2}}\)</span>) evolve with dissolved solvent concentration <span class="arithmatex">\(x_{\text{CO2}}\)</span> and pressure without iterative per-timestep flash. Pure CO₂ supercritical density comes from Peng-Robinson EOS (<span class="arithmatex">\(\sim 400-950\text{ kg/m}^3\)</span>, <span class="arithmatex">\(B_{\text{CO2}} = 327.36/\rho\)</span>).
+   <strong>Verified 05-10-2026:</strong> CRIT-04 fixed (<span class="arithmatex">\(B_g = 5.0351\)</span> derived vs <span class="arithmatex">\(5.035\)</span> used) and CRIT-05 fixed (Papay 1968; measured <span class="arithmatex">\(Z = 0.849/0.827/0.868/0.972\)</span> at <span class="arithmatex">\(P_{pr}\)</span> 2.24→6.73, a proper dense-gas dip). <strong>Open defects:</strong> CRIT-03 — <span class="arithmatex">\(P_b\)</span> is the literal constant <code>min(P_init, 2800)</code>, <strong>no Standing correlation exists</strong>; CRIT-21 — <span class="arithmatex">\(c_g(\text{CO}_2)\)</span> is an uncited power law contradicting the Peng-Robinson EOS <em>in the same class</em> by 2.6–8.3×; HIGH-20 — <span class="arithmatex">\(B_o\)</span> is C⁰ but not C¹ at <span class="arithmatex">\(P_b\)</span> (<span class="arithmatex">\(dB_o/dP\)</span> flips +1.26e-4 → −1.57e-5 /psi); HIGH-21 — <code>c_o</code> is <code>1.2e-5</code> here but <code>1e-5</code> in the pressure ODE.</p>
 </li>
 <li>
-<p><strong>Authentic Viscous Fingering (Koval &amp; Todd-Longstaff)</strong>:
-   SCI-FLAW-01 has been eliminated. The fractional flow of gas <span class="arithmatex">\(f_g\)</span> and effective Koval factor <span class="arithmatex">\(K = H_k \cdot E_{\text{eff}}\)</span> strictly satisfy <span class="arithmatex">\(\partial f_g / \partial M &gt; 0\)</span>. An adverse mobility ratio (<span class="arithmatex">\(M &gt; 1\)</span>) monotonically accelerates breakthrough and increases gas channeling.</p>
+<p><strong>Authentic Viscous Fingering (Koval &amp; Todd-Longstaff)</strong> — ⚠️ <strong>the sweep is correct but inert in the shipped configuration</strong>:
+   The Koval term is now continuous and strictly monotone in <span class="arithmatex">\(M\)</span> (measured max jump <code>7.5e-3</code> across <span class="arithmatex">\(M=1\)</span>), so SCI-FLAW-01 is genuinely eliminated. <strong>But</strong> the default configuration drives it to its <code>0.95</code> clip: measured sweeps at the shipped HCPVI = 7.6928 are <code>[0.95, 0.95, 0.95, 0.95]</code> for $M = 1, 2, 5, 10, so mobility ratio cannot influence sweep at all (<strong>CRIT-06</strong> <code>CONFIRMED_BUT_INERT</code>, <strong>CRIT-15</strong>). Compounding this, <code>mobility_ratio</code> is now a hard-coded constant (<code>EORParameters.mobility_ratio</code>, default 5.0) that <strong>overrides</strong> the PVT-derived <span class="arithmatex">\(M\)</span>, so recovery is <em>exactly</em> flat in oil viscosity (<strong>CRIT-14</strong>): measured RF identical to 6 dp for <span class="arithmatex">\(\mu_o\)</span> = 0.5 → 100 cP, where the pre-remediation path varied 0.5938 → 0.5595.</p>
 </li>
 <li>
 <p><strong>Geomechanical Stress Path, Caprock &amp; Fault Integrity (<code>core/engine_surrogate/geomechanics_fault.py</code>)</strong>:
@@ -3243,16 +3284,18 @@ several invariants here were <strong>not enforced by code</strong> (they hold on
 </li>
 <li>
 <p><strong>Mass-Conserving WAG Mobility Buffering</strong>:
-   Crude static rate multipliers (+8% / -4%) have been replaced by physics-based phase mobility contrast <span class="arithmatex">\(\Delta \lambda / \Sigma \lambda\)</span> in <code>profile_generator_fast.py</code>. Cumulative oil and water production are strictly re-normalized, ensuring exact mass conservation.</p>
+   Crude static rate multipliers (+8% / -4%) have been replaced by physics-based phase mobility contrast <span class="arithmatex">\(\Delta \lambda / \Sigma \lambda\)</span> in <code>profile_generator_fast.py</code>. Cumulative oil and water production are strictly re-normalized.
+   ⚠️ <strong>Not verified.</strong> Re-measure before relying on it — see CRIT-17: the post-rescale saturation re-synchronisation breaks <span class="arithmatex">\(\sum S = 1\)</span> on 27 % of timesteps.</p>
 </li>
 <li>
 <p><strong>Closed-Loop Carbon Accounting Invariant</strong>:
-    Net CO₂ storage is strictly balanced:</p>
-<div class="arithmatex">\[\text{Gross Injected} = \text{Purchased} + \text{Recycled} = \text{Net Stored} + \text{Leakage} + \text{Produced}\]</div>
+    $<span class="arithmatex">\(\text{Gross Injected} = \text{Purchased} + \text{Recycled} = \text{Net Stored} + \text{Leakage} + \text{Produced}\)</span>$
+    ⚠️ <strong>The first two equalities hold. The second half is uncheckable.</strong> Measured 05-10-2026: the gross ledger closes to machine precision (<code>produced + stored = injected</code>, residual <code>0.00e+00</code> MSCF) and <code>recycled ≤ produced ≤ injected</code> holds — but <code>total_leakage_tonne ≡ 0.0</code> in every configuration, so the <code>Leakage</code> term is structurally absent and <code>cum_stored = injected − produced</code> ignores it. <strong>See HIGH-23.</strong></p>
 </li>
 <li>
 <p><strong>Geomechanical Containment Safety (EPA Class VI)</strong>:
-    Sandface injection pressure is strictly capped at <span class="arithmatex">\(0.90 \times P_{\text{frac}}\)</span> (<span class="arithmatex">\(P_{\text{safe ceiling}}\)</span>). If reservoir pressure reaches this ceiling, injection is instantly throttled to zero (Class VI UIC shut-in). Overpressure violations incur quadratic economic penalties (<span class="arithmatex">\(10^6 \cdot (\Delta P / P_{\text{limit}})^2\)</span>).</p>
+    Sandface injection pressure is capped at <span class="arithmatex">\(0.90 \times P_{\text{frac}}\)</span> and injection throttles to zero at that ceiling. Overpressure incurs quadratic penalties (<span class="arithmatex">\(10^6 \cdot (\Delta P / P_{\text{limit}})^2\)</span>).
+    ⚠️ <strong>The cap is an artefact, not a solved constraint.</strong> Reservoir pressure is <code>np.clip</code>ped to <code>[p_min, p_safe_ceiling]</code> at <code>core/engine_surrogate/surrogate_engine.py:468</code>, so it cannot exceed the ceiling by construction — no geomechanical solve produces that bound. Leakage is identically zero, so a breach costs nothing. <strong>See HIGH-23.</strong></p>
 </li>
 <li>
 <p><strong>Test Suite Health &amp; Zero Silent Swallowing</strong>:
@@ -3277,6 +3320,15 @@ several invariants here were <strong>not enforced by code</strong> (they hold on
 <li><strong>Proposal</strong>: Concrete actionable proposal (parameter updates, physics fixes, or operational guidelines).</li>
 <li><strong>Relevant Files</strong>: Markdown links to input configurations, engine modules, execution scripts, and output data.</li>
 <li><strong>Past Runs Tracking</strong>: Indexed in the Master Simulation Run Audits table so historical runs and past proposals remain visible across sessions.</li>
+</ul>
+</li>
+<li>
+<p><strong>Finding &amp; Continuity Discipline (added 05-10-2026)</strong>:</p>
+<ul>
+<li><strong>Never hand-write a finding.</strong> <code>audit/scientific_flaws.md</code> is machine-generated and schema-validated: <code>python -m audit --register new &lt;ID&gt; …</code> then <code>python -m audit --register validate</code>. Severity, Category and Status are closed enumerations; a <code>Location</code> must cite a real <code>file:line</code> or <code>`repo-wide`</code>. See <a href="development/finding_registry/"><code>development/finding_registry.md</code></a>.</li>
+<li><strong>Never hand-write the GitHub issue.</strong> <code>python -m audit --register issue &lt;ID&gt;</code> renders it from the register record.</li>
+<li><strong>A <code>RESOLVED</code> mark requires a measurement.</strong> <code>python -m audit.continuity check &lt;ID&gt;</code> must report <code>CONFIRMED</code> before a status is written. On 05-10-2026 seventeen marks were written without one; eight needed reversing and two were regressions. See <a href="development/continuity_gate/"><code>development/continuity_gate.md</code></a>.</li>
+<li><strong>One commit closes one issue.</strong> <code>python -m audit.continuity check-commit "&lt;subject&gt;" "&lt;body&gt;"</code> rejects <code>Closes #1, #2</code>.</li>
 </ul>
 </li>
 </ol>
