@@ -1,0 +1,236 @@
+
+==============================================================================
+A. PVT STATE AFTER REMEDIATION (CRIT-03/04/05 claims)
+==============================================================================
+DEFAULT p_bubble           = 2800.0 psi   (hardcoded 'min(p_init, 2800.0)', NO provenance)
+DEFAULT c_o (PVT module)    = 1.2e-05 1/psi
+
+-- A1. Bg magnitude check: is 5.035 the correct field-unit constant? --
+   derived  0.02827*1000/5.614583 = 5.0351  rb/MSCF   (code uses 5.035)
+   textbook Bg[rb/MSCF] = 5.035*Z*Tr/P  -> ratio code/correct = 0.999980  OK
+
+-- A2. Z-factor: Papay(1968) vs Standing-Katz expectation --
+   gamma_g=0.7  T_R=609.67  Tpr=1.5811
+     P psi     Ppr   Z_papay  Z_ref(SK~)
+       500   0.748    0.9339    see note
+      1500   2.244    0.8490    see note
+      2500   3.740    0.8269    see note
+      3500   5.236    0.8679    see note
+      4500   6.731    0.9717    see note
+      5500   8.227    1.1385    see note
+   NOTE: Z now < 1 with a dip  -> CRIT-05 'Z>1 in dense gas' appears GENUINELY FIXED.
+
+-- A3. cg_co2 : NEW hardcoded empirical power law (regression) --
+   code: p>1200 -> cg_co2 = clip(1.5e-4*(2000/p)**0.8, 2e-5, 5e-4)
+      P= 1200  cg_co2 = 8.3333e-04 1/psi
+      P= 1500  cg_co2 = 1.8882e-04 1/psi
+      P= 2000  cg_co2 = 1.5000e-04 1/psi
+      P= 2500  cg_co2 = 1.2548e-04 1/psi
+      P= 3000  cg_co2 = 1.0845e-04 1/psi
+      P= 3500  cg_co2 = 9.5865e-05 1/psi
+      P= 4500  cg_co2 = 7.8405e-05 1/psi
+   -> monotonic DECREASING with pressure, hard floored at 2e-5, ceiling 5e-4.
+   -> NO literature citation anywhere; CO2 EOS (Peng-Robinson) IS implemented in
+      this same class (_setup_pr_eos_co2) yet cg is NOT derived from it.
+
+-- A4. Is cg_co2 consistent with the PR-EOS-derived B_co2(P) derivative? --
+      P= 1500  cg_from_dB/dP = 1.5065e-03   cg_power_law = 1.8882e-04   ratio = 7.98x
+      P= 2000  cg_from_dB/dP = 1.2464e-03   cg_power_law = 1.5000e-04   ratio = 8.31x
+      P= 2500  cg_from_dB/dP = 5.5534e-04   cg_power_law = 1.2548e-04   ratio = 4.43x
+      P= 3000  cg_from_dB/dP = 2.8112e-04   cg_power_law = 1.0845e-04   ratio = 2.59x
+
+-- A5. dBo/dP sign above bubble point (CRIT-03 claim) --
+   x_CO2=0.0: Bo = [1.1594 1.2129 1.2713 1.3084 1.3053 1.2975 1.2897]
+              c_o = [ 9.230e-05  9.622e-05  9.734e-05 -1.199e-05 -1.196e-05 -1.196e-05] 1/psi
+   x_CO2=0.3: Bo = [1.2139 1.2863 1.3606 1.4061 1.4058 1.4031 1.3984]
+              c_o = [ 1.192e-04  1.156e-04  1.113e-04 -9.740e-07 -3.807e-06 -6.789e-06] 1/psi
+
+-- A6. Rs continuity at Pb --
+   Rs(Pb=2800.0) = 608.0550 SCF/STB ; Rs(Pb+500) = 608.0550  -> continuous: True
+   B_o continuity at Pb (should be C0, small jump allowed):
+      Bo(Pb-)=1.308407  Bo(Pb+)=1.308407  jump=1.106e-10
+
+-- A7. Is dBo/dP continuous at Pb (C1)? --
+      dBo/dP at   2790.0 psi = 1.2609e-04
+      dBo/dP at   2810.0 psi = -1.5699e-05
+   (below-Pb slope is d/dP of Standing Bo ~ +1.2e-4/psi ; above-Pb slope = -c_o*Bo = -1.4e-5)
+   -> slope changes sign discontinuously at Pb: Bo has a KINK (C0 but not C1).
+
+==============================================================================
+B. MOBILITY RATIO OVERRIDE - does oil viscosity still drive recovery?
+==============================================================================
+EORParameters.mobility_ratio default = 5.0
+hasattr(eor,'mobility_ratio') = True  -> getattr default 2.5 is NOT reached
+EORParameters.locked_gravity_factor = 1.0
+EORParameters.min/max_gravity_factor = 0.5 / 1.5
+
+-- B1. RF vs VISCOSITY with mobility_ratio OVERRIDDEN (new code path) --
+   mu_o=   0.5 cp -> RF = 0.523509
+   mu_o=   1.0 cp -> RF = 0.523509
+   mu_o=   2.0 cp -> RF = 0.523509
+   mu_o=   5.0 cp -> RF = 0.523509
+   mu_o=  20.0 cp -> RF = 0.523509
+   mu_o= 100.0 cp -> RF = 0.523509
+   => FLAT. Oil viscosity has ZERO effect when mobility_ratio is supplied.
+
+-- B2. RF vs VISCOSITY with mobility_ratio REMOVED (legacy path) --
+   mu_o=   0.5 cp -> RF = 0.593831
+   mu_o=   1.0 cp -> RF = 0.591319
+   mu_o=   2.0 cp -> RF = 0.588364
+   mu_o=   5.0 cp -> RF = 0.583658
+   mu_o=  20.0 cp -> RF = 0.574406
+   mu_o= 100.0 cp -> RF = 0.559522
+   => NOT flat: the pre-remediation code did respond to viscosity.
+
+-- B3. RF vs mobility_ratio (the new controlling variable) --
+   M=   0.5 -> RF = 0.599745
+   M=   1.0 -> RF = 0.599745
+   M=   1.5 -> RF = 0.582401
+   M=   2.0 -> RF = 0.569324
+   M=   3.0 -> RF = 0.549818
+   M=   5.0 -> RF = 0.523509
+   M=  10.0 -> RF = 0.484942
+   M=  20.0 -> RF = 0.443544
+   M=  50.0 -> RF = 0.385743
+
+==============================================================================
+C. MISCIBILITY WEIGHT vs alpha_base OVERRIDE (CRIT-13)
+==============================================================================
+old: alpha = 0.95 + 0.05*(c7_plus-0.3)   (composition-driven)
+new: alpha = params['transition_alpha'] or params['alpha_base'] or default
+   c7+=0.1  alpha_default=0.9400  w=0.535244
+   c7+=0.2  alpha_default=0.9450  w=0.535186
+   c7+=0.3  alpha_default=0.9500  w=0.535122
+   c7+=0.5  alpha_default=0.9600  w=0.534974
+   with alpha_base=0.9750 present (what _build_params_dict supplies):
+   c7+=0.1 -> w=0.534688  (independent of c7+)
+   c7+=0.2 -> w=0.534688  (independent of c7+)
+   c7+=0.3 -> w=0.534688  (independent of c7+)
+   c7+=0.5 -> w=0.534688  (independent of c7+)
+
+-- C1. miscibility weight at and around MMP (alpha=0.975, beta=20) --
+   P/MMP= 0.800 -> omega = 0.029312
+   P/MMP= 0.900 -> omega = 0.182426
+   P/MMP= 0.950 -> omega = 0.377541
+   P/MMP= 0.975 -> omega = 0.500000
+   P/MMP= 1.000 -> omega = 0.622459
+   P/MMP= 1.050 -> omega = 0.817574
+   P/MMP= 1.200 -> omega = 0.989013
+   P/MMP= 1.500 -> omega = 0.999972
+   => omega(MMP) = 0.500. Half of the recovery is attributed to the MISCIABLE
+      mechanism exactly AT the minimum miscibility pressure, where by definition
+      the displacement is immiscible/first-contact. 50% miscibility weight is arbitrary.
+
+==============================================================================
+D. KOVAL SWEEP AFTER REMEDIATION (CRIT-06 claim)
+==============================================================================
+-- D1. sweep vs M at hcpvi=1.8 (clip now 0.95) --
+   M=   0.5 -> sweep = 0.890131
+   M=   0.9 -> sweep = 0.861161
+   M=  0.99 -> sweep = 0.856065
+   M=   1.0 -> sweep = 0.855521
+   M=  1.01 -> sweep = 0.854981
+   M=   1.1 -> sweep = 0.850301
+   M=   1.4 -> sweep = 0.836592
+   M=   1.5 -> sweep = 0.832537
+   M=   2.0 -> sweep = 0.814999
+   M=   3.0 -> sweep = 0.788563
+   M=   5.0 -> sweep = 0.752478
+   M=  10.0 -> sweep = 0.698898
+
+-- D2. continuity / monotonicity --
+   monotonic non-increasing in M: True
+   max jump across M=1: 7.479e-03
+
+-- D3. is the 'kv <= 1' branch reachable? --
+   KovalSurrogate methods: ['_abc_impl', '_literature_based_recovery', 'calculate_recovery', 'get_model_info']
+   source retrievable: True (ok)
+   (grep-verified separately in the report body)
+   -> dead branch; the documented unit-mobility-ratio limit can never execute.
+
+-- D4. sweep vs hcpvi at M=5 --
+   HCPVI=  0.01 -> sweep = 0.010000
+   HCPVI=   0.1 -> sweep = 0.100000
+   HCPVI=   0.5 -> sweep = 0.391785
+   HCPVI=   1.0 -> sweep = 0.578092
+   HCPVI=   1.8 -> sweep = 0.752478
+   HCPVI=   3.0 -> sweep = 0.895164
+   HCPVI=   6.0 -> sweep = 0.950000
+   HCPVI=  10.0 -> sweep = 0.950000
+
+==============================================================================
+E. IMMISCIBLE LIMB - gradient restored? (CRIT-07 claim)
+==============================================================================
+-- E1. distinct RF over a 5x3x3 grid (M x v_dp x sor), mobility_ratio NOT overridden --
+   N = 45 evaluations; distinct values = 24
+   min=0.020000  max=0.324188  spread=0.304188
+   -> old audit measured distinct set == {0.1}; now spread is 0.3042 => gradient RESTORED
+
+-- E2. RF vs mobility_ratio --
+   M=   0.5 -> RF = 0.103856
+   M=   1.0 -> RF = 0.103856
+   M=   2.0 -> RF = 0.051442
+   M=   5.0 -> RF = 0.048467
+   M=  20.0 -> RF = 0.043965
+
+-- E3. rf_max_physical redefinition (OOIP-normalised?) --
+   new: (1-Swi-Sor)/(1-Swi)  -- correct RF-as-fraction-of-OOIP form
+   old: (1-Swi-Sor)          -- conflated PV fraction with OOIP fraction
+   Swi=0.25 Sor=0.25: old=0.5000  new=0.6667
+   Swi=0.3 Sor=0.35: old=0.3500  new=0.5000
+   Swi=0.15 Sor=0.2: old=0.6500  new=0.7647
+
+-- E4. s_g_avg masking: max(slope_bt, EPSILON) path --
+   if slope_bt <= 0 -> max() returns EPSILON -> (1-f_gf)/1e-6 = ~1e6 -> clipped to 1-Sor
+   => negative/zero slope SILENTLY becomes 100% displacement efficiency
+
+==============================================================================
+F. FULL-ENGINE PROBES (saturation closure, NPV, ledger)
+==============================================================================
+evaluate_scenario returned keys: ['annual_caprock_leakage_tonne', 'annual_cashflow_usd', 'annual_co2_injected_mscf', 'annual_co2_produced_mscf', 'annual_co2_purchased_mscf', 'annual_co2_recycled_mscf', 'annual_fault_leakage_tonne', 'annual_hydrocarbon_gas_mscf', 'annual_leakage_tonne', 'annual_oil_stb', 'annual_water_injected_bbl', 'annual_water_produced_bbl', 'average_miscibility_degree', 'bg_profile'] ...
+
+-- F1. saturation closure: does S_o+S_w+S_g stay 1, or is np.clip masking? --
+   saturation_oil   n= 181 min=0.549998 max=0.793334
+   saturation_water n= 181 min=0.235424 max=0.250000
+   saturation_gas   n= 181 min=0.000000 max=0.214578
+   S_o+S_w+S_g : min=1.000000000 max=1.042828727  max dev from 1 = 4.283e-02
+   timesteps where S_o+S_w>1 (gas SILENTLY clipped to 0): 49 / 181
+
+-- F2. CO2 ledger closure --
+   cumulative_co2_injected_mscf           = 27393750.0
+   cumulative_co2_purchased_mscf          = 25625816.741345525
+   cumulative_co2_recycled_mscf           = 1767933.2586544747
+   cumulative_co2_produced_mscf           = 1860982.3775310265
+   cumulative_co2_stored_mscf             = 25532767.622468974
+   total_leakage_tonne                    = 0.0
+
+-- F3. leakage economics asymmetry --
+   total_leakage_tonne           = 0.0
+   annual_leakage_tonne present  = True
+   co2_storage_credit_usd_per_tonne = n/a
+   carbon_tax_usd_per_tonne          = n/a
+   NPV revenue uses annual_stored = max(0, inj - prod)  -> IGNORES leakage
+   NPV penalty  uses (caprock+fault leakage) x carbon_tax
+   => if leakage>0 the credit is granted AND the tax is levied; but if leakage==0
+      structurally the credit is granted on the FULL injected-minus-produced amount.
+
+-- F4. NPV inputs actually present in params? --
+   SurrogateEngine attrs: ['_build_params_dict', '_error_result', 'evaluate_scenario', 'evaluation_count', 'fitting_params', 'get_performance_stats', 'model_type', 'profile_generator', 'profile_model_type', 'recovery_model_type', 'reset_performance_stats', 'surrogate_model']
+   probing keys used by the new NPV block against _build_params_dict output:
+      oil_price_usd_per_bbl                  -> PRESENT = 70.0
+      co2_purchase_cost_usd_per_tonne        -> PRESENT = 50.0
+      co2_cost_usd_per_ton                   -> PRESENT = 50.0
+      co2_recycle_cost_usd_per_tonne         -> PRESENT = 15.0
+      co2_storage_credit_usd_per_tonne       -> PRESENT = 25.0
+      water_injection_cost_usd_per_bbl       -> PRESENT = 1.0
+      water_disposal_cost_usd_per_bbl        -> PRESENT = 2.0
+      fixed_opex_usd_per_year                -> PRESENT = 200000.0
+      variable_opex_usd_per_bbl              -> PRESENT = 5.0
+      carbon_tax_usd_per_tonne               -> PRESENT = 0.0
+      discount_rate_fraction                 -> PRESENT = 0.1
+      discount_rate                          -> PRESENT = 0.1
+      capex_usd                              -> PRESENT = 5000000.0
+      mobility_ratio                         -> PRESENT = 5.0
+      gravity_factor                         -> PRESENT = 1.0
+      hcpvi                                  -> PRESENT = 7.69283902005574
+      mscf_per_res_bbl                       -> PRESENT = 2.046093479998231

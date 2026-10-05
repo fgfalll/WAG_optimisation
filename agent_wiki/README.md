@@ -18,8 +18,8 @@ This documentation is designed for **reservoir engineers, AI pair-programmers, s
 | [**Agent Showcase Checklist**](audit/agent_checklist.md) | **Automated Master Pre-Flight**: verified flaws, parameter provenances, safe harbor rules, and static diagnostic anchors |
 | [**Continuity Gate**](development/continuity_gate.md) | **Autouse**: `python -m audit.continuity check` re-measures every `RESOLVED` claim, checks wiki/code drift, and enforces 1-commit-1-issue |
 | [**Finding Registry**](development/finding_registry.md) | **Required**: `python -m audit --register new\|validate\|issue` — the flaw register is machine-generated; never hand-write a finding |
-| [**2026-10-04 Independent Audit**](../res_audit.md) | [Software quality & anti-patterns](../res_audit.md) · [Scientific/physics audit (`phd_audit.md`)](../phd_audit.md) · [**Flaw register**](../audit/scientific_flaws.md) · [Parameter provenance](../audit/parameter_provenance.csv) |
-| [**2026-10-05 Round-2 Audit**](audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md) | **Verdict `FLAGGED`** — adversarial verification of the uncommitted 05-10-2026 remediation; **11 new findings**, 6 "RESOLVED" marks reversed or downgraded |
+| [**2026-10-04 Independent Audit**](../res_audit.md) | [Software quality & anti-patterns](../res_audit.md) · [Scientific/physics audit (`phd_audit.md`)](../phd_audit.md) · [**Flaw register — 73 findings**](../audit/scientific_flaws.md) · [Parameter provenance — 112 rows](../audit/parameter_provenance.csv) |
+| [**2026-10-05 Round-2 Audit**](audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md) | **Verdict `FLAGGED`** — adversarial verification of the uncommitted 05-10-2026 remediation; **11 new findings**, 8 "RESOLVED" marks reversed or downgraded |
 | [**Verification**](verification/verification_strategy.md) | 7-level V&V hierarchy, conservation tests, convergence studies |
 | [**Validation**](validation/benchmarks.md) | SPE 5, CMG GEM reference benchmarks |
 | [**Decisions**](decisions/architecture_decisions.md) | Architecture & scientific rationale records (ADRs) |
@@ -71,17 +71,22 @@ Before reading or modifying any file in this repository, keep the following **co
 2. **`FastProfileGenerator` is the Single Source of Truth for Profiles**:
    All production, injection, and rate profiles are synthesized via `core/engine_surrogate/profile_generator_fast.py`. `core/simulation/profile_generator.py` is a deprecated re-export shim (`from core.engine_surrogate.profile_generator_fast import FastProfileGenerator`). ⚠️ `core/simulation/injection_schemes.py`, cited here previously, **does not exist** (grep → 0 hits; corrected 2026-10-04).
 
-3. **NPV and CO₂ Accounting are Engine-Owned** (names corrected 2026-10-04 — see MED-15):
+3. **NPV and CO₂ Accounting are Engine-Owned** (corrected 2026-10-05 — NPV moved out of `surrogate_models.py`):
    - **CO₂ purchased vs recycled** is computed *inline* inside `SurrogateEngine.evaluate_scenario()`
-     (`core/engine_surrogate/surrogate_engine.py:592-596` annual make-up, `:607-614` rate and
+     (`core/engine_surrogate/surrogate_engine.py:615-620` annual make-up, `:660-670` rate and
      cumulative profiles).
-   - **NPV** is computed *inline* inside `PhDHybridSurrogate.predict()`
-     (`core/engine_surrogate/surrogate_models.py:507-530`) and republished by the engine as the
-     `npv` profile key (`surrogate_engine.py:172`, `:692`).
+   - **NPV** is now computed *inline* inside `SurrogateEngine.evaluate_scenario()`
+     (`core/engine_surrogate/surrogate_engine.py:622-651`) from the simulated annual streams, and
+     republished as the `npv` profile key. ⚠️ **CRIT-02 is genuinely fixed** — measured
+     `cumulative_oil_stb == OOIP × recovery_factor` to `5.8e-10` STB, and
+     `Σ(oil_profile·Δt) == Σ(annual_oil_stb)` exactly. The older inline NPV in
+     `surrogate_models.py:507-530` still exists but is now **shadowed**.
+   - ⚠️ **The cash flow is truncated (CRIT-18).** `annual_rev` is oil + storage credit only:
+     `annual_hc_gas_mscf` is allocated, accumulated and published but never referenced in the
+     revenue term, so 216 810 MSCF/15 yr of gas sales contribute $0. Since `npv` is the primary
+     optimisation objective, the optimiser ranks on a partial model.
    - The wrapper `core/objectives/wrapper.py:ObjectiveFunctions._calculate_objective_functions()`
-     is a **consumer** (`:50-53` reads `profiles["npv"]`, then applies containment/remediation
-     penalties) — see **CRIT-02**, which shows the reported NPV and the reported RF can come from
-     two different evaluations.
+     is a **consumer** (reads `profiles["npv"]`, then applies containment/remediation penalties).
    - ⚠️ There is **no** method named `_calculate_engine_npv`, `_calculate_co2_purchased_recycled`,
      `_solve_pressure_ode` or `_calculate_pressure_profile` anywhere in the repository (grep: 0 hits).
      `SurrogateEngine` exposes only `evaluate_scenario`, `_build_params_dict`, `_error_result`,
@@ -96,10 +101,11 @@ Before reading or modifying any file in this repository, keep the following **co
    - Dual-pressure Voidage Replacement Ratio (VRR) tracking local injection vs production reservoir volumes.
 
 5. **Thermodynamic Rigor via Solvent-Extended PVT (`core/engine_surrogate/pvt_state.py`)**:
-   Transport saturation ($S_g$) is strictly decoupled from composition ($x_{\text{CO2}}, y_{\text{CO2}}$). Fluid properties ($B_o, \mu_o, S_F, B_{\text{CO2}}$) evolve with dissolved solvent concentration $x_{\text{CO2}}$ and pressure without requiring costly iterative per-timestep flash equations. Pure CO₂ supercritical density is evaluated via Peng-Robinson EOS ($\sim 400-950\text{ kg/m}^3$, $B_{\text{CO2}} = 327.36 / \rho$). Degassing and surface shrinkage are tracked via multi-stage flash separation.
+   Transport saturation ($S_g$) is decoupled from composition ($x_{\text{CO2}}, y_{\text{CO2}}$). Fluid properties ($B_o, \mu_o, S_F, B_{\text{CO2}}$) evolve with dissolved solvent concentration $x_{\text{CO2}}$ and pressure without iterative per-timestep flash. Pure CO₂ supercritical density comes from Peng-Robinson EOS ($\sim 400-950\text{ kg/m}^3$, $B_{\text{CO2}} = 327.36/\rho$).
+   **Verified 05-10-2026:** CRIT-04 fixed ($B_g = 5.0351$ derived vs $5.035$ used) and CRIT-05 fixed (Papay 1968; measured $Z = 0.849/0.827/0.868/0.972$ at $P_{pr}$ 2.24→6.73, a proper dense-gas dip). **Open defects:** CRIT-03 — $P_b$ is the literal constant `min(P_init, 2800)`, **no Standing correlation exists**; CRIT-21 — $c_g(\text{CO}_2)$ is an uncited power law contradicting the Peng-Robinson EOS *in the same class* by 2.6–8.3×; HIGH-20 — $B_o$ is C⁰ but not C¹ at $P_b$ ($dB_o/dP$ flips +1.26e-4 → −1.57e-5 /psi); HIGH-21 — `c_o` is `1.2e-5` here but `1e-5` in the pressure ODE.
 
-6. **Authentic Viscous Fingering (Koval & Todd-Longstaff)**:
-   SCI-FLAW-01 has been eliminated. The fractional flow of gas $f_g$ and effective Koval factor $K = H_k \cdot E_{\text{eff}}$ strictly satisfy $\partial f_g / \partial M > 0$. An adverse mobility ratio ($M > 1$) monotonically accelerates breakthrough and increases gas channeling.
+6. **Authentic Viscous Fingering (Koval & Todd-Longstaff)** — ⚠️ **the sweep is correct but inert in the shipped configuration**:
+   The Koval term is now continuous and strictly monotone in $M$ (measured max jump `7.5e-3` across $M=1$), so SCI-FLAW-01 is genuinely eliminated. **But** the default configuration drives it to its `0.95` clip: measured sweeps at the shipped HCPVI = 7.6928 are `[0.95, 0.95, 0.95, 0.95]` for $M = 1, 2, 5, 10, so mobility ratio cannot influence sweep at all (**CRIT-06** `CONFIRMED_BUT_INERT`, **CRIT-15**). Compounding this, `mobility_ratio` is now a hard-coded constant (`EORParameters.mobility_ratio`, default 5.0) that **overrides** the PVT-derived $M$, so recovery is *exactly* flat in oil viscosity (**CRIT-14**): measured RF identical to 6 dp for $\mu_o$ = 0.5 → 100 cP, where the pre-remediation path varied 0.5938 → 0.5595.
 
 7. **Geomechanical Stress Path, Caprock & Fault Integrity (`core/engine_surrogate/geomechanics_fault.py`)**:
    In-situ horizontal stress evolves with reservoir pore pressure ($\Delta \sigma_h = \gamma_h \Delta P$). Caprock tensile and shear failure envelopes are evaluated at bottomhole injection pressures. Critically oriented faults are evaluated via Mohr-Coulomb slip tendency ($T_s = \tau / \sigma_n'$). Dynamic geological leakage occurs if sandface pressure breaches seal threshold or fault slip reactivation occurs.
@@ -112,15 +118,16 @@ Before reading or modifying any file in this repository, keep the following **co
    - **Injection Agent**: CO₂ injected/purchased/recycled/stored + WAG water, constrained by facility compressor limits ($Q_{\text{recycle,max}}$) and 95% availability.
 
 9. **Mass-Conserving WAG Mobility Buffering**:
-   Crude static rate multipliers (+8% / -4%) have been replaced by physics-based phase mobility contrast $\Delta \lambda / \Sigma \lambda$ in `profile_generator_fast.py`. Cumulative oil and water production are strictly re-normalized, ensuring exact mass conservation.
+   Crude static rate multipliers (+8% / -4%) have been replaced by physics-based phase mobility contrast $\Delta \lambda / \Sigma \lambda$ in `profile_generator_fast.py`. Cumulative oil and water production are strictly re-normalized.
+   ⚠️ **Not verified.** Re-measure before relying on it — see CRIT-17: the post-rescale saturation re-synchronisation breaks $\sum S = 1$ on 27 % of timesteps.
 
 10. **Closed-Loop Carbon Accounting Invariant**:
-    Net CO₂ storage is strictly balanced:
-
     $$\text{Gross Injected} = \text{Purchased} + \text{Recycled} = \text{Net Stored} + \text{Leakage} + \text{Produced}$$
+    ⚠️ **The first two equalities hold. The second half is uncheckable.** Measured 05-10-2026: the gross ledger closes to machine precision (`produced + stored = injected`, residual `0.00e+00` MSCF) and `recycled ≤ produced ≤ injected` holds — but `total_leakage_tonne ≡ 0.0` in every configuration, so the `Leakage` term is structurally absent and `cum_stored = injected − produced` ignores it. **See HIGH-23.**
 
 11. **Geomechanical Containment Safety (EPA Class VI)**:
-    Sandface injection pressure is strictly capped at $0.90 \times P_{\text{frac}}$ ($P_{\text{safe ceiling}}$). If reservoir pressure reaches this ceiling, injection is instantly throttled to zero (Class VI UIC shut-in). Overpressure violations incur quadratic economic penalties ($10^6 \cdot (\Delta P / P_{\text{limit}})^2$).
+    Sandface injection pressure is capped at $0.90 \times P_{\text{frac}}$ and injection throttles to zero at that ceiling. Overpressure incurs quadratic penalties ($10^6 \cdot (\Delta P / P_{\text{limit}})^2$).
+    ⚠️ **The cap is an artefact, not a solved constraint.** Reservoir pressure is `np.clip`ped to `[p_min, p_safe_ceiling]` at `core/engine_surrogate/surrogate_engine.py:468`, so it cannot exceed the ceiling by construction — no geomechanical solve produces that bound. Leakage is identically zero, so a breach costs nothing. **See HIGH-23.**
 
 12. **Test Suite Health & Zero Silent Swallowing**:
     Zero silent exception swallowing across core scientific modules. All physical states are logged contextually. Unphysical or violating candidates receive explicit mathematical penalties (`FAILURE_PENALTY = -10^{12}`) to kill off unviable chromosomes.
@@ -139,6 +146,12 @@ Before reading or modifying any file in this repository, keep the following **co
     - **Proposal**: Concrete actionable proposal (parameter updates, physics fixes, or operational guidelines).
     - **Relevant Files**: Markdown links to input configurations, engine modules, execution scripts, and output data.
     - **Past Runs Tracking**: Indexed in the Master Simulation Run Audits table so historical runs and past proposals remain visible across sessions.
+
+15. **Finding & Continuity Discipline (added 05-10-2026)**:
+    - **Never hand-write a finding.** `audit/scientific_flaws.md` is machine-generated and schema-validated: `python -m audit --register new <ID> …` then `python -m audit --register validate`. Severity, Category and Status are closed enumerations; a `Location` must cite a real `file:line` or `` `repo-wide` ``. See [`development/finding_registry.md`](development/finding_registry.md).
+    - **Never hand-write the GitHub issue.** `python -m audit --register issue <ID>` renders it from the register record.
+    - **A `RESOLVED` mark requires a measurement.** `python -m audit.continuity check <ID>` must report `CONFIRMED` before a status is written. On 05-10-2026 seventeen marks were written without one; eight needed reversing and two were regressions. See [`development/continuity_gate.md`](development/continuity_gate.md).
+    - **One commit closes one issue.** `python -m audit.continuity check-commit "<subject>" "<body>"` rejects `Closes #1, #2`.
 
 ---
 

@@ -1,7 +1,7 @@
-# Technical Debt & Software Engineering Audit
+# Technical Debt & Software Engineering Audit
 
 > [!NOTE]
-> This document catalogs **only active, open items**. For resolved flaws, historical post-mortems, and verification status, consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md).
+> This document catalogs **only active, open items**. For resolved flaws, historical post-mortems, and verification status, consult the [**Resolved Issues & Defect Resolution Archive**](resolved_issues.md). For the comprehensive, automated pre-flight catalog of all 53 confirmed scientific defects, 91 parameter provenances, and AST fallbacks, consult the [**Master Agent Showcase Checklist**](agent_checklist.md).
 
 ## 1. Overview of Technical Debt
 

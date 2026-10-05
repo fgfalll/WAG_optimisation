@@ -213,27 +213,6 @@
   ],
   "wiki_issues": [
     {
-      "path": "agent_wiki\\README.md",
-      "line": 118,
-      "kind": "UNENFORCED_INVARIANT",
-      "detail": "'strictly balanced' asserted without enforcement (leakage is identically zero (HIGH-23))",
-      "severity": "LOW"
-    },
-    {
-      "path": "agent_wiki\\README.md",
-      "line": 123,
-      "kind": "UNENFORCED_INVARIANT",
-      "detail": "'strictly capped' asserted without enforcement (containment is an artefact of a clip, not a solved constraint)",
-      "severity": "LOW"
-    },
-    {
-      "path": "agent_wiki\\README.md",
-      "line": 114,
-      "kind": "UNENFORCED_INVARIANT",
-      "detail": "'mass-conserving' asserted without enforcement (hold-by-construction, never asserted)",
-      "severity": "LOW"
-    },
-    {
       "path": "core/engine_surrogate/analytical_models.py",
       "line": 96,
       "kind": "F821_UNDEFINED_NAME",

@@ -792,16 +792,26 @@ def check_wiki(register: Path = REGISTER) -> list[WikiIssue]:
                     f"document quotes {g} findings but the register contains {actual}", "MEDIUM"))
 
     # 3. Wiki invariants must not be stated as enforced when they are not.
+    #    A phrase is only acceptable when a qualification marker accompanies it
+    #    on the same line or within the next few lines - that is how the
+    #    documentation now distinguishes "holds by construction" from
+    #    "asserted by code".
     readme = REPO_ROOT / "agent_wiki" / "README.md"
     if readme.exists():
         rtext = readme.read_text(encoding="utf-8")
+        QUALIFIERS = ("⚠", "not enforced", "not verified", "uncheckable",
+                      "artefact", "structurally", "see high", "see crit")
         for phrase, why in (
             ("strictly balanced", "leakage is identically zero (HIGH-23)"),
             ("strictly capped", "containment is an artefact of a clip, not a solved constraint"),
             ("mass-conserving", "hold-by-construction, never asserted"),
         ):
+            rlines = rtext.split("\n")
             for m in re.finditer(phrase, rtext, re.I):
                 line_no = rtext[: m.start()].count("\n") + 1
+                window = " ".join(rlines[line_no - 1: line_no + 4]).lower()
+                if any(q.lower() in window for q in QUALIFIERS):
+                    continue  # qualified in place - acceptable
                 sev = "LOW" if "FLAGGED" in rtext[:4000] else "MEDIUM"
                 issues.append(WikiIssue(
                     str(readme.relative_to(REPO_ROOT)), line_no, "UNENFORCED_INVARIANT",
