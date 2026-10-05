@@ -15,21 +15,48 @@ This documentation is designed for **reservoir engineers, AI pair-programmers, s
 | [**Data & Parameters**](data/inputs.md) | Input/output schemas, parameter registry, field unit definitions |
 | [**Development Guide**](development/common_pitfalls.md) | Change safety matrix, common pitfalls, safe modification rules |
 | [**Audit Reports**](audit/technical_debt.md) | Dead code, hardcoded values, [**data management**](audit/data_management_audit.md), [**optimization widget**](audit/optimization_widget_audit.md), [**dialogs, models, utils & widgets**](audit/dialogs_models_utils_widgets_audit.md), [**simulation run audits**](audit/simulation_run_audits/index.md), fallbacks, suspicious logic, [**resolved archive**](audit/resolved_issues.md) |
-| [**2026-10-04 Independent Audit**](../res_audit.md) | [Software quality & anti-patterns](../res_audit.md) · [Scientific/physics audit (`phd_audit.md`)](../phd_audit.md) · [**Flaw register — 53 findings**](../audit/scientific_flaws.md) · [Parameter provenance (91 rows)](../audit/parameter_provenance.csv) |
+| [**Agent Showcase Checklist**](audit/agent_checklist.md) | **Automated Master Pre-Flight**: verified flaws, parameter provenances, safe harbor rules, and static diagnostic anchors |
+| [**Continuity Gate**](development/continuity_gate.md) | **Autouse**: `python -m audit.continuity check` re-measures every `RESOLVED` claim, checks wiki/code drift, and enforces 1-commit-1-issue |
+| [**2026-10-04 Independent Audit**](../res_audit.md) | [Software quality & anti-patterns](../res_audit.md) · [Scientific/physics audit (`phd_audit.md`)](../phd_audit.md) · [**Flaw register**](../audit/scientific_flaws.md) · [Parameter provenance](../audit/parameter_provenance.csv) |
+| [**2026-10-05 Round-2 Audit**](audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md) | **Verdict `FLAGGED`** — adversarial verification of the uncommitted 05-10-2026 remediation; **11 new findings**, 6 "RESOLVED" marks reversed or downgraded |
 | [**Verification**](verification/verification_strategy.md) | 7-level V&V hierarchy, conservation tests, convergence studies |
 | [**Validation**](validation/benchmarks.md) | SPE 5, CMG GEM reference benchmarks |
 | [**Decisions**](decisions/architecture_decisions.md) | Architecture & scientific rationale records (ADRs) |
 
 > [!WARNING]
-> **Audit status (2026-10-04).** An independent four-phase audit registered **53 findings (13 CRITICAL, 19 HIGH,
-> 16 MEDIUM, 5 LOW)** in [`audit/scientific_flaws.md`](../audit/scientific_flaws.md) — of which **HIGH-10 is now
-> RESOLVED** (the missing `QIcon` import was fixed and the suite runs `333 passed / 0 failed`) while **HIGH-19 is
-> open** (two undefined names in `ui/workbench/` that no test reaches) — and issued a
-> **predictive-validity verdict of `NOT ESTABLISHED`** for the active `hybrid` path
-> ([`phd_audit.md`](../phd_audit.md) §C). Read the register before treating any wiki claim below as verified:
-> several invariants here were **not enforced by code** (they hold only by construction), and
-> `verification/test_matrix.md` listed six tests that do not exist (MED-16). Physics defects in PVT
-> (`B_g` 31.7× too small, Z > 1 in the dense-gas region, `dBo/dP > 0`) remain **open** — see CRIT-03/04/05.
+> **Audit status — read before trusting any "RESOLVED" mark below.**
+>
+> **Round 2 (`05-10-2026`, verdict `FLAGGED`)** adversarially re-audited the uncommitted remediation
+> of the 17 findings the 04-10-2026 round had marked RESOLVED. Verdict: **11 CONFIRMED · 4 PARTIALLY
+> RESOLVED · 1 REGRESSED (CRIT-12) · 1 CONFIRMED-but-inert (CRIT-06)**, and **11 new findings** were
+> registered (CRIT-14…CRIT-21, HIGH-20/21/23/24/25/26, MED-17…MED-22) — see
+> [`audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md`](audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md)
+> and issues [#7](https://github.com/fgfalll/WAG_optimisation/issues/7)–[#15](https://github.com/fgfalll/WAG_optimisation/issues/15).
+>
+> The **live, most consequential defects** are now:
+> - **CRIT-14** — a `mobility_ratio` override makes recovery **exactly independent of oil viscosity**
+>   in all three recovery models (measured: RF identical to 6 decimals for μ_o = 0.5 → 100 cP).
+> - **CRIT-15** — the default HCPVI (7.69) pins the Koval sweep at its 0.95 clip for **every**
+>   mobility ratio.
+> - **CRIT-17** — the CRIT-12 "fix" broke saturation closure: `S_o + S_w > 1` on **27 %** of timesteps.
+> - **HIGH-23** — leakage is *identically zero* while the storage credit is paid on **leakage-blind**
+>   stored mass: **leaked CO₂ would be paid for, not charged for**.
+> - **CRIT-19 / CRIT-20** — the previously inert `gravity_factor` gene is now an active ±20 % fudge on
+>   recovery, and the miscibility weight no longer depends on composition.
+>
+> Genuinely fixed and worth keeping: `B_g` constant (CRIT-04), Z-factor (CRIT-05), HCPVI
+> dimensionality (CRIT-01), the NPV double-evaluation defect (CRIT-02), the immiscible-limb gradient
+> (CRIT-07), and the `rf_max_physical` OOIP normalisation (HIGH-01).
+>
+> The suite reports **335 passed / 0 failed** while every defect above is live — see HIGH-18: green is
+> not evidence. **Predictive validity for the active `hybrid` path remains `NOT ESTABLISHED`.**
+>
+> **Prior round (`04-10-2026`).** An independent four-phase audit registered **53 findings (13 CRITICAL,
+> 19 HIGH, 16 MEDIUM, 5 LOW)** in [`audit/scientific_flaws.md`](../audit/scientific_flaws.md) and issued a
+> **predictive-validity verdict of `NOT ESTABLISHED`** ([`phd_audit.md`](../phd_audit.md) §C). Read the register
+> before treating any wiki claim below as verified: several invariants here were **not enforced by code**
+> (they hold only by construction), and `verification/test_matrix.md` listed six tests that do not exist
+> (MED-16).
 
 ---
 
