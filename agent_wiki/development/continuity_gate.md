@@ -83,6 +83,11 @@ python -m audit --issue-gate
 
 Exit codes: `0` clean · `1` reopens required · `2` issue-discipline violation.
 
+> **Companion gate.** The gate above re-verifies claims; the
+> [Finding Registry](finding_registry.md) (`python -m audit --register validate`) guarantees the
+> register those claims live in is schema-valid, and that GitHub issues are *generated* from it
+> rather than hand-written. Run both before committing.
+
 ---
 
 ## 5. Evidence tiers
@@ -168,19 +173,24 @@ REQUIRES REOPENING: 8
 
 ### Findings to reopen
 
-| ID | Verdict | Issue |
+| ID | Verdict | Where it lives now |
 |---|---|---|
-| CRIT-01 | `PARTIAL` | [#17](https://github.com/fgfalll/WAG_optimisation/issues/17) — denominator is total PV; stated formula carries a spurious `B_o` |
-| CRIT-03 | `FAIL` | [#18](https://github.com/fgfalll/WAG_optimisation/issues/18) — `P_b` is a literal constant, no correlation exists |
-| CRIT-06 | `PASS-BUT-INERT` | [#19](https://github.com/fgfalll/WAG_optimisation/issues/19) — correct but saturated at its clip |
-| CRIT-12 | `REGRESSED` | [#9](https://github.com/fgfalll/WAG_optimisation/issues/9) — saturation closure now broken |
-| CRIT-13 | `FAIL` | [#20](https://github.com/fgfalll/WAG_optimisation/issues/20) — `gravity_factor` is now an active fudge |
-| CRIT-14 | `REGRESSED` | [#7](https://github.com/fgfalll/WAG_optimisation/issues/7) — viscosity severed from recovery |
-| CRIT-16 | `FAIL` | — `getattr` guards name non-existent fields |
-| CRIT-18 | `PARTIAL` | — gas revenue computed but not in the cash flow |
-| CRIT-21 | `FAIL` | [#10](https://github.com/fgfalll/WAG_optimisation/issues/10) — `c_g` power law vs in-class PR EOS |
-| HIGH-23 | `FAIL` | [#13](https://github.com/fgfalll/WAG_optimisation/issues/13) — leakage zero, storage credit leakage-blind |
-| HIGH-11 | `FAIL` | [#16](https://github.com/fgfalll/WAG_optimisation/issues/16) — three `F821` undefined names |
+| CRIT-01 | `PARTIAL` | register — denominator is total PV; the stated formula carries a spurious `B_o` |
+| CRIT-03 | `FAIL` | register — `P_b` is a literal constant, no Standing correlation exists |
+| CRIT-06 | `PASS-BUT-INERT` | register — correct, but saturated at its clip at the shipped HCPVI |
+| CRIT-12 | `REGRESSED` | register + [#9](https://github.com/fgfalll/WAG_optimisation/issues/9) — saturation closure now broken |
+| CRIT-13 | `FAIL` | register — `gravity_factor` is now an active fudge; also CRIT-19, CRIT-20 |
+| CRIT-14 | `REGRESSED` | register + [#7](https://github.com/fgfalll/WAG_optimisation/issues/7) — viscosity severed from recovery |
+| CRIT-16 | `FAIL` | register — `getattr` guards name non-existent fields |
+| CRIT-18 | `PARTIAL` | register — gas revenue computed but not in the cash flow |
+| CRIT-21 | `FAIL` | register + [#10](https://github.com/fgfalll/WAG_optimisation/issues/10) — `c_g` power law vs in-class PR EOS |
+| HIGH-23 | `FAIL` | register + [#13](https://github.com/fgfalll/WAG_optimisation/issues/13) — leakage zero, storage credit leakage-blind |
+| HIGH-11 | `RECURRED` | register — three `F821` undefined names (gate-detected) |
+
+> **Tracker consolidation (05-10-2026).** Issues #16–#20 duplicated register records and were closed
+> with a comment naming the register entry, stating that the defect is **not** fixed, and listing the
+> remaining work. The register is the single source of truth; issues are generated from it with
+> `python -m audit --register issue <ID>`. See [`finding_registry.md`](finding_registry.md).
 
 ---
 

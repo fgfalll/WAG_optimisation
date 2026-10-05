@@ -35,7 +35,18 @@ def main():
         action="store_true",
         help="Validate the staged commit against the 1-commit-1-issue policy",
     )
+    parser.add_argument(
+        "--register",
+        nargs=argparse.REMAINDER,
+        metavar="REGISTRY_CMD",
+        help="Finding registry: validate | list | new | issue | json "
+             "(e.g. --register validate, --register issue CRIT-22)",
+    )
     args = parser.parse_args()
+
+    if args.register is not None:
+        from audit import registry
+        raise SystemExit(registry.main(args.register))
 
     try:
         if args.issue_gate:

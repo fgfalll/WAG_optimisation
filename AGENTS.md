@@ -1,5 +1,13 @@
 # AGENTS.md - CO2 EOR Optimizer Development Guide
 
+> [!CAUTION]
+> **The flaw register is generated, not hand-written.**
+> `audit/scientific_flaws.md` is machine-validated by `python -m audit --register validate`.
+> Adding a finding by editing that file by hand will fail the gate. Use
+> `python -m audit --register new ...` instead, and generate the GitHub issue from the record
+> with `python -m audit --register issue <ID>`. See
+> [`agent_wiki/development/finding_registry.md`](agent_wiki/development/finding_registry.md).
+
 ## Project Overview
 
 CO2 EOR Optimizer is a Python-based scientific application for optimizing CO2 Enhanced Oil Recovery operations. It features a PyQt6 GUI, multiple optimization algorithms (Genetic Algorithm, Bayesian Optimization, Particle Swarm, Differential Evolution), and physics-based reservoir simulation models.
@@ -19,66 +27,92 @@ The **Agent Wiki** (`agent_wiki/`) is the definitive, authoritative source of tr
 |-------|---------------|---------|
 | **Wiki Index & Invariants** | [`agent_wiki/README.md`](agent_wiki/README.md) | Entry point, architectural invariants, reading order |
 | **Source of Truth Map** | [`agent_wiki/architecture/source_of_truth_map.md`](agent_wiki/architecture/source_of_truth_map.md) | **Critical**: Identifies which of the 5 engine directories is active vs legacy |
-| **Common Pitfalls & Traps** | [`agent_wiki/development/common_pitfalls.md`](agent_wiki/development/common_pitfalls.md) | 28 documented traps (unit conversions, NumPy 2.0, mass balance, Vogel IPR, etc.) |
+| **Common Pitfalls & Traps** | [`agent_wiki/development/common_pitfalls.md`](agent_wiki/development/common_pitfalls.md) | 61 documented traps (unit conversions, NumPy 2.0, mass balance, Vogel IPR, misformatted findings) |
 | **Safe Modification Rules** | [`agent_wiki/development/safe_modification_rules.md`](agent_wiki/development/safe_modification_rules.md) | Invariants that must never be broken during edits |
 | **Change Safety Matrix** | [`agent_wiki/development/change_safety_matrix.md`](agent_wiki/development/change_safety_matrix.md) | Risk classification (Critical / High / Medium / Low) |
+| **Continuity Gate** | [`agent_wiki/development/continuity_gate.md`](agent_wiki/development/continuity_gate.md) | How to re-verify a `RESOLVED` claim; 1-commit-1-issue policy |
+| **Finding Registry** | [`agent_wiki/development/finding_registry.md`](agent_wiki/development/finding_registry.md) | **Required**: the CLI for adding findings — never hand-write one |
 | **Physics & Equations** | [`agent_wiki/physics/`](agent_wiki/physics/) | Recovery models, CO2 storage, Koval displacement, Composite IPR, PVT |
 | **Units & Coordinates** | [`agent_wiki/data/units.md`](agent_wiki/data/units.md) | Field unit definitions (MSCF, STB, psia, ft) and conversion constants |
 | **Codebase Audit** | [`agent_wiki/audit/`](agent_wiki/audit/) | Fallbacks, hardcoded values, technical debt, and suspicious logic |
 | **Agent Skills Framework** | [`agent_wiki/development/agent_skills.md`](agent_wiki/development/agent_skills.md) | Specialized skills: petroleum-engineer, simulation-orchestrator, physics-simulation |
 
 ### Core Architectural Invariants for Agents:
-1. **Active Engine**: 100% of simulation evaluations route strictly to `core/engine_surrogate/` (`SurrogateEngineWrapper` + `FastProfileGenerator`). Modifying `core/Phys_engine_full/`, `compositional_engine/`, or `unified_engine/` will **not** affect optimization runs.
+1. **Active Engine**: 100% of simulation evaluations route strictly to `core/engine_surrogate/` (`SurrogateEngineWrapper` + `FastProfileGenerator`). Modifying `core/Phys_engine_full/`, `compositional_engine/`, or `unified_engine/` will **not** affect optimization runs. **None of those directories exist** — verify with `Test-Path` before citing them.
 2. **Deliverability & Inflow (IPR)**: Well production is governed by Composite Vogel-Darcy IPR clamped to physical reservoir limits. Never scale field recovery by well counts.
-3. **Mass Conservation**: Cumulative recycled CO₂ cannot exceed cumulative produced CO₂ ($M_{\text{recycled}} \le M_{\text{produced}} \le M_{\text{injected}}$).
-4. **Geomechanical Safety**: Sandface injection pressure is strictly bounded by EPA Class VI UIC standards ($P_{\text{sandface}} \le 0.90 \times P_{\text{frac}}$).
-5. **Project Save/Load & State Persistence**: All user inputs, reservoir configurations, PVT models, well coordinates, manual overrides, and optimization results must cleanly serialize and deserialize to/from `.tphd` files via `utils/project_file_handler.py`. Never use recursive `dataclasses.asdict()` (it strips `_dataclass` tags on nested objects). Grid permeability loading must support scalar, 1D flattened, and 3D arrays. Whenever modifying data models or UI widgets, you MUST run `pytest tests/test_project_save_load.py -v`.
-6. **Simulation Run Audit Logging & Subfolder Workflow**: Every simulation run audit, parameter sweep evaluation, or benchmark run conducted by developers or AI agents MUST be recorded in a dedicated date-stamped subfolder under `agent_wiki/audit/simulation_run_audits/` (e.g. `agent_wiki/audit/simulation_run_audits/DD-MM-YYYY_<run_name>/`):
-   - **Date & Directory Naming**: Every subfolder MUST be prefixed with `DD-MM-YYYY` (e.g. `24-09-2026_single_simulation_baseline/`).
-   - **Artifacts Preservation**: Copy key plots (`*.png`), stream tables (`summary_*.csv`), and execution manifests (`run_manifest.json`) from `logs/` into the subfolder.
-   - **Audit Report (`audit.md`)**: Must contain explicit **Verdict** (`PASSED`, `ACCEPTABLE WITH CONDITIONS`, `FLAGGED`, or `FAILED`), concrete actionable **Proposal**, linked **Relevant Files**, and physical mass/geomechanics balance checks.
-   - **Master Index**: The run must be registered in the Master Simulation Run Audits table in [`agent_wiki/audit/simulation_run_audits/index.md`](agent_wiki/audit/simulation_run_audits/index.md) to preserve past runs and proposals across sessions.
-
+3. **Mass Conservation**: Cumulative recycled CO₂ cannot exceed cumulative produced CO₂ ($M_{\text{recycled}} \le M_{\text{produced}} \le M_{\text{injected}}$). **Holds by construction, not by assertion** — no test enforces it.
+4. **Geomechanical Safety**: Sandface injection pressure is bounded by EPA Class VI UIC standards ($P_{\text{sandface}} \le 0.90 \times P_{\text{frac}}$). **Not enforced by physics** — the bound is an artefact of `np.clip` at `surrogate_engine.py:468`, and leakage is identically zero (see HIGH-23).
+5. **Project Save/Load & State Persistence**: All user inputs must round-trip via `utils/project_file_handler.py`. Never use recursive `dataclasses.asdict()`. Run `pytest tests/test_project_save_load.py -v` after data-model or UI changes.
+6. **Simulation Run Audit Logging**: Every simulation run audit, parameter sweep, or benchmark MUST be recorded in `agent_wiki/audit/simulation_run_audits/DD-MM-YYYY_<run_name>/` with an `audit.md` carrying an explicit **Verdict** (`PASSED` / `ACCEPTABLE WITH CONDITIONS` / `FLAGGED` / `FAILED`), an actionable **Proposal**, and **Relevant Files**, and registered in the [Master Index](agent_wiki/audit/simulation_run_audits/index.md).
 
 ## Build, Lint, and Test Commands
 
 ### Environment Setup
 
 ```bash
-# Create virtual environment
 python -m venv venv
 venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
 ### Running Tests
 
 ```bash
-# Run all tests
-python -m pytest tests/ -v
-
-# Run project save/load verification (MANDATORY after data model or UI changes)
-python -m pytest tests/test_project_save_load.py -v
-
-# Run a single test file
-python -m pytest tests/test_imports.py -v
-
-# Run a specific test
-python -m pytest tests/test_imports.py::test_basic_imports -v
-
-# Run with coverage
-python -m pytest tests/ --cov=.
-
-# Run in parallel
-python -m pytest tests/ -v --parallel
+python -m pytest tests/ -v                          # all tests
+python -m pytest tests/test_project_save_load.py -v # MANDATORY after data/UI changes
+python -m pytest tests/ --cov=. --cov-report=xml
 ```
+
+### Audit & Continuity Gates (run before claiming a fix works)
+
+```bash
+# 1. Re-verify every RESOLVED claim by measurement
+python -m audit.continuity check
+python -m audit.continuity check CRIT-14            # single finding
+
+# 2. Validate the flaw register schema
+python -m audit --register validate
+
+# 3. Enforce 1-commit-1-issue discipline
+python -m audit.continuity check-commit "<subject>" "<body>"
+python -m audit.continuity selftest                 # proves the gate works
+python -m audit --issue-gate                        # staged-commit gate
+
+# 4. Static analysis
+python -m ruff check --select F821 .                # F821 is a RELEASE GATE
+```
+
+> [!WARNING]
+> **`pytest` passing is not evidence a physics fix works.** On 05-10-2026 seventeen findings were
+> marked `RESOLVED` while the suite reported `335 passed / 0 failed`; adversarial re-measurement
+> found 8 requiring reopening, including 2 regressions. Always cite a measurement in a
+> `Status:` line.
+
+### Adding or Updating a Finding — use the CLI
+
+```bash
+# Never hand-edit audit/scientific_flaws.md; the schema gate rejects it.
+python -m audit --register new CRIT-22 \
+    --severity CRITICAL --category MATHEMATICAL \
+    --location core/engine_surrogate/pvt_state.py:415 \
+    --observed "what the code does" \
+    --expected "what the physics requires" \
+    --impact "consequence for RF, pressure, economics, containment" \
+    --evidence "reproduction command + measured value + literature"
+
+# Then generate the GitHub twin from the record (never write the issue by hand)
+python -m audit --register issue CRIT-22
+```
+
+`Severity` ∈ `CRITICAL|HIGH|MEDIUM|LOW|INFORMATIONAL` · `Category` ∈
+`MATHEMATICAL|PHYSICAL|NUMERICAL|SOFTWARE|PROVENANCE` · `Status` ∈ `NEW|OPEN|CONFIRMED|
+PARTIALLY_RESOLVED|CONFIRMED_BUT_INERT|REGRESSED|RECURRED|STILL_OPEN|RESOLVED|STALE|
+SUPERSEDED|UNKNOWN_EVIDENCE_REQUIRED`. Full schema and rationale:
+[`agent_wiki/development/finding_registry.md`](agent_wiki/development/finding_registry.md).
 
 ### Application Entry Point
 
 ```bash
-# Run the application
 python main.py
 ```
 
@@ -86,254 +120,82 @@ python main.py
 
 ### Imports
 
-Organize imports in three sections separated by blank lines:
-1. Standard library imports
-2. Third-party imports
-3. Local/relative imports
+Three sections, blank-line separated: standard library, third-party, local/relative.
 
 ```python
 # Standard library
 import logging
 from typing import Callable, Dict, List, Optional
-from copy import deepcopy
 
 # Third-party
 import numpy as np
-import pandas as pd
 from PyQt6.QtWidgets import QWidget
 
 # Local imports
 from config_manager import ConfigManager
-from utils.preferences_manager import get_preferences_manager
 ```
 
 ### Naming Conventions
 
 | Type | Convention | Example |
 |------|-----------|---------|
-| Classes | PascalCase | `OptimizationEngine`, `DataValidator` |
-| Functions/variables | snake_case | `calculate_mmp()`, `reservoir_data` |
-| Constants | UPPER_SNAKE_CASE | `MAX_ITERATIONS`, `B_GAS_RB_PER_MSCF` |
-| Private methods | _snake_case (leading underscore) | `_validate_inputs()` |
-| Type aliases | PascalCase | `ResultList = List[Dict[str, Any]]` |
+| Classes | PascalCase | `OptimizationEngine` |
+| Functions/variables | snake_case | `calculate_mmp()` |
+| Constants | UPPER_SNAKE_CASE | `MAX_ITERATIONS` |
+| Private methods | _snake_case | `_validate_inputs()` |
 
-### Type Hints
+### Type Hints, Error Handling, Logging
 
-Use type hints for all function signatures. Import types from `typing`:
-
-```python
-from typing import Callable, Dict, List, Optional, Any, Tuple, Union
-
-def optimize_parameters(
-    params: Dict[str, float],
-    config: Optional[ConfigManager] = None,
-    callback: Optional[Callable[[float], None]] = None
-) -> Tuple[bool, float, str]:
-    ...
-```
-
-### Error Handling
-
-**Critical**: Never suppress errors silently. Follow the guidelines in `ERROR_HANDLING_GUIDELINES.md`.
+Type-hint all signatures. Never suppress errors silently — follow `ERROR_HANDLING_GUIDELINES.md`
+and use `error_handler.report_caught_error()`. Module-level `logger = logging.getLogger(__name__)`
+with context at the appropriate level.
 
 ```python
-# GOOD: Proper error handling with context
-from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
-
-try:
-    result = complex_calculation(data)
-except Exception as e:
-    report_caught_error(
-        operation="calculate recovery factor",
-        exception=e,
-        context={
-            "data_size": len(data),
-            "input_params": params_dict
-        },
-        user_action_suggested="Check input data format and ranges",
-        severity=ErrorSeverity.ERROR,
-        category=ErrorCategory.CALCULATION
-    )
-    raise RuntimeError(f"Calculation failed: {e}") from e
-
-# BAD: Silent error suppression
-try:
-    result = calculation()
-except:
-    result = default_value  # Never do this
-```
-
-Use the error handler utilities:
-- `report_error()` - Report custom errors
-- `report_caught_error()` - Handle caught exceptions
-- `safe_execute` - Context manager for risky operations
-- `safe_function` - Decorator for function-level safety
-
-### Logging
-
-Use the module-level logger pattern:
-
-```python
-import logging
-
-logger = logging.getLogger(__name__)
-
-def my_function():
-    logger.debug("Starting operation")
-    logger.info("Processing data")
-    logger.warning("Resource low")
-    logger.error("Operation failed", exc_info=True)
-```
-
-### Function Design
-
-- Keep functions focused and single-purpose
-- Maximum ~50 lines per function when possible
-- Use default values for optional parameters
-- Document complex parameters
-
-```python
-def calculate_recovery_factor(
-    porosity: float,
-    saturation: float,
-    volume_factor: float = 1.0,
-    **kwargs
-) -> float:
-    """
-    Calculate the recovery factor for given reservoir parameters.
-
-    Args:
-        porosity: Reservoir porosity as decimal (0-1)
-        saturation: Oil saturation as decimal (0-1)
-        volume_factor: Formation volume factor (default 1.0)
-        **kwargs: Additional parameters for extensibility
-
-    Returns:
-        Recovery factor as percentage (0-100)
+def calculate_recovery_factor(porosity: float, saturation: float) -> float:
+    """Calculate the recovery factor.
 
     Raises:
-        ValueError: If parameters are out of valid range
+        ValueError: If parameters are out of valid range.
     """
     if not 0 <= porosity <= 1:
         raise ValueError(f"Porosity must be 0-1, got {porosity}")
-    return porosity * saturation * volume_factor * 100
-```
-
-### File Organization
-
-```
-project_root/
-├── main.py                 # Application entry point
-├── config/                 # Configuration files
-├── core/                   # Core engine modules
-│   ├── optimisation_engine.py
-│   ├── simulation/
-│   └── Phys_engine_full/
-├── ui/                     # PyQt6 GUI components
-│   ├── main_window.py
-│   ├── widgets/
-│   ├── dialogs/
-│   └── workers/            # Background workers
-├── utils/                  # Utility functions & parsers (las_parser.py)
-├── analysis/               # Analysis modules
-├── tests/                  # Test suite
-├── config_manager.py       # Configuration management
-├── error_handler.py        # Centralized error handling
-└── requirements.txt        # Dependencies
-```
-
-### UI Development (PyQt6)
-
-- Use pyqtSignal for inter-component communication
-- Follow the worker pattern for long-running operations
-- Handle errors through the central error manager
-- Use layout managers (QVBoxLayout, QHBoxLayout) instead of fixed positions
-
-```python
-from PyQt6.QtCore import pyqtSignal, QObject
-
-class DataProcessor(QObject):
-    progress = pyqtSignal(int)
-    finished = pyqtSignal(dict)
-
-    def process(self, data):
-        # Long-running operation
-        self.finished.emit(result)
-```
-
-### Testing Guidelines
-
-- Place tests in `tests/` directory
-- Mirror source structure: `tests/core/test_optimisation.py`
-- Use pytest fixtures from `conftest.py`
-- Test error conditions, not just success paths
-- Mock external dependencies
-
-```python
-# tests/test_optimization.py
-import pytest
-from core.optimisation_engine import OptimizationEngine
-
-def test_optimization_runs(optimizer_setup):
-    engine = optimizer_setup
-    result = engine.run(max_iterations=10)
-    assert result.success
-    assert result.objective_value > 0
-
-def test_invalid_input_handling():
-    engine = OptimizationEngine()
-    with pytest.raises(ValueError):
-        engine.run(negative_param=-1)
+    return porosity * saturation * 100
 ```
 
 ### Scientific Computing Conventions
 
-- Use numpy arrays for numerical data
-- Validate input ranges explicitly
-- Document formulas with references where applicable
-- Handle edge cases (zero, NaN, infinity)
-
-```python
-import numpy as np
-
-def calculate_pressure(gradient: np.ndarray, depth: np.ndarray) -> np.ndarray:
-    if np.any(gradient <= 0):
-        raise ValueError("Pressure gradient must be positive")
-    if len(gradient) != len(depth):
-        raise ValueError("Gradient and depth arrays must have same length")
-    return np.cumsum(gradient * np.diff(depth, prepend=0))
-```
+numpy for numerical data; validate ranges explicitly; document formulas with references; handle
+zero/NaN/infinity.
 
 ### Performance Considerations
 
-- Use multiprocessing for CPU-intensive optimization runs
-- Cache expensive computations where appropriate
-- Use `@functools.lru_cache` for pure functions
-- Profile before optimizing (`analysis/profiler_refactored.py`)
+multiprocessing for CPU-intensive runs, `functools.lru_cache` for pure functions, profile before
+optimising (`analysis/profiler_refactored.py`).
 
 ### Code Review Checklist
 
-- [ ] Type hints on all function signatures
-- [ ] No bare `except:` clauses
-- [ ] Error context provided in exception handling
-- [ ] Logging at appropriate levels
+- [ ] Type hints on all signatures
+- [ ] No bare `except:`; error context provided
 - [ ] Docstrings on public functions/classes
 - [ ] Tests for new functionality
-- [ ] No commented-out code in PRs
-- [ ] Imports organized correctly
+- [ ] No commented-out code
+- [ ] `ruff check --select F821` clean
+- [ ] `python -m audit.continuity check` shows no new regressions
+- [ ] Findings added via `python -m audit --register new`, not by hand
 
 ## Key Modules Reference
 
 | Module | Purpose | Status / Notes |
 |--------|---------|----------------|
-| `agent_wiki/` | Architecture & physics knowledge base | **Authoritative reference** (see `agent_wiki/README.md`) |
-| `core/engine_surrogate/` | Active fast surrogate simulation engine | **Active production engine** (`FastProfileGenerator`, `surrogate_engine.py`) |
-| `core/optimisation_engine.py` | Optimization algorithms (GA, BO, PSO, DE) | Active optimizer with parameter bounds and discretization |
-| `core/objectives/wrapper.py` | Objective function wrapper (NPV, RF, Storage) | Evaluates objectives from surrogate results |
-| `evaluation/mmp.py` | Minimum Miscibility Pressure calculations | Active analytical correlations (Cronquist, Yellig, etc.) |
-| `error_handler.py` | Centralized error handling interface | Required for exception reporting |
-| `ui/central_error_manager.py` | GUI error management | Error display and handling |
-| `config_manager.py` | Configuration loading/saving | Application and scenario configs |
-| `core/Phys_engine_full/` | Full physics engine with EOS | *Legacy / dormant* (see `agent_wiki/architecture/source_of_truth_map.md`) |
-| `compositional_engine/` | 3D compositional simulator | *Legacy / dormant* |
-
+| `agent_wiki/` | Architecture & physics knowledge base | **Authoritative reference** |
+| `audit/continuity.py` | Autouse gate re-verifying `RESOLVED` claims | `python -m audit.continuity check` |
+| `audit/registry.py` | Canonical finding writer/validator + GitHub bridge | `python -m audit --register validate` |
+| `core/engine_surrogate/` | Active physics-informed surrogate engine | **Active production engine** |
+| `core/optimisation_engine.py` | Optimization algorithms (GA, BO, PSO, DE) | Active optimizer |
+| `core/objectives/wrapper.py` | Objective evaluation (NPV, RF, storage) | Consumer of engine profiles |
+| `evaluation/mmp.py` | MMP correlations (5 validated literature sources) | Single source of truth for MMP |
+| `core/engine_surrogate/pvt_state.py` | EOS, PVT, flash, solvent state | **Known defects: CRIT-03, CRIT-21, HIGH-20/21/26** |
+| `core/engine_surrogate/analytical_models.py` | Recovery models (miscible, immiscible, Koval, hybrid) | **Known defects: CRIT-06/13/14/19/20** |
+| `core/engine_surrogate/surrogate_engine.py` | Scenario evaluation, pressure ODE, mass balance | **Known defects: CRIT-01/12/17, HIGH-23/24** |
+| `error_handler.py` | Centralized error handling | Required for exception reporting |
+| `ui/central_error_manager.py` | GUI error management | — |

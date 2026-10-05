@@ -214,21 +214,21 @@
   "wiki_issues": [
     {
       "path": "agent_wiki\\README.md",
-      "line": 117,
+      "line": 118,
       "kind": "UNENFORCED_INVARIANT",
       "detail": "'strictly balanced' asserted without enforcement (leakage is identically zero (HIGH-23))",
       "severity": "LOW"
     },
     {
       "path": "agent_wiki\\README.md",
-      "line": 122,
+      "line": 123,
       "kind": "UNENFORCED_INVARIANT",
       "detail": "'strictly capped' asserted without enforcement (containment is an artefact of a clip, not a solved constraint)",
       "severity": "LOW"
     },
     {
       "path": "agent_wiki\\README.md",
-      "line": 113,
+      "line": 114,
       "kind": "UNENFORCED_INVARIANT",
       "detail": "'mass-conserving' asserted without enforcement (hold-by-construction, never asserted)",
       "severity": "LOW"

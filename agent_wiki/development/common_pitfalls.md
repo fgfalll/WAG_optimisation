@@ -1,4 +1,4 @@
-﻿# Top 61 Traps & Common Pitfalls for AI Agents
+﻿# Top 64 Traps & Common Pitfalls for AI Agents
 
 This document highlights the most frequent misconceptions, resolved gotchas, and traps encountered when working with this codebase.
 
@@ -317,4 +317,19 @@ This document highlights the most frequent misconceptions, resolved gotchas, and
 ### 61. Writing a Formula Into a Remediation Note That the Code Does Not Implement
 - **Trap:** Documenting `HCPVI = QВ·Bg / (VpВ·SoiВ·Boi)` when the code divides by `(ooipВ·Bo)/(1в€’Swi)`.
 - **Reality:** Both are wrong, and by different factors. The code's denominator reduces to `V_p` (total pore volume) instead of `V_p(1в€’S_wi)` вЂ” off by exactly `1в€’S_wi`. The written formula multiplies a pore volume by a formation volume factor, which adds a spurious `rb/STB`: **pore volume is already at reservoir conditions.** Neither matches the other. Issues [#17](https://github.com/fgfalll/WAG_optimisation/issues/17), [#18](https://github.com/fgfalll/WAG_optimisation/issues/18).
-- **Rule:** Every formula in a wiki page or commit body must be reproducible from a one-line algebraic identity. If you cannot reduce it to units that cancel, it is wrong.
+- **Rule:** Every formula in a wiki page or commit body must be reproducible from a one-line algebraic identity. If you cannot reduce it to units that cancel, it is wrong. (Tracked in the register as CRIT-01; former issues #17 and #18 are now closed and consolidated there.)
+
+### 62. Hand-Writing a Finding Into the Register
+- **Trap:** Opening `audit/scientific_flaws.md` in an editor, pasting a new `### CRIT-22` block, and inventing the field labels as you go.
+- **Reality:** two layouts, five label spellings, both dash characters, and an inline-vs-own-line `**Status:**` all coexisted in the same file. The parser read **19 of 73 records**; the other 54 were invisible to the continuity gate — which is how a finding could read as `RESOLVED` to a human and open to every tool. All 73 are now canonical and `validate` passes.
+- **Rule:** `python -m audit --register new <ID> --severity … --category … --location … --observed … --expected … --impact … --evidence …`, then `python -m audit --register validate`. Severity, Category and Status are closed enumerations; `Location` must cite a real `file:line` or `` `repo-wide` ``. Schema: [`finding_registry.md`](finding_registry.md).
+
+### 63. Writing the GitHub Issue by Hand
+- **Trap:** `gh issue create --title "…" --body "…"` for a finding that already has a register entry.
+- **Reality:** two sources of truth drift. On 05-10-2026 issues were hand-written for findings the register already described, then closed by hand while the register still said the defect was live.
+- **Rule:** `python -m audit --register issue <ID>` renders the body from the record and stamps it "generated, do not edit by hand". Issues #16–#20 were closed on this basis; each closure comment names the register entry and states plainly that the defect is **not** fixed.
+
+### 64. Treating the Register as Authoritative When It Is Stale
+- **Trap:** Reading a `Status: RESOLVED` line and moving on.
+- **Reality:** the register claimed RESOLVED for eight findings the continuity gate had measured as broken — CRIT-01, 03, 06, 12, 13, 16, 18, 21 — while the suite reported `335 passed / 0 failed`.
+- **Rule:** the register records **intent**; `python -m audit.continuity check` records **measurement**. Only the measurement closes a finding. An invariant that cannot be violated has not been tested — distinguish *holds by construction* from *asserted*.
