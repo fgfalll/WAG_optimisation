@@ -8,10 +8,10 @@
 
 ## 1. Executive Scientific Audit Summary
 
-- **Total Scanned Python Files**: 237
-- **Total Scanned Code Lines**: 86,503
+- **Total Scanned Python Files**: 261
+- **Total Scanned Code Lines**: 88,797
 - **Total Documented Scientific Flaws**: 18 (Critical: 6, High: 9, Medium: 3)
-- **Total Documented Fallback Exception Handlers**: 426
+- **Total Documented Fallback Exception Handlers**: 435
 - **Total Documented Hardcoded Numerical Literals**: 1191
 
 ### Primary Scientific Finding:

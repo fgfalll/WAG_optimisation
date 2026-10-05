@@ -1,8 +1,8 @@
 Module,Line,Exception Type,Body Length
 agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_3.py,112,OverflowError,1
 agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py,65,Exception,1
-agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py,169,Exception,1
-agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py,286,Exception,1
+agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py,169,Exception,2
+agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py,289,Exception,1
 agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py,155,Exception,1
 agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py,59,Exception,1
 agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py,81,Exception,1
@@ -38,16 +38,18 @@ analysis/uq_engine.py,355,Exception,2
 analysis/uq_engine.py,187,"(ValueError, TypeError)",1
 analysis/well_analysis.py,71,Exception,2
 analysis/well_analysis.py,156,Exception,2
-audit/__main__.py,79,Exception,4
+audit/__main__.py,90,Exception,4
 audit/continuity.py,139,Exception,1
 audit/continuity.py,162,OSError,1
-audit/continuity.py,879,Exception,1
+audit/continuity.py,845,ValueError,1
+audit/continuity.py,980,Exception,1
 audit/generate_agent_checklist.py,294,Exception,1
 audit/generate_agent_checklist.py,263,Exception,1
 audit/pipeline.py,745,Exception,1
 audit/pipeline.py,65,Exception,1
 audit/pipeline.py,138,Exception,1
 audit/pipeline.py,178,Exception,1
+audit/registry.py,68,"(AttributeError, ValueError)",1
 core/data_integration_engine.py,148,Exception,2
 core/data_integration_engine.py,194,Exception,3
 core/data_integration_engine.py,615,Exception,3
@@ -136,6 +138,13 @@ scripts/audit_generator.py,107,Exception,1
 scripts/audit_generator.py,227,Exception,1
 scripts/parse_coverage.py,25,ValueError,1
 scripts/process_las_data.py,82,Exception,2
+site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_3.py,112,OverflowError,1
+site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py,65,Exception,1
+site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py,169,Exception,2
+site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py,289,Exception,1
+site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py,155,Exception,1
+site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py,59,Exception,1
+site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py,81,Exception,1
 tests/conftest.py,22,Exception,1
 tests/core/test_fitness_function.py,294,Exception,1
 tests/core/test_fitness_function.py,321,Exception,1

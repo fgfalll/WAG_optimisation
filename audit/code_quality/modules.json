@@ -164,7 +164,7 @@
   },
   {
     "module": "agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py",
-    "lines": 292,
+    "lines": 295,
     "classes_count": 0,
     "functions_count": 3,
     "classes": [],
@@ -478,7 +478,7 @@
   },
   {
     "module": "audit/__main__.py",
-    "lines": 87,
+    "lines": 98,
     "classes_count": 0,
     "functions_count": 1,
     "classes": [],
@@ -488,9 +488,9 @@
   },
   {
     "module": "audit/continuity.py",
-    "lines": 1048,
+    "lines": 1173,
     "classes_count": 3,
-    "functions_count": 27,
+    "functions_count": 28,
     "classes": [
       "CheckResult",
       "Check",
@@ -517,6 +517,7 @@
       "probe_pvt_provenance_guards",
       "probe_recycled_le_produced",
       "parse_status_labels",
+      "resolve_claims",
       "check_wiki",
       "check_commit_issue_discipline",
       "gate_staged_commit",
@@ -560,6 +561,37 @@
       "generate_audit_reports",
       "export_scientific_registers",
       "run_full_audit"
+    ]
+  },
+  {
+    "module": "audit/registry.py",
+    "lines": 638,
+    "classes_count": 2,
+    "functions_count": 19,
+    "classes": [
+      "Finding",
+      "ValidationReport"
+    ],
+    "functions": [
+      "parse_findings",
+      "render_finding",
+      "next_id",
+      "validate",
+      "render_issue_body",
+      "_gh",
+      "ensure_labels",
+      "create_issue",
+      "cmd_validate",
+      "cmd_list",
+      "cmd_new",
+      "cmd_issue",
+      "cmd_json",
+      "main",
+      "severity_tier",
+      "is_resolved",
+      "ok",
+      "opt",
+      "val"
     ]
   },
   {
@@ -1626,6 +1658,211 @@
   {
     "module": "setup.py",
     "lines": 61,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_1.py",
+    "lines": 84,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_2.py",
+    "lines": 68,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_3.py",
+    "lines": 127,
+    "classes_count": 1,
+    "functions_count": 0,
+    "classes": [
+      "_Adv"
+    ],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_4.py",
+    "lines": 72,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "fg"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/count2.py",
+    "lines": 27,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_clip.py",
+    "lines": 37,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "spy"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_counts.py",
+    "lines": 27,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_counts2.py",
+    "lines": 65,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_engine.py",
+    "lines": 42,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_hcpvi.py",
+    "lines": 27,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_inert.py",
+    "lines": 28,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_misc.py",
+    "lines": 39,
+    "classes_count": 1,
+    "functions_count": 0,
+    "classes": [
+      "FakeAdv"
+    ],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_physics.py",
+    "lines": 42,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_pvt2.py",
+    "lines": 24,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_recount.py",
+    "lines": 73,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_rf.py",
+    "lines": 29,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests.py",
+    "lines": 18,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests2.py",
+    "lines": 70,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "prod_names",
+      "fn_local_names"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py",
+    "lines": 295,
+    "classes_count": 0,
+    "functions_count": 3,
+    "classes": [],
+    "functions": [
+      "hdr",
+      "p",
+      "run"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_6.py",
+    "lines": 146,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "hdr",
+      "p"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py",
+    "lines": 88,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "hdr",
+      "p"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_8.py",
+    "lines": 45,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_9.py",
+    "lines": 44,
     "classes_count": 0,
     "functions_count": 0,
     "classes": [],

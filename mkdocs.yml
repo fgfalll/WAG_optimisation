@@ -122,6 +122,9 @@ nav:
       - Dependency Graph: architecture/dependency_graph.md
       - Source of Truth Map: architecture/source_of_truth_map.md
       - Subsystem Matrix: architecture/source_of_truth.md
+      - Shared Earth Workstation: architecture/shared_earth_workstation.md
+      - Subsurface Studio: architecture/subsurface_studio_workbench.md
+      - Model QA/QC & Assurance: architecture/model_qa_qc_and_self_assurance.md
   - Physics Models:
       - Reservoir Model: physics/reservoir_model.md
       - Fluid Model: physics/fluid_model.md
@@ -141,12 +144,17 @@ nav:
       - Common Pitfalls: development/common_pitfalls.md
       - Change Safety Matrix: development/change_safety_matrix.md
       - Safe Modification Rules: development/safe_modification_rules.md
+      - Continuity Gate: development/continuity_gate.md
+      - Finding Registry: development/finding_registry.md
       - Coding Rules: development/coding_rules.md
       - Extension Points: development/extension_points.md
       - Agent Skills: development/agent_skills.md
   - Audit Reports:
+      - Agent Pre-Flight Checklist: audit/agent_checklist.md
       - Simulation Run Audits:
           - Overview & Registry: audit/simulation_run_audits/index.md
+          - 05-10-2026 Round 2 Verification (FLAGGED): audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md
+          - 04-10-2026 Forensic Audit (FLAGGED): audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/audit.md
           - 24-09-2026 Baseline Run:
               - Technical Audit: audit/simulation_run_audits/24-09-2026_single_simulation_baseline/audit.md
               - Evaluation Report: audit/simulation_run_audits/24-09-2026_single_simulation_baseline/run_evaluation_report.md

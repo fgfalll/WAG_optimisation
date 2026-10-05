@@ -15,11 +15,11 @@
     "module": "agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py",
     "line": 169,
     "exception_type": "Exception",
-    "body_statements": 1
+    "body_statements": 2
   },
   {
     "module": "agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py",
-    "line": 286,
+    "line": 289,
     "exception_type": "Exception",
     "body_statements": 1
   },
@@ -235,7 +235,7 @@
   },
   {
     "module": "audit/__main__.py",
-    "line": 79,
+    "line": 90,
     "exception_type": "Exception",
     "body_statements": 4
   },
@@ -253,7 +253,13 @@
   },
   {
     "module": "audit/continuity.py",
-    "line": 879,
+    "line": 845,
+    "exception_type": "ValueError",
+    "body_statements": 1
+  },
+  {
+    "module": "audit/continuity.py",
+    "line": 980,
     "exception_type": "Exception",
     "body_statements": 1
   },
@@ -291,6 +297,12 @@
     "module": "audit/pipeline.py",
     "line": 178,
     "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "audit/registry.py",
+    "line": 68,
+    "exception_type": "(AttributeError, ValueError)",
     "body_statements": 1
   },
   {
@@ -820,6 +832,48 @@
     "line": 82,
     "exception_type": "Exception",
     "body_statements": 2
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_3.py",
+    "line": 112,
+    "exception_type": "OverflowError",
+    "body_statements": 1
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py",
+    "line": 65,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py",
+    "line": 169,
+    "exception_type": "Exception",
+    "body_statements": 2
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py",
+    "line": 289,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py",
+    "line": 155,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py",
+    "line": 59,
+    "exception_type": "Exception",
+    "body_statements": 1
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py",
+    "line": 81,
+    "exception_type": "Exception",
+    "body_statements": 1
   },
   {
     "module": "tests/conftest.py",

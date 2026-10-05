@@ -2,6 +2,29 @@
 
 **Audit round:** 04-10-2026 (forensic audit & validation); remediations applied 05-10-2026
 **Register refresh:** 05-10-2026 (round 2) — the 17 "RESOLVED" marks written earlier the same day were re-verified by adversarial measurement: **11 CONFIRMED, 4 PARTIALLY RESOLVED, 1 REGRESSED (CRIT-12), 1 CONFIRMED-BUT-INERT (CRIT-06)**. Their `Status:` lines below now state the measured verdict, not the original intention. **11 new findings registered** (CRIT-14..CRIT-21, HIGH-20..26, MED-17..22). Totals: **73 findings — 21 CRITICAL / 25 HIGH / 22 MEDIUM / 5 LOW**. Re-verify with `python -m audit.continuity check`.
+
+> [!IMPORTANT]
+> **This file is machine-generated and machine-validated. Do not hand-write a finding.**
+>
+> ```bash
+> python -m audit --register validate          # schema-lint every record
+> python -m audit --register list              # inventory
+> python -m audit --register new CRIT-22 --severity CRITICAL --category MATHEMATICAL \
+>     --location core/x.py:415 --observed "…" --expected "…" --impact "…" --evidence "…"
+> python -m audit --register issue CRIT-22     # generate the GitHub twin
+> ```
+>
+> Every record uses the same eight fields in the same order (`Severity`, `Category`, `Location`,
+> `Observed`, `Expected`, `Scientific Impact`, `Evidence & Citation`, `Status`) plus an optional
+> `Note`. Severity and Category are closed enumerations and `Location` must cite a real
+> `file:line` or the literal `` `repo-wide` ``. `validate` is a release gate: hand-edits that
+> break the schema fail with a non-zero exit code.
+>
+> The GitHub issues are **generated from these records**, never written by hand — that
+> divergence is how the 05-10-2026 batch produced seventeen unchecked `RESOLVED` marks. Issues
+> #16–#20 were closed on that basis; the findings remain open in this file with their measured
+> status. Issues close **only** via a commit containing `Closes #N`, one issue per commit
+> (`python -m audit.continuity check-commit "<subject>" "<body>"` enforces this).
 **Auditor role:** Senior Reservoir Simulation Engineer / Applied Mathematician
 **Register status:** PARTIALLY RESOLVED (17 remediated, 36 open/cataloged)
 **Round-2 refresh:** 05-10-2026 — the 17 "RESOLVED" marks were verified by adversarial re-audit: **11 CONFIRMED, 4 PARTIALLY RESOLVED, 1 REGRESSED (CRIT-12), 1 CONFIRMED-but-inert (CRIT-06)**. **11 new findings registered (CRIT-14..CRIT-21, HIGH-20..HIGH-26, MED-17..MED-22).** See [`agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md`](../../agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md).

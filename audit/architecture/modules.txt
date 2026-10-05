@@ -1,8 +1,8 @@
 CO2 EOR OPTIMIZER - REPOSITORY MODULE INVENTORY
-Total Python Files: 237
-Total Code Lines: 86503
-Total Classes: 275
-Total Functions/Methods: 2221
+Total Python Files: 261
+Total Code Lines: 88797
+Total Classes: 279
+Total Functions/Methods: 2252
 ================================================================================
 
 Module: __init__.py (25 lines)
@@ -48,7 +48,7 @@ Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_au
 Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests2.py (70 lines)
   Functions (2): prod_names, fn_local_names
 
-Module: agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py (292 lines)
+Module: agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py (295 lines)
   Functions (3): hdr, p, run
 
 Module: agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_6.py (146 lines)
@@ -103,18 +103,22 @@ Module: analysis/well_analysis.py (278 lines)
 
 Module: audit/__init__.py (11 lines)
 
-Module: audit/__main__.py (87 lines)
+Module: audit/__main__.py (98 lines)
   Functions (1): main
 
-Module: audit/continuity.py (1048 lines)
+Module: audit/continuity.py (1173 lines)
   Classes (3): CheckResult, Check, WikiIssue
-  Functions (27): _safe, probe_no_undefined_fudge_genes, probe_hcpvi_dimensionless, probe_bubble_point_correlation, probe_gas_fvf_constant, probe_zfactor_dense_gas, probe_co2_compressibility_provenance, probe_saturation_closure, probe_viscosity_sensitivity, probe_koval_sensitivity_in_config...
+  Functions (28): _safe, probe_no_undefined_fudge_genes, probe_hcpvi_dimensionless, probe_bubble_point_correlation, probe_gas_fvf_constant, probe_zfactor_dense_gas, probe_co2_compressibility_provenance, probe_saturation_closure, probe_viscosity_sensitivity, probe_koval_sensitivity_in_config...
 
 Module: audit/generate_agent_checklist.py (512 lines)
   Functions (8): parse_scientific_flaws_md, parse_parameter_provenance_csv, parse_safe_harbor_items, scan_silent_fallbacks, scan_ruff_diagnostics, generate_agent_checklist_markdown, run_checklist_pipeline, commit_current
 
 Module: audit/pipeline.py (756 lines)
   Functions (10): get_python_files, run_code_quality_scan, run_fallbacks_scan, run_hardcoded_values_scan, get_scientific_flaw_register, run_scientific_flaws_scan, run_parameter_provenance_scan, generate_audit_reports, export_scientific_registers, run_full_audit
+
+Module: audit/registry.py (638 lines)
+  Classes (2): Finding, ValidationReport
+  Functions (19): parse_findings, render_finding, next_id, validate, render_issue_body, _gh, ensure_labels, create_issue, cmd_validate, cmd_list...
 
 Module: core/__init__.py (22 lines)
   Functions (1): __getattr__
@@ -306,6 +310,60 @@ Module: scripts/validate_engine_physics.py (432 lines)
   Functions (3): create_test_reservoir, evaluate_archetype_scenario, run_physics_qaqc_benchmark
 
 Module: setup.py (61 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_1.py (84 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_2.py (68 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_3.py (127 lines)
+  Classes (1): _Adv
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_4.py (72 lines)
+  Functions (1): fg
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/count2.py (27 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_clip.py (37 lines)
+  Functions (1): spy
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_counts.py (27 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_counts2.py (65 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_engine.py (42 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_hcpvi.py (27 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_inert.py (28 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_misc.py (39 lines)
+  Classes (1): FakeAdv
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_physics.py (42 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_pvt2.py (24 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_recount.py (73 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_rf.py (29 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests.py (18 lines)
+
+Module: site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests2.py (70 lines)
+  Functions (2): prod_names, fn_local_names
+
+Module: site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py (295 lines)
+  Functions (3): hdr, p, run
+
+Module: site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_6.py (146 lines)
+  Functions (2): hdr, p
+
+Module: site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py (88 lines)
+  Functions (2): hdr, p
+
+Module: site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_8.py (45 lines)
+
+Module: site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_9.py (44 lines)
 
 Module: tests/__init__.py (1 lines)
 

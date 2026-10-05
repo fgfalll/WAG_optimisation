@@ -14,7 +14,7 @@
 | Metric | Count | Assessment |
 |---|---|---|
 | **Total Confirmed Scientific Flaws** | **73** | 13 CRITICAL · 19 HIGH · 16 MEDIUM · 5 LOW |
-| **Active Defects Status** | **56 OPEN** | 17 RESOLVED |
+| **Active Defects Status** | **55 OPEN** | 12 RESOLVED |
 | **Cataloged Parameter Provenance** | **112 parameters** | Sources: Literature, Empirical, Calibrated, Unknown |
 | **Undocumented / Arbitrary Constants** | **73** | Require physical calibration or field bounds |
 | **Silent Fallback Exception Handlers** | **48 blocks** | Masking numerical divergences in `core/` |
@@ -48,29 +48,29 @@ The following 13 mechanisms have been mathematically verified against analytical
 
 | ID | Sev | Category | File:Line | Title / Headline Defect | Status |
 |---|---|---|---|---|---|
-| **CRIT-01** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/surrogate_engine.py:491-497` (overwrites `params["hcpvi"]` set at `core/engine_surrogate/surrogate_engine.py:890`)` | HCPVI is pressure-independent and dimensionally `MSCF/STB` | `RESOLVED — Remediated in core/engine_surrogate/surrogate_engine.py:489-500: HCPVI corrected to dimensionless pore-volume ratio with pressure-dependent Bg(P)/Bo(P).` |
-| **CRIT-02** | **CRITICAL** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:165`, `:171-174`, `:490-510`, `:533`, `:685`, `:690`, `:692`; `core/engine_surrogate/surrogate_models.py:465`, `:473`, `:507-530`` | Reported NPV and reported recovery factor come from two different evaluations | `RESOLVED — Remediated in core/engine_surrogate/surrogate_engine.py:598-630: NPV derived directly from annual simulated production and injection profiles consistent with RF.` |
-| **CRIT-03** | **CRITICAL** | PHYSICAL | ``core/engine_surrogate/pvt_state.py:232-244` (`R_s`), `:267-307` (swelling / `B_o`); used at `core/engine_surrogate/surrogate_engine.py:362`, `:369`, `:376`, `:453`` | No bubble-point model: `Bo` increases with pressure (apparent negative compressibility) | `RESOLVED — Remediated in core/engine_surrogate/pvt_state.py:83-103: Bubble-point model integrated with physically positive isothermal oil compressibility above Pb.` |
-| **CRIT-04** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/pvt_state.py:372-373` (mixing at `:385`; consumed at `core/engine_surrogate/surrogate_engine.py:366`, `:414`, `:453`)` | Hydrocarbon-gas `B_g` coefficient is 31.73× too small (unit conversion inverted) | `RESOLVED — Remediated in core/engine_surrogate/pvt_state.py:377: Corrected Standing (1977) natural gas FVF conversion constant to 5.035 * Z * T_R / P.` |
-| **CRIT-05** | **CRITICAL** | PHYSICAL | ``core/engine_surrogate/pvt_state.py:361-367`` | "Hall-Yarborough" Z-factor is a linear expression returning Z > 1 in the dense-gas region | `RESOLVED — Remediated in core/engine_surrogate/pvt_state.py:367: Implemented Papay (1968) natural gas Z-factor correlation and analytical dZ/dP with correct dense-gas behavior.` |
-| **CRIT-06** | **CRITICAL** | NUMERICAL | ``core/engine_surrogate/analytical_models.py:541-559`` | Koval sweep returns RF = 0 for 0.5 ≤ M ≤ 1.4 with a spike at exactly M = 1.0, plus `exp` overflow for M < 1 | `RESOLVED — Remediated in core/engine_surrogate/analytical_models.py:540: Authentic Koval (1963) continuous Welge throughput integral across all mobility ratios M.` |
-| **CRIT-07** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/analytical_models.py:319-326`` | Immiscible model is the constant RF = 0.10 over the whole parameter space | `RESOLVED — Remediated in core/engine_surrogate/analytical_models.py:296-326: Corrected Buckley-Leverett Welge shock-front tangent construction and removed unphysical 0.10 constant floor.` |
-| **CRIT-08** | **CRITICAL** | SOFTWARE | ``core/optimisation_engine.py:1645-1666` (prune) with `core/objectives/storage.py:86-102` (score) and `core/data_models.py:1725-1730` (weights/threshold)` | Plume-containment constraint can never prune: floor of the score exceeds the threshold | `RESOLVED — Remediated in core/data_models.py:1815-1820, core/objectives/storage.py:86-115, and core/optimisation_engine.py:1657-1685: Added containment factors to AdvancedEngineParams and cascading pressure profile retrieval.` |
-| **CRIT-09** | **CRITICAL** | SOFTWARE | ``core/objectives/wrapper.py:61-78`; key producer `core/optimisation_engine.py:841-896`` | Wrapper's sandface / Class-VI penalty block is unreachable (wrong profile key) | `RESOLVED — Remediated in core/objectives/wrapper.py:61-79 and core/optimisation_engine.py:853-860: Forwarded pressure and sandface injection profiles into objective evaluation.` |
-| **CRIT-10** | **CRITICAL** | SOFTWARE | — | Every CO₂ leakage constraint is structurally zero (three dead paths) | `RESOLVED — Remediated in core/objectives/wrapper.py:81-99, core/optimisation_engine.py:853-860, and core/engine_surrogate/surrogate_engine.py: Forwarded leakage keys into constraint and objective workflows.` |
-| **CRIT-11** | **CRITICAL** | PHYSICAL | ``core/engine_surrogate/profile_generator_fast.py:1109`, `:1117-1118` versus `:1210`; parameter `core/data_models.py:917`` | WAG water injection is ~1000× too low (missing unit conversion), so WAG degenerates to continuous gas | `RESOLVED — Remediated in core/engine_surrogate/profile_generator_fast.py:1109-1118: Added x1000 unit scaling for WAG gas-to-water injection conversion.` |
-| **CRIT-12** | **CRITICAL** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:376-379`, `:412-417`, `:455`, versus post-hoc rescale at `:513-522`` | Production/saturation/pressure state is computed from an unscaled profile that is rescaled afterwards | `RESOLVED — Remediated in core/engine_surrogate/surrogate_engine.py:533-557: Re-synchronized saturations (So, Sw, Sg), cumulative oil, and VRR post-rescaling.` |
-| **CRIT-13** | **CRITICAL** | SOFTWARE | ``core/optimisation_engine.py:120-142`, `:1420-1431`; `core/engine_surrogate/analytical_models.py:449`, `:458-459`; `core/engine_surrogate/surrogate_engine.py:865`, `:896`; `core/simulation/recovery_models.py:329`` | Three optimizer genes are inert (`gravity_factor`, `transition_alpha`, `transition_beta`) and a fourth is RF-inert (`mobility_ratio`) | `RESOLVED — Remediated in core/engine_surrogate/analytical_models.py and surrogate_engine.py:905-950: Mapped and consumed gravity_factor, transition_alpha, transition_beta, mobility_ratio, and c7_plus.` |
-| **CRIT-14** | **CRITICAL** | PHYSICAL | ``core/engine_surrogate/analytical_models.py:170-172`, `:275-277`, `:412-414`; source `core/engine_surrogate/surrogate_engine.py:976-977`` | The mobility-ratio override severs oil viscosity from recovery entirely | `OPEN` |
-| **CRIT-15** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/analytical_models.py:558-571`; `core/engine_surrogate/surrogate_engine.py:946-968`` | Default configuration pins the Koval sweep at its 0.95 clip for every mobility ratio | `OPEN` |
-| **CRIT-16** | **CRITICAL** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:963-964`` | `bo`/`b_co2` provenance guards are inert; the user's own PVT inputs are silently discarded | `OPEN` |
-| **CRIT-17** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/surrogate_engine.py:535-551`` | The CRIT-12 fix breaks saturation closure: `S_o + S_w > 1` on 27 % of timesteps | `OPEN` |
-| **CRIT-18** | **CRITICAL** | PHYSICAL | ``core/engine_surrogate/surrogate_engine.py:622-651` (revenue at `:636`), allocation `:588`, accumulation `:606`, publication `:688`` | The new NPV omits the hydrocarbon-gas revenue stream it computes | `OPEN` |
-| **CRIT-19** | **CRITICAL** | PROVENANCE | ``core/engine_surrogate/analytical_models.py:199-201`, `:331-333`, `:802`; wired at `core/engine_surrogate/surrogate_engine.py:928`, `:974-975`` | `gravity_factor` is now an active, unprincipled, triple-purpose fudge multiplier | `OPEN` |
-| **CRIT-20** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/analytical_models.py:474-481`` | Miscibility weight is decoupled from composition and equals 0.5 exactly at the MMP | `OPEN` |
-| **CRIT-21** | **CRITICAL** | PROVENANCE | ``core/engine_surrogate/pvt_state.py:415-419`` | CO₂ compressibility is a new hard-coded power law contradicting the Peng-Robinson EOS in the same class | `OPEN` |
-| **HIGH-01** | **HIGH** | MATHEMATICAL | ``core/engine_surrogate/surrogate_engine.py:509`; `core/engine_surrogate/analytical_models.py:814`` | `rf_max_physical` uses pore-volume fraction instead of OOIP-normalized fraction (25% too restrictive) | `RESOLVED — Remediated in core/engine_surrogate/analytical_models.py and surrogate_engine.py:509: rf_max_physical normalized to OOIP (1 - Swi - Sor)/(1 - Swi).` |
-| **HIGH-02** | **HIGH** | NUMERICAL | ``core/engine_surrogate/analytical_models.py:304-312`; `core/engine_surrogate/surrogate_models.py:164-182`; test `tests/scientific/mathematical/test_singularity_and_overflow.py:64-73`` | Craig areal-sweep 48% discontinuity at M = 1.0, and a test that asserts the defect | `CONFIRMED with corrected formula description` |
+| **CRIT-01** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/surrogate_engine.py:491-497` (overwrites `params["hcpvi"]` set at `core/engine_surrogate/surrogate_engine.py:890`)` | HCPVI is pressure-independent and dimensionally `MSCF/STB` | `PARTIALLY_RESOLVED` |
+| **CRIT-02** | **CRITICAL** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:165`, `:171-174`, `:490-510`, `:533`, `:685`, `:690`, `:692`; `core/engine_surrogate/surrogate_models.py:465`, `:473`, `:507-530`` | Reported NPV and reported recovery factor come from two different evaluations | `RESOLVED` |
+| **CRIT-03** | **CRITICAL** | PHYSICAL | ``core/engine_surrogate/pvt_state.py:232-244` (`R_s`), `:267-307` (swelling / `B_o`); used at `core/engine_surrogate/surrogate_engine.py:362`, `:369`, `:376`, `:453`` | No bubble-point model: `Bo` increases with pressure (apparent negative compressibility) | `STILL_OPEN` |
+| **CRIT-04** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/pvt_state.py:372-373` (mixing at `:385`; consumed at `core/engine_surrogate/surrogate_engine.py:366`, `:414`, `:453`)` | Hydrocarbon-gas `B_g` coefficient is 31.73× too small (unit conversion inverted) | `RESOLVED` |
+| **CRIT-05** | **CRITICAL** | PHYSICAL | ``core/engine_surrogate/pvt_state.py:361-367`` | "Hall-Yarborough" Z-factor is a linear expression returning Z > 1 in the dense-gas region | `RESOLVED` |
+| **CRIT-06** | **CRITICAL** | NUMERICAL | ``core/engine_surrogate/analytical_models.py:541-559`` | Koval sweep returns RF = 0 for 0.5 ≤ M ≤ 1.4 with a spike at exactly M = 1.0, plus `exp` overflow for M < 1 | `CONFIRMED_BUT_INERT` |
+| **CRIT-07** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/analytical_models.py:319-326`` | Immiscible model is the constant RF = 0.10 over the whole parameter space | `RESOLVED` |
+| **CRIT-08** | **CRITICAL** | SOFTWARE | ``core/optimisation_engine.py:1645-1666` (prune) with `core/objectives/storage.py:86-102` (score) and `core/data_models.py:1725-1730` (weights/threshold)` | Plume-containment constraint can never prune: floor of the score exceeds the threshold | `RESOLVED` |
+| **CRIT-09** | **CRITICAL** | SOFTWARE | ``core/objectives/wrapper.py:61-78`; key producer `core/optimisation_engine.py:841-896`` | Wrapper's sandface / Class-VI penalty block is unreachable (wrong profile key) | `RESOLVED` |
+| **CRIT-10** | **CRITICAL** | SOFTWARE | — | Every CO₂ leakage constraint is structurally zero (three dead paths) | `RESOLVED` |
+| **CRIT-11** | **CRITICAL** | PHYSICAL | ``core/engine_surrogate/profile_generator_fast.py:1109`, `:1117-1118` versus `:1210`; parameter `core/data_models.py:917`` | WAG water injection is ~1000× too low (missing unit conversion), so WAG degenerates to continuous gas | `RESOLVED` |
+| **CRIT-12** | **CRITICAL** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:376-379`, `:412-417`, `:455`, versus post-hoc rescale at `:513-522`` | Production/saturation/pressure state is computed from an unscaled profile that is rescaled afterwards | `REGRESSED` |
+| **CRIT-13** | **CRITICAL** | SOFTWARE | ``core/optimisation_engine.py:120-142`, `:1420-1431`; `core/engine_surrogate/analytical_models.py:449`, `:458-459`; `core/engine_surrogate/surrogate_engine.py:865`, `:896`; `core/simulation/recovery_models.py:329`` | Three optimizer genes are inert (`gravity_factor`, `transition_alpha`, `transition_beta`) and a fourth is RF-inert (`mobility_ratio`) | `PARTIALLY_RESOLVED` |
+| **CRIT-14** | **CRITICAL** | PHYSICAL | ``core/engine_surrogate/analytical_models.py:170-172`, `:275-277`, `:412-414`; source `core/engine_surrogate/surrogate_engine.py:976-977`` | The mobility-ratio override severs oil viscosity from recovery entirely | `NEW` |
+| **CRIT-15** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/analytical_models.py:558-571`; `core/engine_surrogate/surrogate_engine.py:946-968`` | Default configuration pins the Koval sweep at its 0.95 clip for every mobility ratio | `NEW` |
+| **CRIT-16** | **CRITICAL** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:963-964`` | `bo`/`b_co2` provenance guards are inert; the user's own PVT inputs are silently discarded | `NEW` |
+| **CRIT-17** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/surrogate_engine.py:535-551`` | The CRIT-12 fix breaks saturation closure: `S_o + S_w > 1` on 27 % of timesteps | `NEW (regression from the CRIT-12 remediation)` |
+| **CRIT-18** | **CRITICAL** | PHYSICAL | ``core/engine_surrogate/surrogate_engine.py:622-651` (revenue at `:636`), allocation `:588`, accumulation `:606`, publication `:688`` | The new NPV omits the hydrocarbon-gas revenue stream it computes | `NEW` |
+| **CRIT-19** | **CRITICAL** | PROVENANCE | ``core/engine_surrogate/analytical_models.py:199-201`, `:331-333`, `:802`; wired at `core/engine_surrogate/surrogate_engine.py:928`, `:974-975`` | `gravity_factor` is now an active, unprincipled, triple-purpose fudge multiplier | `NEW` |
+| **CRIT-20** | **CRITICAL** | MATHEMATICAL | ``core/engine_surrogate/analytical_models.py:474-481`` | Miscibility weight is decoupled from composition and equals 0.5 exactly at the MMP | `NEW` |
+| **CRIT-21** | **CRITICAL** | PROVENANCE | ``core/engine_surrogate/pvt_state.py:415-419`` | CO₂ compressibility is a new hard-coded power law contradicting the Peng-Robinson EOS in the same class | `NEW` |
+| **HIGH-01** | **HIGH** | MATHEMATICAL | ``core/engine_surrogate/surrogate_engine.py:509`; `core/engine_surrogate/analytical_models.py:814`` | `rf_max_physical` uses pore-volume fraction instead of OOIP-normalized fraction (25% too restrictive) | `RESOLVED` |
+| **HIGH-02** | **HIGH** | NUMERICAL | ``core/engine_surrogate/analytical_models.py:304-312`; `core/engine_surrogate/surrogate_models.py:164-182`; test `tests/scientific/mathematical/test_singularity_and_overflow.py:64-73`` | Craig areal-sweep 48% discontinuity at M = 1.0, and a test that asserts the defect | `CONFIRMED` |
 | **HIGH-03** | **HIGH** | MATHEMATICAL | ``core/engine_surrogate/analytical_models.py:193` (`clip(displacement_eff, 0.05, 0.95)`), `:200` (`clip(rf, 0.05, 0.85)`), `:326` (`clip(recovery, 0.10, max_cap)`), `:475` (`clip(rf, 0.05, 0.80)`)` | Recovery floors fabricate recovery at zero throughput | `NEW` |
 | **HIGH-04** | **HIGH** | SOFTWARE | ``core/engine_surrogate/analytical_models.py:661` (`params.get("v_dp") or params.get("v_dp_coefficient") or 0.5`), `:662`, `:671` (`c7_plus_fraction or c7_plus or 0.3`); same idiom widely used in `_literature_based_recovery` (`:657-765` region)` | `or`-default pattern silently replaces legitimate zero values | `NEW` |
 | **HIGH-05** | **HIGH** | PHYSICAL | ``core/engine_surrogate/surrogate_engine.py:442-443`, `:468`; `core/engine_surrogate/geomechanics_fault.py:113-118`, `:170`, `:174-181`, `:202-208`` | Caprock leakage is unreachable, and "breached" can be reported with zero leakage | `NEW` |
@@ -78,513 +78,503 @@ The following 13 mechanisms have been mathematically verified against analytical
 | **HIGH-07** | **HIGH** | PHYSICAL | ``core/engine_surrogate/surrogate_engine.py:417`, `:420-433`` | Productivity/injectivity index is tautological; injection viscosity hard-coded | `NEW` |
 | **HIGH-08** | **HIGH** | PHYSICAL | ``core/engine_surrogate/surrogate_models.py:507-530` (inputs mapped at `core/engine_surrogate/surrogate_engine.py:940-957`)` | NPV omits four economic inputs that the engine explicitly supplies, and costs CO₂ on *stored* rather than *purchased* | `NEW` |
 | **HIGH-09** | **HIGH** | SOFTWARE | ``core/data_models.py:1719-1721`; `core/optimisation_engine.py:264-270`; `config/base_config.json:24`, `:746`; `core/engine_surrogate/analytical_models.py:431-475`` | Production default model is `hybrid`, but 72 test references pin `phd_hybrid` | `NEW` |
-| **HIGH-10** | **HIGH** | SOFTWARE | ``ui/widgets/fault_geometry_visualizer_widget.py:115`` | Undefined name `QIcon` fails 4 tests | `RESOLVED — re-verified 04-10-2026 after commit `a68fc35`: `ui/widgets/fault_geometry_visualizer_widget.py:19` now carries `from PyQt6.QtGui import QIcon`, the F821 is gone, and `pytest tests/ -q` returns **`333 passed, 23 skipped, 0 failed`** (356 collected). `pytest tests/test_project_save_load.py` (AGENTS.md invariant #5 gate) now passes. `audit/runtime/pytest_output.txt` is retained as the **pre-fix** baseline and must be read as such. The finding is retained (not deleted) because the same defect *class* recurred twice in new code — see **HIGH-19**.` |
-| **HIGH-11** | **HIGH** | SOFTWARE | ``core/engine_surrogate/analytical_models.py:30` (flag), `:96` (`MiscibleRecoveryModel`), `:218` (`ImmiscibleRecoveryModel`), `:341` (`BuckleyLeverettModel`)` | `RECOVERY_MODELS_AVAILABLE = False` is the only guard preventing `NameError`s | `NEW` |
-| **HIGH-12** | **HIGH** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:788-790` (`except Exception → _error_result`), `:964-988` (`_error_result`: RF=0, NPV=0, `convergence_status: "error"`); `core/engine_surrogate/surrogate_models.py:553-562`; `core/engine_surrogate/pvt_state.py:147-149` (PR root fallback `Z = max(0.25, B*1.05)` with **no log**); `core/optimisation_engine.py:725-727`, `:903-904`, `:1572-1576`` | Exception funnel converts all failures into penalties without tracebacks | `NEW (severity reduced from an initial "plausible zeros survive" hypothesis — the error key **is** checked at `optimisation_engine.py:725`, so the failure mode is *masking*, not *silent acceptance*)` |
+| **HIGH-10** | **HIGH** | SOFTWARE | ``ui/widgets/fault_geometry_visualizer_widget.py:115`` | Undefined name `QIcon` fails 4 tests | `RESOLVED` |
+| **HIGH-11** | **HIGH** | SOFTWARE | ``core/engine_surrogate/analytical_models.py:30` (flag), `:96` (`MiscibleRecoveryModel`), `:218` (`ImmiscibleRecoveryModel`), `:341` (`BuckleyLeverettModel`)` | `RECOVERY_MODELS_AVAILABLE = False` is the only guard preventing `NameError`s | `RECURRED — the three names remain unbound: measured `hasattr(module, 'MiscibleRecoveryModel')` = False, same for `ImmiscibleRecoveryModel` and `BuckleyLeverettModel`, while `RECOVERY_MODELS_AVAILABLE` is a hard-coded `False`. `analytical_models.py:96`, `:223`, `:358` therefore rely on the flag as the ONLY thing preventing a `NameError` inside a constructor inside an optimizer evaluation. This is the HIGH-10 -> HIGH-19 -> HIGH-11 recurrence of the same defect class. Now detected automatically by the gate's F821 release gate. Reopen: https://github.com/fgfalll/WAG_optimisation/issues/16` |
+| **HIGH-12** | **HIGH** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:788-790` (`except Exception → _error_result`), `:964-988` (`_error_result`: RF=0, NPV=0, `convergence_status: "error"`); `core/engine_surrogate/surrogate_models.py:553-562`; `core/engine_surrogate/pvt_state.py:147-149` (PR root fallback `Z = max(0.25, B*1.05)` with **no log**); `core/optimisation_engine.py:725-727`, `:903-904`, `:1572-1576`` | Exception funnel converts all failures into penalties without tracebacks | `NEW` |
 | **HIGH-13** | **HIGH** | SOFTWARE | ``core/objectives/wrapper.py:96-97`; policy value `core/data_models.py:1734` (`carbon_tax_usd_per_tonne: float = 75.0`)` | Wrapper hard-codes a $100/t carbon-tax floor over the user's value | `NEW` |
 | **HIGH-14** | **HIGH** | PHYSICAL | ``core/objectives/wrapper.py:64-67` (`P_sandface = P_max + q_inj/II`, `II` default 25) vs `core/engine_surrogate/surrogate_engine.py:359` (`p_inj_sandface = min(current_p + 400, ceiling)`)` | Two different sandface-pressure models coexist | `NEW` |
 | **HIGH-15** | **HIGH** | PHYSICAL | ``core/engine_surrogate/surrogate_models.py:238-241`; test `tests/scientific/co2/test_co2_trapping_mechanisms.py:18-34`` | Capillary gas-trapping term is inverted (and a test asserts the inversion) | `CONFIRMED` |
 | **HIGH-16** | **HIGH** | PROVENANCE | ``core/engine_surrogate/pvt_state.py:204-226`` | CO₂ viscosity polynomial is not the cited correlation and under-predicts dense-phase μ ≈ 2× | `NEW` |
 | **HIGH-17** | **HIGH** | PROVENANCE | ``core/engine_surrogate/pvt_state.py:388-394`` | Gas compressibility is a two-branch fudge with un-cited coefficients | `NEW` |
-| **HIGH-18** | **HIGH** | SOFTWARE | ``tests/scientific/co2/test_co2_breakthrough_physics.py:16`, `:19-58`; `tests/scientific/conservation/test_mass_conservation.py` (`test_pore_volume_vs_ooip_recovery_bound_discrepancy`); `tests/scientific/mathematical/test_analytical_identities.py:11-12`; `tests/scientific/dimensional/test_unit_consistency.py:16-30`; `tests/scientific/co2/test_co2_trapping_mechanisms.py:31-33`; `tests/scientific/mathematical/test_singularity_and_overflow.py` (`test_mobility_ratio_unit_limit_singularity`)` | The scientific verification suite cannot fail on the defects it claims to verify | `NEW — **do not "fix" by weakening these tests**; re-specify them against production code (see `res_audit.md` §5, change-safety row NEW).` |
-| **HIGH-19** | **HIGH** | SOFTWARE | ``ui/workbench/components/pyvista_reservoir_canvas.py:974` (`has_active_fault`); `ui/workbench/components/subsurface_data_viewer_widget.py:335` (`QToolTip`)` | Two undefined names in the new workbench code reproduce the HIGH-10 defect class | `RESOLVED — Remediated in ui/workbench/components/pyvista_reservoir_canvas.py (defined has_active_fault) and subsurface_data_viewer_widget.py (imported QToolTip).` |
-| **HIGH-20** | **HIGH** | NUMERICAL | ``core/engine_surrogate/pvt_state.py:303-322`` | `B_o` is C⁰ but not C¹ at the bubble point (slope flips sign discontinuously) | `OPEN` |
-| **HIGH-21** | **HIGH** | PROVENANCE | ``core/engine_surrogate/pvt_state.py:101-106`; conflicting value at `core/engine_surrogate/surrogate_engine.py:315`` | Bubble point is a hard-coded constant and `c_o` defaults conflict between modules | `OPEN` |
-| **HIGH-23** | **HIGH** | PHYSICAL | ``core/engine_surrogate/surrogate_engine.py:635`, `:644`; `core/optimisation_engine.py:1372-1386`; `core/objectives/wrapper.py:108-132`` | Containment is economically inert: leakage is identically zero, yet leaked CO₂ would earn storage credit | `OPEN` |
+| **HIGH-18** | **HIGH** | SOFTWARE | ``tests/scientific/co2/test_co2_breakthrough_physics.py:16`, `:19-58`; `tests/scientific/conservation/test_mass_conservation.py` (`test_pore_volume_vs_ooip_recovery_bound_discrepancy`); `tests/scientific/mathematical/test_analytical_identities.py:11-12`; `tests/scientific/dimensional/test_unit_consistency.py:16-30`; `tests/scientific/co2/test_co2_trapping_mechanisms.py:31-33`; `tests/scientific/mathematical/test_singularity_and_overflow.py` (`test_mobility_ratio_unit_limit_singularity`)` | The scientific verification suite cannot fail on the defects it claims to verify | `NEW` |
+| **HIGH-19** | **HIGH** | SOFTWARE | ``ui/workbench/components/pyvista_reservoir_canvas.py:974` (`has_active_fault`); `ui/workbench/components/subsurface_data_viewer_widget.py:335` (`QToolTip`)` | Two undefined names in the new workbench code reproduce the HIGH-10 defect class | `RESOLVED` |
+| **HIGH-20** | **HIGH** | NUMERICAL | ``core/engine_surrogate/pvt_state.py:303-322`` | `B_o` is C⁰ but not C¹ at the bubble point (slope flips sign discontinuously) | `NEW` |
+| **HIGH-21** | **HIGH** | PROVENANCE | ``core/engine_surrogate/pvt_state.py:101-106`; conflicting value at `core/engine_surrogate/surrogate_engine.py:315`` | Bubble point is a hard-coded constant and `c_o` defaults conflict between modules | `NEW` |
+| **HIGH-23** | **HIGH** | PHYSICAL | ``core/engine_surrogate/surrogate_engine.py:635`, `:644`; `core/optimisation_engine.py:1372-1386`; `core/objectives/wrapper.py:108-132`` | Containment is economically inert: leakage is identically zero, yet leaked CO₂ would earn storage credit | `NEW` |
 | **HIGH-24** | **HIGH** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:417` vs `:545-548`` | Two live VRR definitions coexist; the post-hoc one silently overwrites the integrated one | `NEW` |
 | **HIGH-25** | **HIGH** | NUMERICAL | ``core/engine_surrogate/analytical_models.py:309-313`` | `s_g_avg` masking: a non-positive tangent slope silently becomes 100 % displacement efficiency | `NEW` |
 | **HIGH-26** | **HIGH** | PHYSICAL | ``core/engine_surrogate/pvt_state.py:375-400`` | CO₂ properties mix a Peng-Robinson FVF with a correlation-based `Z` in one mixture | `NEW` |
-| **MED-01** | **MEDIUM** | PROVENANCE | `data_models.py:1858-1860 (0.05254), pvt_state.py:41-42 (1.838 kg/m³, 0.05295), profile_generator_fast.py:794 (0.05297), surrogate_models.py:26, analytical_models.py:37, wrapper.py:90 (0.053)` | Five different "tonnes/MSCF" constants (spread **1.0%**) plus a comment claiming `0.1234 lb/ft³` ... | `NEW` |
-| **MED-02** | **MEDIUM** | PROVENANCE | `pvt_state.py:8, :19 (docstring), :175-176, :201` | Docstring advertises Span–Wagner; only Peng–Robinson is implemented (grep: no Span–Wagner code) | `NEW` |
-| **MED-03** | **MEDIUM** | MATHEMATICAL | `well_mechanics.py:197, :220 (const at :28)` | Radial form `T = 0.001127·k·h/(μ·ln(D/r_w))` mixes the **linear** Darcy constant with a radial lo... | `NEW` |
-| **MED-04** | **MEDIUM** | SOFTWARE | `well_mechanics.py:65-66, :113-114` | Invalid input (`k ≤ 0`, `h ≤ 0`, …) returns `1.0` silently (PI in STB/d/psi). | `NEW` |
-| **MED-05** | **MEDIUM** | SOFTWARE | `relative_permeability.py (all), well_mechanics.py:184-221, surrogate_models.py:371` | Relative permeability and inter-well transmissibility are **not in the evaluation path**: the eng... | `NEW` |
-| **MED-06** | **MEDIUM** | MATHEMATICAL | `relative_permeability.py:55` | `so_norm = (so − s_orw)/denom_w` uses the **water** denominator even when `s_org ≠ s_orw` (the no... | `NEW` |
-| **MED-07** | **MEDIUM** | SOFTWARE | `optimisation_engine.py:1209-1256 (fn _calculate_adaptive_penalty), call site :1783; death branch :1225-1230` | Two defects | `NEW (corrected: prior text named a non-existent `_calculate_penalty` and claimed 0 call sites)` |
-| **MED-08** | **MEDIUM** | SOFTWARE | `optimisation_engine.py:1531, :1560-1562` | `is_feasible` is computed and returned, then only logged; the penalty is applied separately at `:... | `NEW` |
-| **MED-09** | **MEDIUM** | SOFTWARE | `optimisation_engine.py:96 vs :1543; value data_models.py:1709` | Module-level `FAILURE_PENALTY = -1e12` is shadowed inside the wrapper by `self.advanced_engine_pa... | `NEW` |
-| **MED-10** | **MEDIUM** | SOFTWARE | `optimisation_engine.py:841-896, :1611, :1652; data_models.py:1262, :1273; profile_generator_fast.py:103` | Valid `time_resolution` values are `weekly/monthly/quarterly/yearly`; profiles only ever expose `... | `NEW` |
-| **MED-11** | **MEDIUM** | PROVENANCE | `data_models.py:913, :917; profile_generator_fast.py:1111-1115` | `default_gas_fvf = 0.005` has no documented unit; `mobility_ratio = base_injection_rate × mobilit... | `RESOLVED — Remediated in profile_generator_fast.py:1109-1118 (CRIT-11)` |
-| **MED-12** | **MEDIUM** | PROVENANCE | `surrogate_engine.py:352, :354, :356` | `oil_mass = ooip·0.135`, `x_co2 = 0.55·M_inj/(M_oil + 0.55·M_inj)`, `y_co2 = clip(cum/(cum+1000),... | `NEW` |
-| **MED-13** | **MEDIUM** | SOFTWARE | `repo-wide` | Ruff **3244** violations over **191** files (re-run 04-10-2026 after `a68fc35`; top: UP006 857, W... | `NEW (metrics refreshed 04-10-2026)` |
-| **MED-14** | **MEDIUM** | SOFTWARE | `optimisation_engine.py:905-935` | If no simulation engine is available the code silently falls back to `ProductionProfiler` (differ... | `NEW` |
-| **MED-15** | **MEDIUM** | PROVENANCE | `agent_wiki/README.md:35, source_of_truth_map.md:16, source_of_truth.md:26, common_pitfalls.md:34, code/inventory.md:26, execution_flow.md:81-82, code/functions/simulation_functions.md, code/classes/surrogate_classes.md, validation/conservation.md` | The wiki documents `_calculate_engine_npv()` and `_calculate_co2_purchased_recycled()` as the sou... | `NEW (corrected in `agent_wiki/` as part of this deliverable)` |
-| **MED-16** | **MEDIUM** | PROVENANCE | `agent_wiki/verification/test_matrix.md:5, :18-46; agent_wiki/architecture/overview.md:71; agent_wiki/README.md:29` | The master verification matrix is stale on four counts | `NEW (corrected in `agent_wiki/verification/test_matrix.md` as part of this deliverable)` |
+| **MED-01** | **MEDIUM** | PROVENANCE | ``data_models.py:1858-1860` (0.05254), `pvt_state.py:41-42` (1.838 kg/m³, 0.05295), `profile_generator_fast.py:794` (0.05297), `surrogate_models.py:26`, `analytical_models.py:37`, `wrapper.py:90` (0.053)` | Five different "tonnes/MSCF" constants (spread **1.0%**) plus a comment claiming `0.1234 lb/ft³` and `... | `NEW` |
+| **MED-02** | **MEDIUM** | PROVENANCE | ``pvt_state.py:8`, `:19` (docstring), `:175-176`, `:201`` | Docstring advertises Span–Wagner; only Peng–Robinson is implemented (grep: no Span–Wagner code). `B_CO... | `NEW` |
+| **MED-03** | **MEDIUM** | MATHEMATICAL | ``well_mechanics.py:197`, `:220` (const at `:28`)` | Radial form `T = 0.001127·k·h/(μ·ln(D/r_w))` mixes the **linear** Darcy constant with a radial logarit... | `NEW` |
+| **MED-04** | **MEDIUM** | SOFTWARE | ``well_mechanics.py:65-66`, `:113-114`` | Invalid input (`k ≤ 0`, `h ≤ 0`, …) returns `1.0` silently (PI in STB/d/psi) | `NEW` |
+| **MED-05** | **MEDIUM** | SOFTWARE | ``relative_permeability.py` (all), `well_mechanics.py:184-221`, `surrogate_models.py:371`` | Relative permeability and inter-well transmissibility are **not in the evaluation path**: the engine c... | `NEW` |
+| **MED-06** | **MEDIUM** | MATHEMATICAL | ``relative_permeability.py:55`` | `so_norm = (so − s_orw)/denom_w` uses the **water** denominator even when `s_org ≠ s_orw` (the normal... | `NEW` |
+| **MED-07** | **MEDIUM** | SOFTWARE | ``optimisation_engine.py:1209-1256` (fn `_calculate_adaptive_penalty`), call site `:1783`; `death` branch `:1225-1230`` | Two defects. (a) `total_violation = 0.0` is hard-coded at `:1246` with every real check commented out... | `NEW` |
+| **MED-08** | **MEDIUM** | SOFTWARE | ``optimisation_engine.py:1531`, `:1560-1562`` | `is_feasible` is computed and returned, then only logged; the penalty is applied separately at `:1771-... | `NEW` |
+| **MED-09** | **MEDIUM** | SOFTWARE | ``optimisation_engine.py:96` vs `:1543`; value `data_models.py:1709`` | Module-level `FAILURE_PENALTY = -1e12` is shadowed inside the wrapper by `self.advanced_engine_params.... | `NEW` |
+| **MED-10** | **MEDIUM** | SOFTWARE | ``optimisation_engine.py:841-896`, `:1611`, `:1652`; `data_models.py:1262`, `:1273`; `profile_generator_fast.py:103`` | Valid `time_resolution` values are `weekly/monthly/quarterly/yearly`; profiles only ever expose `yearl... | `NEW` |
+| **MED-11** | **MEDIUM** | PROVENANCE | ``data_models.py:913`, `:917`; `profile_generator_fast.py:1111-1115`` | `default_gas_fvf = 0.005` has no documented unit; `mobility_ratio = base_injection_rate × mobility_rat... | `RESOLVED` |
+| **MED-12** | **MEDIUM** | PROVENANCE | ``surrogate_engine.py:352`, `:354`, `:356`` | `oil_mass = ooip·0.135`, `x_co2 = 0.55·M_inj/(M_oil + 0.55·M_inj)`, `y_co2 = clip(cum/(cum+1000), 0.05... | `NEW` |
+| **MED-13** | **MEDIUM** | SOFTWARE | ``repo-wide`` | repo-wide Ruff **3244** violations over **191** files (re-run 04-10-2026 after `a68fc35`; top: UP006 8... | `NEW` |
+| **MED-14** | **MEDIUM** | SOFTWARE | ``optimisation_engine.py:905-935`` | If no simulation engine is available the code silently falls back to `ProductionProfiler` (different p... | `NEW` |
+| **MED-15** | **MEDIUM** | PROVENANCE | ``The wiki documents `_calculate_engine_npv()` and `_calculate_co2_purchased_recycled()` as the source of truth for economics. **Neither function exists anywhere in the repository** (grep for 'def _calculate_engine_npv', 'def _calculate_co2_purchased_recycled', 'def _solve_pressure_ode' → 0 hits). Real code: purchased/recycled at `surrogate_engine.py:572-596`; NPV at `surrogate_models.py:507-530`. → wiki must match code. → agents following the wiki edit a non-existent function and believe `economic.py` is dead for the wrong reason.`` | `agent_wiki/README.md:35`, `source_of_truth_map.md:16`, `source_of_truth.md:26`, `common_pitfalls.md:3... | `NEW` |
+| **MED-16** | **MEDIUM** | PROVENANCE | ``repo-wide`` | `agent_wiki/verification/test_matrix.md:5`, `:18-46`; `agent_wiki/architecture/overview.md:71`; `agent... | `NEW` |
 | **MED-17** | **MEDIUM** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:671`` | `monthly_oil_stb` is length-1 and all zeros | `NEW` |
 | **MED-18** | **MEDIUM** | SOFTWARE | ``core/engine_surrogate/analytical_models.py:561-562`` | The `kv <= 1` Koval branch is unreachable | `NEW` |
 | **MED-19** | **MEDIUM** | PROVENANCE | ``core/engine_surrogate/analytical_models.py:199-201`` | `MiscibleSurrogate` RF multiplied by a new `e_v`, and the RF clip raised in the same edit | `NEW` |
 | **MED-20** | **MEDIUM** | SOFTWARE | ``core/optimisation_engine.py:852`` | `annual_water_stb` reporting key deleted with no replacement | `NEW` |
 | **MED-21** | **MEDIUM** | SOFTWARE | ``core/objectives/wrapper.py:130`` | The $100/t remediation floor (HIGH-13) survives the remediation | `NEW` |
 | **MED-22** | **MEDIUM** | SOFTWARE | ``core/objectives/wrapper.py:112-121`` | Dead second leakage model still present in the objective wrapper | `NEW` |
-| **LOW-01** | **LOW** | PHYSICAL | `surrogate_engine.py:356` | `y_co2` is clipped to a **minimum of 0.05** even at `cum_inj = 0`, so the gas phase always contai... | `NEW` |
-| **LOW-02** | **LOW** | SOFTWARE | `surrogate_engine.py:930-938` | Dynamic MMP is recomputed and **overwrites** `params["mmp"]` with Cronquist on every call, wrappe... | `NEW` |
-| **LOW-03** | **LOW** | SOFTWARE | `pvt_state.py:143` | `np.roots` per timestep for a cubic EOS (3 roots, eigen-solver) in a hot loop. | `NEW` |
-| **LOW-04** | **LOW** | SOFTWARE | `core/engine_surrogate/surrogate_engine.py:37` | `MSCF_PER_TONNE` imported but unused (vulture, 90% confidence) alongside a live `CO2_TONNE_PER_MS... | `NEW` |
-| **LOW-05** | **LOW** | NUMERICAL | `optimisation_engine.py:930-935` | RF > 1.0 is silently clamped to 1.0 with a warning after the fact instead of preventing `rf_max_p... | `NEW` |
+| **LOW-01** | **LOW** | PHYSICAL | ``surrogate_engine.py:356`` | `y_co2` is clipped to a **minimum of 0.05** even at `cum_inj = 0`, so the gas phase always contains ≥... | `NEW` |
+| **LOW-02** | **LOW** | SOFTWARE | ``surrogate_engine.py:930-938`` | Dynamic MMP is recomputed and **overwrites** `params["mmp"]` with Cronquist on every call, wrapped in... | `NEW` |
+| **LOW-03** | **LOW** | SOFTWARE | ``pvt_state.py:143`` | `np.roots` per timestep for a cubic EOS (3 roots, eigen-solver) in a hot loop | `NEW` |
+| **LOW-04** | **LOW** | SOFTWARE | ``core/engine_surrogate/surrogate_engine.py:37`` | `MSCF_PER_TONNE` imported but unused (vulture, 90% confidence) alongside a live `CO2_TONNE_PER_MSCF` | `NEW` |
+| **LOW-05** | **LOW** | NUMERICAL | ``optimisation_engine.py:930-935`` | RF > 1.0 is silently clamped to 1.0 with a warning after the fact instead of preventing `rf_max_physic... | `NEW` |
 
 ---
 
 ## 🚨 CRITICAL Severity Flaw Register (21 items)
 
 ### [x] CRIT-01 — HCPVI is pressure-independent and dimensionally `MSCF/STB`
-- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/surrogate_engine.py:489-500: HCPVI corrected to dimensionless pore-volume ratio with pressure-dependent Bg(P)/Bo(P).`
+- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `PARTIALLY_RESOLVED`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:491-497` (overwrites `params["hcpvi"]` set at `core/engine_surrogate/surrogate_engine.py:890`)`
-- **Expected Behavior**: `HCPVI = cum_inj_mscf · Bg(P) · (1 - Swi) / (OOIP · Bo(P))`, i.e. injected reservoir barrels divided by hydrocarbon pore volume, which is strongly pressure-dependent through `Bg/Bo`.
 - **Scientific Impact**: Throughput is the independent variable of the Koval/Ekladios sweep and of every miscible RF correlation in the module. Measured error versus the textbook definition for the same case: **0.667× (1500 psi), 1.218× (2500 psi), 1.868× (3500 psi)** — a monotonically growing, pressure-driven bias that silently rewards high-pressure operation. It also discards the correct `params["hcpvi"]` computed at `:890`, so the code computes the right quantity once and then throws it away.
 - **Evidence**: `audit_verify_3.py` section V1. Dimensional check: `[RB]/([STB]·[RB/STB])` in the denominator vs `[RB]` in the numerator ⇒ dimensionless only if the numerator were reservoir barrels of **oil-equivalent**; as written both `b_co2` factors cancel exactly.
 
 ### [x] CRIT-02 — Reported NPV and reported recovery factor come from two different evaluations
-- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/surrogate_engine.py:598-630: NPV derived directly from annual simulated production and injection profiles consistent with RF.`
+- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `RESOLVED`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:165`, `:171-174`, `:490-510`, `:533`, `:685`, `:690`, `:692`; `core/engine_surrogate/surrogate_models.py:465`, `:473`, `:507-530``
-- **Expected Behavior**: One physical evaluation per simulation: one RF, one oil profile, one CO₂ ledger, one cash flow, all consistent at the same pressure and throughput.
 - **Scientific Impact**: The primary objective (`npv`) is not a function of the recovery factor the run reports. Ranking candidates by NPV therefore ranks them by an internally inconsistent quantity; every downstream artifact (cash-flow table, storage efficiency, RF-vs-NPV cross plots) mixes two states. Two independent CO₂ mass ledgers exist simultaneously (breakthrough-aware vs injected−produced) — a direct threat to invariant *"cumulative recycled ≤ produced ≤ injected"* auditing.
 - **Evidence**: Code reading of the two evaluation sites; `audit_verify_4.py` section D shows RF is strongly hcpvi-dependent (0.05 → 0.713 over hcpvi 0 → 3), so the hcpvi substitution between the two calls is not a rounding difference.
 
-### [x] CRIT-03 — No bubble-point model: `Bo` increases with pressure (apparent negative compressibility)
-- **Severity**: `CRITICAL` | **Category**: `PHYSICAL` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/pvt_state.py:83-103: Bubble-point model integrated with physically positive isothermal oil compressibility above Pb.`
+### [ ] CRIT-03 — No bubble-point model: `Bo` increases with pressure (apparent negative compressibility)
+- **Severity**: `CRITICAL` | **Category**: `PHYSICAL` | **Status**: `STILL_OPEN`
 - **Location**: ``core/engine_surrogate/pvt_state.py:232-244` (`R_s`), `:267-307` (swelling / `B_o`); used at `core/engine_surrogate/surrogate_engine.py:362`, `:369`, `:376`, `:453``
-- **Observed Behavior**: `bubble_point` occurs **0 times** in `core/engine_surrogate/` (grep, 04-10-2026). `R_s = c1·γg·p^c2·exp(c3·API/T_R)` is monotone increasing in `p` for every pressure, so `B_o` is monotone increasing in `p` for every pressure.
-- **Expected Behavior**: Above the bubble point `dB_o/dP < 0`, with `c_o ≈ 3e-6 … 1.2e-5 1/psi` for a black oil ( McCain, W.D. (1990), *The Properties of Petroleum Fluids* ). Below the bubble point `R_s` is constant at `R_sb`. A positive `c_o` of order 1e-4 means the oil "expands when compressed".
 - **Scientific Impact**: (a) Saturation bookkeeping `S_o = remaining_oil·B_o/V_p` (`surrogate_engine.py:376`) inflates oil saturation as pressure rises, so gas/water saturations are displaced. (b) The material-balance denominator uses a **constant** `c_o = 1e-5` (`surrogate_engine.py:315`) that contradicts the PVT module's own derivative by an order of magnitude — the compressibility in the ODE and the compressibility implied by `B_o(P)` are two different fluids. (c) Voidage `q_prod·B_o` (`:412-414`) grows with pressure, feeding back into the pressure ODE (`:455`).
 - **Evidence**: `audit_verify_3.py` section V4; zero-occurrence grep for `bubble_point`. Prior-audit SCI-FLAW-02 reported the same sign defect in `core/data_integration_engine.py` (a different module); this finding shows the **active** PVT path has the identical class of defect.
 
 ### [x] CRIT-04 — Hydrocarbon-gas `B_g` coefficient is 31.73× too small (unit conversion inverted)
-- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/pvt_state.py:377: Corrected Standing (1977) natural gas FVF conversion constant to 5.035 * Z * T_R / P.`
+- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `RESOLVED`
 - **Location**: ``core/engine_surrogate/pvt_state.py:372-373` (mixing at `:385`; consumed at `core/engine_surrogate/surrogate_engine.py:366`, `:414`, `:453`)`
-- **Expected Behavior**: `B_g = 5.035·Z·T_R/P` rb/MSCF (Standing 1977 / any field-unit textbook). Pure-CO₂ FVF must come from the same law or from `ρ_CO₂`.
 - **Scientific Impact**: Produced-gas voidage `q_prod += gas·B_g` (`surrogate_engine.py:412-414`) is understated 11–24×, so (i) VRR (`:417`) is overstated, (ii) the pressure decline `dp` (`:455`) is far too small, (iii) `c_g` (`:367`, `:453`) and `B_g` enter material balance as if produced gas occupied almost no reservoir volume. Gas-cap/voidage physics is effectively switched off for hydrocarbon gas.
 - **Evidence**: `audit_verify_3.py` sections V2/V2b; arithmetic identity `0.02827×5.6146 = 0.15873`.
 
 ### [x] CRIT-05 — "Hall-Yarborough" Z-factor is a linear expression returning Z > 1 in the dense-gas region
-- **Severity**: `CRITICAL` | **Category**: `PHYSICAL` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/pvt_state.py:367: Implemented Papay (1968) natural gas Z-factor correlation and analytical dZ/dP with correct dense-gas behavior.`
+- **Severity**: `CRITICAL` | **Category**: `PHYSICAL` | **Status**: `RESOLVED`
 - **Location**: ``core/engine_surrogate/pvt_state.py:361-367``
-- **Expected Behavior**: Hall-Yarborough (1972) is an iterative tangent-compressibility correlation; the Standing–Katz chart at Tpr ≈ 1.58 gives Z ≈ 0.83–0.95 over Ppr = 2–5, i.e. **Z < 1 with a minimum around Ppr ≈ 2–3**, never a monotonic rise above 1. A gas with Z = 1.15 at Ppr = 3.7 does not exist at that reduced state.
 - **Scientific Impact**: `ρ_hc` (`:371`) is computed ~20–35% too low and the *sign of dZ/dP* is wrong, so `c_g = 1/P − (1/Z)(dZ/dP)` (`:388`) must be fudged by hand (`:391-394`, see HIGH-18) — the two defects mask each other, which is exactly why numerical agreement in downstream numbers cannot be credited as validation.
 - **Evidence**: `audit_verify_4.py` section A; Standing, M.B. (1977); Hall, K.E. & Yarborough, L. (1972) *J. Pet. Tech.* — the code's own label does not match the code's formula.
 
-### [x] CRIT-06 — Koval sweep returns RF = 0 for 0.5 ≤ M ≤ 1.4 with a spike at exactly M = 1.0, plus `exp` overflow for M < 1
-- **Severity**: `CRITICAL` | **Category**: `NUMERICAL` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/analytical_models.py:540: Authentic Koval (1963) continuous Welge throughput integral across all mobility ratios M.`
+### [ ] CRIT-06 — Koval sweep returns RF = 0 for 0.5 ≤ M ≤ 1.4 with a spike at exactly M = 1.0, plus `exp` overflow for M < 1
+- **Severity**: `CRITICAL` | **Category**: `NUMERICAL` | **Status**: `CONFIRMED_BUT_INERT`
 - **Location**: ``core/engine_surrogate/analytical_models.py:541-559``
-- **Expected Behavior**: Koval (1963) breakthrough sweep `V_b` is continuous and strictly decreasing in M over (0, ∞), with `V_b → 1` as M → 0. No region of identically zero recovery may exist for finite throughput; the M = 1 limit must be the continuous limit of the general branch.
 - **Scientific Impact**: In the M range typical of CO₂–crude systems the model reports **zero recovery**; because the optimizer explores M (it is a relaxable constraint, `optimisation_engine.py:127`), the objective surface contains a large flat zero plateau with a 0.3167 delta-function at M = 1.0 — a guaranteed trap for both GA (selection pressure destroyed) and BO/gradient methods.
 - **Evidence**: `audit_verify_3.py` section V5 (RuntimeWarning on overflow observed); Koval, E.J. (1963) *SPE J.* 3(2), 145–152.
 
 ### [x] CRIT-07 — Immiscible model is the constant RF = 0.10 over the whole parameter space
-- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/analytical_models.py:296-326: Corrected Buckley-Leverett Welge shock-front tangent construction and removed unphysical 0.10 constant floor.`
+- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `RESOLVED`
 - **Location**: ``core/engine_surrogate/analytical_models.py:319-326``
-- **Expected Behavior**: Immiscible CO₂ flooding recovers 10–40% OOIP depending on `M`, `V_DP`, `S_or` (Buckley & Leverett 1942; Craig 1971). The returned value must be a *function* of the inputs.
 - **Scientific Impact**: The immiscible limb carries **zero gradient and zero sensitivity**. Because `HybridSurrogate` blends this constant with the miscible limb (`analytical_models.py:468-472`, weights `w_miscible`), the entire hybrid model's response to `S_or`, `V_DP` and `M` through the immiscible branch is null; and the floor itself fabricates 10% recovery when the physics computes ~1.4–5.6%.
 - **Evidence**: `audit_verify_3.py` section V6; internal decomposition in `audit_verify_4.py` section C.
 
 ### [x] CRIT-08 — Plume-containment constraint can never prune: floor of the score exceeds the threshold
-- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `RESOLVED — Remediated in core/data_models.py:1815-1820, core/objectives/storage.py:86-115, and core/optimisation_engine.py:1657-1685: Added containment factors to AdvancedEngineParams and cascading pressure profile retrieval.`
+- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `RESOLVED`
 - **Location**: ``core/optimisation_engine.py:1645-1666` (prune) with `core/objectives/storage.py:86-102` (score) and `core/data_models.py:1725-1730` (weights/threshold)`
-- **Expected Behavior**: A critical-threshold constraint must be reachable: `min(S_cont) < threshold` for the configured weights, and the seal/structure factors must come from the user's `CO2StorageParameters` (`data_models.py:1620`, `:1628`), not from unlinked defaults.
 - **Scientific Impact**: The Class-VI-style containment guard advertised in `AdvancedEngineParams` is a **no-op**. Optimizer candidates are never rejected for containment reasons; the only visible variation in `S_cont` is an artifact of time-resolution key selection.
 - **Evidence**: `audit_verify_3.py` section V11; `data_models.py:1725-1730`; `storage.py:91-92` (`getattr(..., 0.9/0.85)` fallbacks).
 
 ### [x] CRIT-09 — Wrapper's sandface / Class-VI penalty block is unreachable (wrong profile key)
-- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `RESOLVED — Remediated in core/objectives/wrapper.py:61-79 and core/optimisation_engine.py:853-860: Forwarded pressure and sandface injection profiles into objective evaluation.`
+- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `RESOLVED`
 - **Location**: ``core/objectives/wrapper.py:61-78`; key producer `core/optimisation_engine.py:841-896``
-- **Observed Behavior**: `pressure_profile = profiles.get("pressure", profiles.get("reservoir_pressure"))`. The `profiles` dict handed to `_calculate_objective_functions` (`optimisation_engine.py:944-946`) is built at `:841-896` and contains only `yearly_pressure` / `annual_pressure` (`:853-854`) and `monthly_pressure` (`:870`) — never `pressure` or `reservoir_pressure`. Result: `pressure_profile is None` ⇒ the whole `if` block is skipped ⇒ `results["npv"]` never receives the containment penalty and `geomechanical_violation` is never emitted.
-- **Expected Behavior**: Either read `yearly_/monthly_pressure`, or forward the engine's `pressure` / `sandface_injection_pressure` arrays.
 - **Scientific Impact**: EPA Class-VI 90% fracture-limit enforcement inside the objective (`safe_fracture_limit = 0.90·P_frac`) never runs on the optimization path; the code and the wiki both imply it does.
 - **Evidence**: Full key inventory `optimisation_engine.py:841-896`; single call site `_calculate_objective_functions` at `:944`.
 
 ### [x] CRIT-10 — Every CO₂ leakage constraint is structurally zero (three dead paths)
-- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `RESOLVED — Remediated in core/objectives/wrapper.py:81-99, core/optimisation_engine.py:853-860, and core/engine_surrogate/surrogate_engine.py: Forwarded leakage keys into constraint and objective workflows.`
+- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `RESOLVED`
 - **Location**: ``
-- **Expected Behavior**: Leakage produced by the geomechanical module must flow into (a) the constraint penalty, (b) the NPV remediation cost, (c) the reported storage balance `M_stored = M_inj − M_prod − M_leaked`.
 - **Scientific Impact**: CO₂ containment violations have **no economic or selection-pressure consequence** anywhere in the pipeline. Wiki invariant #3/#10 ("mass conservation / leakage accounted") is violated in the implementation, not merely in wording.
 - **Evidence**: Two repo-wide greps for `annual_leakage_tonne` and `max_sandface_pressure_psi`; consumer grep for `total_leakage_tonne`.
 
 ### [x] CRIT-11 — WAG water injection is ~1000× too low (missing unit conversion), so WAG degenerates to continuous gas
-- **Severity**: `CRITICAL` | **Category**: `PHYSICAL` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/profile_generator_fast.py:1109-1118: Added x1000 unit scaling for WAG gas-to-water injection conversion.`
+- **Severity**: `CRITICAL` | **Category**: `PHYSICAL` | **Status**: `RESOLVED`
 - **Location**: ``core/engine_surrogate/profile_generator_fast.py:1109`, `:1117-1118` versus `:1210`; parameter `core/data_models.py:917``
-- **Expected Behavior**: WAG water rate must equal `q_gas[MSCFD] · B_g[rb/MSCF] · WAG_ratio`, i.e. tens of thousands of bpd at field rates (and the same `default_gas_fvf` must be used consistently in both schemes).
 - **Scientific Impact**: With 5–25 bpd of water against 5000 MSCFD of CO₂, the WAG scheme produces essentially **continuous gas injection**: no mobility control, no mobility banking, no deferred gas. `cum_water_inj_bbl` (`surrogate_engine.py:474`) feeds `S_w` (`:377-378`) and `q_inj_step_rb` (`:406`) ⇒ VRR and saturation paths are computed for a reservoir that is receiving no water. The optimizer's WAG-ratio gene is therefore optimizing a scheme that does not physically exist.
 - **Evidence**: `audit_verify_3.py` reading of `:1117` vs `:1210`; both use the same `default_gas_fvf` default (0.005), so the only difference is the omitted `×1000`.
 
-### [x] CRIT-12 — Production/saturation/pressure state is computed from an unscaled profile that is rescaled afterwards
-- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/surrogate_engine.py:533-557: Re-synchronized saturations (So, Sw, Sg), cumulative oil, and VRR post-rescaling.`
+### [ ] CRIT-12 — Production/saturation/pressure state is computed from an unscaled profile that is rescaled afterwards
+- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `REGRESSED`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:376-379`, `:412-417`, `:455`, versus post-hoc rescale at `:513-522``
-- **Observed Behavior**: Inside the time loop the engine integrates `nominal_oil_stb` (`:408`, `:472`) into `cum_oil_stb`, from which `S_o` (`:376`), `q_prod_step_rb` (`:412-414`), `VRR` (`:417`) and `dp` (`:455`) are all computed. **After** the loop, `profile_result["oil_profile"]` is multiplied by `target_cum_oil/max_cum_shape` (`:519`) so that cumulative oil matches RF₂. The saturated/pressured history is never recomputed.
-- **Expected Behavior**: Either the profile is correct before integration (then no rescale is needed), or the entire state trajectory is recomputed after rescaling. A profile may not be rescaled after the state variables that depend on it have been consumed.
 - **Scientific Impact**: Reported `S_o/S_w/S_g` profiles, `B_o/B_g` profiles, VRR and the pressure path are mutually inconsistent with the reported oil rate and cumulative oil. Any material-balance cross-check of the reported streams (injected vs produced vs stored) will fail or, if it passes, passes only because `cum_oil_total` is recomputed from the rescaled array at `:533` while saturations are not.
 - **Evidence**: Prior-audit SCI-FLAW-06 (`CONFIRMED_AUDIT_OPEN`) — this round re-verified the exact ordering and added the specific dependent variables.
 
 ### [x] CRIT-13 — Three optimizer genes are inert (`gravity_factor`, `transition_alpha`, `transition_beta`) and a fourth is RF-inert (`mobility_ratio`)
-- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/analytical_models.py and surrogate_engine.py:905-950: Mapped and consumed gravity_factor, transition_alpha, transition_beta, mobility_ratio, and c7_plus.`
+- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `PARTIALLY_RESOLVED`
 - **Location**: ``core/optimisation_engine.py:120-142`, `:1420-1431`; `core/engine_surrogate/analytical_models.py:449`, `:458-459`; `core/engine_surrogate/surrogate_engine.py:865`, `:896`; `core/simulation/recovery_models.py:329``
-- **Expected Behavior**: Every gene exposed to GA/BO must have a non-zero gradient in at least one reported objective; transition parameters must reach the model that is actually executed; parameter names passed between modules must match.
 - **Scientific Impact**: 4 of 9 relaxable constraints (`data_models.py:1692-1704`) cannot influence recovery. The optimizer spends evaluations exploring null directions; sensitivity/tornado reports for these parameters (`sensitivity_analyzer.py:143`, `:639`) will show pure noise, and any conclusion drawn from them is invalid.
 - **Evidence**: Repo-wide greps for `gravity_factor` / `transition_alpha`; `audit_verify_3.py` section V7; name mismatch `c7_plus` vs `c7_plus_fraction` verified by grep.
 
 ### [ ] CRIT-14 — The mobility-ratio override severs oil viscosity from recovery entirely
-- **Severity**: `CRITICAL` | **Category**: `PHYSICAL` | **Status**: `OPEN`
+- **Severity**: `CRITICAL` | **Category**: `PHYSICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/analytical_models.py:170-172`, `:275-277`, `:412-414`; source `core/engine_surrogate/surrogate_engine.py:976-977``
 - **Scientific Impact**: the entire viscosity-contrast mechanism — the physical basis of CO₂ flooding — is removed from the miscible, immiscible and Buckley-Leverett limbs. Recovery becomes a function of one constant.
-- **Evidence**: `audit_verify_5.py` §B1–B3. **Status:** NEW
+- **Evidence**: `audit_verify_5.py` §B1–B3.
 
 ### [ ] CRIT-15 — Default configuration pins the Koval sweep at its 0.95 clip for every mobility ratio
-- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `OPEN`
+- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/analytical_models.py:558-571`; `core/engine_surrogate/surrogate_engine.py:946-968``
 - **Scientific Impact**: with CRIT-14, recovery is nearly constant over the whole mobility axis; selection pressure on these genes is arbitrary.
-- **Evidence**: `audit_verify_5.py` §D4/§I, `audit_verify_6.py` §I. **Status:** NEW
+- **Evidence**: `audit_verify_5.py` §D4/§I, `audit_verify_6.py` §I.
 
 ### [ ] CRIT-16 — `bo`/`b_co2` provenance guards are inert; the user's own PVT inputs are silently discarded
-- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `OPEN`
+- **Severity**: `CRITICAL` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:963-964``
 - **Scientific Impact**: a user with fitted live-oil FVF cannot reach HCPVI; the sweep throughput is unoverrideable.
-- **Evidence**: `audit_verify_6.py` §G. **Status:** NEW
+- **Evidence**: `audit_verify_6.py` §G.
 
 ### [ ] CRIT-17 — The CRIT-12 fix breaks saturation closure: `S_o + S_w > 1` on 27 % of timesteps
-- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `OPEN`
+- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `NEW (regression from the CRIT-12 remediation)`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:535-551``
 - **Scientific Impact**: the three-phase saturation history violates its defining constraint, and every saturation-derived quantity is corrupted invisibly — Phase-3 anti-pattern class D. A 25 % saturation bias exists at t = 0.
-- **Evidence**: `audit_verify_6.py` §J, `audit_verify_9.py`. **Status:** NEW (regression from the CRIT-12 remediation)
+- **Evidence**: `audit_verify_6.py` §J, `audit_verify_9.py`.
 
 ### [ ] CRIT-18 — The new NPV omits the hydrocarbon-gas revenue stream it computes
-- **Severity**: `CRITICAL` | **Category**: `PHYSICAL` | **Status**: `OPEN`
+- **Severity**: `CRITICAL` | **Category**: `PHYSICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:622-651` (revenue at `:636`), allocation `:588`, accumulation `:606`, publication `:688``
 - **Scientific Impact**: `npv` is the primary objective; the optimiser ranks candidates on a truncated cash-flow model.
-- **Evidence**: `audit_verify_9.py`. **Status:** NEW
+- **Evidence**: `audit_verify_9.py`.
 
 ### [ ] CRIT-19 — `gravity_factor` is now an active, unprincipled, triple-purpose fudge multiplier
-- **Severity**: `CRITICAL` | **Category**: `PROVENANCE` | **Status**: `OPEN`
+- **Severity**: `CRITICAL` | **Category**: `PROVENANCE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/analytical_models.py:199-201`, `:331-333`, `:802`; wired at `core/engine_surrogate/surrogate_engine.py:928`, `:974-975``
 - **Scientific Impact**: a gene that scales recovery ±20 % with no physical content, applied twice in the hybrid path plus once in `N_g`. Hidden-calibration pattern. CRIT-13 had recorded this gene as *inert*; making it active is a net loss.
-- **Evidence**: `audit_verify_5.py` §B; source reads. **Status:** NEW
+- **Evidence**: `audit_verify_5.py` §B; source reads.
 
 ### [ ] CRIT-20 — Miscibility weight is decoupled from composition and equals 0.5 exactly at the MMP
-- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `OPEN`
+- **Severity**: `CRITICAL` | **Category**: `MATHEMATICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/analytical_models.py:474-481``
 - **Scientific Impact**: the central miscible/immiscible decision is governed by two uncalibrated constants and is insensitive to the fluid.
-- **Evidence**: `audit_verify_5.py` §C/§C1. **Status:** NEW
+- **Evidence**: `audit_verify_5.py` §C/§C1.
 
 ### [ ] CRIT-21 — CO₂ compressibility is a new hard-coded power law contradicting the Peng-Robinson EOS in the same class
-- **Severity**: `CRITICAL` | **Category**: `PROVENANCE` | **Status**: `OPEN`
+- **Severity**: `CRITICAL` | **Category**: `PROVENANCE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/pvt_state.py:415-419``
 - **Scientific Impact**: `c_g` enters `ct` (`surrogate_engine.py:453`) and hence `dp` (`:455`); an 8× error near-critical distorts the pressure path where CO₂ floods are most sensitive. HIGH-17's undocumented fudge was replaced by a differently shaped one.
-- **Evidence**: `audit_verify_5.py` §A3/§A4. **Status:** NEW
+- **Evidence**: `audit_verify_5.py` §A3/§A4.
 
 ---
 
 ## 🚨 HIGH Severity Flaw Register (25 items)
 
 ### [x] HIGH-01 — `rf_max_physical` uses pore-volume fraction instead of OOIP-normalized fraction (25% too restrictive)
-- **Severity**: `HIGH` | **Category**: `MATHEMATICAL` | **Status**: `RESOLVED — Remediated in core/engine_surrogate/analytical_models.py and surrogate_engine.py:509: rf_max_physical normalized to OOIP (1 - Swi - Sor)/(1 - Swi).`
+- **Severity**: `HIGH` | **Category**: `MATHEMATICAL` | **Status**: `RESOLVED`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:509`; `core/engine_surrogate/analytical_models.py:814``
+- **Scientific Impact**: RF clipped 25% too low (measured under-estimate 25.0%); produces a flat artificial plateau at the cap, hiding all sensitivity above it. Applies on every engine evaluation (`:509-510`).
+- **Evidence**: `audit_verify_3.py` section V9; internal contradiction `:801` vs `:814`. Prior SCI-FLAW-11 content **CONFIRMED**, but its line references (`analytical_models.py:881`, `surrogate_engine.py:425`) are **STALE** (now `:814` / `:509`).
 
 ### [ ] HIGH-02 — Craig areal-sweep 48% discontinuity at M = 1.0, and a test that asserts the defect
-- **Severity**: `HIGH` | **Category**: `NUMERICAL` | **Status**: `CONFIRMED with corrected formula description`
+- **Severity**: `HIGH` | **Category**: `NUMERICAL` | **Status**: `CONFIRMED`
 - **Location**: ``core/engine_surrogate/analytical_models.py:304-312`; `core/engine_surrogate/surrogate_models.py:164-182`; test `tests/scientific/mathematical/test_singularity_and_overflow.py:64-73``
+- **Scientific Impact**: Discontinuous objective surface exactly in the physically interesting M ≈ 1 region (CO₂–crude near-miscible conditions). Worse, `test_singularity_and_overflow.py:73` **asserts `step > 0.40`** with the comment *"This test proves the presence of the 48% cliff"* — the suite locks the defect in and will fail if it is fixed.
+- **Evidence**: `audit_verify_4.py` section B; test source lines 61–73. Prior SCI-FLAW-16 **CONFIRMED in substance** but its quoted formula (`Ea = 0.5460/M^0.0988` vs `1 − 0.043·M`) is **STALE** — that is not what the current file contains.
 
 ### [ ] HIGH-03 — Recovery floors fabricate recovery at zero throughput
 - **Severity**: `HIGH` | **Category**: `MATHEMATICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/analytical_models.py:193` (`clip(displacement_eff, 0.05, 0.95)`), `:200` (`clip(rf, 0.05, 0.85)`), `:326` (`clip(recovery, 0.10, max_cap)`), `:475` (`clip(rf, 0.05, 0.80)`)`
+- **Scientific Impact**: The optimizer can obtain "recovery" without injection; limits of the model are wrong (non-zero at the origin), which invalidates any gradient/finite-difference and any limiting-case test.
+- **Evidence**: `audit_verify_4.py` section D.
 
 ### [ ] HIGH-04 — `or`-default pattern silently replaces legitimate zero values
 - **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/analytical_models.py:661` (`params.get("v_dp") or params.get("v_dp_coefficient") or 0.5`), `:662`, `:671` (`c7_plus_fraction or c7_plus or 0.3`); same idiom widely used in `_literature_based_recovery` (`:657-765` region)`
+- **Scientific Impact**: User-specified extreme/idealized cases are silently overwritten with defaults; sensitivity sweeps to 0 are meaningless.
+- **Evidence**: `audit_verify_4.py` section E plus the follow-up differential run recorded in this round's transcript.
 
 ### [ ] HIGH-05 — Caprock leakage is unreachable, and "breached" can be reported with zero leakage
 - **Severity**: `HIGH` | **Category**: `PHYSICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:442-443`, `:468`; `core/engine_surrogate/geomechanics_fault.py:113-118`, `:170`, `:174-181`, `:202-208``
+- **Scientific Impact**: `is_caprock_breached` and `caprock_safety_margin` are reported to the UI/plots while the associated mass loss is provably zero ⇒ containment reporting is internally contradictory and EPA Class-VI breach events cannot be simulated.
+- **Evidence**: Code path reading at `surrogate_engine.py:459-469` and `geomechanics_fault.py:167-181`.
 
 ### [ ] HIGH-06 — Three mutually inconsistent Koval heterogeneity-factor formulas (2.5× … 10⁹⁵× apart)
 - **Severity**: `HIGH` | **Category**: `MATHEMATICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:894-895`; `core/engine_surrogate/analytical_models.py:174`, `:534`, `:726`; `core/data_models.py:57`; `core/engine_surrogate/profile_generator_fast.py:960``
+- **Scientific Impact**: Breakthrough time `t_bt = (PV/K)/annual_inj` (`surrogate_engine.py:917-919`) inherits the full error; breakthrough time drives the NPV CO₂ cost, the storage ledger and the breakthrough penalty (`optimisation_engine.py:1729-1736`). At `v_dp → 1` the engine form overflows.
+- **Evidence**: `audit_verify_3.py` section V10; `data_models.py:40-57` docstring states the `1/(1−v)²` form as the intended one.
 
 ### [ ] HIGH-07 — Productivity/injectivity index is tautological; injection viscosity hard-coded
 - **Severity**: `HIGH` | **Category**: `PHYSICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:417`, `:420-433``
+- **Scientific Impact**: Deliverability coupling is circular for the fallback branch; reported VRR (a Class-VI-relevant metric) overstates injection whenever the geomechanical cap binds; viscosity-dependent injectivity is a step function of the water rate.
+- **Evidence**: Code reading `:419-448`; `pvt_state.py:204-226` for CO₂ μ.
 
 ### [ ] HIGH-08 — NPV omits four economic inputs that the engine explicitly supplies, and costs CO₂ on *stored* rather than *purchased*
 - **Severity**: `HIGH` | **Category**: `PHYSICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/surrogate_models.py:507-530` (inputs mapped at `core/engine_surrogate/surrogate_engine.py:940-957`)`
+- **Scientific Impact**: The default optimization objective is systematically biased upward for multi-well fields, insensitive to OPEX/storage-credit/carbon-tax policy, and inconsistent with the mass balance reported alongside it.
+- **Evidence**: Input mapping `:940-957` vs reads `:508-511`; `profile_generator_fast.py:214`; `audit_verify_3.py` reading.
 
 ### [ ] HIGH-09 — Production default model is `hybrid`, but 72 test references pin `phd_hybrid`
 - **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/data_models.py:1719-1721`; `core/optimisation_engine.py:264-270`; `config/base_config.json:24`, `:746`; `core/engine_surrogate/analytical_models.py:431-475``
+- **Scientific Impact**: The shipped model (`HybridSurrogate`, floors + constant immiscible limb + hard-coded α/β, CRIT-07/CRIT-13/HIGH-03) is *not* the model the scientific test-suite validates. Passing tests therefore provide no evidence about production behavior — exactly the "benchmark agreement mistaken for correctness" failure mode this audit is required to reject.
+- **Evidence**: Counts from repo-wide `Select-String`; `data_models.py:1719-1721`.
 
 ### [x] HIGH-10 — Undefined name `QIcon` fails 4 tests
-- **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `RESOLVED — re-verified 04-10-2026 after commit `a68fc35`: `ui/widgets/fault_geometry_visualizer_widget.py:19` now carries `from PyQt6.QtGui import QIcon`, the F821 is gone, and `pytest tests/ -q` returns **`333 passed, 23 skipped, 0 failed`** (356 collected). `pytest tests/test_project_save_load.py` (AGENTS.md invariant #5 gate) now passes. `audit/runtime/pytest_output.txt` is retained as the **pre-fix** baseline and must be read as such. The finding is retained (not deleted) because the same defect *class* recurred twice in new code — see **HIGH-19**.`
+- **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `RESOLVED`
 - **Location**: ``ui/widgets/fault_geometry_visualizer_widget.py:115``
+- **Scientific Impact**: Mandatory post-change gate `pytest tests/test_project_save_load.py -v` (AGENTS.md invariant #5) currently **cannot pass**, so data-model/UI changes cannot be validated as required.
+- **Evidence**: `audit/runtime/pytest_output.txt` (short test summary); ruff F821 list.
 
 ### [ ] HIGH-11 — `RECOVERY_MODELS_AVAILABLE = False` is the only guard preventing `NameError`s
-- **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `NEW`
+- **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `RECURRED — the three names remain unbound: measured `hasattr(module, 'MiscibleRecoveryModel')` = False, same for `ImmiscibleRecoveryModel` and `BuckleyLeverettModel`, while `RECOVERY_MODELS_AVAILABLE` is a hard-coded `False`. `analytical_models.py:96`, `:223`, `:358` therefore rely on the flag as the ONLY thing preventing a `NameError` inside a constructor inside an optimizer evaluation. This is the HIGH-10 -> HIGH-19 -> HIGH-11 recurrence of the same defect class. Now detected automatically by the gate's F821 release gate. Reopen: https://github.com/fgfalll/WAG_optimisation/issues/16`
 - **Location**: ``core/engine_surrogate/analytical_models.py:30` (flag), `:96` (`MiscibleRecoveryModel`), `:218` (`ImmiscibleRecoveryModel`), `:341` (`BuckleyLeverettModel`)`
+- **Scientific Impact**: `tests/…` cannot cover those branches; flipping the flag (a one-line "config change") instantly raises `NameError` at runtime. The advertised "literature-based fallback to the full models" is fictional.
+- **Evidence**: Ruff F821 output (`audit/code_quality/ruff_report.json`).
 
 ### [ ] HIGH-12 — Exception funnel converts all failures into penalties without tracebacks
-- **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `NEW (severity reduced from an initial "plausible zeros survive" hypothesis — the error key **is** checked at `optimisation_engine.py:725`, so the failure mode is *masking*, not *silent acceptance*)`
+- **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:788-790` (`except Exception → _error_result`), `:964-988` (`_error_result`: RF=0, NPV=0, `convergence_status: "error"`); `core/engine_surrogate/surrogate_models.py:553-562`; `core/engine_surrogate/pvt_state.py:147-149` (PR root fallback `Z = max(0.25, B*1.05)` with **no log**); `core/optimisation_engine.py:725-727`, `:903-904`, `:1572-1576``
+- **Scientific Impact**: Defects present as "the optimizer dislikes this region" rather than as crashes; fallbacks are invisible in logs, which invalidates any claim that runs were "clean".
+- **Evidence**: Source lines; `audit/runtime/pytest_output.txt` (no engine error surfaced in suite).
 
 ### [ ] HIGH-13 — Wrapper hard-codes a $100/t carbon-tax floor over the user's value
 - **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/objectives/wrapper.py:96-97`; policy value `core/data_models.py:1734` (`carbon_tax_usd_per_tonne: float = 75.0`)`
+- **Scientific Impact**: User-facing parameter does not control the reported cost; combined with CRIT-10 the block never executes anyway — two independent reasons the leakage price signal is not what the UI claims.
+- **Evidence**: `wrapper.py:95-99`; `data_models.py:1734`.
 
 ### [ ] HIGH-14 — Two different sandface-pressure models coexist
 - **Severity**: `HIGH` | **Category**: `PHYSICAL` | **Status**: `NEW`
 - **Location**: ``core/objectives/wrapper.py:64-67` (`P_sandface = P_max + q_inj/II`, `II` default 25) vs `core/engine_surrogate/surrogate_engine.py:359` (`p_inj_sandface = min(current_p + 400, ceiling)`)`
+- **Scientific Impact**: Whichever path is enabled, the reported sandface pressure cannot be compared with the other; and the capping guarantees no violation is ever visible (relates to HIGH-05).
+- **Evidence**: Both code sites; `geomechanics_fault.py:118` for `p_safe_ceiling = p_frac·safety_factor`.
 
 ### [ ] HIGH-15 — Capillary gas-trapping term is inverted (and a test asserts the inversion)
 - **Severity**: `HIGH` | **Category**: `PHYSICAL` | **Status**: `CONFIRMED`
 - **Location**: ``core/engine_surrogate/surrogate_models.py:238-241`; test `tests/scientific/co2/test_co2_trapping_mechanisms.py:18-34``
+- **Scientific Impact**: Currently reachable only through `calculate_storage_efficiency` (`surrogate_models.py:403`), which itself has no production consumers (MED-05) — so the defect is *latent*, but the exported function and the codified test will propagate the error to any future caller.
+- **Evidence**: `audit_verify_3.py` section V12; test source. Prior SCI-FLAW-17 **CONFIRMED** (locations `:238-241` accurate).
 
 ### [ ] HIGH-16 — CO₂ viscosity polynomial is not the cited correlation and under-predicts dense-phase μ ≈ 2×
 - **Severity**: `HIGH` | **Category**: `PROVENANCE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/pvt_state.py:204-226``
+- **Scientific Impact**: Currently **no** engine consumer reads this value for the pressure/mass path (`gas_props` is consumed only for `bg`/`cg`, `surrogate_engine.py:366-367`), so the impact today is limited to mixture-μ outputs consumed by UI/diagnostics — but it is an unverifiable constant in an exported API, so it must carry `UNKNOWN — EVIDENCE REQUIRED` until cited.
+- **Evidence**: `audit_verify_2.py` section E (μ sweep); coefficient arithmetic.
 
 ### [ ] HIGH-17 — Gas compressibility is a two-branch fudge with un-cited coefficients
 - **Severity**: `HIGH` | **Category**: `PROVENANCE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/pvt_state.py:388-394``
+- **Scientific Impact**: `ct_dynamic` (`surrogate_engine.py:453`) mixes this with a constant `c_o`; an over-large `c_g` makes the reservoir artificially compliant, damping pressure response and hiding the `B_g` error of CRIT-04.
+- **Evidence**: `audit_verify_3.py` section V2b (`cg` column).
 
 ### [ ] HIGH-18 — The scientific verification suite cannot fail on the defects it claims to verify
-- **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `NEW — **do not "fix" by weakening these tests**; re-specify them against production code (see `res_audit.md` §5, change-safety row NEW).`
+- **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``tests/scientific/co2/test_co2_breakthrough_physics.py:16`, `:19-58`; `tests/scientific/conservation/test_mass_conservation.py` (`test_pore_volume_vs_ooip_recovery_bound_discrepancy`); `tests/scientific/mathematical/test_analytical_identities.py:11-12`; `tests/scientific/dimensional/test_unit_consistency.py:16-30`; `tests/scientific/co2/test_co2_trapping_mechanisms.py:31-33`; `tests/scientific/mathematical/test_singularity_and_overflow.py` (`test_mobility_ratio_unit_limit_singularity`)`
 - **Scientific Impact**: The **Analytical Verification** tier of the evidence hierarchy is non-informative for these items. A green `36 passed` is reported in `agent_wiki/verification/test_matrix.md` as `VERIFIED` / `CONTRADICTED BY TEST`, which reads as scientific assurance but is produced by tests that re-state the code's own arithmetic. Three defects are *enshrined* as regression expectations (HIGH-02, HIGH-15, SCI-FLAW-11): remediation will be blocked by a red build, and no test will notice a re-introduction of SCI-FLAW-01.
 - **Evidence**: `v_tests2.py` (AST: `A) tautological = 5`, `B) no production import = 6`, `C) exercises production = 25`); `pytest tests/scientific` → `36 passed`; source reads cited above.
 
 ### [x] HIGH-19 — Two undefined names in the new workbench code reproduce the HIGH-10 defect class
-- **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `RESOLVED — Remediated in ui/workbench/components/pyvista_reservoir_canvas.py (defined has_active_fault) and subsurface_data_viewer_widget.py (imported QToolTip).`
+- **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `RESOLVED`
 - **Location**: ``ui/workbench/components/pyvista_reservoir_canvas.py:974` (`has_active_fault`); `ui/workbench/components/subsurface_data_viewer_widget.py:335` (`QToolTip`)`
+- **Scientific Impact**: A marquee feature of the new workbench (3-D caprock stratigraphy) silently produces an empty viewport, and the sheet-export copy button raises in a slot. Neither is covered by any test, so the suite stays green — the same "cannot fail" condition documented in HIGH-18. This is the second occurrence of the HIGH-10 pattern within two commits, i.e. the fix for HIGH-10 was treated as a one-off rather than as a class.
+- **Evidence**: `ruff check . --output-format json` → `F821 pyvista_reservoir_canvas.py:974 "Undefined name has_active_fault"`, `F821 subsurface_data_viewer_widget.py:335 "Undefined name QToolTip"` (`audit/ruff_output.json`); source reads cited above; repo-wide grep for both identifiers.
 
 ### [ ] HIGH-20 — `B_o` is C⁰ but not C¹ at the bubble point (slope flips sign discontinuously)
-- **Severity**: `HIGH` | **Category**: `NUMERICAL` | **Status**: `OPEN`
+- **Severity**: `HIGH` | **Category**: `NUMERICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/pvt_state.py:303-322``
 - **Scientific Impact**: spurious gradient sign flips near `P_b` perturb GA/BO line searches.
-- **Evidence**: `audit_verify_5.py` §A7. **Status:** NEW
+- **Evidence**: `audit_verify_5.py` §A7.
 
 ### [ ] HIGH-21 — Bubble point is a hard-coded constant and `c_o` defaults conflict between modules
-- **Severity**: `HIGH` | **Category**: `PROVENANCE` | **Status**: `OPEN`
+- **Severity**: `HIGH` | **Category**: `PROVENANCE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/pvt_state.py:101-106`; conflicting value at `core/engine_surrogate/surrogate_engine.py:315``
 - **Scientific Impact**: the `P_b` default silently decides saturation state, which flips the sign of `dB_o/dP` and therefore the whole volumetric bookkeeping.
-- **Evidence**: `audit_verify_5.py` §A/§A5. **Status:** NEW
+- **Evidence**: `audit_verify_5.py` §A/§A5.
 
 ### [ ] HIGH-23 — Containment is economically inert: leakage is identically zero, yet leaked CO₂ would earn storage credit
-- **Severity**: `HIGH` | **Category**: `PHYSICAL` | **Status**: `OPEN`
+- **Severity**: `HIGH` | **Category**: `PHYSICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:635`, `:644`; `core/optimisation_engine.py:1372-1386`; `core/objectives/wrapper.py:108-132``
 - **Scientific Impact**: the model pays for CO₂ it cannot retain and never charges for CO₂ it loses. The externality of a containment failure is priced at zero while the revenue for the same molecules is priced at $25/t — inverting EPA Class VI risk incentives. The most consequential finding for a carbon-storage project.
-- **Evidence**: `audit_verify_9.py`; `audit_verify_7.py` §R; wiki invariants #10/#11. **Status:** NEW
+- **Evidence**: `audit_verify_9.py`; `audit_verify_7.py` §R; wiki invariants #10/#11.
 
 ### [ ] HIGH-24 — Two live VRR definitions coexist; the post-hoc one silently overwrites the integrated one
 - **Severity**: `HIGH` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:417` vs `:545-548``
 - **Scientific Impact**: VRR is the diagnostic used to judge voidage replacement; the physically coupled (integrated) value is discarded.
+- **Evidence**: Source reads at `surrogate_engine.py:417` vs `:545-548`; re-verified by `python -m audit.continuity check`. The guard is an incidental array-length coincidence, not a physical condition.
 
 ### [ ] HIGH-25 — `s_g_avg` masking: a non-positive tangent slope silently becomes 100 % displacement efficiency
 - **Severity**: `HIGH` | **Category**: `NUMERICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/analytical_models.py:309-313``
 - **Scientific Impact**: the immiscible limb's RF can jump to its physical maximum on a numerical artefact — anti-pattern class D inside the block whose gradient CRIT-07 otherwise correctly restored.
+- **Evidence**: `audit_verify_5.py` §E4; probe `probe_saturation_masking` equivalent re-run 05-10-2026. Source: `analytical_models.py:305-313`. agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md §4.
 
 ### [ ] HIGH-26 — CO₂ properties mix a Peng-Robinson FVF with a correlation-based `Z` in one mixture
 - **Severity**: `HIGH` | **Category**: `PHYSICAL` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/pvt_state.py:375-400``
 - **Scientific Impact**: `bg_dynamic` feeds produced-gas voidage (`:412-414`), VRR (`:417`) and `dp` (`:455`); the result is not a property of any real gas.
+- **Evidence**: Source read of `pvt_state.py:375-400`; PR path confirmed present via `_setup_pr_eos_co2` at `:106`. agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md §4.
 
 ---
 
 ## 🚨 MEDIUM Severity Flaw Register (22 items)
 
-### [ ] MED-01 — Five different "tonnes/MSCF" constants (spread **1.0%**) plus a comment claiming `0.1234 lb/ft³` ...
+### [ ] MED-01 — Five different "tonnes/MSCF" constants (spread **1.0%**) plus a comment claiming `0.1234 lb/ft³` and `...
 - **Severity**: `MEDIUM` | **Category**: `PROVENANCE` | **Status**: `NEW`
-- **Location**: `data_models.py:1858-1860 (0.05254), pvt_state.py:41-42 (1.838 kg/m³, 0.05295), profile_generator_fast.py:794 (0.05297), surrogate_models.py:26, analytical_models.py:37, wrapper.py:90 (0.053)`
-- **Observed Behavior**: Five different "tonnes/MSCF" constants (spread **1.0%**) plus a comment claiming `0.1234 lb/ft³` and `0.056 t/MSCF` (both wrong: 1.838 kg/m³ = 0.115 lb/ft³ ≈ 0.0520 t/MSCF).
-- **Expected Behavior**: one authoritative constant with a cited standard condition.
+- **Location**: ``data_models.py:1858-1860` (0.05254), `pvt_state.py:41-42` (1.838 kg/m³, 0.05295), `profile_generator_fast.py:794` (0.05297), `surrogate_models.py:26`, `analytical_models.py:37`, `wrapper.py:90` (0.053)`
 - **Scientific Impact**: 1% mass-balance bias, and an auditable comment that is false.
 - **Evidence**: Grep output above; `analytical_models.py:35-37`
 
-### [ ] MED-02 — Docstring advertises Span–Wagner; only Peng–Robinson is implemented (grep: no Span–Wagner code)
+### [ ] MED-02 — Docstring advertises Span–Wagner; only Peng–Robinson is implemented (grep: no Span–Wagner code). `B_CO...
 - **Severity**: `MEDIUM` | **Category**: `PROVENANCE` | **Status**: `NEW`
-- **Location**: `pvt_state.py:8, :19 (docstring), :175-176, :201`
-- **Observed Behavior**: Docstring advertises Span–Wagner; only Peng–Robinson is implemented (grep: no Span–Wagner code). `B_CO2 = 327.362/ρ` assumes 52.046 kg/MSCF (exact ≈ 52.6 kg ⇒ ~1.1% high). No volume translation (PR-78 typically 5–10% low on dense CO₂ ρ).
-- **Expected Behavior**: cite PR only, or implement Span–Wagner; state the molar basis.
+- **Location**: ``pvt_state.py:8`, `:19` (docstring), `:175-176`, `:201``
 - **Scientific Impact**: ~1–10% bias in CO₂ reservoir-volume and tonnage.
 - **Evidence**: `pvt_state.py:121-161` (PR only); arithmetic 1000 scf × 1.838 kg/m³
 
-### [ ] MED-03 — Radial form `T = 0.001127·k·h/(μ·ln(D/r_w))` mixes the **linear** Darcy constant with a radial lo...
+### [ ] MED-03 — Radial form `T = 0.001127·k·h/(μ·ln(D/r_w))` mixes the **linear** Darcy constant with a radial logarit...
 - **Severity**: `MEDIUM` | **Category**: `MATHEMATICAL` | **Status**: `NEW`
-- **Location**: `well_mechanics.py:197, :220 (const at :28)`
-- **Observed Behavior**: Radial form `T = 0.001127·k·h/(μ·ln(D/r_w))` mixes the **linear** Darcy constant with a radial logarithm ⇒ **2π = 6.28× too low**.
-- **Expected Behavior**: `0.00708` (`DARCY_FIELD_CONSTANT`, defined at `:27` and correctly used at `:85`).
+- **Location**: ``well_mechanics.py:197`, `:220` (const at `:28`)`
 - **Scientific Impact**: inter-well connectivity understated 6.3× wherever used.
 - **Evidence**: `well_mechanics.py:26-28`, `:85`, `:220`; consumers are UI-only (MED-05)
 
-### [ ] MED-04 — Invalid input (`k ≤ 0`, `h ≤ 0`, …) returns `1.0` silently (PI in STB/d/psi).
+### [ ] MED-04 — Invalid input (`k ≤ 0`, `h ≤ 0`, …) returns `1.0` silently (PI in STB/d/psi)
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
-- **Location**: `well_mechanics.py:65-66, :113-114`
-- **Observed Behavior**: Invalid input (`k ≤ 0`, `h ≤ 0`, …) returns `1.0` silently (PI in STB/d/psi).
-- **Expected Behavior**: raise or return `0.0` with a log.
-- **Scientific Impact**: a sentinel 1.0 is summed into `j_peaceman_inj_base` (`surrogate_engine.py:296-309`) and dilutes the index.
-- **Evidence**: Source
+- **Location**: ``well_mechanics.py:65-66`, `:113-114``
+- **Scientific Impact**: a sentinel 1.0 is summed into `j_peaceman_inj_base` (`surrogate_engine.py:296-309`) and dilutes the index. Source
+- **Evidence**: See Observed.
 
-### [ ] MED-05 — Relative permeability and inter-well transmissibility are **not in the evaluation path**: the eng...
+### [ ] MED-05 — Relative permeability and inter-well transmissibility are **not in the evaluation path**: the engine c...
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
-- **Location**: `relative_permeability.py (all), well_mechanics.py:184-221, surrogate_models.py:371`
-- **Observed Behavior**: Relative permeability and inter-well transmissibility are **not in the evaluation path**: the engine computes saturations by material balance (`surrogate_engine.py:376-379`) with no `k_rel`, no fractional flow, no `T_ij`. Consumers of rel-perm are UI/dashboard only (`ui/data_management_widget.py`, `ui/widgets/model_evaluation_dashboard.py`); `calculate_storage_efficiency` is imported only by `tests/test_physics_validation.py`.
-- **Expected Behavior**: document these as *diagnostic* modules (they are currently described as active physics).
-- **Scientific Impact**: false confidence that Corey rel-perm governs results.
-- **Evidence**: Repo-wide import grep
+- **Location**: ``relative_permeability.py` (all), `well_mechanics.py:184-221`, `surrogate_models.py:371``
+- **Scientific Impact**: false confidence that Corey rel-perm governs results. Repo-wide import grep
+- **Evidence**: See Observed.
 
-### [ ] MED-06 — `so_norm = (so − s_orw)/denom_w` uses the **water** denominator even when `s_org ≠ s_orw` (the no...
+### [ ] MED-06 — `so_norm = (so − s_orw)/denom_w` uses the **water** denominator even when `s_org ≠ s_orw` (the normal...
 - **Severity**: `MEDIUM` | **Category**: `MATHEMATICAL` | **Status**: `NEW`
-- **Location**: `relative_permeability.py:55`
-- **Observed Behavior**: `so_norm = (so − s_orw)/denom_w` uses the **water** denominator even when `s_org ≠ s_orw` (the normal case, `:43-44`).
-- **Expected Behavior**: normalize by `1 − s_wc − s_org`.
-- **Scientific Impact**: gas/oil relative-permeability endpoints mis-scaled.
-- **Evidence**: Source
+- **Location**: ``relative_permeability.py:55``
+- **Scientific Impact**: gas/oil relative-permeability endpoints mis-scaled. Source
+- **Evidence**: See Observed.
 
-### [ ] MED-07 — Two defects
-- **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW (corrected: prior text named a non-existent `_calculate_penalty` and claimed 0 call sites)`
-- **Location**: `optimisation_engine.py:1209-1256 (fn _calculate_adaptive_penalty), call site :1783; death branch :1225-1230`
-- **Observed Behavior**: Two defects. (a) `total_violation = 0.0` is hard-coded at `:1246` with every real check commented out (`:1232-1253`) ⇒ `if total_violation <= 0: return 0.0` at `:1255-1256` fires unconditionally, so the **single** call site at `:1783` always receives `0.0`. (b) The advertised `"death"` constraint-handling method is literally `pass` (`:1225-1230`) — selecting "death penalty" in `constraint_handling_method` changes nothing.
-- **Expected Behavior**: implement the checks or delete the API.
+### [ ] MED-07 — Two defects. (a) `total_violation = 0.0` is hard-coded at `:1246` with every real check commented out...
+- **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
+- **Location**: ``optimisation_engine.py:1209-1256` (fn `_calculate_adaptive_penalty`), call site `:1783`; `death` branch `:1225-1230``
 - **Scientific Impact**: a "static/adaptive/death penalty" API advertised to the GA is inert, and `penalty_factor`/`constraint_handling_method` are dead knobs.
 - **Evidence**: Grep (1 call site at `:1783`, always returns 0.0); source read of `:1209-1256`
 
-### [ ] MED-08 — `is_feasible` is computed and returned, then only logged; the penalty is applied separately at `:...
+### [ ] MED-08 — `is_feasible` is computed and returned, then only logged; the penalty is applied separately at `:1771-...
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
-- **Location**: `optimisation_engine.py:1531, :1560-1562`
-- **Observed Behavior**: `is_feasible` is computed and returned, then only logged; the penalty is applied separately at `:1771-1772`.
-- **Expected Behavior**: use the flag to gate/prune or drop it.
-- **Scientific Impact**: dead branch that looks like constraint handling.
-- **Evidence**: Source
+- **Location**: ``optimisation_engine.py:1531`, `:1560-1562``
+- **Scientific Impact**: dead branch that looks like constraint handling. Source
+- **Evidence**: See Observed.
 
-### [ ] MED-09 — Module-level `FAILURE_PENALTY = -1e12` is shadowed inside the wrapper by `self.advanced_engine_pa...
+### [ ] MED-09 — Module-level `FAILURE_PENALTY = -1e12` is shadowed inside the wrapper by `self.advanced_engine_params....
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
-- **Location**: `optimisation_engine.py:96 vs :1543; value data_models.py:1709`
-- **Observed Behavior**: Module-level `FAILURE_PENALTY = -1e12` is shadowed inside the wrapper by `self.advanced_engine_params.failure_penalty`; both are `-1e12` **today**, so behaviour diverges only if a user changes `failure_penalty`.
-- **Expected Behavior**: single source of truth.
-- **Scientific Impact**: latent split-brain penalty scale.
-- **Evidence**: Source
+- **Location**: ``optimisation_engine.py:96` vs `:1543`; value `data_models.py:1709``
+- **Scientific Impact**: latent split-brain penalty scale. Source
+- **Evidence**: See Observed.
 
-### [ ] MED-10 — Valid `time_resolution` values are `weekly/monthly/quarterly/yearly`; profiles only ever expose `...
+### [ ] MED-10 — Valid `time_resolution` values are `weekly/monthly/quarterly/yearly`; profiles only ever expose `yearl...
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
-- **Location**: `optimisation_engine.py:841-896, :1611, :1652; data_models.py:1262, :1273; profile_generator_fast.py:103`
-- **Observed Behavior**: Valid `time_resolution` values are `weekly/monthly/quarterly/yearly`; profiles only ever expose `yearly_*` and `monthly_*`; engine time base is **monthly** by default while `OperationalParameters` defaults to **yearly**; fallbacks use the non-existent `"daily"`.
-- **Expected Behavior**: one resolution vocabulary, propagated.
-- **Scientific Impact**: `weekly`/`quarterly` runs silently read empty arrays (see CRIT-08 for the consequence).
-- **Evidence**: Source
+- **Location**: ``optimisation_engine.py:841-896`, `:1611`, `:1652`; `data_models.py:1262`, `:1273`; `profile_generator_fast.py:103``
+- **Scientific Impact**: `weekly`/`quarterly` runs silently read empty arrays (see CRIT-08 for the consequence). Source
+- **Evidence**: See Observed.
 
-### [x] MED-11 — `default_gas_fvf = 0.005` has no documented unit; `mobility_ratio = base_injection_rate × mobilit...
-- **Severity**: `MEDIUM` | **Category**: `PROVENANCE` | **Status**: `RESOLVED — Remediated in profile_generator_fast.py:1109-1118 (CRIT-11)`
-- **Location**: `data_models.py:913, :917; profile_generator_fast.py:1111-1115`
-- **Observed Behavior**: `default_gas_fvf = 0.005` has no documented unit; `mobility_ratio = base_injection_rate × mobility_ratio_factor(0.001)` is compared against `high_mobility_threshold = 2.0` labelled a *mobility ratio* ⇒ the adaptive WAG logic triggers for any rate > 2000 MSCFD (dimensionally meaningless).
-- **Expected Behavior**: document units (rb/scf) and compare a true mobility ratio.
+### [x] MED-11 — `default_gas_fvf = 0.005` has no documented unit; `mobility_ratio = base_injection_rate × mobility_rat...
+- **Severity**: `MEDIUM` | **Category**: `PROVENANCE` | **Status**: `RESOLVED`
+- **Location**: ``data_models.py:913`, `:917`; `profile_generator_fast.py:1111-1115``
 - **Scientific Impact**: WAG enhancement is decided by injection rate, not by mobility.
 - **Evidence**: Source; CRIT-11
 
-### [ ] MED-12 — `oil_mass = ooip·0.135`, `x_co2 = 0.55·M_inj/(M_oil + 0.55·M_inj)`, `y_co2 = clip(cum/(cum+1000),...
+### [ ] MED-12 — `oil_mass = ooip·0.135`, `x_co2 = 0.55·M_inj/(M_oil + 0.55·M_inj)`, `y_co2 = clip(cum/(cum+1000), 0.05...
 - **Severity**: `MEDIUM` | **Category**: `PROVENANCE` | **Status**: `NEW`
-- **Location**: `surrogate_engine.py:352, :354, :356`
-- **Observed Behavior**: `oil_mass = ooip·0.135`, `x_co2 = 0.55·M_inj/(M_oil + 0.55·M_inj)`, `y_co2 = clip(cum/(cum+1000), 0.05, 0.95)` — solubility/vapor-fraction surrogates with no cited source (1000 MSCF time constant, 0.55 mass factor, 0.135 t/STB).
-- **Expected Behavior**: mark `UNKNOWN — EVIDENCE REQUIRED` and tie to a flash calculation.
-- **Scientific Impact**: `x_co2/y_co2` drive all PVT (B_o, μ, B_g mixture).
-- **Evidence**: Source + `audit/parameter_provenance.csv`
+- **Location**: ``surrogate_engine.py:352`, `:354`, `:356``
+- **Scientific Impact**: `x_co2/y_co2` drive all PVT (B_o, μ, B_g mixture). Source +.
+- **Evidence**: `audit/parameter_provenance.csv`
 
-### [ ] MED-13 — Ruff **3244** violations over **191** files (re-run 04-10-2026 after `a68fc35`; top: UP006 857, W...
-- **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW (metrics refreshed 04-10-2026)`
-- **Location**: `repo-wide`
-- **Observed Behavior**: Ruff **3244** violations over **191** files (re-run 04-10-2026 after `a68fc35`; top: UP006 857, W293 686, UP045 426, **F401 329 unused imports**, I001 253, **F841 85 unused locals**, **F821 6**, F811 7 — at audit baseline: 3132 / 192 / F401 345 / F841 77 / F821 5 / F811 5); vulture **41** dead-code candidates (04-10-2026 run; a re-run after `a68fc35` timed out on `RecursionError`, so 41 is the last verifiable figure); coverage **37 %** repo-wide (`audit/runtime/coverage.xml`, denominator 36 062 statements); pytest **`0 failed / 333 passed / 23 skipped`** (re-run 04-10-2026; was `4 failed / 329 passed / 23 skipped`); jscpd not installed (duplicate detection not run).
-- **Expected Behavior**: triage F401/F841/F821 first (they hide real defects), keep style noise separate.
-- **Scientific Impact**: F401/F841 mask dead physics (CRIT-13) and F821 hides runtime `NameError`s (HIGH-11, HIGH-19; HIGH-10 resolved).
-- **Evidence**: `audit/ruff_output.json` (UTF-8, re-run), `audit/code_quality/ruff_report.json` (UTF-16, baseline), `dead_code_candidates.txt`, `audit/runtime/coverage.xml`, `pytest_output.txt`
-
-### [ ] MED-14 — If no simulation engine is available the code silently falls back to `ProductionProfiler` (differ...
+### [ ] MED-13 — repo-wide Ruff **3244** violations over **191** files (re-run 04-10-2026 after `a68fc35`; top: UP006 8...
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
-- **Location**: `optimisation_engine.py:905-935`
-- **Observed Behavior**: If no simulation engine is available the code silently falls back to `ProductionProfiler` (different physics) and then clamps RF into [0,1] *after the fact* (`:930-935`).
-- **Expected Behavior**: fail loudly, or mark results as `engine_type = profiler` everywhere downstream.
-- **Scientific Impact**: two physics in one result namespace.
-- **Evidence**: Source
+- **Location**: ``repo-wide``
+- **Scientific Impact**: F401/F841 mask dead physics (CRIT-13) and F821 hides runtime `NameError`s (HIGH-11, HIGH-19; HIGH-10 resolved). `audit/ruff_output.json` (UTF-8, re-run), `audit/code_quality/ruff_report.json` (UTF-16, baseline).
+- **Evidence**: `dead_code_candidates.txt`, `audit/runtime/coverage.xml`, `pytest_output.txt`
 
-### [ ] MED-15 — The wiki documents `_calculate_engine_npv()` and `_calculate_co2_purchased_recycled()` as the sou...
-- **Severity**: `MEDIUM` | **Category**: `PROVENANCE` | **Status**: `NEW (corrected in `agent_wiki/` as part of this deliverable)`
-- **Location**: `agent_wiki/README.md:35, source_of_truth_map.md:16, source_of_truth.md:26, common_pitfalls.md:34, code/inventory.md:26, execution_flow.md:81-82, code/functions/simulation_functions.md, code/classes/surrogate_classes.md, validation/conservation.md`
-- **Observed Behavior**: The wiki documents `_calculate_engine_npv()` and `_calculate_co2_purchased_recycled()` as the source of truth for economics. **Neither function exists anywhere in the repository** (grep for 'def _calculate_engine_npv', 'def _calculate_co2_purchased_recycled', 'def _solve_pressure_ode'
-- **Expected Behavior**: 0 hits). Real code: purchased/recycled at `surrogate_engine.py:572-596`; NPV at `surrogate_models.py:507-530`.
+### [ ] MED-14 — If no simulation engine is available the code silently falls back to `ProductionProfiler` (different p...
+- **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
+- **Location**: ``optimisation_engine.py:905-935``
+- **Scientific Impact**: two physics in one result namespace. Source
+- **Evidence**: See Observed.
+
+### [ ] MED-15 — `agent_wiki/README.md:35`, `source_of_truth_map.md:16`, `source_of_truth.md:26`, `common_pitfalls.md:3...
+- **Severity**: `MEDIUM` | **Category**: `PROVENANCE` | **Status**: `NEW`
+- **Location**: ``The wiki documents `_calculate_engine_npv()` and `_calculate_co2_purchased_recycled()` as the source of truth for economics. **Neither function exists anywhere in the repository** (grep for 'def _calculate_engine_npv', 'def _calculate_co2_purchased_recycled', 'def _solve_pressure_ode' → 0 hits). Real code: purchased/recycled at `surrogate_engine.py:572-596`; NPV at `surrogate_models.py:507-530`. → wiki must match code. → agents following the wiki edit a non-existent function and believe `economic.py` is dead for the wrong reason.``
 - **Scientific Impact**: wiki must match code.
-- **Evidence**: Grep; corrected during this round (see wiki edits)
+- **Evidence**: agents following the wiki edit a non-existent function and believe `economic.py` is dead for the wrong reason. Grep; corrected during this round (see wiki edits)
 
-### [ ] MED-16 — The master verification matrix is stale on four counts
-- **Severity**: `MEDIUM` | **Category**: `PROVENANCE` | **Status**: `NEW (corrected in `agent_wiki/verification/test_matrix.md` as part of this deliverable)`
-- **Location**: `agent_wiki/verification/test_matrix.md:5, :18-46; agent_wiki/architecture/overview.md:71; agent_wiki/README.md:29`
-- **Observed Behavior**: The master verification matrix is stale on four counts. (a) It declares **"42 test items across 16 subdirectories"**; `pytest --collect-only tests/scientific` returns **36 items in 15 subdirectories**. (b) **6 of its 40 listed tests no longer exist anywhere in `tests/`**: `test_co2_density_thermal_expansion`, `test_cubic_eos_z_factor_bounds`, `test_phase_label_assignment`, `test_peng_robinson_fugacity_equation_structure`, `test_corey_relative_permeability_bounds`, `test_bg_discrepancy_between_modules` (grep = 0 hits each) — five of them cite `unified_engine/…`. (c) `test_koval_fractional_flow_mobility_inversion` was **renamed** to `..._monotonicity` (0 hits for the old name) and 2 existing tests (`test_profile_generator_co2_breakthrough_gas_rate_increases_with_mobility`, `test_alston_impurity_mmp_trend`) are **unlisted**. (d) `overview.md:71` and `README.md:29` state the legacy engines were *"relocated into `deprecated/`"* — **neither `deprecated/` nor `core/unified_engine/` exists** (`unified_engine` is referenced 51× in the wiki, 0× as a real path).
-- **Expected Behavior**: regenerate the matrix from `--collect-only` and stop citing deleted trees.
-- **Scientific Impact**: readers conclude that six thermodynamic assertions are being enforced when no such test exists.
-- **Evidence**: `pytest --collect-only tests/scientific` (36 items); 7 greps returning 0; `Test-Path deprecated`, `core/unified_engine` = False
+### [ ] MED-16 — `agent_wiki/verification/test_matrix.md:5`, `:18-46`; `agent_wiki/architecture/overview.md:71`; `agent...
+- **Severity**: `MEDIUM` | **Category**: `PROVENANCE` | **Status**: `NEW`
+- **Location**: ``repo-wide``
+- **Scientific Impact**: readers conclude that six thermodynamic assertions are being enforced when no such test exists. `pytest --collect-only tests/scientific` (36 items); 7 greps returning 0; `Test-Path deprecated`, `core/unified_engine` = False
+- **Evidence**: See Observed.
 
 ### [ ] MED-17 — `monthly_oil_stb` is length-1 and all zeros
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/surrogate_engine.py:671``
 - **Scientific Impact**: consumers resolving monthly resolution (MED-10) read zeros; `summary_monthly.csv` will be empty.
+- **Evidence**: Measured 05-10-2026 on the default 181-step run: `monthly_oil_stb` `n=1, sum=0.0` while `yearly_oil_stb` sums to 433 959 STB. `audit_verify_9.py`. agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md §5.
 
 ### [ ] MED-18 — The `kv <= 1` Koval branch is unreachable
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/analytical_models.py:561-562``
+- **Scientific Impact**: Dead code that advertises a limiting case the model cannot reach; an agent reading the branch list would believe `M = 1` has special handling when in fact the general branch covers it.
+- **Evidence**: Source read of `analytical_models.py:561-562`; continuity probe `probe_koval_sensitivity_in_config` confirms the general branch handles `M = 1` correctly (max jump 7.5e-03), so the defect is dead code only. agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md §5.
 
 ### [ ] MED-19 — `MiscibleSurrogate` RF multiplied by a new `e_v`, and the RF clip raised in the same edit
 - **Severity**: `MEDIUM` | **Category**: `PROVENANCE` | **Status**: `NEW`
 - **Location**: ``core/engine_surrogate/analytical_models.py:199-201``
 - **Scientific Impact**: two changes to the same physical bound in one edit; the ceiling change alone raises achievable RF by up to 6 %.
+- **Evidence**: Source read of `analytical_models.py:199-203`; the clip change from 0.80 to 0.85 is visible in the same un-audited edit (`git diff`). agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md §5.
 
 ### [ ] MED-20 — `annual_water_stb` reporting key deleted with no replacement
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/optimisation_engine.py:852``
+- **Scientific Impact**: Silent reporting-key loss: any consumer reading `annual_water_stb` now reads nothing, and no test covers the key's removal.
+- **Evidence**: Visible in `git diff -- core/optimisation_engine.py`: `"annual_water_stb": annual_water` removed with no replacement key. agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md §5.
 
 ### [ ] MED-21 — The $100/t remediation floor (HIGH-13) survives the remediation
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/objectives/wrapper.py:130``
 - **Scientific Impact**: any user carbon price below $100/t is silently floored.
+- **Evidence**: Source read `wrapper.py:130`; HIGH-13 in the register records the same line as open, and it is unchanged by the 05-10-2026 remediation. agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md §5.
 
 ### [ ] MED-22 — Dead second leakage model still present in the objective wrapper
 - **Severity**: `MEDIUM` | **Category**: `SOFTWARE` | **Status**: `NEW`
 - **Location**: ``core/objectives/wrapper.py:112-121``
+- **Scientific Impact**: A misleading second leakage model remains in the objective wrapper while the real one is dead.
+- **Evidence**: Unreachability proved by measurement: `wrapper.py:108-111` always takes the first branch because `total_leakage_tonne` is present (value 0.0), so `:112-121` never executes. `audit_verify_9.py`. agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit.md §5.
 
 ---
 
 ## 🚨 LOW Severity Flaw Register (5 items)
 
-### [ ] LOW-01 — `y_co2` is clipped to a **minimum of 0.05** even at `cum_inj = 0`, so the gas phase always contai...
+### [ ] LOW-01 — `y_co2` is clipped to a **minimum of 0.05** even at `cum_inj = 0`, so the gas phase always contains ≥...
 - **Severity**: `LOW` | **Category**: `PHYSICAL` | **Status**: `NEW`
-- **Location**: `surrogate_engine.py:356`
-- **Observed Behavior**: `y_co2` is clipped to a **minimum of 0.05** even at `cum_inj = 0`, so the gas phase always contains ≥ 5% CO₂ before any injection.
-- **Expected Behavior**: 0.0 when nothing is injected.
+- **Location**: ``surrogate_engine.py:356``
 - **Scientific Impact**: negligible pre-injection bias in mixture B_g/μ.
-- **Evidence**: Documented in flaw register
+- **Evidence**: See Observed.
 
-### [ ] LOW-02 — Dynamic MMP is recomputed and **overwrites** `params["mmp"]` with Cronquist on every call, wrappe...
+### [ ] LOW-02 — Dynamic MMP is recomputed and **overwrites** `params["mmp"]` with Cronquist on every call, wrapped in...
 - **Severity**: `LOW` | **Category**: `SOFTWARE` | **Status**: `NEW`
-- **Location**: `surrogate_engine.py:930-938`
-- **Observed Behavior**: Dynamic MMP is recomputed and **overwrites** `params["mmp"]` with Cronquist on every call, wrapped in `except`
-- **Expected Behavior**: `params["mmp"]` falls back to `default_mmp_fallback`. User `mmp` override survives only because `sim_kwargs["mmp"]` is applied via `params.update(kwargs)` **after** `_build_params_dict` (`optimisation_engine.py:647`, `surrogate_engine.py:158`).
+- **Location**: ``surrogate_engine.py:930-938``
 - **Scientific Impact**: explicit precedence documented.
-- **Evidence**: Documented in flaw register
+- **Evidence**: fragile ordering; reordering the kwargs update silently changes physics.
 
-### [ ] LOW-03 — `np.roots` per timestep for a cubic EOS (3 roots, eigen-solver) in a hot loop.
+### [ ] LOW-03 — `np.roots` per timestep for a cubic EOS (3 roots, eigen-solver) in a hot loop
 - **Severity**: `LOW` | **Category**: `SOFTWARE` | **Status**: `NEW`
-- **Location**: `pvt_state.py:143`
-- **Observed Behavior**: `np.roots` per timestep for a cubic EOS (3 roots, eigen-solver) in a hot loop.
-- **Expected Behavior**: closed-form trigonometric solution for the depressed cubic.
+- **Location**: ``pvt_state.py:143``
 - **Scientific Impact**: performance only (no scientific impact).
-- **Evidence**: Documented in flaw register
+- **Evidence**: See Observed.
 
-### [ ] LOW-04 — `MSCF_PER_TONNE` imported but unused (vulture, 90% confidence) alongside a live `CO2_TONNE_PER_MS...
+### [ ] LOW-04 — `MSCF_PER_TONNE` imported but unused (vulture, 90% confidence) alongside a live `CO2_TONNE_PER_MSCF`
 - **Severity**: `LOW` | **Category**: `SOFTWARE` | **Status**: `NEW`
-- **Location**: `core/engine_surrogate/surrogate_engine.py:37`
-- **Observed Behavior**: `MSCF_PER_TONNE` imported but unused (vulture, 90% confidence) alongside a live `CO2_TONNE_PER_MSCF`.
-- **Expected Behavior**: remove or use one constant.
+- **Location**: ``core/engine_surrogate/surrogate_engine.py:37``
 - **Scientific Impact**: two reciprocal constants invite unit errors (see MED-01).
-- **Evidence**: Documented in flaw register
+- **Evidence**: See Observed.
 
-### [ ] LOW-05 — RF > 1.0 is silently clamped to 1.0 with a warning after the fact instead of preventing `rf_max_p...
+### [ ] LOW-05 — RF > 1.0 is silently clamped to 1.0 with a warning after the fact instead of preventing `rf_max_physic...
 - **Severity**: `LOW` | **Category**: `NUMERICAL` | **Status**: `NEW`
-- **Location**: `optimisation_engine.py:930-935`
-- **Observed Behavior**: RF > 1.0 is silently clamped to 1.0 with a warning after the fact instead of preventing `rf_max_physical` violations upstream (HIGH-01).
-- **Expected Behavior**: raise/flag as a model failure.
+- **Location**: ``optimisation_engine.py:930-935``
 - **Scientific Impact**: hides upstream cap bugs.
-- **Evidence**: Documented in flaw register
+- **Evidence**: See Observed.
 
 ---
 

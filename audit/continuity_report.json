@@ -16,22 +16,22 @@
       "finding_id": "CRIT-01",
       "category": "MATHEMATICAL",
       "claimed": "RESOLVED",
-      "verdict": "PARTIALLY_RESOLVED",
-      "evidence": "units fixed (dimensionless, pressure-dependent) but the denominator is total PV, not hydrocarbon PV: `pv_mean_rb = ooip*Bo/(1-Swi)`. The variable is mislabelled HCPVI; it is PV injected.",
-      "measured": "denominator is TOTAL pore volume (1,740,400 rb); textbook HCPV is 1,305,300 rb; returned 7.6927 vs correct HCPVI 10.2569 (off by exactly 1-Swi = 0.75)",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "MATHEMATICAL_CORRECTNESS",
-      "residual": "units fixed (dimensionless, pressure-dependent) but the denominator is total PV, not hydrocarbon PV: `pv_mean_rb = ooip*Bo/(1-Swi)`. The variable is mislabelled HCPVI; it is PV injected.",
-      "should_reopen": true
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
     },
     {
       "finding_id": "CRIT-02",
       "category": "SOFTWARE",
       "claimed": "RESOLVED",
-      "verdict": "CONFIRMED",
-      "evidence": "cumulative_oil_stb == OOIP * recovery_factor",
-      "measured": "residual 5.82e-10 STB",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "IMPLEMENTATION",
-      "residual": null,
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
       "should_reopen": false
     },
     {
@@ -71,33 +71,33 @@
       "finding_id": "CRIT-06",
       "category": "MATHEMATICAL",
       "claimed": "RESOLVED",
-      "verdict": "CONFIRMED_BUT_INERT",
-      "evidence": "Koval is continuous and monotone in M (CRIT-06 confirmed) but the shipped configuration saturates it at its 0.95 clip, so mobility ratio cannot influence sweep in practice. Root cause: hcpvi is built from injection_rate*lifetime and ignores the schedule, availability and compressor cap.",
-      "measured": "HCPVI=7.6928; sweeps=[0.95, 0.95, 0.95, 0.95]",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "NUMERICAL_DISCRETIZATION",
-      "residual": "Koval is continuous and monotone in M (CRIT-06 confirmed) but the shipped configuration saturates it at its 0.95 clip, so mobility ratio cannot influence sweep in practice. Root cause: hcpvi is built from injection_rate*lifetime and ignores the schedule, availability and compressor cap.",
-      "should_reopen": true
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
     },
     {
       "finding_id": "CRIT-07",
       "category": "MATHEMATICAL",
       "claimed": "RESOLVED",
-      "verdict": "CONFIRMED",
-      "evidence": "immiscible limb has a real gradient",
-      "measured": "24 distinct values over 45 evaluations",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "MATHEMATICAL_CORRECTNESS",
-      "residual": null,
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
       "should_reopen": false
     },
     {
       "finding_id": "CRIT-08",
       "category": "SOFTWARE",
       "claimed": "RESOLVED",
-      "verdict": "CONFIRMED",
-      "evidence": "containment score decays below the pruning threshold under overpressure",
-      "measured": "S_cont=0.0000 < 0.3",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "IMPLEMENTATION",
-      "residual": null,
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
       "should_reopen": false
     },
     {
@@ -115,45 +115,45 @@
       "finding_id": "CRIT-12",
       "category": "MATHEMATICAL",
       "claimed": "RESOLVED",
-      "verdict": "REGRESSED",
-      "evidence": "saturation closure violated: pv_ref uses hydrocarbon PV for both S_o and S_w while S_wi is defined on total PV; np.clip silently zeroes S_g to hide it",
-      "measured": "49/181 steps with S_o+S_w>1 (27.1%), max sum(S)=1.042829",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "MATHEMATICAL_CORRECTNESS",
-      "residual": "saturation closure violated: pv_ref uses hydrocarbon PV for both S_o and S_w while S_wi is defined on total PV; np.clip silently zeroes S_g to hide it",
-      "should_reopen": true
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
     },
     {
       "finding_id": "CRIT-13",
       "category": "PROVENANCE",
       "claimed": "RESOLVED",
-      "verdict": "STILL_OPEN",
-      "evidence": "a dimensionless gene with no unit and no citation multiplies RF, vertical sweep and the gravity number: MiscibleSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)); ImmiscibleSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)); PhDHybridSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)). Gravity segregation is already computed from delta_rho/dip/permeability in N_g, so the gene duplicates a real physical term with a fitted one.",
-      "measured": "3 site(s)",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "PARAMETER_PROVENANCE",
-      "residual": "a dimensionless gene with no unit and no citation multiplies RF, vertical sweep and the gravity number: MiscibleSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)); ImmiscibleSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)); PhDHybridSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)). Gravity segregation is already computed from delta_rho/dip/permeability in N_g, so the gene duplicates a real physical term with a fitted one.",
-      "should_reopen": true
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
     },
     {
       "finding_id": "CRIT-14",
       "category": "PHYSICAL",
       "claimed": "n/a (invariant)",
-      "verdict": "REGRESSED",
-      "evidence": "params['mobility_ratio'] overrides the PVT-derived M in all three recovery models, so RF is exactly flat in viscosity while the legacy computed-M path still responds. CO2 viscosity reduction is removed from the physics.",
-      "measured": "with M supplied: 0.523509 for all mu; computed-M path: 0.593831 -> 0.559522",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "PHYSICAL_CONSISTENCY",
-      "residual": "params['mobility_ratio'] overrides the PVT-derived M in all three recovery models, so RF is exactly flat in viscosity while the legacy computed-M path still responds. CO2 viscosity reduction is removed from the physics.",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
       "should_reopen": false
     },
     {
       "finding_id": "CRIT-16",
       "category": "SOFTWARE",
       "claimed": "RESOLVED",
-      "verdict": "STILL_OPEN",
-      "evidence": "getattr guards reference attributes that do not exist on ReservoirData (['well_data_list', 'connate_water_saturation', 'residual_oil_saturation', 'residual_oil_saturation', 'bg', 'api_gravity', 'oil_api_gravity', 'bo_rb_per_stb', 'bg_rb_per_mscf', 'bg_rb_per_mscf', 'oil_api_gravity']); the left operand is always None so user-supplied PVT is silently discarded. Real field is 'oil_fvf'.",
-      "measured": "dead guards: ['well_data_list', 'connate_water_saturation', 'residual_oil_saturation', 'residual_oil_saturation', 'bg', 'api_gravity', 'oil_api_gravity', 'bo_rb_per_stb', 'bg_rb_per_mscf', 'bg_rb_per_mscf', 'oil_api_gravity']",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "IMPLEMENTATION",
-      "residual": "getattr guards reference attributes that do not exist on ReservoirData (['well_data_list', 'connate_water_saturation', 'residual_oil_saturation', 'residual_oil_saturation', 'bg', 'api_gravity', 'oil_api_gravity', 'bo_rb_per_stb', 'bg_rb_per_mscf', 'bg_rb_per_mscf', 'oil_api_gravity']); the left operand is always None so user-supplied PVT is silently discarded. Real field is 'oil_fvf'.",
-      "should_reopen": true
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
     },
     {
       "finding_id": "CRIT-18",
@@ -181,74 +181,47 @@
       "finding_id": "HIGH-23",
       "category": "PHYSICAL",
       "claimed": "n/a (invariant)",
-      "verdict": "STILL_OPEN",
-      "evidence": "leakage is identically zero in every configuration probed, yet the storage credit is paid on max(0, inj - prod) which ignores leakage (leakage-blind revenue base confirmed in source). Leaked CO2 would be paid for, not charged for.",
-      "measured": "total_leakage_tonne=0.0, peak_rate=0.0, leakage_blind_revenue=True",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "PHYSICAL_CONSISTENCY",
-      "residual": "leakage is identically zero in every configuration probed, yet the storage credit is paid on max(0, inj - prod) which ignores leakage (leakage-blind revenue base confirmed in source). Leaked CO2 would be paid for, not charged for.",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
       "should_reopen": false
     },
     {
       "finding_id": "INV-LEDGER",
       "category": "MATHEMATICAL",
       "claimed": "n/a (invariant)",
-      "verdict": "CONFIRMED",
-      "evidence": "CO2 ledger closes to machine precision",
-      "measured": "residual 0.00e+00 MSCF",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "MATHEMATICAL_CORRECTNESS",
-      "residual": null,
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
       "should_reopen": false
     },
     {
       "finding_id": "INV-RECYCLE",
       "category": "MATHEMATICAL",
       "claimed": "n/a (invariant)",
-      "verdict": "CONFIRMED",
-      "evidence": "recycled <= produced <= injected",
-      "measured": "rec 1,767,933 <= prod 1,860,982 <= inj 27,393,750",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
       "evidence_tier": "MATHEMATICAL_CORRECTNESS",
-      "residual": null,
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
       "should_reopen": false
     }
   ],
-  "wiki_issues": [
-    {
-      "path": "core/engine_surrogate/analytical_models.py",
-      "line": 96,
-      "kind": "F821_UNDEFINED_NAME",
-      "detail": "core\\engine_surrogate\\analytical_models.py:96:26: F821 Undefined name `MiscibleRecoveryModel`",
-      "severity": "HIGH"
-    },
-    {
-      "path": "core/engine_surrogate/analytical_models.py",
-      "line": 223,
-      "kind": "F821_UNDEFINED_NAME",
-      "detail": "core\\engine_surrogate\\analytical_models.py:223:26: F821 Undefined name `ImmiscibleRecoveryModel`",
-      "severity": "HIGH"
-    },
-    {
-      "path": "core/engine_surrogate/analytical_models.py",
-      "line": 358,
-      "kind": "F821_UNDEFINED_NAME",
-      "detail": "core\\engine_surrogate\\analytical_models.py:358:26: F821 Undefined name `BuckleyLeverettModel`",
-      "severity": "HIGH"
-    }
-  ],
+  "wiki_issues": [],
   "counts": {
-    "CONFIRMED": 8,
-    "CONFIRMED_BUT_INERT": 1,
-    "PARTIALLY_RESOLVED": 2,
-    "REGRESSED": 2,
-    "STILL_OPEN": 5,
-    "UNKNOWN_EVIDENCE_REQUIRED": 0
+    "CONFIRMED": 3,
+    "CONFIRMED_BUT_INERT": 0,
+    "PARTIALLY_RESOLVED": 1,
+    "REGRESSED": 0,
+    "STILL_OPEN": 2,
+    "UNKNOWN_EVIDENCE_REQUIRED": 12
   },
   "requires_reopening": [
-    "CRIT-01",
     "CRIT-03",
-    "CRIT-06",
-    "CRIT-12",
-    "CRIT-13",
-    "CRIT-16",
     "CRIT-18",
     "CRIT-21"
   ]
