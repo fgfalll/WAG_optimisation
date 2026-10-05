@@ -1,0 +1,290 @@
+{
+  "note": "Categorically separated verdicts. No composite accuracy score exists by design.",
+  "evidence_tier_order": [
+    "MATHEMATICAL_CORRECTNESS",
+    "PHYSICAL_CONSISTENCY",
+    "NUMERICAL_DISCRETIZATION",
+    "IMPLEMENTATION",
+    "PARAMETER_PROVENANCE",
+    "ANALYTICAL_VERIFICATION",
+    "EXPERIMENTAL_VALIDATION",
+    "BENCHMARK_AGREEMENT",
+    "EXECUTION_SPEED"
+  ],
+  "checks": [
+    {
+      "finding_id": "CRIT-01",
+      "category": "MATHEMATICAL",
+      "claimed": "RESOLVED",
+      "verdict": "PARTIALLY_RESOLVED",
+      "evidence": "units fixed (dimensionless, pressure-dependent) but the denominator is total PV, not hydrocarbon PV: `pv_mean_rb = ooip*Bo/(1-Swi)`. The variable is mislabelled HCPVI; it is PV injected.",
+      "measured": "denominator is TOTAL pore volume (1,740,400 rb); textbook HCPV is 1,305,300 rb; returned 7.6927 vs correct HCPVI 10.2569 (off by exactly 1-Swi = 0.75)",
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": "units fixed (dimensionless, pressure-dependent) but the denominator is total PV, not hydrocarbon PV: `pv_mean_rb = ooip*Bo/(1-Swi)`. The variable is mislabelled HCPVI; it is PV injected.",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "CRIT-02",
+      "category": "SOFTWARE",
+      "claimed": "RESOLVED",
+      "verdict": "CONFIRMED",
+      "evidence": "cumulative_oil_stb == OOIP * recovery_factor",
+      "measured": "residual 5.82e-10 STB",
+      "evidence_tier": "IMPLEMENTATION",
+      "residual": null,
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-03",
+      "category": "PHYSICAL",
+      "claimed": "RESOLVED",
+      "verdict": "STILL_OPEN",
+      "evidence": "P_b is the literal constant min(P_init, 2800.0); no Standing (or any) bubble-point correlation exists in the repository (grep Rsb/pb_standing/18.2 -> 0 hits). Every reservoir at or above that initial pressure shares one P_b regardless of API.",
+      "measured": "default P_b = 2800.0 psi",
+      "evidence_tier": "PHYSICAL_CONSISTENCY",
+      "residual": "P_b is the literal constant min(P_init, 2800.0); no Standing (or any) bubble-point correlation exists in the repository (grep Rsb/pb_standing/18.2 -> 0 hits). Every reservoir at or above that initial pressure shares one P_b regardless of API.",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "CRIT-04",
+      "category": "MATHEMATICAL",
+      "claimed": "RESOLVED",
+      "verdict": "CONFIRMED",
+      "evidence": "coefficient 5.035 matches derived 5.0351",
+      "measured": "5.035 vs 5.0351",
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": null,
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-05",
+      "category": "PHYSICAL",
+      "claimed": "RESOLVED",
+      "verdict": "CONFIRMED",
+      "evidence": "Papay (1968) coefficients present; Z < 1 with a dense-gas dip at the engine default Tpr ~ 1.58",
+      "measured": "1500psi Z=0.8490, 2500psi Z=0.8269, 3500psi Z=0.8679, 4500psi Z=0.9717",
+      "evidence_tier": "PHYSICAL_CONSISTENCY",
+      "residual": null,
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-06",
+      "category": "MATHEMATICAL",
+      "claimed": "RESOLVED",
+      "verdict": "CONFIRMED_BUT_INERT",
+      "evidence": "Koval is continuous and monotone in M (CRIT-06 confirmed) but the shipped configuration saturates it at its 0.95 clip, so mobility ratio cannot influence sweep in practice. Root cause: hcpvi is built from injection_rate*lifetime and ignores the schedule, availability and compressor cap.",
+      "measured": "HCPVI=7.6928; sweeps=[0.95, 0.95, 0.95, 0.95]",
+      "evidence_tier": "NUMERICAL_DISCRETIZATION",
+      "residual": "Koval is continuous and monotone in M (CRIT-06 confirmed) but the shipped configuration saturates it at its 0.95 clip, so mobility ratio cannot influence sweep in practice. Root cause: hcpvi is built from injection_rate*lifetime and ignores the schedule, availability and compressor cap.",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "CRIT-07",
+      "category": "MATHEMATICAL",
+      "claimed": "RESOLVED",
+      "verdict": "CONFIRMED",
+      "evidence": "immiscible limb has a real gradient",
+      "measured": "24 distinct values over 45 evaluations",
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": null,
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-08",
+      "category": "SOFTWARE",
+      "claimed": "RESOLVED",
+      "verdict": "CONFIRMED",
+      "evidence": "containment score decays below the pruning threshold under overpressure",
+      "measured": "S_cont=0.0000 < 0.3",
+      "evidence_tier": "IMPLEMENTATION",
+      "residual": null,
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-11",
+      "category": "PHYSICAL",
+      "claimed": "RESOLVED",
+      "verdict": "CONFIRMED",
+      "evidence": "WAG water rate carries the scf->MSCF factor (at B_g definition); 5,000 MSCFD -> 25,000 bpd (was 25 bpd before remediation)",
+      "measured": "25 -> 25,000 bpd, exactly 1000x",
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": null,
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-12",
+      "category": "MATHEMATICAL",
+      "claimed": "RESOLVED",
+      "verdict": "REGRESSED",
+      "evidence": "saturation closure violated: pv_ref uses hydrocarbon PV for both S_o and S_w while S_wi is defined on total PV; np.clip silently zeroes S_g to hide it",
+      "measured": "49/181 steps with S_o+S_w>1 (27.1%), max sum(S)=1.042829",
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": "saturation closure violated: pv_ref uses hydrocarbon PV for both S_o and S_w while S_wi is defined on total PV; np.clip silently zeroes S_g to hide it",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "CRIT-13",
+      "category": "PROVENANCE",
+      "claimed": "RESOLVED",
+      "verdict": "STILL_OPEN",
+      "evidence": "a dimensionless gene with no unit and no citation multiplies RF, vertical sweep and the gravity number: MiscibleSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)); ImmiscibleSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)); PhDHybridSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)). Gravity segregation is already computed from delta_rho/dip/permeability in N_g, so the gene duplicates a real physical term with a fitted one.",
+      "measured": "3 site(s)",
+      "evidence_tier": "PARAMETER_PROVENANCE",
+      "residual": "a dimensionless gene with no unit and no citation multiplies RF, vertical sweep and the gravity number: MiscibleSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)); ImmiscibleSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)); PhDHybridSurrogate: gravity_factor = float(params.get(\"gravity_factor\", 1.0)). Gravity segregation is already computed from delta_rho/dip/permeability in N_g, so the gene duplicates a real physical term with a fitted one.",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "CRIT-14",
+      "category": "PHYSICAL",
+      "claimed": "n/a (invariant)",
+      "verdict": "REGRESSED",
+      "evidence": "params['mobility_ratio'] overrides the PVT-derived M in all three recovery models, so RF is exactly flat in viscosity while the legacy computed-M path still responds. CO2 viscosity reduction is removed from the physics.",
+      "measured": "with M supplied: 0.523509 for all mu; computed-M path: 0.593831 -> 0.559522",
+      "evidence_tier": "PHYSICAL_CONSISTENCY",
+      "residual": "params['mobility_ratio'] overrides the PVT-derived M in all three recovery models, so RF is exactly flat in viscosity while the legacy computed-M path still responds. CO2 viscosity reduction is removed from the physics.",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-16",
+      "category": "SOFTWARE",
+      "claimed": "RESOLVED",
+      "verdict": "STILL_OPEN",
+      "evidence": "getattr guards reference attributes that do not exist on ReservoirData (['well_data_list', 'connate_water_saturation', 'residual_oil_saturation', 'residual_oil_saturation', 'bg', 'api_gravity', 'oil_api_gravity', 'bo_rb_per_stb', 'bg_rb_per_mscf', 'bg_rb_per_mscf', 'oil_api_gravity']); the left operand is always None so user-supplied PVT is silently discarded. Real field is 'oil_fvf'.",
+      "measured": "dead guards: ['well_data_list', 'connate_water_saturation', 'residual_oil_saturation', 'residual_oil_saturation', 'bg', 'api_gravity', 'oil_api_gravity', 'bo_rb_per_stb', 'bg_rb_per_mscf', 'bg_rb_per_mscf', 'oil_api_gravity']",
+      "evidence_tier": "IMPLEMENTATION",
+      "residual": "getattr guards reference attributes that do not exist on ReservoirData (['well_data_list', 'connate_water_saturation', 'residual_oil_saturation', 'residual_oil_saturation', 'bg', 'api_gravity', 'oil_api_gravity', 'bo_rb_per_stb', 'bg_rb_per_mscf', 'bg_rb_per_mscf', 'oil_api_gravity']); the left operand is always None so user-supplied PVT is silently discarded. Real field is 'oil_fvf'.",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "CRIT-18",
+      "category": "PHYSICAL",
+      "claimed": "RESOLVED",
+      "verdict": "PARTIALLY_RESOLVED",
+      "evidence": "annual_rev includes oil + storage credit only. annual_hc_gas_mscf is allocated, accumulated and published but never referenced in the cash flow; produced CO2 earns no sale revenue. npv is the primary objective, so the optimiser ranks on a truncated model.",
+      "measured": "missing from revenue: ['annual_hc_gas_mscf', 'annual_co2_prod_mscf']",
+      "evidence_tier": "PHYSICAL_CONSISTENCY",
+      "residual": "annual_rev includes oil + storage credit only. annual_hc_gas_mscf is allocated, accumulated and published but never referenced in the cash flow; produced CO2 earns no sale revenue. npv is the primary objective, so the optimiser ranks on a truncated model.",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "CRIT-21",
+      "category": "PROVENANCE",
+      "claimed": "RESOLVED",
+      "verdict": "STILL_OPEN",
+      "evidence": "c_g(CO2) is a hard-coded power law clip(1.5e-4*(2000/p)**0.8, ...) while a Peng-Robinson EOS exists in the same class (_setup_pr_eos_co2). Measured disagreement with -(1/B)dB/dP from PR: 2.6x-8.3x. Uncited.",
+      "measured": "power law, no citation",
+      "evidence_tier": "PARAMETER_PROVENANCE",
+      "residual": "c_g(CO2) is a hard-coded power law clip(1.5e-4*(2000/p)**0.8, ...) while a Peng-Robinson EOS exists in the same class (_setup_pr_eos_co2). Measured disagreement with -(1/B)dB/dP from PR: 2.6x-8.3x. Uncited.",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "HIGH-23",
+      "category": "PHYSICAL",
+      "claimed": "n/a (invariant)",
+      "verdict": "STILL_OPEN",
+      "evidence": "leakage is identically zero in every configuration probed, yet the storage credit is paid on max(0, inj - prod) which ignores leakage (leakage-blind revenue base confirmed in source). Leaked CO2 would be paid for, not charged for.",
+      "measured": "total_leakage_tonne=0.0, peak_rate=0.0, leakage_blind_revenue=True",
+      "evidence_tier": "PHYSICAL_CONSISTENCY",
+      "residual": "leakage is identically zero in every configuration probed, yet the storage credit is paid on max(0, inj - prod) which ignores leakage (leakage-blind revenue base confirmed in source). Leaked CO2 would be paid for, not charged for.",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "INV-LEDGER",
+      "category": "MATHEMATICAL",
+      "claimed": "n/a (invariant)",
+      "verdict": "CONFIRMED",
+      "evidence": "CO2 ledger closes to machine precision",
+      "measured": "residual 0.00e+00 MSCF",
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": null,
+      "should_reopen": false
+    },
+    {
+      "finding_id": "INV-RECYCLE",
+      "category": "MATHEMATICAL",
+      "claimed": "n/a (invariant)",
+      "verdict": "CONFIRMED",
+      "evidence": "recycled <= produced <= injected",
+      "measured": "rec 1,767,933 <= prod 1,860,982 <= inj 27,393,750",
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": null,
+      "should_reopen": false
+    }
+  ],
+  "wiki_issues": [
+    {
+      "path": "audit\\scientific_flaws.md",
+      "line": 4,
+      "kind": "STALE_COUNT",
+      "detail": "document quotes 17 findings but the register contains 73",
+      "severity": "MEDIUM"
+    },
+    {
+      "path": "agent_wiki\\README.md",
+      "line": 116,
+      "kind": "UNENFORCED_INVARIANT",
+      "detail": "'strictly balanced' asserted without enforcement (leakage is identically zero (HIGH-23))",
+      "severity": "LOW"
+    },
+    {
+      "path": "agent_wiki\\README.md",
+      "line": 121,
+      "kind": "UNENFORCED_INVARIANT",
+      "detail": "'strictly capped' asserted without enforcement (containment is an artefact of a clip, not a solved constraint)",
+      "severity": "LOW"
+    },
+    {
+      "path": "agent_wiki\\README.md",
+      "line": 112,
+      "kind": "UNENFORCED_INVARIANT",
+      "detail": "'mass-conserving' asserted without enforcement (hold-by-construction, never asserted)",
+      "severity": "LOW"
+    },
+    {
+      "path": "core/engine_surrogate/analytical_models.py",
+      "line": 96,
+      "kind": "F821_UNDEFINED_NAME",
+      "detail": "core\\engine_surrogate\\analytical_models.py:96:26: F821 Undefined name `MiscibleRecoveryModel`",
+      "severity": "HIGH"
+    },
+    {
+      "path": "core/engine_surrogate/analytical_models.py",
+      "line": 223,
+      "kind": "F821_UNDEFINED_NAME",
+      "detail": "core\\engine_surrogate\\analytical_models.py:223:26: F821 Undefined name `ImmiscibleRecoveryModel`",
+      "severity": "HIGH"
+    },
+    {
+      "path": "core/engine_surrogate/analytical_models.py",
+      "line": 358,
+      "kind": "F821_UNDEFINED_NAME",
+      "detail": "core\\engine_surrogate\\analytical_models.py:358:26: F821 Undefined name `BuckleyLeverettModel`",
+      "severity": "HIGH"
+    },
+    {
+      "path": "agent_wiki\\development\\common_pitfalls.md",
+      "line": 1,
+      "kind": "STALE_COUNT",
+      "detail": "title says 'Top 53 Traps' but there are 58 traps (max index 58); ordering/duplication suspected",
+      "severity": "MEDIUM"
+    }
+  ],
+  "counts": {
+    "CONFIRMED": 8,
+    "CONFIRMED_BUT_INERT": 1,
+    "PARTIALLY_RESOLVED": 2,
+    "REGRESSED": 2,
+    "STILL_OPEN": 5,
+    "UNKNOWN_EVIDENCE_REQUIRED": 0
+  },
+  "requires_reopening": [
+    "CRIT-01",
+    "CRIT-03",
+    "CRIT-06",
+    "CRIT-12",
+    "CRIT-13",
+    "CRIT-16",
+    "CRIT-18",
+    "CRIT-21"
+  ]
+}
