@@ -19,7 +19,7 @@ import numpy as np
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
     QTableWidget, QTableWidgetItem, QHeaderView, QStackedWidget, QFrame,
-    QFileDialog, QMessageBox, QApplication
+    QFileDialog, QMessageBox, QApplication, QToolTip
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont, QKeySequence

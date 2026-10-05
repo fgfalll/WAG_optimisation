@@ -640,20 +640,19 @@ class KovalRecoveryModel(RecoveryModel):
         M = max(kwargs.get("mobility_ratio", 10.0), EPSILON)
         hk = (1.0 / (1.0 - v_dp)) ** 2
         kv = hk * (0.78 + 0.22 * M ** 0.25) ** 4
-        kv = max(kv, EPSILON)
-        if abs(M - 1.0) < EPSILON:
-            sweep_efficiency = (
-                1.0 if abs(kv - 1.0) < EPSILON else (1.0 - np.exp(1.0 - kv)) / (kv - 1.0)
-            )
+        kv = max(kv, 1.0 + EPSILON)
+
+        t_D = float(kwargs.get("hcpvi", kwargs.get("t_d", kwargs.get("pvi", 1.2))))
+        t_D = max(t_D, 1e-4)
+        if kv <= 1.0 + 1e-6:
+            sweep_efficiency = min(t_D, 1.0)
+        elif t_D < 1.0 / kv:
+            sweep_efficiency = t_D
+        elif t_D <= kv:
+            sweep_efficiency = (2.0 * np.sqrt(kv * t_D) - 1.0 - t_D) / (kv - 1.0)
         else:
-            c = 1.0 / (M - 1.0)
-            if abs(kv - 1.0) < EPSILON:
-                sweep_efficiency = (1.0 - np.exp(-c)) / c
-            else:
-                term1 = (1.0 - np.exp(1.0 - kv)) / (kv - 1.0)
-                term2 = (1.0 - np.exp(c * (1.0 - kv))) / (c * (kv - 1.0))
-                sweep_efficiency = term1 - (term1 - term2) / (M - 1.0)
-        return float(np.clip(sweep_efficiency, 0.0, 1.0))
+            sweep_efficiency = 1.0
+        return float(np.clip(sweep_efficiency, 0.0, 0.95))
 
 
 # =============================================================================

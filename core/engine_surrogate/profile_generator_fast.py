@@ -1106,9 +1106,9 @@ class FastProfileGenerator:
         wag_ratio_enhancement = params.get("wag_ratio_enhancement_factor", 1.5)
         co2_taper_percentage = params.get("co2_taper_percentage", 0.1)
         min_co2_taper_factor = params.get("min_co2_taper_factor", 0.85)
-        default_b_gas = params.get("default_gas_fvf", 0.005)
+        default_b_gas = params.get("bg_rb_per_mscf", params.get("default_gas_fvf", 0.005) * 1000.0)
 
-        mobility_ratio = base_injection_rate * mobility_factor
+        mobility_ratio = params.get("mobility_ratio", base_injection_rate * mobility_factor)
         if mobility_ratio > high_mobility_threshold:
             enhanced_wag_ratio = min(max_wag_ratio, wag_ratio * wag_ratio_enhancement)
         else:

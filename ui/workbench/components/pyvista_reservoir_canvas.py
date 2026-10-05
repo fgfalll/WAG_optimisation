@@ -971,9 +971,24 @@ class PyVistaReservoirCanvas(QWidget):
                     xx_c, yy_c, zz_c = np.meshgrid(gx, gy, gz_cap, indexing="ij")
 
                     # Caprock inherits fault displacement if fault cuts through seal
-                    if has_active_fault and f_throw > 0.0:
-                        dx_c = xx_c - f_cx
-                        dy_c = yy_c - f_cy
+                    for flt in active_fault_list:
+                        flt_throw = float(getattr(flt, "throw", 0.0))
+                        if abs(flt_throw) < 1.0 or not getattr(flt, "is_active", True):
+                            continue
+                        flt_dip = float(getattr(flt, "dip", 70.0))
+                        flt_strike = float(getattr(flt, "strike", 45.0))
+                        flt_cx = float(getattr(flt, "center_x", mid_x))
+                        flt_cy = float(getattr(flt, "center_y", mid_y))
+                        flt_len = float(getattr(flt, "length", max(length_ft, width_ft) * 0.9))
+
+                        rad_dip = np.radians(flt_dip)
+                        rad_strike = np.radians(flt_strike)
+                        cot_dip = 1.0 / np.tan(np.clip(rad_dip, np.radians(20.0), np.radians(85.0)))
+                        half_flen = flt_len * 0.5
+                        w_trans = max(length_ft / (nx * 2.2), 16.0)
+
+                        dx_c = xx_c - flt_cx
+                        dy_c = yy_c - flt_cy
                         s_c = dx_c * np.sin(rad_strike) + dy_c * np.cos(rad_strike)
                         d_perp_c = dx_c * np.cos(rad_strike) - dy_c * np.sin(rad_strike)
                         dip_shift_c = -(zz_c - mid_z_vis) * cot_dip
@@ -985,7 +1000,7 @@ class PyVistaReservoirCanvas(QWidget):
                         # Fault throw attenuates vertically in ductile shale caprock
                         z_rel_cap = np.clip((zz_c - (-top_depth)) / max(cap_thk, 1.0), 0.0, 1.0)
                         ductile_taper = 1.0 - 0.40 * z_rel_cap
-                        dz_cap = -f_throw * taper_c * h_step_c * ductile_taper
+                        dz_cap = -flt_throw * taper_c * h_step_c * ductile_taper
                         zz_c = zz_c + dz_cap
 
                     cap_grid = pv.StructuredGrid(xx_c, yy_c, zz_c)

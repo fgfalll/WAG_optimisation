@@ -849,9 +849,14 @@ class OptimizationEngine:
                     "yearly_hc_gas_produced_mscf": annual_hc_gas,
                     "annual_hc_gas_produced_mscf": annual_hc_gas,
                     "yearly_water_stb": annual_water,
-                    "annual_water_stb": annual_water,
                     "yearly_pressure": annual_pressure,
                     "annual_pressure": annual_pressure,
+                    "pressure": annual_pressure,
+                    "reservoir_pressure": annual_pressure,
+                    "sandface_injection_pressure": results.get("profiles", {}).get("sandface_injection_pressure"),
+                    "max_sandface_pressure_psi": results.get("max_sandface_pressure_psi", results.get("profiles", {}).get("max_sandface_pressure_psi")),
+                    "total_leakage_tonne": results.get("total_leakage_tonne", results.get("profiles", {}).get("total_leakage_tonne", 0.0)),
+                    "annual_leakage_tonne": results.get("profiles", {}).get("annual_leakage_tonne"),
                     "yearly_co2_purchased_mscf": annual_co2_purchased,
                     "annual_co2_purchased_mscf": annual_co2_purchased,
                     "yearly_co2_recycled_mscf": annual_co2_recycled,
@@ -1650,7 +1655,37 @@ class OptimizationEngine:
             * self.advanced_engine_params.fracture_pressure_multiplier
         )
         time_res = getattr(self.operational_params, "time_resolution", "daily")
-        pressure_profile = eval_results.get(f"{time_res}_pressure", np.array([]))
+        pressure_profile = eval_results.get(
+            f"{time_res}_pressure",
+            eval_results.get(
+                "pressure",
+                eval_results.get(
+                    "reservoir_pressure",
+                    eval_results.get(
+                        "annual_pressure",
+                        eval_results.get(
+                            "yearly_pressure",
+                            eval_results.get(
+                                "monthly_pressure",
+                                eval_results.get("profiles", {}).get("pressure", np.array([])),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        )
+        if pressure_profile is None or (isinstance(pressure_profile, (np.ndarray, list)) and len(pressure_profile) == 0):
+            profiles_dict = eval_results.get("profiles", {})
+            if isinstance(profiles_dict, dict):
+                pressure_profile = profiles_dict.get(
+                    "pressure",
+                    profiles_dict.get("reservoir_pressure", profiles_dict.get("yearly_pressure", np.array([])))
+                )
+        if pressure_profile is None:
+            pressure_profile = np.array([])
+        elif not isinstance(pressure_profile, np.ndarray):
+            pressure_profile = np.asarray(pressure_profile, dtype=float)
+
         containment_score = calculate_geomechanical_containment_score(
             pressure_profile,
             fracture_pressure,

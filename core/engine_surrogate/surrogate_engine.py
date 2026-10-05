@@ -486,7 +486,7 @@ class SurrogateEngine:
                 caprock_margin_profile = np.array([1.0])
                 vrr_profile = np.array([1.0])
 
-            # Recouple simulated dynamic mean pressure and throughput with PhD recovery model
+            # Recouple simulated dynamic mean pressure and throughput with PhD recovery model (CRIT-01)
             mean_p = float(np.mean(pressure_profile))
             dt_days = np.diff(time_vector, prepend=0)
             cum_inj_mscf = float(np.sum(profile_result["injection_profile"] * dt_days))
@@ -494,7 +494,9 @@ class SurrogateEngine:
             cum_inj_rb = cum_inj_mscf * b_co2_mean
             ooip_val = float(getattr(reservoir_data, "ooip_stb", 1e6))
             swi_val = float(getattr(reservoir_data, "initial_water_saturation", getattr(reservoir_data, "connate_water_saturation", 0.25)))
-            simulated_hcpvi = float(cum_inj_rb / max(ooip_val * b_co2_mean / max(1.0 - swi_val, 0.05), 1e-6))
+            bo_mean = pvt_engine.calculate_oil_fvf_rb_per_stb(mean_p, x_co2=0.0)
+            pv_mean_rb = (ooip_val * bo_mean) / max(1.0 - swi_val, 0.05)
+            simulated_hcpvi = float(cum_inj_rb / max(pv_mean_rb, 1e-6))
 
             rec_params = params.copy()
             rec_params["pressure"] = mean_p
@@ -506,7 +508,7 @@ class SurrogateEngine:
             elif hasattr(self.surrogate_model, "recovery_model") and hasattr(self.surrogate_model.recovery_model, "calculate_recovery"):
                 recovery_factor = float(self.surrogate_model.recovery_model.calculate_recovery(**rec_params))
 
-            rf_max_physical = max(0.0, 1.0 - swi_val - getattr(reservoir_data, "residual_oil_saturation", params.get("sor", 0.25)))
+            rf_max_physical = max(0.0, (1.0 - swi_val - getattr(reservoir_data, "residual_oil_saturation", params.get("sor", 0.25))) / max(1.0 - swi_val, 0.05))
             recovery_factor = float(np.clip(recovery_factor, 0.0, rf_max_physical))
 
             # Scale profile_result["oil_profile"] so cumulative production equals recovery_factor * ooip
@@ -529,6 +531,28 @@ class SurrogateEngine:
             hc_gas_rate = profile_result.get("solution_gas_profile", np.maximum(0.0, total_gas_rate - co2_prod_rate))
             inj_rate = profile_result["injection_profile"]
             water_inj_rate = profile_result.get("water_injection_profile", np.zeros_like(oil_rate))
+
+            # CRIT-12: Post-rescaling material balance re-synchronization
+            if len(oil_rate) == len(pressure_profile) and len(oil_rate) > 0:
+                c_f_val = _safe_float(params.get("compressibility_rock"), _safe_attr(reservoir_data, "rock_compressibility", 4.0e-6))
+                init_p = initial_pressure
+                pv_ref = (ooip_val * bo_mean) / max(1.0 - swi_val, 0.05)
+                vp_dynamic = pv_ref * (1.0 + c_f_val * (pressure_profile - init_p))
+
+                cum_oil_running = np.cumsum(oil_rate * dt_days)
+                remaining_oil_stb = np.maximum(0.0, ooip_val - cum_oil_running)
+                sat_oil_profile = np.clip((remaining_oil_stb * bo_profile) / np.maximum(vp_dynamic, 1.0), 0.0, 1.0)
+
+                cum_water_inj_running = np.cumsum(water_inj_rate * dt_days)
+                cum_water_prod_running = np.cumsum(water_rate * dt_days)
+                water_in_res_bbl = np.maximum(0.0, pv_ref * swi_val + cum_water_inj_running - cum_water_prod_running)
+                sat_water_profile = np.clip(water_in_res_bbl / np.maximum(vp_dynamic, 1.0), 0.0, 1.0)
+                sat_gas_profile = np.clip(1.0 - sat_oil_profile - sat_water_profile, 0.0, 1.0)
+
+                b_co2_inj_steps = np.array([pvt_engine.calculate_co2_fvf_rb_per_mscf(p) for p in p_sandface_profile]) if len(p_sandface_profile) == len(oil_rate) else np.full_like(oil_rate, b_co2_mean)
+                q_inj_step_rb = inj_rate * b_co2_inj_steps + water_inj_rate * 1.0
+                q_prod_step_rb = (oil_rate * bo_profile + water_rate * 1.0 + total_gas_rate * bg_profile)
+                vrr_profile = q_inj_step_rb / np.maximum(q_prod_step_rb, 1e-4)
 
             cum_oil_total = float(np.sum(oil_rate * dt_days))
             cum_water_prod_bbl = float(np.sum(water_rate * dt_days))
@@ -594,6 +618,37 @@ class SurrogateEngine:
                 np.minimum(q_comp_max_annual_mscf, annual_co2_inj_mscf)
             )
             annual_co2_purchased_mscf = np.maximum(0.0, annual_co2_inj_mscf - annual_co2_recycled_mscf)
+
+            # Dynamic NPV calculation from simulated annual streams (CRIT-02)
+            oil_price = float(params.get("oil_price_usd_per_bbl", 70.0))
+            co2_purch_cost = float(params.get("co2_purchase_cost_usd_per_tonne", params.get("co2_cost_usd_per_ton", 50.0)))
+            co2_recyc_cost = float(params.get("co2_recycle_cost_usd_per_tonne", 15.0))
+            co2_storage_credit = float(params.get("co2_storage_credit_usd_per_tonne", 0.0))
+            water_inj_cost = float(params.get("water_injection_cost_usd_per_bbl", 0.0 if economic_params is None else 1.0))
+            water_disp_cost = float(params.get("water_disposal_cost_usd_per_bbl", 0.0 if economic_params is None else 2.0))
+            fixed_opex = float(params.get("fixed_opex_usd_per_year", 0.0 if economic_params is None else 200_000.0))
+            var_opex = float(params.get("variable_opex_usd_per_bbl", 0.0 if economic_params is None else 5.0))
+            carbon_tax = float(params.get("carbon_tax_usd_per_tonne", 0.0))
+            discount_rate = float(params.get("discount_rate_fraction", params.get("discount_rate", 0.10)))
+            capex = float(params.get("capex_usd", 0.0))
+
+            annual_stored_tonne = np.maximum(0.0, annual_co2_inj_mscf - annual_co2_prod_mscf) * CO2_TONNE_PER_MSCF
+            annual_rev = (annual_oil_stb * oil_price) + (annual_stored_tonne * co2_storage_credit)
+            annual_costs = (
+                (annual_co2_purchased_mscf * CO2_TONNE_PER_MSCF * co2_purch_cost)
+                + (annual_co2_recycled_mscf * CO2_TONNE_PER_MSCF * co2_recyc_cost)
+                + (annual_water_inj_bbl * water_inj_cost)
+                + (annual_water_prod_bbl * water_disp_cost)
+                + fixed_opex
+                + (annual_oil_stb * var_opex)
+                + ((annual_caprock_leakage_tonne + annual_fault_leakage_tonne) * carbon_tax)
+            )
+            annual_cf = annual_rev - annual_costs
+
+            years_arr = np.arange(1, n_years + 1)
+            discount_factors = 1.0 / ((1.0 + discount_rate) ** years_arr)
+            dynamic_npv = float(-capex + np.sum(annual_cf * discount_factors))
+            npv = dynamic_npv
 
             # Ratios
             water_cut_profile = water_rate / np.maximum(water_rate + oil_rate, 1e-6)
@@ -673,6 +728,11 @@ class SurrogateEngine:
                 "saturation_oil": sat_oil_profile,
                 "saturation_water": sat_water_profile,
                 "saturation_gas": sat_gas_profile,
+                "npv": dynamic_npv,
+                "annual_cashflow_usd": annual_cf,
+                "total_leakage_tonne": cum_caprock_leakage_tonne + cum_fault_leakage_tonne,
+                "annual_leakage_tonne": annual_caprock_leakage_tonne + annual_fault_leakage_tonne,
+                "max_sandface_pressure_psi": float(np.max(p_sandface_profile)) if len(p_sandface_profile) > 0 else 0.0,
             }
 
             total_leakage_tonne = cum_caprock_leakage_tonne + cum_fault_leakage_tonne
@@ -772,6 +832,9 @@ class SurrogateEngine:
                 "total_leakage_tonne": float(total_leakage_tonne),
                 "annual_fault_leakage_tonne": annual_fault_leakage_tonne,
                 "annual_caprock_leakage_tonne": annual_caprock_leakage_tonne,
+                "annual_leakage_tonne": annual_caprock_leakage_tonne + annual_fault_leakage_tonne,
+                "max_sandface_pressure_psi": float(np.max(p_sandface_profile)) if len(p_sandface_profile) > 0 else 0.0,
+                "annual_cashflow_usd": annual_cf,
                 "breakthrough_time_years": bt_years,
                 "miscibility_degree": omega_val,
                 "average_miscibility_degree": omega_val,
@@ -861,10 +924,14 @@ class SurrogateEngine:
             # Simulation parameters
             "project_lifetime_years": operational_params.project_lifetime_years,
 
-            # Empirical fitting parameters for surrogate model calibration
+            # Empirical fitting parameters for surrogate model calibration (CRIT-13)
             "c7_plus": self.fitting_params.c7_plus_fraction,
+            "c7_plus_fraction": self.fitting_params.c7_plus_fraction,
             "alpha_base": self.fitting_params.alpha_base,
             "miscibility_window": self.fitting_params.miscibility_window,
+            "transition_alpha": getattr(self.fitting_params, "transition_alpha", getattr(eor_params, "transition_alpha", self.fitting_params.alpha_base)),
+            "transition_beta": getattr(self.fitting_params, "transition_beta", getattr(eor_params, "transition_beta", self.fitting_params.miscibility_window)),
+            "gravity_factor": getattr(eor_params, "gravity_factor", getattr(eor_params, "locked_gravity_factor", 1.0)),
             "breakthrough_time": getattr(self.fitting_params, "breakthrough_time_years", getattr(self.fitting_params, "breakthrough_time", None)),
             "trapping_efficiency": self.fitting_params.trapping_efficiency,
             "initial_gor": self.fitting_params.initial_gor_scf_per_stb,
@@ -876,18 +943,38 @@ class SurrogateEngine:
             "n_g": self.fitting_params.n_g,
         }
 
-        # Calculate dynamic HCPVI: (Inj_rate_res_bbl/d * 365.25 * years) / HydrocarbonPoreVolume_res_bbl
+        # Calculate dynamic HCPVI: (Inj_rate_res_bbl/d * 365.25 * years) / HydrocarbonPoreVolume_res_bbl (CRIT-01)
         ooip = reservoir_data.ooip_stb or 1e6
         swi = getattr(reservoir_data, "initial_water_saturation", 0.25)
-        bo = 1.2 # Formation volume factor
-        pv_rb = (ooip * bo) / max(1.0 - swi, 0.1)
-        
-        # injection_rate is MSCFD; mscf_per_res_bbl is MSCF/RB
-        # q_inj_rb_day = injection_rate [MSCFD] / mscf_per_res_bbl [MSCF/RB] = RB/day
-        mscf_per_rb_hcpvi = params.get("mscf_per_res_bbl", 2.0)  # MSCF/RB (will be overwritten after params built)
-        q_inj_rb_day_hcpvi = eor_params.injection_rate / max(mscf_per_rb_hcpvi, 1e-6)
-        total_inj_rb = q_inj_rb_day_hcpvi * 365.25 * operational_params.project_lifetime_years
+        init_p = getattr(reservoir_data, "initial_pressure", 3000.0)
+        temp_f = getattr(reservoir_data, "temperature", getattr(eor_params, "reservoir_temperature_f", 150.0))
+        api_grav = getattr(reservoir_data, "api_gravity", getattr(reservoir_data, "oil_api_gravity", 35.0))
+        mu_dead = getattr(eor_params, "default_oil_viscosity_cp", 2.0)
+        c7_frac = getattr(eor_params, "c7_plus_fraction", self.fitting_params.c7_plus_fraction)
+
+        # Dynamic PVT at initial conditions
+        pvt_init = SolventExtendedPVTEngine(
+            reservoir_temperature_f=temp_f,
+            initial_pressure_psi=init_p,
+            api_gravity=api_grav,
+            dead_oil_viscosity_cp=mu_dead,
+            c7_plus_fraction=c7_frac,
+        )
+        bo = getattr(reservoir_data, "bo_rb_per_stb", None) or pvt_init.calculate_oil_fvf_rb_per_stb(init_p, x_co2=0.0)
+        b_co2 = getattr(reservoir_data, "bg_rb_per_mscf", None) or pvt_init.calculate_co2_fvf_rb_per_mscf(init_p)
+        pv_rb = (ooip * bo) / max(1.0 - swi, 0.05)
+
+        total_inj_rb = eor_params.injection_rate * b_co2 * 365.25 * operational_params.project_lifetime_years
         params["hcpvi"] = total_inj_rb / max(pv_rb, 1.0)
+        params["mscf_per_res_bbl"] = 1.0 / max(b_co2, 1e-6)
+        params["bg_rb_per_mscf"] = b_co2
+        params["bo_rb_per_stb"] = bo
+        params["c7_plus"] = c7_frac
+        params["c7_plus_fraction"] = c7_frac
+        if "gravity_factor" not in params:
+            params["gravity_factor"] = getattr(eor_params, "gravity_factor", getattr(eor_params, "locked_gravity_factor", 1.0))
+        if "mobility_ratio" not in params:
+            params["mobility_ratio"] = getattr(eor_params, "mobility_ratio", 2.5)
 
         # First-Principles Breakthrough Time from Koval (1963) Fractional Flow
         if params.get("breakthrough_time") is None:
@@ -950,6 +1037,9 @@ class SurrogateEngine:
                 "capex_usd": getattr(economic_params, "capex_usd", 0.0),
                 # Variable OPEX per barrel: was silently ignored (stale attr name)
                 "variable_opex_usd_per_bbl": getattr(economic_params, "variable_opex_usd_per_bbl", 5.0),
+                "fixed_opex_usd_per_year": getattr(economic_params, "fixed_opex_usd_per_year", 200_000.0),
+                "water_injection_cost_usd_per_bbl": getattr(economic_params, "water_injection_cost_usd_per_bbl", 1.0),
+                "water_disposal_cost_usd_per_bbl": getattr(economic_params, "water_disposal_cost_usd_per_bbl", 2.0),
                 # CO2 storage credit: was silently ignored (looked in wrong object)
                 "co2_storage_credit_usd_per_tonne": getattr(economic_params, "co2_storage_credit_usd_per_tonne", 0.0),
                 # Carbon tax on leakage (economic_params takes precedence over advanced_engine_params)

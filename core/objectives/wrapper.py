@@ -54,28 +54,55 @@ class ObjectiveFunctions:
 
         # Geomechanical Sandface Pressure & Containment Loss Penalty
         # Evaluates near-wellbore sandface injection pressure against EPA Class VI 90% limit
-        caprock_p = getattr(self.eor_params, "caprock_fracture_pressure_psi", 5500.0)
-        safety_factor = getattr(self.eor_params, "caprock_safety_factor", 0.90)
+        try:
+            caprock_p = float(getattr(self.eor_params, "caprock_fracture_pressure_psi", 5500.0))
+        except (TypeError, ValueError):
+            caprock_p = 5500.0
+
+        try:
+            safety_factor = float(getattr(self.eor_params, "caprock_safety_factor", 0.90))
+        except (TypeError, ValueError):
+            safety_factor = 0.90
+
         safe_fracture_limit = caprock_p * safety_factor
 
-        pressure_profile = profiles.get("pressure", profiles.get("reservoir_pressure"))
-        if pressure_profile is not None and len(pressure_profile) > 0:
+        pressure_profile = profiles.get(
+            "pressure",
+            profiles.get(
+                "reservoir_pressure",
+                profiles.get("annual_pressure", profiles.get("yearly_pressure")),
+            ),
+        )
+        if "max_sandface_pressure_psi" in profiles and profiles["max_sandface_pressure_psi"] is not None:
+            p_sandface = float(profiles["max_sandface_pressure_psi"])
+        elif "sandface_injection_pressure" in profiles and profiles["sandface_injection_pressure"] is not None:
+            sandface_arr = np.asarray(profiles["sandface_injection_pressure"], dtype=float)
+            p_sandface = float(np.max(sandface_arr)) if len(sandface_arr) > 0 else 0.0
+        elif pressure_profile is not None and len(pressure_profile) > 0:
             max_res_p = float(np.max(pressure_profile))
-            inj_rate = getattr(self.eor_params, "injection_rate", 5000.0)
-            ii = getattr(self.eor_params, "injectivity_index", 25.0)
+            try:
+                inj_rate = float(getattr(self.eor_params, "injection_rate", 5000.0))
+            except (TypeError, ValueError):
+                inj_rate = 5000.0
+            try:
+                ii = float(getattr(self.eor_params, "injectivity_index", 25.0))
+            except (TypeError, ValueError):
+                ii = 25.0
             delta_p_inj = inj_rate / max(ii, 1.0)
             p_sandface = max_res_p + delta_p_inj
+        else:
+            p_sandface = 0.0
 
-            if p_sandface > safe_fracture_limit:
-                overpressure = p_sandface - safe_fracture_limit
-                containment_penalty = 1e6 * float((overpressure / safe_fracture_limit) ** 2)
-                results["npv"] -= containment_penalty
-                results["geomechanical_violation"] = {
-                    "p_sandface": p_sandface,
-                    "safe_limit": safe_fracture_limit,
-                    "overpressure": overpressure,
-                    "penalty": containment_penalty,
-                }
+        if p_sandface > safe_fracture_limit:
+            overpressure = p_sandface - safe_fracture_limit
+            containment_penalty = 1e6 * float((overpressure / safe_fracture_limit) ** 2)
+            results["npv"] -= containment_penalty
+            results["geomechanical_violation"] = {
+                "p_sandface": p_sandface,
+                "safe_limit": safe_fracture_limit,
+                "overpressure": overpressure,
+                "penalty": containment_penalty,
+            }
 
         # Environmental Leakage Penalty ($100/tonne remediation cost if CO2 migrates)
         if "total_leakage_tonne" in profiles:
@@ -87,13 +114,19 @@ class ObjectiveFunctions:
                 "annual_co2_purchased_mscf", profiles.get("yearly_co2_purchased_mscf", np.array([0.0]))
             )
             co2_purchased_sum = float(np.sum(co2_purchased_arr))
-            rho = getattr(self.eor_params, "co2_density_tonne_per_mscf", 0.053)
+            try:
+                rho = float(getattr(self.eor_params, "co2_density_tonne_per_mscf", 0.053))
+            except (TypeError, ValueError):
+                rho = 0.053
             leaked_tonnes = co2_purchased_sum * rho * float(profiles["leakage_rate_fraction"])
         else:
             leaked_tonnes = 0.0
 
         if leaked_tonnes > 0:
-            carbon_tax = getattr(econ_params, "carbon_tax_usd_per_tonne", 0.0) if econ_params else 0.0
+            try:
+                carbon_tax = float(getattr(econ_params, "carbon_tax_usd_per_tonne", 0.0)) if econ_params else 0.0
+            except (TypeError, ValueError):
+                carbon_tax = 0.0
             remediation_cost = max(carbon_tax, 100.0) * leaked_tonnes
             results["npv"] -= remediation_cost
             results["environmental_leakage_penalty"] = remediation_cost

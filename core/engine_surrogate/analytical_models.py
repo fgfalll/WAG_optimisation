@@ -167,7 +167,10 @@ class MiscibleSurrogate(AnalyticalRecoveryModel):
         mu_oe = (mu_m**omega_val) * (viscosity_oil ** (1.0 - omega_val))
 
         # Effective mobility ratio: M_eff = μ_o / μ_oe
-        m_eff = max(viscosity_oil / max(mu_oe, EPSILON), 1.0)
+        if "mobility_ratio" in params and params["mobility_ratio"] is not None:
+            m_eff = max(float(params["mobility_ratio"]), 1.0)
+        else:
+            m_eff = max(viscosity_oil / max(mu_oe, EPSILON), 1.0)
 
         # Step 2: Heterogeneity factor H = 1/(1-V_DP)²
         # Koval (1963)
@@ -193,8 +196,10 @@ class MiscibleSurrogate(AnalyticalRecoveryModel):
         displacement_eff = float(np.clip(displacement_eff, 0.05, 0.95))
 
         # Step 6: Recovery factor
-        # RF = E · (1 - S_wi)
-        rf = displacement_eff * (1.0 - s_wi)
+        # RF = E · (1 - S_wi) * E_v
+        gravity_factor = float(params.get("gravity_factor", 1.0))
+        e_v = float(np.clip(1.0 / (0.8 + 0.2 * gravity_factor), 0.1, 1.0))
+        rf = displacement_eff * (1.0 - s_wi) * e_v
 
         # Miscible CO2-EOR theoretical limit ~0.80-0.90
         return float(np.clip(rf, 0.05, 0.85))
@@ -267,7 +272,10 @@ class ImmiscibleSurrogate(AnalyticalRecoveryModel):
         )
 
         # Mobility ratio
-        mobility_ratio = max(viscosity_oil / max(viscosity_inj, EPSILON), EPSILON)
+        if "mobility_ratio" in params and params["mobility_ratio"] is not None:
+            mobility_ratio = max(float(params["mobility_ratio"]), EPSILON)
+        else:
+            mobility_ratio = max(viscosity_oil / max(viscosity_inj, EPSILON), EPSILON)
 
         # Corey exponents (literature values)
         n_o = params.get("n_o", COREY_N_OIL)
@@ -297,9 +305,17 @@ class ImmiscibleSurrogate(AnalyticalRecoveryModel):
         tangent_slope = f_g / (s_range - s_gc + EPSILON)
         front_idx = np.argmax(tangent_slope[1:]) + 1
         s_gf = s_range[front_idx]
+        f_gf = f_g[front_idx]
+        slope_bt = tangent_slope[front_idx]
 
-        # Displacement efficiency at breakthrough
-        displacement_eff = (s_gf - s_gc) / (1.0 - s_gc)
+        # Welge average gas saturation behind the shock front at breakthrough:
+        # S_g,avg = S_gf + (1 - f_gf) / (df/ds)
+        s_g_avg = s_gf + (1.0 - f_gf) / max(slope_bt, EPSILON)
+        s_g_avg = np.clip(s_g_avg, s_gf, 1.0 - sor)
+
+        # Displacement efficiency at breakthrough normalized to initial hydrocarbon pore volume
+        displacement_eff = (s_g_avg - s_gc) / max(1.0 - s_wi - s_gc, 0.05)
+        displacement_eff = np.clip(displacement_eff, 0.0, 1.0)
 
         # === Areal sweep efficiency (Craig, 1971) ===
         # For 5-spot pattern: E_A = 0.517 - 0.072·log(M) for M > 1
@@ -312,18 +328,19 @@ class ImmiscibleSurrogate(AnalyticalRecoveryModel):
             areal_eff = np.clip(areal_eff, 0.1, 1.0)
 
         # === Vertical sweep efficiency (Johnson, 1956) ===
-        # E_V ≈ 1 - V_DP^0.7 (asymptotic relationship)
-        vertical_eff = 1.0 - (v_dp**0.7)
-        vertical_eff = np.clip(vertical_eff, 0.1, 1.0)
+        # E_V ≈ 1 - V_DP^0.7 (asymptotic relationship) modulated by gravity factor
+        gravity_factor = float(params.get("gravity_factor", 1.0))
+        vertical_eff = (1.0 - (v_dp**0.7)) / max(0.8 + 0.2 * gravity_factor, 0.1)
+        vertical_eff = np.clip(vertical_eff, 0.05, 1.0)
 
         # === Total recovery ===
         # RF = E_d · E_A · E_V
         recovery = displacement_eff * areal_eff * vertical_eff
 
-        # Immiscible CO2-EOR typically 10-45% recovery, physically capped by mobile oil
-        rf_max_physical = max(0.0, soi - sor)
-        max_cap = min(0.50, rf_max_physical) if rf_max_physical > 0.10 else 0.50
-        return float(np.clip(recovery, 0.10, max_cap))
+        # Immiscible CO2-EOR typically 10-45% recovery, physically capped by mobile oil fraction of OOIP
+        rf_max_physical = max(0.0, (1.0 - s_wi - sor) / max(1.0 - s_wi, EPSILON))
+        max_cap = min(0.50, rf_max_physical) if rf_max_physical > 0.05 else 0.50
+        return float(np.clip(recovery, 0.02, max_cap))
 
 
 class BuckleyLeverettSurrogate(AnalyticalRecoveryModel):
@@ -392,7 +409,10 @@ class BuckleyLeverettSurrogate(AnalyticalRecoveryModel):
         n_g = params.get("n_g", COREY_N_GAS)
 
         # Mobility ratio
-        mobility_ratio = viscosity_oil / max(viscosity_inj, EPSILON)
+        if "mobility_ratio" in params and params["mobility_ratio"] is not None:
+            mobility_ratio = max(float(params["mobility_ratio"]), EPSILON)
+        else:
+            mobility_ratio = viscosity_oil / max(viscosity_inj, EPSILON)
 
         # Fractional flow function with Corey (1954) relative permeability
         def fractional_flow(s_g):
@@ -446,7 +466,7 @@ class HybridSurrogate(AnalyticalRecoveryModel):
         """
         pressure = params.get("pressure", params.get("target_pressure_psi", 3000.0))
         mmp = params.get("mmp", 2500.0)
-        c7_plus = params.get("c7_plus_fraction", 0.3)
+        c7_plus = params.get("c7_plus_fraction", params.get("c7_plus", 0.3))
 
         # Pressure/MMP ratio
         p_mmp_ratio = pressure / max(mmp, EPSILON)
@@ -454,9 +474,9 @@ class HybridSurrogate(AnalyticalRecoveryModel):
         # Sigmoid transition parameters (based on miscibility theory)
         # Alpha: transition point (slightly below 1.0 for partial miscibility region)
         # Beta: transition sharpness (higher = sharper transition)
-        # These values are based on typical CO2-EOR miscibility behavior
-        alpha = 0.95 + 0.05 * (c7_plus - 0.3)
-        beta = 20.0
+        default_alpha = 0.95 + 0.05 * (c7_plus - 0.3)
+        alpha = float(params.get("transition_alpha", params.get("alpha_base", default_alpha)))
+        beta = float(params.get("transition_beta", params.get("miscibility_window", 20.0)))
 
         # Sigmoid weight for miscible component
         # w = 1 / (1 + exp(-β·(P/MMP - α)))
@@ -538,25 +558,20 @@ class KovalSurrogate(AnalyticalRecoveryModel):
         kv = hk * (0.78 + 0.22 * M**0.25) ** 4
         kv = max(kv, 1.0 + EPSILON)
 
-        # Koval sweep efficiency equation
-        if abs(M - 1.0) < EPSILON:
-            # Unit mobility ratio
-            if abs(kv - 1.0) < EPSILON:
-                sweep = 1.0
-            else:
-                sweep = (1.0 - np.exp(1.0 - kv)) / (kv - 1.0)
+        # Authentic Koval (1963) Welge integration across throughput t_D
+        t_D = float(params.get("hcpvi", params.get("t_d", params.get("pvi", 1.2))))
+        t_D = max(t_D, 1e-4)
+        if kv <= 1.0 + 1e-6:
+            sweep = min(t_D, 1.0)
+        elif t_D < 1.0 / kv:
+            sweep = t_D
+        elif t_D <= kv:
+            sweep = (2.0 * np.sqrt(kv * t_D) - 1.0 - t_D) / (kv - 1.0)
         else:
-            # General case
-            c = 1.0 / (M - 1.0)
-            if abs(kv - 1.0) < EPSILON:
-                sweep = (1.0 - np.exp(-c)) / c
-            else:
-                term1 = (1.0 - np.exp(1.0 - kv)) / (kv - 1.0)
-                term2 = (1.0 - np.exp(c * (1.0 - kv))) / (c * (kv - 1.0))
-                sweep = term1 - (term1 - term2) / (M - 1.0)
+            sweep = 1.0
 
         # Koval model for heterogeneous reservoirs
-        return float(np.clip(sweep, 0.0, 0.75))
+        return float(np.clip(sweep, 0.0, 0.95))
 
 
 def get_analytical_model(model_type: str) -> AnalyticalRecoveryModel:
@@ -784,13 +799,14 @@ class PhDHybridSurrogate(AnalyticalRecoveryModel):
         sin_theta = abs(np.sin(np.radians(dip_angle)))
         effective_angle = max(sin_theta, 0.01)
 
-        # Dimensionless gravity segregation number: N_g = (k * Delta_rho * g * sin(theta)) / (mu * u)
+        # Dimensionless gravity segregation number: N_g = (k * Delta_rho * g * sin(theta) * gravity_factor) / (mu * u)
         # Unit conversion factor from field units (k in mD, Delta_rho in lb/ft3, mu in cP, u in ft/day):
         # 1 mD = 1.0623e-14 ft2
         # mu * u in field units converted to lbf/ft2: mu[cP] * 2.0885e-5 [lbf*s/(ft2*cP)] * (u[ft/day] / 86400 [s/day])
         # = mu * u * 2.4172e-10 lbf/ft2
         # Ratio: 1.0623e-14 / 2.4172e-10 = 4.3948e-5
-        N_g = (perm_md * delta_rho * effective_angle * 4.3948e-5) / (
+        gravity_factor = float(params.get("gravity_factor", 1.0))
+        N_g = (perm_md * delta_rho * effective_angle * 4.3948e-5 * gravity_factor) / (
             viscosity_inj * max(u_ft_day, EPSILON) + EPSILON
         )
 
@@ -810,8 +826,8 @@ class PhDHybridSurrogate(AnalyticalRecoveryModel):
         # Smooth, differentiable weighting between immiscible and miscible displacement
         rf = omega * rf_mis + (1.0 - omega) * rf_imm
 
-        # Physical upper bound is the mobile hydrocarbon fraction (1 - Swi - Sor)
-        rf_max_physical = max(0.0, 1.0 - s_wi - sor)
+        # Physical upper bound is the mobile hydrocarbon fraction of OOIP (1 - Swi - Sor) / (1 - Swi)
+        rf_max_physical = max(0.0, (1.0 - s_wi - sor) / max(1.0 - s_wi, EPSILON))
         return float(np.clip(rf, 0.0, rf_max_physical))
 
     def calculate_gradient(self, **params) -> Dict[str, float]:

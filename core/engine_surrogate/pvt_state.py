@@ -80,6 +80,8 @@ class SolventExtendedPVTEngine:
         live_oil_viscosity_ref_cp: Optional[float] = None,
         c7_plus_fraction: float = 0.35,
         salinity_ppm: float = 30000.0,
+        bubble_point_pressure_psi: Optional[float] = None,
+        oil_compressibility_1_psi: float = 1.2e-5,
     ):
         self.temp_f = float(reservoir_temperature_f)
         self.temp_r = self.temp_f + 459.67
@@ -96,6 +98,12 @@ class SolventExtendedPVTEngine:
         self.mu_o_live_ref = float(
             live_oil_viscosity_ref_cp if live_oil_viscosity_ref_cp is not None else max(0.5, self.mu_o_dead * 0.6)
         )
+        self.p_bubble = (
+            float(bubble_point_pressure_psi)
+            if bubble_point_pressure_psi is not None
+            else min(self.p_init, 2800.0)
+        )
+        self.c_o = float(oil_compressibility_1_psi)
 
         # Precompute Peng-Robinson EOS parameters for pure CO2
         self._setup_pr_eos_co2()
@@ -229,12 +237,18 @@ class SolventExtendedPVTEngine:
     # 2. Live Oil & Dissolved CO2 Properties (x_CO2 Parameterized)
     # =========================================================================
 
-    def calculate_hydrocarbon_solution_gor(self, pressure_psi: float) -> float:
+    def calculate_hydrocarbon_solution_gor(
+        self, pressure_psi: float, saturated_only: bool = False
+    ) -> float:
         """
         Calculate equilibrium solution hydrocarbon gas-oil ratio R_s (SCF/STB).
         Uses smooth Vasquez-Beggs / Standing correlation with C1 continuity.
+        For undersaturated oil (P > P_bubble), R_s is capped at R_s(P_bubble).
         """
         p = max(pressure_psi, 14.7)
+        if not saturated_only:
+            p = min(p, self.p_bubble)
+
         # Vasquez-Beggs formulation for API > 30
         c1 = 0.0178 if self.api > 30 else 0.0362
         c2 = 1.1870 if self.api > 30 else 1.0937
@@ -289,19 +303,22 @@ class SolventExtendedPVTEngine:
 
         Couples hydrocarbon solution gas expansion with CO2 dissolution swelling:
         B_o(P, x_CO2) = B_o,HC(P) * S_F(P, x_CO2).
+
+        Above bubble point P_bubble, hydrocarbon oil contracts with pressure
+        under positive isothermal compressibility c_o (dB_o/dP < 0).
         """
         p = max(pressure_psi, 14.7)
-        rs_hc = self.calculate_hydrocarbon_solution_gor(p)
-
-        # Standing (1947) live oil FVF without CO2
-        f_val = rs_hc * np.sqrt(self.gamma_g / max(self.gamma_o, 1e-4)) + 1.25 * self.temp_f
-        bo_hc = 0.9759 + 0.000120 * (f_val**1.2)
-        bo_hc = max(1.02, bo_hc)
-
-        # Compressibility correction above bubble point
-        if p > self.p_init:
-            c_o = 1.2e-5
-            bo_hc *= np.exp(-c_o * (p - self.p_init))
+        if p <= self.p_bubble:
+            rs_hc = self.calculate_hydrocarbon_solution_gor(p)
+            f_val = rs_hc * np.sqrt(self.gamma_g / max(self.gamma_o, 1e-4)) + 1.25 * self.temp_f
+            bo_hc = 0.9759 + 0.000120 * (f_val**1.2)
+            bo_hc = max(1.02, bo_hc)
+        else:
+            # Undersaturated live oil: solution gas remains at Rs(Pb), liquid compresses
+            rs_b = self.calculate_hydrocarbon_solution_gor(self.p_bubble)
+            f_val_b = rs_b * np.sqrt(self.gamma_g / max(self.gamma_o, 1e-4)) + 1.25 * self.temp_f
+            bo_hc_b = max(1.02, 0.9759 + 0.000120 * (f_val_b**1.2))
+            bo_hc = bo_hc_b * np.exp(-self.c_o * (p - self.p_bubble))
 
         swelling = self.calculate_oil_swelling_factor(p, x_co2)
         return float(np.clip(bo_hc * swelling, 1.02, 2.50))
@@ -358,19 +375,22 @@ class SolventExtendedPVTEngine:
         bg_co2 = self.calculate_co2_fvf_rb_per_mscf(p)
         mu_co2 = self.calculate_co2_viscosity_cp(p)
 
-        # Pure Hydrocarbon gas properties (real gas Z-factor)
-        Ppr = p / (709.6 - 58.7 * self.gamma_g)
-        Tpr = self.temp_r / (170.5 + 307.3 * self.gamma_g)
-        # Hall-Yarborough Z-factor approximation
-        t_inv = 1.0 / max(Tpr, 0.1)
-        z_hc = 1.0 + (0.06422 * t_inv - 0.00332 * (t_inv**2)) * Ppr
-        z_hc = float(np.clip(z_hc, 0.65, 1.4))
+        # Pure Hydrocarbon gas properties (real gas Z-factor via Papay 1968 correlation)
+        # Accurate continuous analytical representation of Standing-Katz chart with dense gas dip
+        ppc = max(709.6 - 58.7 * self.gamma_g, 10.0)
+        tpc = max(170.5 + 307.3 * self.gamma_g, 10.0)
+        Ppr = p / ppc
+        Tpr = self.temp_r / tpc
+        t1 = 10.0 ** (0.9813 * Tpr)
+        t2 = 10.0 ** (0.8157 * Tpr)
+        z_hc = 1.0 - (3.52 * Ppr) / t1 + (0.274 * (Ppr**2)) / t2
+        z_hc = float(np.clip(z_hc, 0.30, 2.0))
 
         # Hydrocarbon gas density & FVF
         mw_hc = self.gamma_g * 28.96
         rho_hc = (p * 6894.757 * (mw_hc * 1e-3)) / (z_hc * R_GAS_SI * self.temp_k)
-        # Bg in RB/MSCF: Bg = 0.02827 * Z * T_R / P * 5.6146
-        bg_hc = 0.1587 * z_hc * self.temp_r / max(p, 1e-4)
+        # Bg in RB/MSCF: Bg = (P_sc * 1000 / (T_sc * 5.614583)) * Z * T_R / P = 5.035 * Z * T_R / P
+        bg_hc = 5.035 * z_hc * self.temp_r / max(p, 1e-4)
 
         # Lee-Gonzalez-Eakin hydrocarbon gas viscosity
         k_param = (9.4 + 0.02 * mw_hc) * (self.temp_r**1.5) / (209.0 + 19.0 * mw_hc + self.temp_r)
@@ -386,12 +406,18 @@ class SolventExtendedPVTEngine:
         mu_mix = (mu_co2**y_c) * (mu_hc ** (1.0 - y_c))
 
         # Real gas isothermal compressibility c_g = 1/P - (1/Z)(dZ/dP)
-        cg_ideal = 1.0 / max(p, 14.7)
-        # Dense CO2 has significantly lower compressibility than ideal gas
-        if p > 1500.0:
-            cg_mix = cg_ideal * (0.35 * y_c + 0.85 * (1.0 - y_c))
+        # Analytical dZ/dP from Papay correlation
+        dz_dp = (1.0 / ppc) * (-3.52 / t1 + (0.548 * Ppr) / t2)
+        cg_hc = (1.0 / max(p, 14.7)) - (1.0 / max(z_hc, 0.1)) * dz_dp
+        cg_hc = float(np.clip(cg_hc, 1e-6, 1e-2))
+
+        # Supercritical CO2 compressibility
+        if p > 1200.0:
+            cg_co2 = float(np.clip(1.5e-4 * (2000.0 / p) ** 0.8, 2e-5, 5e-4))
         else:
-            cg_mix = cg_ideal
+            cg_co2 = 1.0 / max(p, 14.7)
+
+        cg_mix = float(y_c * cg_co2 + (1.0 - y_c) * cg_hc)
 
         return {
             "density_kg_m3": float(rho_mix),

@@ -862,6 +862,7 @@ class TestBreakthroughTime:
         t_d_bt = 1.0 / koval_k
 
         pv_bbl = area * 43560.0 * thickness * porosity / 5.615
+        base_reservoir.bg_rb_per_mscf = 0.5
         q_inj_bbl_day = injection_rate * 0.5
         expected_bt = (t_d_bt * pv_bbl / q_inj_bbl_day) / 365.25
 

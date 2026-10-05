@@ -1815,6 +1815,8 @@ class AdvancedEngineParams:
     containment_safety_margin: float = 1.0
     fracture_pressure_limit_fraction: float = 0.9
     containment_critical_threshold: float = 0.3
+    reservoir_seal_integrity_factor: float = 0.9
+    structural_trapping_factor: float = 0.2
 
     # Environmental Constraint Parameters for GA Optimization
     # Two-tier system: early generations get warnings, late generations get FAILURE_PENALTY

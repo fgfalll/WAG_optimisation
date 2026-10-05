@@ -89,14 +89,23 @@ def calculate_geomechanical_containment_score(
     w_t = getattr(storage_params, "containment_structure_weight", 0.2)
     lambda_limit = getattr(storage_params, "fracture_pressure_limit_fraction", 0.9)
     s_seal = getattr(storage_params, "reservoir_seal_integrity_factor", 0.9)
-    s_struct = getattr(storage_params, "structural_trapping_factor", 0.85)
+    s_struct = getattr(storage_params, "structural_trapping_factor", 0.2)
+    crit_thresh = getattr(storage_params, "containment_critical_threshold", 0.3)
 
     if len(pressure_profile) > 0:
-        avg_pressure = np.mean(pressure_profile)
-        s_press = max(0.0, 1.0 - avg_pressure / (fracture_pressure * lambda_limit))
+        avg_pressure = float(np.mean(pressure_profile))
+        p_safe = fracture_pressure * lambda_limit
+        if avg_pressure >= p_safe:
+            # Overpressure: fracture threshold breached (EPA Class VI limit exceeded)
+            s_press = 0.0
+            overpressure_ratio = (avg_pressure - p_safe) / max(p_safe, 1.0)
+            penalty_scale = max(0.0, 1.0 - 5.0 * overpressure_ratio)
+            s_cont = min(crit_thresh - 0.05, gamma_safety * (w_s * s_seal + w_t * s_struct) * penalty_scale)
+        else:
+            s_press = max(0.0, 1.0 - avg_pressure / max(p_safe, 1e-4))
+            s_cont = gamma_safety * (w_p * s_press + w_s * s_seal + w_t * s_struct)
     else:
         s_press = 1.0
-
-    s_cont = gamma_safety * (w_p * s_press + w_s * s_seal + w_t * s_struct)
+        s_cont = gamma_safety * (w_p * s_press + w_s * s_seal + w_t * s_struct)
 
     return float(np.clip(s_cont, 0.0, 1.0))

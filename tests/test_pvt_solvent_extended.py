@@ -152,3 +152,60 @@ def test_surface_stage_separation():
     assert 0.0 < sep.y_co2_separator <= 1.0
     assert sep.producing_gor_scf_per_stb > 0.0
     assert 0.0 <= sep.water_cut <= 1.0
+
+
+def test_hydrocarbon_gas_fvf_and_z_factor_crit04_crit05():
+    """Verify hydrocarbon gas FVF Bg is ~1.0 RB/MSCF at 2500 psi (CRIT-04) and Z < 1 in dense gas (CRIT-05)."""
+    pvt_engine = SolventExtendedPVTEngine(
+        reservoir_temperature_f=150.0,
+        gas_gravity=0.70,
+    )
+    props = pvt_engine.calculate_mixture_gas_properties(pressure_psi=2500.0, y_co2=0.0)
+    bg_hc = props["bg_rb_per_mscf"]
+    cg_hc = props["compressibility_psi_inv"]
+
+    # Textbook value at 2500 psi, 150 F with gamma_g=0.70: Bg is ~0.95 - 1.15 RB/MSCF
+    # The defective implementation returned ~0.044 RB/MSCF (31.7x too small)
+    assert 0.80 < bg_hc < 1.30, f"Expected realistic Bg ~ 1.0 RB/MSCF, got {bg_hc}"
+    assert 1e-5 < cg_hc < 1e-3, f"Expected physical gas compressibility, got {cg_hc}"
+
+    # Z-factor at 2500 psia, 150 F should dip below 1.0 (dense gas region, ~0.80 - 0.86)
+    ppc = max(709.6 - 58.7 * 0.70, 10.0)
+    tpc = max(170.5 + 307.3 * 0.70, 10.0)
+    ppr = 2500.0 / ppc
+    tpr = (150.0 + 459.67) / tpc
+    t1 = 10.0 ** (0.9813 * tpr)
+    t2 = 10.0 ** (0.8157 * tpr)
+    z_hc = 1.0 - (3.52 * ppr) / t1 + (0.274 * (ppr**2)) / t2
+    assert 0.75 < z_hc < 0.90, f"Expected Z-factor to dip to ~0.82 in dense gas, got {z_hc}"
+
+
+def test_bubble_point_and_positive_compressibility_crit03():
+    """Verify that Bo decreases with pressure above bubble point (dB_o/dP < 0, c_o > 0)."""
+    pvt_engine = SolventExtendedPVTEngine(
+        initial_pressure_psi=3000.0,
+        bubble_point_pressure_psi=2500.0,
+        oil_compressibility_1_psi=1.2e-5,
+    )
+    # Below and at bubble point: Rs increases with P
+    rs_2000 = pvt_engine.calculate_hydrocarbon_solution_gor(2000.0)
+    rs_2500 = pvt_engine.calculate_hydrocarbon_solution_gor(2500.0)
+    assert rs_2500 > rs_2000
+
+    # Above bubble point: Rs is capped at Rs(Pb)
+    rs_3000 = pvt_engine.calculate_hydrocarbon_solution_gor(3000.0)
+    rs_4000 = pvt_engine.calculate_hydrocarbon_solution_gor(4000.0)
+    assert rs_3000 == pytest.approx(rs_2500)
+    assert rs_4000 == pytest.approx(rs_2500)
+
+    # Bo above bubble point: oil compresses isothermally (dBo/dP < 0)
+    bo_pb = pvt_engine.calculate_oil_fvf_rb_per_stb(2500.0, x_co2=0.0)
+    bo_3000 = pvt_engine.calculate_oil_fvf_rb_per_stb(3000.0, x_co2=0.0)
+    bo_4000 = pvt_engine.calculate_oil_fvf_rb_per_stb(4000.0, x_co2=0.0)
+
+    assert bo_3000 < bo_pb, f"Oil must compress above bubble point: bo_3000 ({bo_3000}) >= bo_pb ({bo_pb})"
+    assert bo_4000 < bo_3000, f"Oil must compress monotonically above bubble point: bo_4000 ({bo_4000}) >= bo_3000 ({bo_3000})"
+
+    # Apparent isothermal compressibility c_o = -(1/Bo) * dBo/dP
+    co_est = -(bo_4000 - bo_3000) / (bo_3000 * 1000.0)
+    assert co_est == pytest.approx(1.2e-5, rel=0.05)
