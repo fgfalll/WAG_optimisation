@@ -734,9 +734,17 @@ def run_full_audit() -> Dict[str, Any]:
         "params": params,
     }
 
-    print(f"[6/6] Generating comprehensive Markdown and tabular reports...")
+    print(f"[6/7] Generating comprehensive Markdown and tabular reports...")
     report_path = generate_audit_reports(scan_data)
     export_scientific_registers(scan_data)
+
+    print(f"[7/7] Generating Agent Showcase Checklist and synchronizing Agent Wiki...")
+    try:
+        from audit.generate_agent_checklist import run_checklist_pipeline
+        run_checklist_pipeline()
+    except Exception as e:
+        print(f"Warning: Checklist generation encountered error: {e}")
+
     print(f"\nAudit complete! Master report written to: {report_path}")
     print("=" * 80)
     return scan_data

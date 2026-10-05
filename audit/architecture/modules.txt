@@ -1,11 +1,65 @@
 CO2 EOR OPTIMIZER - REPOSITORY MODULE INVENTORY
-Total Python Files: 174
-Total Code Lines: 62283
-Total Classes: 260
-Total Functions/Methods: 1837
+Total Python Files: 237
+Total Code Lines: 86503
+Total Classes: 275
+Total Functions/Methods: 2221
 ================================================================================
 
 Module: __init__.py (25 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_1.py (84 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_2.py (68 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_3.py (127 lines)
+  Classes (1): _Adv
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_4.py (72 lines)
+  Functions (1): fg
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/count2.py (27 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_clip.py (37 lines)
+  Functions (1): spy
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_counts.py (27 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_counts2.py (65 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_engine.py (42 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_hcpvi.py (27 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_inert.py (28 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_misc.py (39 lines)
+  Classes (1): FakeAdv
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_physics.py (42 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_pvt2.py (24 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_recount.py (73 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_rf.py (29 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests.py (18 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests2.py (70 lines)
+  Functions (2): prod_names, fn_local_names
+
+Module: agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py (292 lines)
+  Functions (3): hdr, p, run
+
+Module: agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_6.py (146 lines)
+  Functions (2): hdr, p
+
+Module: agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py (88 lines)
+  Functions (2): hdr, p
+
+Module: agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_8.py (45 lines)
+
+Module: agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_9.py (44 lines)
 
 Module: analysis/breakthrough_physics.py (638 lines)
   Classes (2): BreakthroughParameters, CO2BreakthroughPhysics
@@ -35,7 +89,7 @@ Module: analysis/profiler_refactored.py (252 lines)
   Classes (1): ProductionProfiler
   Functions (21): create_production_profiler, __init__, generate_all_profiles, areal_sweep_efficiency, _calculate_geology_enhanced_sweep_efficiency, _calculate_geology_factor, _calculate_heterogeneity_index, _get_geology_based_permeability_modifier, _calculate_geology_injection_factor, _relative_permeability...
 
-Module: analysis/sensitivity_analyzer.py (937 lines)
+Module: analysis/sensitivity_analyzer.py (933 lines)
   Classes (1): SensitivityAnalyzer
   Functions (19): __init__, set_progress_callback, _report_progress, get_configurable_parameters, _resolve_base_case_parameters, _parse_param_path, _get_config_value, _get_eos_cache_key, _cached_eos_calculation, _apply_parameter_overrides...
 
@@ -49,26 +103,33 @@ Module: analysis/well_analysis.py (278 lines)
 
 Module: audit/__init__.py (11 lines)
 
-Module: audit/__main__.py (31 lines)
+Module: audit/__main__.py (87 lines)
   Functions (1): main
 
-Module: audit/pipeline.py (748 lines)
+Module: audit/continuity.py (1048 lines)
+  Classes (3): CheckResult, Check, WikiIssue
+  Functions (27): _safe, probe_no_undefined_fudge_genes, probe_hcpvi_dimensionless, probe_bubble_point_correlation, probe_gas_fvf_constant, probe_zfactor_dense_gas, probe_co2_compressibility_provenance, probe_saturation_closure, probe_viscosity_sensitivity, probe_koval_sensitivity_in_config...
+
+Module: audit/generate_agent_checklist.py (512 lines)
+  Functions (8): parse_scientific_flaws_md, parse_parameter_provenance_csv, parse_safe_harbor_items, scan_silent_fallbacks, scan_ruff_diagnostics, generate_agent_checklist_markdown, run_checklist_pipeline, commit_current
+
+Module: audit/pipeline.py (756 lines)
   Functions (10): get_python_files, run_code_quality_scan, run_fallbacks_scan, run_hardcoded_values_scan, get_scientific_flaw_register, run_scientific_flaws_scan, run_parameter_provenance_scan, generate_audit_reports, export_scientific_registers, run_full_audit
 
 Module: core/__init__.py (22 lines)
   Functions (1): __getattr__
 
-Module: core/data_integration_engine.py (918 lines)
+Module: core/data_integration_engine.py (931 lines)
   Classes (2): DataIntegrationEngine, DataPreprocessor
   Functions (27): create_data_integration_engine, __init__, process_and_validate_dataset, _apply_geostatistical_modeling, create_engine_data_structures, _create_fitting_parameters, _generate_engine_data_structures, _create_reservoir_data, _create_pvt_properties, _create_eor_parameters...
 
-Module: core/data_models.py (2100 lines)
-  Classes (33): WellData, WellScheduleEntry, WellOperationalSchedule, EOSModelParameters, GeostatisticalParams, LayerDefinition, ReservoirData, FaultType, FractureState, FaultGeometry...
-  Functions (63): from_dict_to_dataclass, calculate_koval_from_reservoir, calculate_mmp_yellig_metcalfe, validate, __post_init__, __post_init__, validate, _validate_basic_parameters, _validate_physics_based_consistency, _validate_geology_parameters...
+Module: core/data_models.py (2296 lines)
+  Classes (35): WellData, WellScheduleEntry, WellOperationalSchedule, FaultData, CaprockLayer, EOSModelParameters, GeostatisticalParams, LayerDefinition, ReservoirData, FaultType, FractureState, FaultGeometry, FaultProperties, EconomicParameters, HuffNPuffParams, SWAGParams, TaperedInjectionParams, PulsedInjectionParams, EORParameters, PVTProperties, FluidProperties, OperationalParameters, ProfileParameters, GeneticAlgorithmParams, BayesianOptimizationParams, GeomechanicsParameters, TuningParams, TimestepUnit, CCUSParameters, CO2StorageParameters, AdvancedEngineParams, CCUSState, PhysicalConstants, CoreyParameters, EmpiricalFittingParameters
+  Functions (67): from_dict_to_dataclass, calculate_koval_from_reservoir, calculate_mmp_yellig_metcalfe, calculate_peaceman_index, get_trajectory_points, validate, calculate_resolved_stresses, max_sustainable_column_ft, __post_init__, __post_init__...
 
-Module: core/engine_surrogate/__init__.py (49 lines)
+Module: core/engine_surrogate/__init__.py (76 lines)
 
-Module: core/engine_surrogate/analytical_models.py (965 lines)
+Module: core/engine_surrogate/analytical_models.py (981 lines)
   Classes (7): AnalyticalRecoveryModel, MiscibleSurrogate, ImmiscibleSurrogate, BuckleyLeverettSurrogate, HybridSurrogate, KovalSurrogate, PhDHybridSurrogate
   Functions (28): get_analytical_model, get_available_models, __init__, calculate_recovery, get_model_info, __init__, calculate_recovery, _literature_based_recovery, __init__, calculate_recovery...
 
@@ -76,41 +137,50 @@ Module: core/engine_surrogate/geomechanics_fault.py (232 lines)
   Classes (2): GeomechanicalState, GeomechanicsFaultModel
   Functions (2): __init__, evaluate_state
 
-Module: core/engine_surrogate/profile_generator_fast.py (1313 lines)
+Module: core/engine_surrogate/profile_generator_fast.py (1327 lines)
   Classes (1): FastProfileGenerator
   Functions (19): __init__, calculate_composite_ipr_deliverability, generate_profile, _validate_profile_constraints, _apply_wag_oil_modulation, _apply_wag_water_modulation, _plateau_decline_profile, _arps_decline_profile, _logistic_profile, _generate_huff_n_puff_production_profile...
 
-Module: core/engine_surrogate/pvt_state.py (485 lines)
+Module: core/engine_surrogate/pvt_state.py (511 lines)
   Classes (2): SurfaceSeparationResult, SolventExtendedPVTEngine
   Functions (12): __init__, _setup_pr_eos_co2, calculate_co2_density_kg_m3, calculate_co2_fvf_rb_per_mscf, calculate_co2_viscosity_cp, calculate_hydrocarbon_solution_gor, calculate_co2_solubility_scf_per_stb, calculate_oil_swelling_factor, calculate_oil_fvf_rb_per_stb, calculate_oil_viscosity_cp...
 
-Module: core/engine_surrogate/surrogate_engine.py (1065 lines)
+Module: core/engine_surrogate/relative_permeability.py (209 lines)
+  Functions (5): normalize_saturations, corey_two_phase_relperm, stone_1_three_phase_relperm, carlson_trapped_gas, carlson_imbibition_gas_relperm
+
+Module: core/engine_surrogate/surrogate_engine.py (1234 lines)
   Classes (2): SurrogateEngine, SurrogateEngineWrapper
-  Functions (12): create_surrogate_engine, __init__, evaluate_scenario, _build_params_dict, _error_result, get_performance_stats, reset_performance_stats, __init__, evaluate_scenario, get_engine_info...
+  Functions (14): _safe_float, _safe_attr, create_surrogate_engine, __init__, evaluate_scenario, _build_params_dict, _error_result, get_performance_stats, reset_performance_stats, __init__...
 
 Module: core/engine_surrogate/surrogate_models.py (668 lines)
   Classes (2): BaseSurrogateModel, AnalyticalSurrogate
   Functions (16): calculate_areal_sweep_efficiency, calculate_vertical_sweep_efficiency, calculate_trapping_efficiency, calculate_co2_stored_breakthrough_aware, calculate_storage_efficiency, create_surrogate_model, get_available_surrogate_models, __init__, predict, train...
 
-Module: core/geology/__init__.py (17 lines)
-  Functions (1): __getattr__
+Module: core/engine_surrogate/well_mechanics.py (467 lines)
+  Functions (6): calculate_peaceman_index_horizontal, calculate_peaceman_index_vertical, calculate_vertical_perforation_overlap, calculate_interwell_transmissibility, generate_synthetic_well_trajectory, validate_well_network
 
-Module: core/geology/geostatistical_modeling.py (633 lines)
-  Functions (12): calculate_realistic_range, create_geostatistical_grid, create_facies_based_grid, _apply_trend, _apply_facies_characteristics, _combine_facies_grids, _create_transition_mask, _blend_facies, _normalize_field, create_facies_map...
+Module: core/geology/__init__.py (10 lines)
+
+Module: core/geology/geostatistical_modeling.py (683 lines)
+  Functions (13): calculate_realistic_range, create_geostatistical_grid, create_facies_based_grid, _apply_trend, _apply_facies_characteristics, _combine_facies_grids, _create_transition_mask, _blend_facies, _normalize_field, create_facies_map...
+
+Module: core/geology/petrophysical_distribution.py (525 lines)
+  Classes (1): PetrophysicalCube
+  Functions (3): generate_petrophysical_cube, __post_init__, get_summary_stats
 
 Module: core/objectives/__init__.py (16 lines)
 
 Module: core/objectives/economic.py (202 lines)
   Functions (3): calculate_npv, calculate_cashflow, npv_func
 
-Module: core/objectives/storage.py (102 lines)
+Module: core/objectives/storage.py (111 lines)
   Functions (2): calculate_co2_storage_efficiency, calculate_geomechanical_containment_score
 
-Module: core/objectives/wrapper.py (216 lines)
+Module: core/objectives/wrapper.py (249 lines)
   Classes (1): ObjectiveFunctions
   Functions (3): _get_param, __init__, _calculate_objective_functions
 
-Module: core/optimisation_engine.py (4262 lines)
+Module: core/optimisation_engine.py (4326 lines)
   Classes (6): OptimizationError, SimulationEngineError, PickleSafeOptimiser, OptimizationEngine, MockPreferences, Advanced
   Functions (78): __init__, __init__, _init_simulation_engine, reset_to_base_state, re_initialize_dependent_components, simulation_engine_type, _get_available_cores, _get_co2_fraction_from_eos, prepare_for_rerun_with_unlocked_params, get_configurable_parameters_for_uq...
 
@@ -118,51 +188,17 @@ Module: core/plotting_manager.py (1748 lines)
   Classes (1): PlottingManager
   Functions (19): __init__, plot_optimization_convergence, plot_parameter_sensitivity, plot_production_profiles, plot_objective_vs_parameter, plot_co2_performance_summary_table, plot_ga_objective_distribution, plot_co2_breakthrough, plot_fault_mechanics, plot_scenario_comparison...
 
+Module: core/reservoir_state_manager.py (213 lines)
+  Classes (1): ReservoirStateManager
+  Functions (19): __init__, reservoir_data, pvt_properties, eor_parameters, well_data_list, geomechanics_parameters, fitting_parameters, fault_properties, is_verified, is_verified...
+
 Module: core/simulation/__init__.py (9 lines)
 
-Module: core/simulation/profile_generator.py (13 lines)
+Module: core/simulation/profile_generator.py (8 lines)
 
-Module: core/simulation/recovery_models.py (13 lines)
-
-Module: core/simulation/simulator_exporter.py (15 lines)
-
-Module: deprecated/core/engine_surrogate/feature_transformer.py (293 lines)
-  Classes (1): FeatureTransformer
-  Functions (13): create_parameter_dict, create_feature_matrix, get_default_feature_names, get_default_target_names, __init__, fit, transform, fit_transform, inverse_transform, _apply_log_transform...
-
-Module: deprecated/core/engine_surrogate/model_factory.py (173 lines)
-  Functions (4): create_surrogate_model, get_available_surrogate_models, get_model_config_recommendations, validate_surrogate_config
-
-Module: deprecated/core/engine_surrogate/response_surfaces.py (414 lines)
-  Classes (3): ResponseSurfaceBase, PolynomialResponseSurface, RBFResponseSurface
-  Functions (14): create_response_surface, get_available_response_surfaces, __init__, __init__, train, predict, predict_single, _params_to_features, get_feature_importance, __init__...
-
-Module: deprecated/core/engine_surrogate/training_data.py (321 lines)
-  Classes (1): TrainingDataGenerator
-  Functions (10): get_default_parameter_bounds, generate_training_data, run_simple_engine_batch, __init__, generate_lhs_samples, generate_sobol_samples, generate_random_samples, generate_grid_samples, scale_samples_to_bounds, samples_to_param_dicts
-
-Module: deprecated/core/geology/geology_engine.py (127 lines)
-  Classes (1): GeologyEngine
-  Functions (6): __init__, calculate_geology_enhanced_sweep_efficiency, _calculate_geology_factor, calculate_heterogeneity_index, get_geology_based_permeability_modifier, calculate_geology_injection_factor
-
-Module: deprecated/core/simulation/profile_generator.py (498 lines)
-  Classes (1): ProfileGenerator
-  Functions (8): __init__, _eor_params_to_injection_params, _create_grid_parameters, generate_all_profiles, _check_well_conversion, _update_reservoir_pressure, _calculate_current_saturations, _calculate_production
-
-Module: deprecated/core/simulation/recovery_models.py (802 lines)
-  Classes (11): RecoveryModelError, ToddLongstaffMixingModel, SigmoidTransition, TransitionEngine, RecoveryModel, MiscibleRecoveryModel, ImmiscibleRecoveryModel, BuckleyLeverettModel, DykstraParsonsModel, KovalRecoveryModel...
+Module: core/simulation/recovery_models.py (799 lines)
+  Classes (10): ToddLongstaffMixingModel, SigmoidTransition, TransitionEngine, RecoveryModel, MiscibleRecoveryModel, ImmiscibleRecoveryModel, BuckleyLeverettModel, DykstraParsonsModel, KovalRecoveryModel, HybridRecoveryModel
   Functions (30): interfacial_tension, capillary_number, residual_oil_saturation, get_model_instance, recovery_factor, __init__, mixture_viscosity, effective_oil_viscosity, effective_gas_viscosity, effective_mobility_ratio...
-
-Module: deprecated/parsers/base_parser.py (100 lines)
-  Classes (2): ParserError, BaseParser
-  Functions (10): __init__, reset_state, parse, to_reservoir_data, to_well_data, validate, get_performance_metrics, get_validation_report, _log_parse_start, _log_parse_end
-
-Module: deprecated/parsers/eclipse_parser.py (298 lines)
-  Classes (5): EclipseParserError, IncludeProcessingError, SectionParsingError, DimensionError, EclipseParser
-  Functions (17): __init__, reset_state, _log_parsed_item, _tokenize_line, _expand_eclipse_values, _parse_pvt_or_sat_table, _apply_array_modifications, _parse_keyword_value_block, _parse_section, _split_into_sections...
-
-Module: deprecated/parsers/validation.py (90 lines)
-  Functions (2): validate_reservoir_data, validate_well_data
 
 Module: evaluation/mmp.py (481 lines)
   Classes (1): MMPParameters
@@ -171,6 +207,78 @@ Module: evaluation/mmp.py (481 lines)
 Module: main.py (162 lines)
   Classes (1): CO2EORApplication
   Functions (4): timed_import_main_window, _normalize_module_log_levels, main, __init__
+
+Module: scratch/capture_dm.py (43 lines)
+  Functions (1): main
+
+Module: scratch/capture_qa_and_fault_caprock.py (145 lines)
+  Functions (1): main
+
+Module: scratch/capture_subsurface_upgrades.py (92 lines)
+  Functions (1): main
+
+Module: scratch/capture_workbench_verification.py (119 lines)
+  Functions (1): main
+
+Module: scratch/debug_pvt_grid_geometry.py (33 lines)
+
+Module: scratch/test_blitting_cursor.py (234 lines)
+  Functions (3): _setup_cursor_artists, _capture_backgrounds, _update_cursor_blitting
+
+Module: scratch/test_cam_fix.py (30 lines)
+
+Module: scratch/test_cursor_tooltip.py (73 lines)
+
+Module: scratch/test_empty_cam.py (4 lines)
+
+Module: scratch/test_fluids_pvt_workstation.py (108 lines)
+  Functions (1): run_capture
+
+Module: scratch/test_live_cursor_motion.py (77 lines)
+  Classes (1): FakeEvent
+  Functions (1): __init__
+
+Module: scratch/test_plain_tooltip.py (37 lines)
+
+Module: scratch/test_progress_dialog_and_hover.py (90 lines)
+  Classes (1): MockEvent
+  Functions (2): test_everything, __init__
+
+Module: scratch/test_pyvista_bounds.py (21 lines)
+
+Module: scratch/test_pyvista_scale.py (20 lines)
+
+Module: scratch/test_pyvista_well_network_studio.py (172 lines)
+  Functions (1): run_test
+
+Module: scratch/test_ray_plane.py (41 lines)
+
+Module: scratch/test_relperm_geostat_patterns.py (133 lines)
+  Functions (1): run_tests
+
+Module: scratch/test_relperm_geostat_workstation.py (59 lines)
+  Functions (1): run_capture
+
+Module: scratch/test_tooltip_options.py (58 lines)
+
+Module: scratch/test_verify_cursor_and_tooltip.py (78 lines)
+  Classes (1): FakeEvent
+  Functions (1): __init__
+
+Module: scratch/test_verify_gray_lines_no_css_tooltip.py (83 lines)
+  Functions (1): main
+
+Module: scratch/test_well_network_studio.py (191 lines)
+  Functions (1): run_test
+
+Module: scratch/test_workbench_visuals.py (122 lines)
+  Functions (1): main
+
+Module: scratch/verify_fault_caprock_workbench.py (156 lines)
+  Functions (1): run_verification
+
+Module: scratch/verify_well_schedule_fault_caprock_storage.py (133 lines)
+  Functions (1): run_tests
 
 Module: scripts/archive_resolved_wiki_issues.py (271 lines)
   Functions (9): is_resolved_str, get_archived_issue_ids, clean_markdown_table_resolved_rows, clean_resolved_blockquotes, clean_resolved_sections, ensure_archive_notice, process_audit_document, main, repl
@@ -230,6 +338,9 @@ Module: tests/core/test_physical_invariants.py (212 lines)
   Classes (1): TestPhysicalInvariants
   Functions (5): standard_setup, test_geomechanical_safety_clamping, test_gross_co2_utilization_benchmark_bounds, test_closed_loop_co2_recycling_mass_balance, test_export_csv_cross_table_consistency
 
+Module: tests/core/test_relative_permeability.py (97 lines)
+  Functions (4): test_saturation_normalization, test_corey_endpoints, test_stone_1_reduction, test_carlson_hysteresis
+
 Module: tests/core/test_select_diverse_solutions.py (224 lines)
   Classes (1): TestSelectDiverseSolutions
   Functions (8): mock_engine, test_select_diverse_solutions_returns_all_when_population_small, test_select_diverse_solutions_selects_by_diversity, test_select_diverse_solutions_normalizes_parameters, test_select_diverse_solutions_handles_identical_solutions, test_select_diverse_solutions_empty_population, test_select_diverse_solutions_with_dict_and_tuple_bounds, test_select_diverse_solutions_with_real_engine_bounds
@@ -238,8 +349,8 @@ Module: tests/core/test_single_simulation.py (135 lines)
   Classes (2): TestSingleSimulation, TestOptimizationWidgetSimulationButton
   Functions (6): test_engine, test_run_single_simulation_returns_valid_results, test_run_single_simulation_with_custom_params, test_run_single_simulation_callback, test_simulation_button_initialization_and_toggle, callback
 
-Module: tests/core/test_surrogate_engine.py (933 lines)
-  Classes (13): TestEngineInitialization, TestRecoveryModelTypes, TestPressureProfile, TestNPVCalculation, TestCO2Storage, TestProfileGeneration, TestCumulativeValues, TestEdgeCases, TestErrorHandling, TestPerformance...
+Module: tests/core/test_surrogate_engine.py (934 lines)
+  Classes (13): TestEngineInitialization, TestRecoveryModelTypes, TestPressureProfile, TestNPVCalculation, TestCO2Storage, TestProfileGeneration, TestCumulativeValues, TestEdgeCases, TestErrorHandling, TestPerformance, TestSurrogateEngineWrapper, TestBreakthroughTime, TestMassConservation
   Functions (46): test_create_surrogate_engine_function, test_analytical_model_initialization, test_phd_hybrid_model_initialization, test_invalid_model_type_raises_error, test_invalid_recovery_model_type_raises_error, recovery_model_type, test_all_models_produce_valid_rf, test_rf_monotonic_with_injection_volume, test_pressure_shape_constraints, test_pressure_bounds...
 
 Module: tests/core/test_surrogate_engine_reference.py (765 lines)
@@ -252,6 +363,10 @@ Module: tests/core/test_surrogate_engine_well_setup.py (499 lines)
 
 Module: tests/core/test_unphysical_chromosome_penalties.py (133 lines)
   Functions (5): test_no_class_e_storage_efficiency_fallback, test_no_magic_co2_utilization_fallback, test_ga_chromosome_nan_pruned_with_failure_penalty, test_ga_chromosome_breakthrough_violation_full_penalty, test_plotly_is_real_dependency
+
+Module: tests/core/test_well_mechanics.py (214 lines)
+  Classes (4): TestPeacemanWellIndices, TestPerforationOverlapAndTransmissibility, TestSyntheticTrajectoryAndWellData, TestWellNetworkValidationAndIPRClamping
+  Functions (8): test_horizontal_peaceman_index_anisotropic, test_vertical_peaceman_index, test_perforation_overlap_scenarios, test_interwell_transmissibility, test_horizontal_trajectory_geometry, test_welldata_peaceman_routing, test_well_network_validation, test_composite_vogel_darcy_deliverability_clamping
 
 Module: tests/scientific/__init__.py (4 lines)
 
@@ -345,8 +460,8 @@ Module: tests/test_geomechanics_fault_caprock.py (110 lines)
 Module: tests/test_las_parser.py (124 lines)
   Functions (8): sample_las_file, missing_well_name_las, test_parse_las_basic, test_parse_las_well_name_override, test_parse_las_missing_well_name, test_parse_las_missing_well_name_with_override, test_parse_las_unit_conversion, test_parse_las_file_not_found
 
-Module: tests/test_optimization_widget_export_parameters.py (237 lines)
-  Functions (4): qapp, sample_engine, test_optimization_widget_get_current_input_parameters, test_run_exporter_with_enriched_parameters
+Module: tests/test_optimization_widget_export_parameters.py (274 lines)
+  Functions (5): qapp, sample_engine, test_optimization_widget_get_current_input_parameters, test_run_exporter_with_enriched_parameters, test_optimization_widget_secondary_objective_and_resolutions
 
 Module: tests/test_physics_enhancements.py (231 lines)
   Classes (4): TestGeomechanicsAndEcology, TestDeliverabilityAndMassConservation, TestThermodynamicDerating, TestAlgorithmDiscretizationAndGenePruning
@@ -362,8 +477,8 @@ Module: tests/test_plotting_diagnostics.py (280 lines)
 Module: tests/test_project_save_load.py (415 lines)
   Functions (7): qapp, create_sample_models, test_optimization_engine_results_setter_and_getter, test_project_file_handler_roundtrip_with_nested_dataclasses, test_load_existing_test_tphd_project, test_data_management_widget_save_and_load, test_optimization_widget_loads_results
 
-Module: tests/test_pvt_solvent_extended.py (154 lines)
-  Functions (5): test_pure_co2_supercritical_density_pr_eos, test_pure_co2_fvf_in_rb_per_mscf, test_oil_swelling_and_viscosity_thinning, test_decoupling_transport_saturation_from_composition, test_surface_stage_separation
+Module: tests/test_pvt_solvent_extended.py (211 lines)
+  Functions (7): test_pure_co2_supercritical_density_pr_eos, test_pure_co2_fvf_in_rb_per_mscf, test_oil_swelling_and_viscosity_thinning, test_decoupling_transport_saturation_from_composition, test_surface_stage_separation, test_hydrocarbon_gas_fvf_and_z_factor_crit04_crit05, test_bubble_point_and_positive_compressibility_crit03
 
 Module: tests/test_reservoir_outputs_streams.py (170 lines)
   Functions (4): base_scenario, test_standardized_4_streams_in_surrogate_results, test_compressor_capacity_bottleneck, test_closed_loop_injection_balance
@@ -371,6 +486,9 @@ Module: tests/test_reservoir_outputs_streams.py (170 lines)
 Module: tests/test_run_exporter.py (295 lines)
   Classes (2): BayesianOptimization, ArbitraryUnserializable
   Functions (9): mock_run_data, test_export_generates_all_core_files, test_run_manifest_content_and_schema, test_cash_flow_table_integrity, test_results_summary_has_no_numpy_array_dumps, test_readme_and_diagnostics_detection, test_export_against_real_session_archive, test_export_handles_bayesian_optimization_object, __init__
+
+Module: tests/ui/test_3d_well_interaction.py (135 lines)
+  Functions (7): qapp, test_manual_well_dialog_initial_values, test_wells_tab_no_duplicate_3d_cube, test_3d_subsurface_property_volume_rendering, test_pyvista_surface_picking_and_well_placement, test_manual_well_dialog_data_creation, mock_exec
 
 Module: tests/validation/__init__.py (19 lines)
 
@@ -434,19 +552,23 @@ Module: ui/config_widget.py (1313 lines)
   Classes (1): ConfigWidget
   Functions (35): __init__, _get_stylesheet, _setup_ui, _filter_categories, _on_category_selected, retranslateUi, changeEvent, get_current_config_data_instances, update_configs_from_project, _set_dirty...
 
-Module: ui/data_management_widget.py (2122 lines)
-  Classes (5): DataManagementWidget, ParameterInputGroup, PVTEditorDialog, LogViewerDialog, ManualWellDialog
-  Functions (58): _create_default_co2_eor_properties, _create_default_co2_eor_binary_coeffs, __init__, set_engine_type, changeEvent, _connect_signals, _toggle_detailed_pvt_button, retranslateUi, _toggle_ooip_mode, _on_preferences_changed...
+Module: ui/data_management_widget.py (3413 lines)
+  Classes (10): DataManagementWidget, ParameterInputGroup, PVTEditorDialog, WellViewerDialog, ManualWellDialog, GeostatisticsVisualizerWidget, GeologyCrossSectionWidget, FaultGeometryVisualizerWidget, WellTrajectoryRendererWidget, VisualAuditModal
+  Functions (83): _create_default_co2_eor_properties, _create_default_co2_eor_binary_coeffs, __init__, set_engine_type, changeEvent, _connect_signals, _toggle_detailed_pvt_button, retranslateUi, _toggle_ooip_mode, _on_preferences_changed...
 
 Module: ui/dialogs/ai_report_features_dialog.py (33 lines)
   Classes (1): AIReportFeaturesDialog
   Functions (2): __init__, get_selected_features
 
-Module: ui/dialogs/injection_scheme_dialog.py (684 lines)
+Module: ui/dialogs/injection_scheme_dialog.py (682 lines)
   Classes (2): SchemePreviewWidget, InjectionSchemeDialog
   Functions (20): __init__, set_scheme_data, paintEvent, _draw_continuous_scheme, _draw_wag_scheme, _draw_huff_n_puff_scheme, _draw_swag_scheme, _draw_tapered_scheme, _draw_pulsed_scheme, __init__...
 
-Module: ui/dialogs/preferences_dialog.py (773 lines)
+Module: ui/dialogs/pre_flight_audit_dialog.py (367 lines)
+  Classes (1): PreFlightAuditDialog
+  Functions (5): __init__, _setup_ui, _add_check_result, _run_audit, _export_audit_manifest
+
+Module: ui/dialogs/preferences_dialog.py (772 lines)
   Classes (7): PreferencesDialog, GeneralPreferencesTab, DisplayPreferencesTab, UnitsPreferencesTab, LanguagePreferencesTab, AIPreferencesTab, AdvancedPreferencesTab
   Functions (52): __init__, _setup_ui, _connect_dirty_signals, _set_dirty, retranslateUi, changeEvent, _capture_current_preferences, _load_current_preferences, _apply_preferences, _on_ok_clicked...
 
@@ -454,22 +576,21 @@ Module: ui/dialogs/report_config_dialog.py (323 lines)
   Classes (1): ReportConfigDialog
   Functions (10): __init__, _open_ai_features_dialog, _load_formatting_config, retranslateUi, changeEvent, _set_all_checks, _browse_output_path, get_config, apply_and_accept, configure_report
 
-Module: ui/dialogs/task_editor_dialog.py (164 lines)
+Module: ui/dialogs/task_editor_dialog.py (163 lines)
   Classes (1): TaskEditorDialog
   Functions (7): __init__, _init_ui, _load_tasks, _on_task_selected, _new_task, _save_task, _delete_task
 
-Module: ui/main_window.py (2070 lines)
+Module: ui/dialogs/visual_audit_modal.py (154 lines)
+  Classes (1): VisualAuditModal
+  Functions (4): __init__, _setup_ui, _load_project_data_into_visualizers, _on_approve_clicked
+
+Module: ui/main_window.py (2103 lines)
   Classes (1): MainWindow
   Functions (80): __init__, _generate_ai_summaries, _initialize_project_data_and_configs, _ensure_dataclass_instance, _setup_ui_structure, _set_adaptive_minimum_size, _setup_initial_view, _setup_main_app_tabs_container, _transition_to_main_app_view, _create_actions...
 
-Module: ui/models/__init__.py (3 lines)
-
-Module: ui/models/optimization_types.py (24 lines)
-  Classes (2): OptimizationObjective, OptimizationConstraints
-
-Module: ui/optimization_widget.py (2572 lines)
+Module: ui/optimization_widget.py (2363 lines)
   Classes (5): UnlockParametersDialog, OptimizationWidget, WellData, PVTProperties, WellAnalysisWorker
-  Functions (68): __init__, get_selected_parameters, __init__, changeEvent, retranslateUi, _setup_logging, _setup_ui, _create_config_panel, _create_mmp_panel, _create_hyperparameters_panel...
+  Functions (62): __init__, get_selected_parameters, __init__, changeEvent, retranslateUi, _setup_logging, _setup_ui, _create_config_panel, _create_mmp_panel, _create_hyperparameters_panel...
 
 Module: ui/overview_page.py (492 lines)
   Classes (2): AnimatedButton, OverviewPageWidget
@@ -494,35 +615,51 @@ Module: ui/widgets/context_bubble.py (40 lines)
   Classes (1): ContextBubble
   Functions (2): __init__, _show_context
 
-Module: ui/widgets/depth_profile_dialog.py (53 lines)
-  Classes (2): DepthProfileDialog, DepthProfileEditor
+Module: ui/widgets/corey_relperm_workstation_widget.py (578 lines)
+  Classes (1): CoreyRelPermWorkstationWidget
+  Functions (9): __init__, _setup_ui, _on_visc_changed, set_parameters, render_plots, _show_context_menu, _copy_plot_to_clipboard, _save_plot_image, _export_curves_csv
+
+Module: ui/widgets/depth_profile_dialog.py (50 lines)
+  Classes (1): DepthProfileDialog
   Functions (4): __init__, retranslateUi, changeEvent, get_path
 
-Module: ui/widgets/depth_profile_editor.py (234 lines)
+Module: ui/widgets/depth_profile_editor.py (235 lines)
   Classes (1): DepthProfileEditor
   Functions (17): __init__, set_path, set_path_endpoints, get_path, _get_logical_bounds, _transform_to_widget, _transform_from_widget, paintEvent, _draw_axes, _draw_hover_tooltip...
 
-Module: ui/widgets/edit_uq_parameter_dialog.py (129 lines)
+Module: ui/widgets/edit_uq_parameter_dialog.py (130 lines)
   Classes (1): EditUQParameterDialog
   Functions (7): __init__, _setup_ui, _connect_signals, retranslateUi, changeEvent, _populate_dist_params, get_data
 
-Module: ui/widgets/geomechanics_3d_view.py (552 lines)
-  Classes (1): Geomechanics3DView
-  Functions (26): __init__, _create_fallback_ui, _setup_ui, _create_toolbar, _populate_colormaps, _create_status_bar, _setup_plotter, _connect_signals, _show_welcome_message, _reset_view...
+Module: ui/widgets/fault_geometry_visualizer_widget.py (325 lines)
+  Classes (1): FaultGeometryVisualizerWidget
+  Functions (8): __init__, _setup_ui, set_reservoir_geometry, set_fault_parameters, get_fault_parameters, _calculate_sgr, _on_param_changed, render_fault_3d
 
-Module: ui/widgets/language_change_mixin.py (10 lines)
-  Classes (1): LanguageChangeMixin
-  Functions (1): changeEvent
+Module: ui/widgets/fluids_pvt_workstation_widget.py (1881 lines)
+  Classes (1): FluidsPVTWorkstationWidget
+  Functions (38): __init__, _setup_ui, set_display_mode, set_parameters, get_fluid_parameters, _recalculate_thermodynamics, _update_diagnostics_hud, _on_draw_event, _capture_backgrounds, _setup_cursor_artists...
 
-Module: ui/widgets/log_viewer_dialog.py (426 lines)
-  Classes (5): LogTrackWidget, WellViewerDialog, FigureCanvas, Figure, WellData
+Module: ui/widgets/geology_cross_section_widget.py (811 lines)
+  Classes (1): GeologyCrossSectionWidget
+  Functions (14): __init__, _init_synthetic_grid, _setup_ui, _step_prev_slice, _step_next_slice, _reset_slice_to_center, set_grid_data, _update_slider_range, _on_orientation_changed, _on_slider_changed...
+
+Module: ui/widgets/geostatistics_visualizer_widget.py (676 lines)
+  Classes (1): GeostatisticsVisualizerWidget
+  Functions (11): __init__, _setup_ui, set_grid_dimensions, set_well_data, set_parameters, generate_realization, _render_plots, _show_context_menu, _copy_plot_to_clipboard, _save_plot_image...
+
+Module: ui/widgets/log_viewer_dialog.py (417 lines)
+  Classes (4): LogTrackWidget, WellViewerDialog, FigureCanvas, Figure
   Functions (18): __init__, _setup_ui, update_title, retranslateUi, changeEvent, __init__, _setup_ui, retranslateUi, changeEvent, _connect_signals...
 
-Module: ui/widgets/manual_well_dialog.py (399 lines)
-  Classes (4): ManualWellDialog, ParameterInputGroup, DepthProfileDialog, WellData
-  Functions (20): __init__, _on_well_name_edited, _update_well_name, _generate_default_name, retranslateUi, changeEvent, _initialize_defaults, _coerce_value, _on_parameter_changed, _open_depth_profile_editor...
+Module: ui/widgets/manual_well_dialog.py (1275 lines)
+  Classes (2): ComprehensiveWellEditorDialog, ProxyLabel
+  Functions (31): __init__, well_name_edit, key_param_values, peaceman_wi_label, _setup_ui, _setup_tab_general, _setup_tab_trajectory, _setup_tab_perforations, _setup_tab_ipr, _setup_tab_operations...
 
-Module: ui/widgets/parameter_input_group.py (225 lines)
+Module: ui/widgets/model_evaluation_dashboard.py (662 lines)
+  Classes (1): ModelEvaluationDashboard
+  Functions (15): __init__, _setup_ui, _create_static_qc_tab, _create_scal_pvt_tab, _create_dynamic_rta_tab, _create_geomechanics_tab, _create_streamlines_tab, update_data, _render_static_qc, _render_scal_pvt...
+
+Module: ui/widgets/parameter_input_group.py (245 lines)
   Classes (1): ParameterInputGroup
   Functions (22): __init__, retranslateUi, changeEvent, _create_input_widget, _start_debounce, _emit_debounced_value, _request_help, validate, _set_feedback, clear_error...
 
@@ -537,6 +674,55 @@ Module: ui/widgets/pvt_editor_dialog.py (980 lines)
 Module: ui/widgets/pvt_table_editor.py (299 lines)
   Classes (1): PVTTableEditorWidget
   Functions (13): __init__, retranslateUi, changeEvent, _revalidate_all_rows, _on_item_changed, _validate_row, add_row, remove_selected_rows, set_headers, set_full_data...
+
+Module: ui/widgets/well_network_workstation_widget.py (1183 lines)
+  Classes (1): WellNetworkWorkstationWidget
+  Functions (31): __init__, _setup_ui, _create_toolbar, _create_hud_cards, _setup_tab_network_tables, _setup_tab_ipr, _setup_tab_profile, _setup_tab_sensitivity, _setup_tab_drawdown, set_parameters...
+
+Module: ui/widgets/well_trajectory_renderer_widget.py (78 lines)
+  Classes (1): WellTrajectoryRendererWidget
+  Functions (5): __init__, _setup_ui, set_wells_data, highlight_well, render
+
+Module: ui/workbench/__init__.py (11 lines)
+
+Module: ui/workbench/components/calculation_progress_dialog.py (140 lines)
+  Classes (1): CalculationProgressDialog
+  Functions (7): __init__, _setup_ui, _center_on_parent, set_step, finish, __enter__, __exit__
+
+Module: ui/workbench/components/contextual_property_grid.py (2684 lines)
+  Classes (1): ContextualPropertyGrid
+  Functions (30): _clear_layout, __init__, has_editable_inputs, update_input_values, load_node, _build_wells_network_overview_form, _build_well_schedule_form, _build_reservoir_overview_form, _build_grid_form, _build_volumetrics_form...
+
+Module: ui/workbench/components/fault_caprock_manager_dialog.py (1134 lines)
+  Classes (1): FaultAndCaprockDialog
+  Functions (29): __init__, _setup_style, _build_ui, _build_faults_tab, _build_inter_stress_tab, _build_caprock_tab, _populate_faults_table, _load_selected_fault_form, _on_fault_selection_changed, _on_fault_param_changed...
+
+Module: ui/workbench/components/model_tree_widget.py (758 lines)
+  Classes (1): ModelTreeWidget
+  Functions (10): __init__, _build_initial_tree, update_wells_list, update_faults_list, select_well_node, select_domain_item, _on_item_clicked, _on_current_item_changed, _show_tree_context_menu, search_node
+
+Module: ui/workbench/components/pyvista_reservoir_canvas.py (1384 lines)
+  Classes (1): PyVistaReservoirCanvas
+  Functions (17): __init__, set_isolated_well, set_fault_isolated_view, _setup_ui, _create_hud_toolbar, _on_cut_slider_changed, _on_opacity_slider_changed, _setup_pyvista_picking, _on_pyvista_point_picked, _on_view_changed...
+
+Module: ui/workbench/components/quick_preset_bar.py (103 lines)
+  Classes (1): QuickPresetBar
+  Functions (1): __init__
+
+Module: ui/workbench/components/subsurface_data_viewer_widget.py (2028 lines)
+  Classes (1): SubsurfaceDataViewerWidget
+  Functions (65): __init__, _setup_ui, show_table, _apply_table_filter, _copy_table_to_clipboard, _export_table_to_csv, show_graph, _save_plot_png, render_grid_table, render_grid_graph...
+
+Module: ui/workbench/components/subsurface_icons.py (309 lines)
+  Functions (1): create_subsurface_icon
+
+Module: ui/workbench/components/visual_audit_gate_widget.py (337 lines)
+  Classes (1): VisualAuditGateWidget
+  Functions (6): __init__, _setup_ui, _create_metric_card, update_project_data, execute_audit, _on_approve_clicked
+
+Module: ui/workbench/subsurface_workbench_widget.py (1708 lines)
+  Classes (1): SubsurfaceWorkbenchWidget
+  Functions (43): __init__, _setup_ui, switch_to_view, _on_back_to_3d_clicked, _connect_signals, _on_tree_node_selected, _open_fault_caprock_manager_dialog, _on_faults_updated_from_dialog, _on_caprock_updated_from_dialog, _prompt_add_fault...
 
 Module: ui/workers/ai_query_worker.py (170 lines)
   Classes (1): AIQueryWorker
@@ -554,7 +740,7 @@ Module: ui/workers/model_list_worker.py (44 lines)
   Classes (1): ModelListWorker
   Functions (2): __init__, run
 
-Module: ui/workers/optimization_worker.py (64 lines)
+Module: ui/workers/optimization_worker.py (81 lines)
   Classes (1): OptimizationWorker
   Functions (4): __init__, was_successful, run, stop
 
@@ -572,10 +758,6 @@ Module: ui/workers/well_analysis_worker.py (98 lines)
 
 Module: utils/__init__.py (38 lines)
 
-Module: utils/cmg_exporter.py (201 lines)
-  Classes (2): SimulatorExportConfig, SimulatorExporter
-  Functions (11): __init__, export_to_cmg, _write_cmg_header, _write_cmg_injection_section, _write_cmg_well_controls, _write_cmg_fluid_properties, _write_cmg_schedule, generate_summary_report, _generate_csv_report, _generate_json_report...
-
 Module: utils/config_manager.py (169 lines)
   Classes (2): ConfigNotLoadedError, ConfigManager
   Functions (10): __init__, load_configs_from_directory, _ensure_config_loaded, get, get_section, is_loaded, loaded_config_directory, loaded_files_in_order, raw_config, reload_configs
@@ -588,26 +770,26 @@ Module: utils/las_parser.py (193 lines)
   Classes (2): MissingWellNameError, LASHeaderError
   Functions (1): parse_las
 
-Module: utils/multiprocess_logging.py (342 lines)
+Module: utils/multiprocess_logging.py (341 lines)
   Classes (2): SafeFileHandler, SafeQueueListener
   Functions (12): setup_queue_logging, _configure_root_logger, get_log_queue, is_logging_initialized, _reset_all_loggers, _worker_initializer, get_worker_initializer, configure_worker_logging, shutdown_queue_logging, init_application_logging...
 
 Module: utils/path_utils.py (99 lines)
   Functions (7): get_app_root, get_resource_path, get_config_dir, get_help_dir, get_translations_dir, get_logs_dir, get_ui_assets_dir
 
-Module: utils/preferences_manager.py (495 lines)
+Module: utils/preferences_manager.py (494 lines)
   Classes (8): UnitSystem, GeneralPreferences, DisplayPreferences, UnitsPreferences, LanguagePreferences, AdvancedPreferences, AIPreferences, PreferencesManager
   Functions (24): get_preferences_manager, initialize_preferences_manager, __init__, load_preferences, save_preferences, reset_to_defaults, apply_language_preferences, get_display_unit, get_available_units_for_category, get_all_unit_categories...
 
-Module: utils/project_file_handler.py (124 lines)
+Module: utils/project_file_handler.py (131 lines)
   Classes (1): ProjectEncoder
   Functions (4): project_decoder, save_project_to_tphd, load_project_from_tphd, default
 
-Module: utils/report_generator.py (1021 lines)
+Module: utils/report_generator.py (1002 lines)
   Classes (1): ReportGenerator
   Functions (22): __init__, get_unit, find_wkhtmltopdf, _log_diagnostic_info, test_wkhtmltopdf_installation, generate_report, _generate_html_content, _generate_cover_page, _generate_table_of_contents, _generate_executive_summary...
 
-Module: utils/run_exporter.py (1539 lines)
+Module: utils/run_exporter.py (1537 lines)
   Classes (1): RunDataExporter
   Functions (19): __init__, export_run, export, _generate_all_artifacts, _build_run_manifest, _diagnose_warnings_and_errors, _extract_decision_variables, _build_readme_entrypoint, _build_evaluation_report_markdown, _build_cash_flow_table...
 

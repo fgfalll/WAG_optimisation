@@ -8,11 +8,11 @@
 
 ## 1. Executive Scientific Audit Summary
 
-- **Total Scanned Python Files**: 226
-- **Total Scanned Code Lines**: 77,220
+- **Total Scanned Python Files**: 237
+- **Total Scanned Code Lines**: 86,503
 - **Total Documented Scientific Flaws**: 18 (Critical: 6, High: 9, Medium: 3)
-- **Total Documented Fallback Exception Handlers**: 524
-- **Total Documented Hardcoded Numerical Literals**: 1001
+- **Total Documented Fallback Exception Handlers**: 426
+- **Total Documented Hardcoded Numerical Literals**: 1191
 
 ### Primary Scientific Finding:
 > **The codebase contains multiple fundamental violations of physical and thermodynamic laws** (inverted Buckley-Leverett/Koval fractional flow, negative compressibility, inverted viscosity-pressure dependence, inverted CO2 thermal expansion, and inverted cubic EOS phase labeling). These defects are currently masked by post-hoc profile scalers, heuristic damping factors, and artificial recovery factor ceilings.
