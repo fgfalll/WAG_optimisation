@@ -917,9 +917,11 @@ and the first three are defects in material I previously certified.
 
 #### 7h.2a.1 ✅ The table, transcribed
 
-*Table 1 — "DEPENDENCY OF $r_{wo}$ ON PHASING".*
+*Table 1 — "DEPENDENCY OF $r_{we}$ ON PHASING".* ✅ **Read from the full paper; the column heading is
+$r_{we}/(r_w+L_p)$, which is $\alpha_\theta$ of Eq. 7.** (An earlier crop of this table was misread as
+$r_{wo}/(r_{wo}+L_p)$ — see **C-230** in §7h.2b.1.)
 
-| $r_{wo}/(r_{wo}+L_p)$ | Phasing | Phasing angle $\theta$ | No. of planes $N$ |
+| $\alpha_0=r_{we}/(r_w+L_p)$ | Phasing | Phasing angle $\theta$ | No. of planes $N$ |
 |---|---|---|---|
 | **0.250** | 0/360 | $0^\circ$ | 1 |
 | **0.500** | 180 | $180^\circ$ | 2 |
@@ -990,65 +992,86 @@ interpolation-only with its own measured RMS recorded in-code.
 
 #### 7h.2a.4 🔴 C-229 — the engine's expression is not the inversion of the tabulated quantity
 
-🔴 **This is the substantive defect, and it survives all the numerical corrections above.**
+🔴 **RETRACTED — C-229, and withdrawn by C-230. Nothing in this subsection is correct.**
 
-The tabulated quantity is the **ratio** $r_{wo}/(r_{wo}+L_p)$. Its inversion is:
+> 🔴 **Do not read the following as a finding. It is preserved verbatim because the error is instructive.**
+> The table heading was misread as $r_{wo}/(r_{wo}+L_p)$ when it is $r_{we}/(r_w+L_p)$ — the *effective
+> well* radius over $(r_w+L_p)$, which **is** $\alpha_\theta$ in Eq. 7. The "inversion" below exists in no
+> source, and the divergence it reports is an artefact of that invention. ✅ **Eq. 7 of the paper is
+> $r_{we}(\theta)=\tfrac14L_p$ for $\theta=0^\circ$, else $\alpha_\theta(r_w+L_p)$ — precisely the
+> specified expression this subsection called incapable of representing its own table.** The "5.25× at
+> $45^\circ$" and the "$S_h$ span 0.66 → 2.91" consequence do not exist.
+> 📌 **Retained as the register's clearest case of a misread two-letter subscript becoming a physics claim.**
 
-$$r_{wo} \;=\; \frac{\alpha_0\,L_p}{1-\alpha_0}$$
+The tabulated quantity is the **ratio** **x WRONG: $r_{wo}/(r_{wo}+L_p)$** **$r_{we}/(r_w+L_p)$**. Its **x WRONG: inversion is**
+**there is no inversion** **x WRONG: $r_{wo} = \alpha_0 L_p/(1-\alpha_0)$** **— the ratio is $\alpha_0$ itself.**
 
-The submitted — and currently specified — expression is a **multiplication**:
-$r'_w=\alpha_0\,(r_w+L_p)$.
+**x WRONG: the submitted — and currently specified — expression is a *multiplication*
+$r'_w=\alpha_0(r_w+L_p)$, and these "are not the same function, and the difference is unbounded."**
+✅ **They are the same function.**
 
-🔴 **These are not the same function, and the difference is unbounded.** Measured with $r_w=0.108$ m,
-$L_p=0.300$ m:
+**Measured with $r_w=0.108$ m, $L_p=0.300$ m:** *(the comparison table below compares the paper's
+expression against a function that does not exist — it is retained only as evidence of the error)*
 
-| $\theta$ | $N$ | $\alpha_0$ | Spec: $\alpha_0(r_w{+}L_p)$ | Source: $\alpha_0L_p/(1{-}\alpha_0)$ | ratio |
+| $\theta$ | $N$ | $\alpha_0$ | **x WRONG: Spec: $\alpha_0(r_w{+}L_p)$** | **x WRONG: "Source" $\alpha_0L_p/(1{-}\alpha_0)$** | **x WRONG: ratio** |
 |---|---|---|---|---|---|
-| 0° | 1 | 0.250 | 0.1020 | 0.1000 | 0.98 |
-| 180° | 2 | 0.500 | 0.2040 | 0.3000 | 1.47 |
-| 120° | 3 | 0.648 | 0.2644 | 0.5523 | 2.09 |
-| 90° | 4 | 0.726 | 0.2962 | 0.7949 | 2.68 |
-| 60° | 6 | 0.813 | 0.3317 | 1.3043 | 3.93 |
-| 45° | 8 | 0.860 | 0.3509 | **1.8429** | **5.25** |
+| 0° | 1 | 0.250 | **x WRONG: 0.1020** | **x WRONG: 0.1000** | **x WRONG: 0.98** |
+| 180° | 2 | 0.500 | **x WRONG: 0.2040** | **x WRONG: 0.3000** | **x WRONG: 1.47** |
+| 120° | 3 | 0.648 | **x WRONG: 0.2644** | **x WRONG: 0.5523** | **x WRONG: 2.09** |
+| 90° | 4 | 0.726 | **x WRONG: 0.2962** | **x WRONG: 0.7949** | **x WRONG: 2.68** |
+| 60° | 6 | 0.813 | **x WRONG: 0.3317** | **x WRONG: 1.3043** | **x WRONG: 3.93** |
+| 45° | 8 | 0.860 | **x WRONG: 0.3509** | **x WRONG: 1.8429** | **x WRONG: 5.25** |
 
-🔴 **The specified form saturates at $r_w+L_p=0.408$ m.** The table requires **1.843 m** at $45^\circ$ —
-**4.5× beyond the ceiling the expression can ever reach.** For every phasing beyond $\sim90^\circ$ the engine
-is pinned near saturation while the physics keeps growing.
+**x WRONG: "the specified form saturates at $r_w+L_p=0.408$ m. The table requires **1.843 m** at
+$45^\circ$ — **4.5× beyond the ceiling the expression can ever reach.**"** ✅ **The specified form does not
+saturate: $\alpha_0\le0.860<1$, so $r_{we}<r_w+L_p$ by construction, which is exactly the bound the paper
+states.**
 
-> 🔴 **$r_{wo}$ is an *effective* radius and is not bounded by the physical wellbore radius $r_w$.** That is
-> the whole content of the parameter: it stands for the inflow area a set of perforations presents, which
-> for eight planes is larger than the casing bore. ✅ **Multiplying by $(r_w+L_p)$ encodes the opposite
-> assumption** — that the effective radius is a fixed fraction of a geometric scale — **and no choice of
-> $\alpha_0$ table can rescue it.** This is the **same class** as the factor-3/$\sqrt3$ inversions already
-> logged (C-161, C-164, C-205, C-214, C-217): 🔴 **a correct table behind a wrong algebra.**
+> **x WRONG: 🔴 **$r_{wo}$ is an *effective* radius and is not bounded by the physical wellbore radius $r_w$.****
+> ✅ **$r_{we}$ *is* bounded — by $(r_w+L_p)$, not by $r_w$.** The paper: *"the effective well radius
+> logarithmically approaches its maximum value of $(r_w+L_p)$."* **The whole content of $\alpha_\theta$ is
+> how far below that ceiling the phasing places the effective radius** — largest ($\alpha_\theta=0.860$) at
+> $45^\circ$, smallest ($0.250$) at $0^\circ$.
 
-**Required change.** Replace the multiplication with the inversion, and treat $r_{wo}$ as an unbounded
-effective radius. Consequences that must be checked, not assumed:
+**x WRONG: "**Required change.** Replace the multiplication with the inversion, and treat $r_{wo}$ as an
+unbounded effective radius."** ✅ **No change is required — the specified expression is Eq. 7 and is
+correct.**
 
-| | Spec as written | After inversion |
+| | Spec as written | **x WRONG: After inversion** |
 |---|---|---|
-| $S_h(0^\circ)$ | $+0.365$ → $+0.057$ | $+0.077$ |
-| $S_h(45^\circ)$ | ≈ $-0.60$ (saturated) | $-2.837$ |
-| $S_h$ span | ~0.66 | **~2.91** |
+| $S_h(0^\circ)$ | $+0.365$ → $+0.057$ | **x WRONG: $+0.077$** — unchanged |
+| $S_h(45^\circ)$ | ≈ $-0.60$ | **x WRONG: $-2.837$** — unchanged |
+| $S_h$ span | ~0.66 | **x WRONG: **~2.91**** — unchanged |
 
-⚠️ **The skin span quadruples.** That is a large change to well-productivity output and it must not be
-adopted silently — 🔴 but the alternative is to retain a formula that provably cannot represent its own
-source table.
+⚠️ **x WRONG: **The skin span quadruples.**** ✅ **It does not.** 🔴 **The retraction that had to be applied here was
+larger than the original correction** — a fabricated divergence drove a proposed formula change that would
+have broken a correct expression.
 
-#### 7h.2a.5 ✅ The direction question is closed, and it confirms C-100
+#### 7h.2a.5 🔴 SUPERSEDED BY §7h.2b.3 (C-232) — the direction is PARAMETER-DEPENDENT, not settled
 
-§7h.2/C-98 claimed larger $\alpha_0$ meant **worse**. I withdrew that as **C-100**; ✅ **the source table
-independently confirms the withdrawal.** Derived, not asserted:
+**x WRONG: "§7h.2/C-98 claimed larger $\alpha_0$ meant **worse**. I withdrew that as C-100; the source table
+independently confirms the withdrawal."** 🔴 **Both claims are half right, and the "$S_h$" framing is the
+wrong quantity entirely.** ⚠️ There is no single $S_h(r_{we})$ to read a direction off, because the skin
+has **three** components with **opposing** phasing dependence.
 
-1. The table is titled *"DEPENDENCY OF $r_{wo}$ ON PHASING"* — $r_{wo}$ is an **effective radius**.
-2. $r_{wo}/(r_{wo}+L_p)$ is **monotone increasing** in $r_{wo}>0$, so ranking by $\alpha_0$ ranks by $r_{wo}$.
-3. ✅ **More planes ⇒ larger $r_{wo}$.** Measured $r_{wo}/L_p$: $0.333\to1.000\to1.841\to2.650\to4.348\to6.143$
-   for $N=1\to2\to3\to4\to6\to8$ — **strictly increasing, 18× over the table**.
-4. ✅ **Larger $r_{wo}$ ⇒ smaller $S_h$** in $S_h=\ln(r_w/r'_w)$ — measured $+0.077\to-2.837$, monotone.
+The reasoning below is **superseded** and retained only to show where it went wrong:
 
-**The paper's abstract says the same thing in its own words:** *"Results indicate the importance of angular
-phasing, in addition to perforation penetration, in **overcoming** the effects of formation damage on well
-productivity."* ✅ **Phasing helps.** C-98's reading was wrong; C-100 was right; the table proves it.
+1. **The table is titled *"DEPENDENCY OF $r_{wo}$ ON PHASING"* — $r_{wo}$ is an **effective radius**.**
+   🔴 **It reads $r_{we}$, and this is the misreading that generated C-229.**
+2. **x WRONG: $r_{wo}/(r_{wo}+L_p)$ is **monotone increasing** in $r_{wo}>0$, so ranking by $\alpha_0$ ranks by $r_{wo}$.**
+   🔴 **The ratio's denominator is $(r_w+L_p)$, which does not contain $r_{we}$ — so the monotonicity
+   argument does not apply and the inversion it licensed was invalid.**
+3. **x WRONG: "**More planes ⇒ larger $r_{wo}$.** Measured $r_{wo}/L_p$: $0.333\to1.000\to1.841\to2.650\to4.348\to6.143$
+   for $N=1\to2\to3\to4\to6\to8$ — **strictly increasing, 18× over the table**."** 🔴 **Those numbers belong to the retracted inversion.** The real statement is that $\alpha_\theta$ itself
+   rises with plane count: $0.250\to0.860$ — **and that is a fact about the table, not a derivation.**
+4. **x WRONG: ✅ **Larger $r_{wo}$ ⇒ smaller $S_h$** — measured $+0.077\to-2.837$, monotone.**
+   ✅ **$S_H=\ln(r_w/r_{we})$ does fall as $\alpha_\theta$ rises** — that part holds. 🔴 **But it is only
+   one of three terms**, and the net is what governs.
+
+**x WRONG: **The paper's abstract says the same thing in its own words** … ✅ **Phasing helps.****
+🔴 **True of $S_H$ and $S_{wb}$; false of $S_V$.** ✅ **Measured in §7h.2b.3: the optimum moves between
+$45^\circ$, $60^\circ$ and $90^\circ$ with the dimensionless groups.** 📌 **Ruled: phasing is an optimisable
+input, never a rule.**
 
 ⚠️ **What remains true from C-98** — and is unaffected — is that ✅ **field practice often prefers $0^\circ$ /
 $180^\circ$ alignment with $\sigma_{H,\max}$.** ✅ **But for a different mechanism**: permeability anisotropy
@@ -1377,7 +1400,7 @@ thematically adjacent — but **it is a guess and must not be silently substitut
 
 | Regime | What governs | Effect of plane count $N$ |
 |---|---|---|
-| **Isotropic matrix** ($k_x=k_y$) — what $\alpha_0$ encodes | Geometric flow distribution: more planes cover more of the drainage circumference, so **flow convergence into the entry area is reduced** and more entry area is used | **More planes = better.** $\alpha_0\uparrow$ = better |
+| **Isotropic matrix** ($k_x=k_y$) — what $\alpha_0$ encodes | Geometric flow distribution: more planes cover more of the drainage circumference, so **flow convergence into the entry area is reduced** and more entry area is used | ✅ **More planes raise $\alpha_0$** — 🔴 **but "better" applies to $S_H$ and $S_{wb}$ only; $S_V$ moves the other way, so the net is parameter-dependent (C-232).** |anes = better.** $\alpha_0\uparrow$ = better |
 | **Anisotropic / fractured** ($k_x\neq k_y$, $\sigma_{H,\max}$) | Permeability anisotropy and stress alignment — **outside** the isotropic hydraulics $\alpha_0$ encodes | Alignment dominates; 0°/180° preferred |
 
 ✅ **Larger $\alpha_0$ = better is correct** for the regime the correlation is defined in. My
@@ -1456,9 +1479,12 @@ $$\boxed{\;\alpha_0(\theta) = 0.250 + 0.476\,\log_4\!\left(\frac{360}{\theta}\ri
 | 120° (3) | 0.6272 | 0.618 |
 | 90° (4) | 0.7260 | 0.726 ✅ |
 
-Monotone in $\theta$ and **consistent with C-100** — more planes, larger $\alpha_0$, better. ⚠️ RMS
-deviation 0.0076 (≈1 %): **the four tabulated angles must retain their exact values**, and this fit is
-for **interpolation between** them only.
+Monotone in $\theta$ and consistent with C-100 for the $S_H$/$S_{wb}$ terms — more planes, larger
+$\alpha_0$, lower skin there. 🔴 **But not a net-improvement rule**: $S_V$ moves the opposite way, so the
+optimum is parameter-dependent (**C-232**). 🔴 **And the fit itself is invalid** — **C-228**: it was built on
+a misread heading and a wrong digit; refitted on the correct six-row table it becomes
+$0.2843+0.4113\log_4N$ with **RMS 0.0298**, not 0.0076. ⚠️ The four tabulated angles must retain their
+exact values, and ⚠️ **no fit is approved** until C-102 is decided.
 
 ### 7i.6 📌 CI gate this should produce
 

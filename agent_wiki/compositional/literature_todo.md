@@ -39,10 +39,10 @@ unobtainable). Supersedes nothing; the authority for provenance remains
 | **Status** | ✅ **CLOSED 09-10-2026 (C-226)** — Table 1 obtained and transcribed. 🔴 **It exposed a transcription error in my own §7h.2 and invalidated the fitted coefficient.** See §7h.2a |
 | **DOI (verified, §4)** | `10.2118/18247-PA` — ✅ **re-verified against `api.crossref.org` 09-10-2026**: HTTP 200, title, journal, **6**(01), 73–82, 1991-02-01 all match. 91 citing references. |
 | **Confirmed metadata** | Karakas, M. & **Tariq**, S. M. (1991), *Semianalytical Productivity Models for Perforated Completions*, SPE Production Engineering **6**(01), 73–82 |
-| **What was needed** | Test 3 only — **Table 1**, *"DEPENDENCY OF $r_{wo}$ ON PHASING"* |
-| **Values obtained** | $r_{wo}/(r_{wo}+L_p)$, **all six rows** — see the table in [`engine_spec_closures.md`](engine_spec_closures.md) §7h.2a |
+| **What was needed** | Test 3 only — **Table 1**, *"DEPENDENCY OF $r_{we}$ ON PHASING"* |
+| **Values obtained** | $\alpha_0=r_{we}/(r_w+L_p)$, **all six rows** — 0.250 · 0.500 · **0.648** · 0.726 · 0.813 · 0.860. ✅ Table in [`engine_spec_closures.md`](engine_spec_closures.md) §7h.2a.1 |
 | **🔴 Was wrong** | My §7h.2 recorded $\alpha_0(120^\circ)=0.618$. 🔴 **The source says $0.648$.** Two rows ($60^\circ$/6 and $45^\circ$/8 planes) were **missing entirely** |
-| **Direction** | ✅ **Settled by the table's own structure.** $r_{wo}$ is an *effective radius*; the ratio is monotone increasing in it, so **more planes ⇒ larger $r_{wo}$ ⇒ lower skin ⇒ better.** Consistent with the abstract: *"Results indicate the importance of angular phasing … in overcoming the effects of formation damage"* |
+| **Direction** | 🔴 **The phasing optimum is PARAMETER-DEPENDENT (C-232).** $S_H$ and $S_{wb}$ both fall as phasing goes $0^\circ\to45^\circ$ — *more* phasing is better — while $S_V$ **rises** — *less* is better. Measured net optimum: **45° / 60° / 90°** depending on $h_D$, $r_{pD}$, $r_{wD}$. ✅ **Both earlier readings (C-98, C-100) were half right**; see §7h.2b.3 |
 | **Also needed** | ✅ **OBTAINED (C-231).** Tables 2, 3, 4 and 5 — all six phasings for each. ✅ See §7h.2b.2 |
 | **Closed defect** | ✅ **CONF-31's coefficient defect is closed** — every named correlation has published coefficients. ⚠️ **CONF-31 stays open** on: 🔴 **C-102** no closed form for $\alpha_\theta$, ⚠️ **C-233** the $0^\circ$ ambiguity, ⚠️ **C-234** the $r_{wD}$ gap outside Eq. 9's domain |
 
@@ -124,7 +124,7 @@ Each is a **named correlation with no coefficient**, the original CONF-31 patter
 | **$A_s$** | Hydrate specific surface area | Gibbs' theorem requires it to **shrink** as hydrate decomposes (**C-75**) |
 | **$K$, $q_{inj}$** | CONF-15 $t_{bt}$ | See [`../thmc/conflict_and_gap_register.md`](../thmc/conflict_and_gap_register.md) |
 | **Glaso, Joback–Reid, PPR78, Huron–Vidal, QSPR** | **CONF-31** | Named by the design set, **no coefficient given anywhere** |
-| ~~Karakas–Tarik~~ | — | ✅ **RESOLVED 09-10-2026 (C-231).** ✅ Tables 1–5 obtained: $c_1,c_2$ (Tab. 2), $L_{p\min}/r_w$ (Tab. 3), $a_1,a_2,b_1,b_2$ (Tab. 4), $s_x$ (Tab. 5). 🔴 **These are finite-element tables, not closed forms** — see §7h.2b.2 |
+| Karakas–Tarik ✅ **resolved** | — | ✅ **RESOLVED 09-10-2026 (C-231).** ✅ Tables 1–5 obtained: $c_1,c_2$ (Tab. 2), $L_{p\min}/r_w$ (Tab. 3), $a_1,a_2,b_1,b_2$ (Tab. 4), $s_x$ (Tab. 5). 🔴 **These are finite-element tables, not closed forms** — see §7h.2b.2 |
 
 ---
 
