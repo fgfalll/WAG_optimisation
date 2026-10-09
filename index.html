@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Physics-informed surrogate reservoir simulator for CO₂ EOR optimization. Architecture, physics models, development guide, and verification suite.">
+        <meta name="description" content="Two engines under one roof. The SHIPPED Python/PyQt6 surrogate engine, and the 3D THMC reservoir simulator (the "compositional engine") currently in heavy development in Rust. Architecture, physics, build plan, and the full audit trail.">
       
       
       
@@ -254,16 +254,54 @@
   
     
     
+      
+  
+  
+  
+    
+    
       <li class="md-tabs__item">
         <a href="architecture/overview/" class="md-tabs__link">
           
   
     
   
-  Architecture
+  🐍 Python Engine (Shipped)
 
         </a>
       </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="compositional/" class="md-tabs__link">
+          
+  
+    
+  
+  🦀 Rust Engine (In Development)
+
+        </a>
+      </li>
+    
+  
+
     
   
 
@@ -275,152 +313,12 @@
     
     
       <li class="md-tabs__item">
-        <a href="physics/reservoir_model/" class="md-tabs__link">
+        <a href="thmc/" class="md-tabs__link">
           
   
     
   
-  Physics Models
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="data/inputs/" class="md-tabs__link">
-          
-  
-    
-  
-  Data & Parameters
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="development/common_pitfalls/" class="md-tabs__link">
-          
-  
-    
-  
-  Development Guide
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="audit/agent_checklist/" class="md-tabs__link">
-          
-  
-    
-  
-  Audit Reports
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="verification/verification_strategy/" class="md-tabs__link">
-          
-  
-    
-  
-  Verification
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="validation/validation_status/" class="md-tabs__link">
-          
-  
-    
-  
-  Validation
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="decisions/architecture_decisions/" class="md-tabs__link">
-          
-  
-    
-  
-  Decisions
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="code/inventory/" class="md-tabs__link">
-          
-  
-    
-  
-  Code Reference
+  📐 Design Source (3D THMC Docs)
 
         </a>
       </li>
@@ -540,6 +438,48 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="🧭 Documentation Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#python-engine-shipped" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐍 Python engine — shipped
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rust-engine-in-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      🦀 Rust engine — in development
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#problems-gaps-research" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔴 Problems, gaps &amp; research
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#design-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      📐 Design source
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -616,7 +556,7 @@
             
   
   <span class="md-ellipsis">
-    Architecture
+    🐍 Python Engine (Shipped)
   </span>
   
 
@@ -626,7 +566,69 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
-            Architecture
+            🐍 Python Engine (Shipped)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Overview
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -641,7 +643,7 @@
         
   
   <span class="md-ellipsis">
-    Overview
+    Architecture Overview
   </span>
   
 
@@ -825,9 +827,10 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
@@ -867,10 +870,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -881,8 +884,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             Physics Models
           </label>
@@ -1083,9 +1086,10 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
@@ -1115,10 +1119,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1129,8 +1133,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
             <span class="md-nav__icon md-icon"></span>
             Data & Parameters
           </label>
@@ -1226,9 +1230,10 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
@@ -1266,10 +1271,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1280,8 +1285,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
             Development Guide
           </label>
@@ -1461,9 +1466,10 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
@@ -1519,10 +1525,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1533,8 +1539,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
             <span class="md-nav__icon md-icon"></span>
             Audit Reports
           </label>
@@ -1594,7 +1600,7 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_2" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5_2" >
         
           
           
@@ -1610,14 +1616,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2_5_2" id="__nav_2_5_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_2">
             <span class="md-nav__icon md-icon"></span>
             Simulation Run Audits
           </label>
@@ -1694,10 +1700,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_2_4" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_6_2_4" id="__nav_6_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_5_2_4" id="__nav_2_5_2_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1708,8 +1714,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_2_4">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_5_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_2_4">
             <span class="md-nav__icon md-icon"></span>
             24-09-2026 Baseline Run
           </label>
@@ -2094,9 +2100,10 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
@@ -2136,10 +2143,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2150,8 +2157,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
             <span class="md-nav__icon md-icon"></span>
             Verification
           </label>
@@ -2352,9 +2359,10 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
@@ -2390,10 +2398,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2404,8 +2412,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
             <span class="md-nav__icon md-icon"></span>
             Validation
           </label>
@@ -2564,9 +2572,10 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
@@ -2592,10 +2601,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2606,8 +2615,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8">
             <span class="md-nav__icon md-icon"></span>
             Decisions
           </label>
@@ -2661,9 +2670,10 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
@@ -2693,10 +2703,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9" >
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_9" id="__nav_2_9_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2707,8 +2717,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9">
             <span class="md-nav__icon md-icon"></span>
             Code Reference
           </label>
@@ -2768,7 +2778,7 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9_2" >
         
           
           
@@ -2784,14 +2794,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2_9_2" id="__nav_2_9_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_9_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9_2">
             <span class="md-nav__icon md-icon"></span>
             Classes
           </label>
@@ -2903,7 +2913,7 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9_3" >
         
           
           
@@ -2919,14 +2929,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2_9_3" id="__nav_2_9_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_9_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9_3">
             <span class="md-nav__icon md-icon"></span>
             Functions
           </label>
@@ -3044,7 +3054,7 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9_4" >
         
           
           
@@ -3060,14 +3070,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2_9_4" id="__nav_2_9_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_9_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9_4">
             <span class="md-nav__icon md-icon"></span>
             Modules
           </label>
@@ -3215,6 +3225,1066 @@
     </li>
   
 
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    🦀 Rust Engine (In Development)
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            🦀 Rust Engine (In Development)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="compositional/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Start Here
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Start Here
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/vision_and_phases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision & Phases (P1→P2→P3)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/build_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Build Plan M0→M6 + M4.5 + M7
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mandatory Invariants
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Mandatory Invariants
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/engine_invariants/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    All Seven (start at §0 index)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/engine_spec_closures/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spec Closures (§7c–§7n)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/engine_numerics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Numerics & Status Lattice (§7o–§7w)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/engine_constitutive/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Constitutive / M7b (§7x–§7hh)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Interface Contracts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Interface Contracts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/output_schema/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Output Schema (APPROVED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/data_architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Architecture (DECIDED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Process & Discipline
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Process & Discipline
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/separation_doctrine/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Separation Doctrine + C-7
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/register_spec/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Separate Flaw Register (INV-5)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/integration_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    P2 Integration Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Literature & Research
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Literature & Research
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/literature_todo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Literature TODO (L-1…L-9)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/python_attempt_postmortem/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Why the Python attempt failed
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Problems & Gaps
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            Problems & Gaps
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="thmc/conflict_and_gap_register/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conflict & Gap Register (68 conflicts)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/spec_defects/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spec Defects by Milestone
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/spec_corrections_log/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spec Corrections Log (C-1…C-225)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="compositional/data_model_gap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data-Model Gap (Python)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="thmc/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    📐 Design Source (3D THMC Docs)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            📐 Design Source (3D THMC Docs)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="thmc/doc_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Source Document Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="thmc/architecture_design/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture Design
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="thmc/solver_and_numerics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Solver & Numerics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="thmc/fractures_wellbore/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fractures & Wellbore
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="thmc/addenda/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Addenda (Produced Water / Remediation)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="thmc/satellite_toolkit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Satellite Toolkit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="thmc/vv_testing_framework/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    V&V Testing Framework
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="thmc/evaluation_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluation Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="thmc/reservoir_engineer_ruling/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reservoir Engineer Ruling (07-10)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3250,6 +4320,48 @@
       🧭 Documentation Structure
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="🧭 Documentation Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#python-engine-shipped" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐍 Python engine — shipped
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rust-engine-in-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      🦀 Rust engine — in development
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#problems-gaps-research" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔴 Problems, gaps &amp; research
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#design-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      📐 Design source
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3290,10 +4402,69 @@
 
 
 <h1 id="co2-eor-optimizer-technical-wiki">CO₂ EOR Optimizer — Technical Wiki<a class="headerlink" href="#co2-eor-optimizer-technical-wiki" title="Permanent link">&para;</a></h1>
-<p>Welcome to the <strong>CO₂ EOR Optimizer Agent Wiki</strong>. This repository of technical knowledge documents the <strong>actual implementation, physical models, numerical approximations, execution pathways, and architectural realities</strong> of the CO₂ Enhanced Oil Recovery Optimizer codebase (<code>co2eor_optimizer</code>, v0.8.5).</p>
-<p>This documentation is designed for <strong>reservoir engineers, AI pair-programmers, scientific computing auditors, and software architects</strong>. It provides unambiguous, machine-readable, and scientifically grounded guidance to enable rapid comprehension, prevent accidental regression of scientific invariants, and eliminate modification risk.</p>
+<blockquote>
+<p>[!WARNING]
+<strong>This repository is under massive active development.</strong></p>
+<p><strong>Two engines, in very different states. Never read one as a description of the other.</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>🐍 <strong>Python engine</strong></th>
+<th>🦀 <strong>Rust engine</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>What it is</strong></td>
+<td>A <strong>physics-informed surrogate</strong> — a deliberately reduced-order, curve-driven reservoir model</td>
+<td>A <strong>full 3D THMC compositional reservoir simulator</strong> — transport + phase equilibrium + geomechanics + geochemistry</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>✅ <strong>Shipped, active.</strong> Describes running code today</td>
+<td>🔴 <strong>Under construction. No engine code exists yet</strong></td>
+</tr>
+<tr>
+<td><strong>Language</strong></td>
+<td>Python 3 + PyQt6</td>
+<td>Rust (toolchain installs at the start of M0)</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>Screens and ranks <span class="arithmatex">\(10^3\)</span>–<span class="arithmatex">\(10^5\)</span> candidates per optimisation run</td>
+<td>Evaluates a handful of candidates per run with solved physics, <strong>and generates the training data</strong> for a future neural surrogate</td>
+</tr>
+<tr>
+<td><strong>Documents here</strong></td>
+<td><a href="architecture/overview/">architecture</a>, <a href="physics/reservoir_model/">physics</a>, <a href="audit/technical_debt/">audit</a></td>
+<td><a href="compositional/">compositional/</a> + <a href="thmc/">thmc/</a></td>
+</tr>
+<tr>
+<td><strong>Named</strong></td>
+<td>"the surrogate"</td>
+<td>"the <strong>compositional engine</strong>" = "the <strong>3D THMC engine</strong>" — <strong>the same artefact</strong>, two names</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition danger">
+<p class="admonition-title">Read this before citing anything about the Rust engine</p>
+<p>Every page under <a href="compositional/"><code>compositional/</code></a> and <a href="thmc/"><code>thmc/</code></a> is a
+<strong>specification, a correction, or an audit trail</strong> — never a report of running software. 🔴 A tolerance,
+a milestone, or a "verified" claim on those pages describes <strong>what the engine must do</strong>, not what it
+does. 📌 The naming trap: <em>"compositional"</em> is a <strong>legacy of an earlier narrower scope</strong> when the THMC
+layers sat in a deferred bucket. 🔴 <strong>Reading it literally — as thermodynamics and multiphase flow only —
+means shipping roughly one third of approved scope.</strong> See
+<a href="compositional/vision_and_phases/">vision_and_phases §5.4</a>.</p>
+</div>
+<p>This documentation is designed for <strong>reservoir engineers, AI pair-programmers, scientific computing
+auditors, and software architects</strong>. It provides unambiguous, machine-readable, and scientifically grounded
+guidance to enable rapid comprehension, prevent accidental regression of scientific invariants, and
+eliminate modification risk.</p>
 <hr />
 <h2 id="documentation-structure">🧭 Documentation Structure<a class="headerlink" href="#documentation-structure" title="Permanent link">&para;</a></h2>
+<h3 id="python-engine-shipped">🐍 Python engine — shipped<a class="headerlink" href="#python-engine-shipped" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -3354,9 +4525,129 @@
 <td><a href="decisions/architecture_decisions/"><strong>Decisions</strong></a></td>
 <td>Architecture &amp; scientific rationale records (ADRs)</td>
 </tr>
+<tr>
+<td><a href="code/inventory/"><strong>Code Reference</strong></a></td>
+<td>Class, function and module inventories</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rust-engine-in-development">🦀 Rust engine — in development<a class="headerlink" href="#rust-engine-in-development" title="Permanent link">&para;</a></h3>
+<p>🔴 <strong>Nothing in this group is running code.</strong> Start at
+<a href="compositional/"><strong>compositional/README.md</strong></a>.</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="compositional/vision_and_phases/"><strong>Vision &amp; Phases</strong></a></td>
+<td>P1 develop → P2 integrate → P3 couple; all decisions taken</td>
+</tr>
+<tr>
+<td><a href="compositional/build_plan/"><strong>Build Plan M0→M7</strong></a></td>
+<td>Milestones with <strong>measured</strong> gates, incl. <strong>M4.5 integration slice</strong> and the <strong>M7b</strong> body</td>
+</tr>
+<tr>
+<td><a href="compositional/engine_invariants/"><strong>Mandatory Invariants</strong></a></td>
+<td>🔴 <strong>INV-1…INV-7 + ten standing CI rules.</strong> Start at §0</td>
+</tr>
+<tr>
+<td><a href="compositional/output_schema/"><strong>Output Schema</strong></a></td>
+<td>🔵 <strong>APPROVED</strong> — 9 domains, 116 fields/cell/timestep</td>
+</tr>
+<tr>
+<td><a href="compositional/data_architecture/"><strong>Data Architecture</strong></a></td>
+<td>🔵 <strong>DECIDED</strong> — PostgreSQL + <code>pgvector</code></td>
+</tr>
+<tr>
+<td><a href="compositional/separation_doctrine/"><strong>Separation Doctrine</strong></a></td>
+<td>P1 discipline + the <strong>C-7</strong> coherence gate</td>
+</tr>
+<tr>
+<td><a href="compositional/register_spec/"><strong>Separate Register</strong></a></td>
+<td><strong>INV-5</strong> — <code>COMP-nn</code> namespace</td>
+</tr>
+</tbody>
+</table>
+<h3 id="problems-gaps-research">🔴 Problems, gaps &amp; research<a class="headerlink" href="#problems-gaps-research" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="thmc/conflict_and_gap_register/"><strong>Conflict &amp; Gap Register</strong></a></td>
+<td><strong>68 conflicts</strong> across the 8 design docs — the authoritative status</td>
+</tr>
+<tr>
+<td><a href="thmc/reservoir_engineer_ruling/"><strong>Reservoir Engineer Ruling</strong></a></td>
+<td>The 07-10-2026 adjudication, incl. the CONF-01 retraction</td>
+</tr>
+<tr>
+<td><a href="compositional/spec_corrections_log/"><strong>Spec Corrections Log</strong></a></td>
+<td><strong>C-1…C-225</strong> across 34 rulings — every correction and retraction</td>
+</tr>
+<tr>
+<td><a href="compositional/spec_defects/"><strong>Spec Defects</strong></a></td>
+<td><code>CONF-*</code> items indexed by milestone</td>
+</tr>
+<tr>
+<td><a href="compositional/literature_todo/"><strong>📚 Literature TODO</strong></a></td>
+<td><strong>L-1…L-9</strong> — outstanding research, with the acceptance standard</td>
+</tr>
+<tr>
+<td><a href="compositional/python_attempt_postmortem/"><strong>Python Attempt Post-mortem</strong></a></td>
+<td>Why the first attempt failed — six language-independent causes</td>
+</tr>
+<tr>
+<td><a href="compositional/data_model_gap/"><strong>Data-Model Gap</strong></a></td>
+<td>Why <code>core/data_models.py</code> cannot express a full simulation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="design-source">📐 Design source<a class="headerlink" href="#design-source" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="thmc/"><strong>3D THMC Simulator</strong></a></td>
+<td><strong>Design intent only</strong> — 8 Ukrainian design docs (<code>3D_THMC_docs/</code>), normalised for agents: architecture, solver, 6-level V&amp;V, satellite toolkit, addenda, fracturing/wellbore</td>
+</tr>
+<tr>
+<td><a href="thmc/doc_inventory/"><strong>Doc Inventory</strong></a></td>
+<td>What each source document contains</td>
+</tr>
 </tbody>
 </table>
 <blockquote>
+<p>[!CAUTION]
+<strong><code>thmc/</code> describes a simulator that does not exist.</strong> <code>3D_THMC_docs/</code> (8 Ukrainian design documents,
+added 07-10-2026, untracked) specifies a <strong>Rust</strong> 3D THMC compositional core. Verified 07-10-2026:
+the working tree contains <strong>no <code>.rs</code> file, no <code>Cargo.toml</code>, and no CI</strong> — only <code>pyproject.toml</code>.
+Every acceptance criterion in the core spec is <strong>unchecked <code>[ ]</code></strong>.</p>
+<p><strong>The active engine remains <code>core/engine_surrogate/</code></strong> (invariant 1 below). Nothing in <code>thmc/</code> may be
+cited as evidence of engine behaviour.</p>
+<p><strong>Read <a href="thmc/conflict_and_gap_register/"><code>agent_wiki/thmc/conflict_and_gap_register.md</code></a> before
+working in this area.</strong> Blocking conflicts are recorded there. Two carry a <strong>2026-10-07 correction</strong>:
+<strong>CONF-01 was retracted</strong> — the proposed fractional flow has the <strong>correct sign</strong>; the defect is in
+its <em>closure</em> (no <span class="arithmatex">\(S_{or}\)</span>, no Corey exponents, no water term). Do not repeat the original claim.
+<strong>CONF-02</strong> the proposed HCPVI recovery cap is <strong>99.4 % inert</strong> at the shipped default HCPVI 7.69
+(structurally identical to <strong>CRIT-15</strong>); <strong>CONF-03</strong> six documents report penalty removal and NPV
+unification as <em>accomplished</em> when <code>FAILURE_PENALTY = -10^{12}</code> is still a live invariant and
+<code>tests/test_surrogate_engine.py</code> <strong>does not exist</strong>; <strong>CONF-04</strong> economics is simultaneously exiled
+from the core and given an in-core adjoint gradient — <strong>now adjudicated</strong> in
+<a href="thmc/reservoir_engineer_ruling/"><code>thmc/reservoir_engineer_ruling.md</code></a>.</p>
 <p>[!WARNING]
 <strong>Audit status — read before trusting any "RESOLVED" mark below.</strong></p>
 <p><strong>Round 2 (<code>05-10-2026</code>, verdict <code>FLAGGED</code>)</strong> adversarially re-audited the uncommitted remediation
@@ -3506,6 +4797,109 @@ before treating any wiki claim below as verified: several invariants here were <
 <li><strong>One commit closes one issue.</strong> <code>python -m audit.continuity check-commit "&lt;subject&gt;" "&lt;body&gt;"</code> rejects <code>Closes #1, #2</code>.</li>
 </ul>
 </li>
+<li>
+<p><strong>The Compositional Engine Is a Second Engine, Built First and Coupled Later</strong> (added 07-10-2026) —
+    🔴 <strong>CURRENT ACTIVE WORKSTREAM.</strong> A full-physics <strong>3D compositional engine in Rust</strong> is being built
+    at <code>crates/compositional/</code>, because <strong>no available simulator covers the full spectrum of this
+    project's tasks</strong>.</p>
+<ul>
+<li><strong>Prior art:</strong> an <code>EngineFactory</code> <strong>and a Python compositional engine were built, then removed</strong>
+  after the attempt failed. Rust is the second attempt. See
+  <a href="compositional/engine_invariants/"><code>compositional/engine_invariants.md</code></a> §6.</li>
+<li><strong>The two engines have different jobs, not different quality levels.</strong> The surrogate
+  (<code>core/engine_surrogate/</code>) <strong>screens and ranks</strong> at <span class="arithmatex">\(10^3\)</span>–<span class="arithmatex">\(10^5\)</span> evaluations per run. The
+  compositional engine <strong>evaluates</strong> a small number of candidates with solved physics.</li>
+<li>🔴 <strong>Seven mandatory invariants</strong> — <a href="compositional/engine_invariants/"><code>compositional/engine_invariants.md</code></a>:
+  <strong>INV-1 fail loudly, never fall back</strong> (every error returns a typed error and <em>stops</em>); <strong>INV-2 runs
+  only when the user starts it</strong>; <strong>INV-3 simulation only</strong> (a separate economic engine owns field
+  development); <strong>INV-4 output is training-ready</strong> (labelled <span class="arithmatex">\((x,y)\)</span> pairs, full fields, versioned,
+  provenance — the engine also <strong>trains a per-reservoir neural surrogate</strong>, not yet built);
+  <strong>INV-5 own flaw register</strong> (<code>COMP-nn</code>, a separate module — the Python register cannot hold a <code>.rs</code>
+  location); <strong>INV-6 capability declaration vs. failure</strong> (<code>NOT_IMPLEMENTED</code> ≠ <code>FAILED</code>);
+  <strong>INV-7 unconstrained</strong> (absurd input still gets full physical evaluation).</li>
+<li>🔴 <strong>Coherence is enforced, not assumed</strong> — <a href="compositional/build_plan/"><code>build_plan.md</code></a> <strong>M4.5</strong>
+  requires an end-to-end run (spec → solve → output), and
+  <a href="compositional/separation_doctrine/"><code>separation_doctrine.md</code></a> <strong>C-7</strong> requires every <code>pub</code> module to
+  be reachable from the driver and exercised by a test. 📌 <strong>This is the gate against disconnected
+  modules</strong>: a crate can pass every per-module unit test and still not produce one run.</li>
+<li>📌 <strong>The invariants are split across four topic files</strong> (09-10-2026, §-numbers preserved exactly):
+  <a href="compositional/engine_invariants/"><code>engine_invariants.md</code></a> (the seven invariants) ·
+  <a href="compositional/engine_spec_closures/"><code>engine_spec_closures.md</code></a> (<code>CONF-*</code> closures, DOIs, provenance) ·
+  <a href="compositional/engine_numerics/"><code>engine_numerics.md</code></a> (architecture, newtypes, status lattice, tolerances) ·
+  <a href="compositional/engine_constitutive/"><code>engine_constitutive.md</code></a> (fracture, Drucker–Prager, Lode angle).
+  <strong>Read the §0 index in <code>engine_invariants.md</code> first</strong> — it maps milestones to sections.</li>
+<li>✅ <strong>The two engines complement.</strong> The surrogate is <strong>not</strong> retired; P3 coupling definitely exists.
+  <strong>Python is left as-is</strong> — the 73 legacy findings remain the Python audit.</li>
+<li>🔵 <strong>Output schema APPROVED 08-10-2026</strong> — 9 domains, <strong>116 float fields per cell per timestep</strong>,
+  three temporal resolutions (micro-step / daily / monthly-yearly), global indexing
+  <span class="arithmatex">\(I_{global}=i+(j-1)N_x+(k-1)N_xN_y\)</span> plus NNC arrays. Formats: <strong>HDF5/VTK-HDF</strong>, <strong>RESQML 2.0.1 /
+  GRDECL</strong>, <strong>Parquet/Arrow</strong>, <strong>DuckDB/SQLite</strong>.
+  🔴 <strong>The engine emits all raw values; satellite tools interpret and format them.</strong>
+  ⚠️ <strong>This is a TARGET specification. No engine exists</strong> — current state is M0, not started.
+  ⚠️ <strong>Measured: 510 MB per timestep at SPE-10 scale, 51 GB for 100 steps</strong> — ruled remedy is
+  <strong>chunked HDF5 with <code>zstd</code></strong> plus an <strong>active-frame RAM cache</strong>.
+  🔴 <strong>Two-output contract (ruled):</strong> spatial → HDF5; time-series → Parquet/DuckDB.
+  <strong>The satellite economic engine never reads HDF5.</strong>
+  Full spec: <a href="compositional/output_schema/"><code>compositional/output_schema.md</code></a>.</li>
+<li>✅ <strong>Ruling of 08-10-2026 applied</strong> — economics purged (<strong>CONF-64/65</strong>), Koval unified (<strong>CONF-63</strong>),
+  <span class="arithmatex">\(\epsilon_p\)</span> removed from the elastic baseline (<strong>CONF-66</strong>), <span class="arithmatex">\(\text{Fe}^{2+}\)</span> added to the aqueous
+  species (<strong>CONF-67</strong>), skin floor corrected (<strong>CONF-68</strong>), <strong>CONF-35 resolved</strong> by unit conversion
+  (<span class="arithmatex">\(1\)</span> MSCF CO₂ <span class="arithmatex">\(\approx 0.0519\)</span> t). ⚠️ Two of my own framings were <strong>withdrawn by measurement</strong> —
+  see <a href="compositional/spec_corrections_log/"><code>compositional/spec_corrections_log.md</code></a> C-37, C-38.
+  Full adjudication: <a href="thmc/reservoir_engineer_ruling/"><code>thmc/reservoir_engineer_ruling.md</code></a> §6–§9.</li>
+<li>🔴 <strong>Python post-mortem recorded</strong> — the first attempt failed on <strong>six numerical-method defects</strong>,
+  <strong>not</strong> on execution speed. Yields five new requirements (<strong>Heidemann–Khalil</strong> critical solver,
+  exponential soft-start, well control modes in the global Jacobian, permeability-collapse selection
+  rule). <a href="compositional/python_attempt_postmortem/"><code>compositional/python_attempt_postmortem.md</code></a>.</li>
+<li>🔴 <strong>Spec authority rule:</strong> <code>3D_THMC_docs/</code> are <strong>immutable references</strong>; the <strong>wiki carries the
+  corrected specification</strong>. Every deviation is logged with source and line in
+  <a href="compositional/spec_corrections_log/"><code>compositional/spec_corrections_log.md</code></a> —
+  <strong>19 corrections, 7 open branches</strong>.</li>
+<li>⚠️ <strong>Scope re-baselined 08-10-2026</strong> to the <strong>full 3D THMC programme</strong> (coupled thermal +
+  geomechanics + geochemistry, fractures/EDFM, wellbore, Schwarz sub-domains, GPU, adjoint, ES-MDA).
+  The earlier "M7+ deferred" framing is <strong>void</strong>. <strong>Resolving scope has not resolved specification</strong> —
+  CONF-13/14/25/51/16/18/47/08/63/66 all remain open.</li>
+<li>✅ <strong>Simulation learning committed</strong> — full output enables RL to tune the surrogate on full physics.
+  A known, accepted long process. The <strong>economic engine is on the critical path</strong> for the reward.</li>
+<li><strong>Phase model</strong> — <a href="compositional/vision_and_phases/"><code>compositional/vision_and_phases.md</code></a>:
+  <strong>P1 DEVELOP</strong> (standalone, own register — separation is a <strong>development discipline to avoid
+  distraction, not an architecture</strong>) → <strong>P2 INTEGRATE</strong> → <strong>P3 COUPLE</strong>. P3 begins only after the
+  engine is verified on all features and fronts.</li>
+<li>⚠️ <strong>During P1 only:</strong> do not import anything from <code>core/</code>, <code>evaluation/</code>, <code>validation/</code>, <code>utils/</code>
+  or <code>ui/</code>. <strong>These gates retire by ADR at P2.</strong></li>
+<li><strong>Own flaw register</strong> at <code>audit_comp/</code>, namespace <strong><code>COMP-nn</code></strong>. ⚠️ <code>audit/registry.py:114</code>
+  <code>LOCATION_RE</code> accepts <code>.py</code> only — the existing register <strong>cannot</strong> record a Rust finding.</li>
+<li><strong>No code exists.</strong> Rust toolchain installation is <strong>deferred by decision</strong> until after
+  documentation, at the start of development.</li>
+<li>Plan: <a href="compositional/build_plan/"><code>compositional/build_plan.md</code></a> — <strong>M0 → M6</strong>, each gated by a
+  measured value. <strong>M1 references verified 07-10-2026</strong>:
+  <a href="compositional/spec_defects/"><code>compositional/spec_defects.md</code></a> §2a.</li>
+<li>🔵 <strong>Data layer decided:</strong> <strong>PostgreSQL + vector store</strong>, replacing file-based config —
+  <a href="compositional/data_architecture/"><code>compositional/data_architecture.md</code></a>.</li>
+<li>⚠️ <strong><code>core/data_models.py</code> and <code>config/base_config.json</code> cannot express a full simulation</strong> —
+  <code>ReservoirData.grid</code> holds <strong>only dimensions</strong>, porosity/permeability are <strong>scalars</strong>, no NTG,
+  transmissibility, corner-point geometry or 3D facies, the shipped fluid has <strong>2 components and 1
+  binary interaction coefficient</strong>, PVT tables are single-element lists. Evidence:
+  <a href="compositional/data_model_gap/"><code>compositional/data_model_gap.md</code></a>.</li>
+<li>⚠️ <strong><code>agent_wiki/development/extension_points.md</code> is unbuildable</strong> — it instructs edits to
+  <code>config/default_config.json</code>, <code>core/engine_factory.py</code>, <code>core/models/</code>, <code>core/surrogate_engine.py</code>,
+  <code>core/analytical_models.py</code>, <strong>none of which exist</strong>. <code>EngineFactory</code> was built and removed. Verify
+  every path with <code>Test-Path</code>.</li>
+<li>⚠️ <strong>UI/UX is out of scope</strong> until the Rust engine is fully built and tested.</li>
+<li><strong>The active engine for the existing application remains <code>core/engine_surrogate/</code></strong> (invariant 1).</li>
+</ul>
+</li>
+<li>
+<p><strong>The 3D THMC Design Set Is Design Intent, Not Implementation</strong> (added 07-10-2026):</p>
+<ul>
+<li><a href="thmc/"><code>agent_wiki/thmc/</code></a> is a <strong>normalised, agent-readable transcription</strong> of the 8 Ukrainian design documents in <code>3D_THMC_docs/</code>. They describe a <strong>Rust</strong> 3D THMC compositional core.</li>
+<li>⚠️ <strong>No Rust code exists in this repository.</strong> Verified 07-10-2026: <code>*.rs</code> → 0, <code>Cargo.toml</code> → 0, CI → 0. All 6 acceptance criteria in the core spec are <strong>unchecked <code>[ ]</code></strong>.</li>
+<li><strong>100 % of optimisation evaluations still route to <code>core/engine_surrogate/</code>.</strong> The THMC set changes nothing about engine routing.</li>
+<li><strong>Never cite a THMC number as validated.</strong> Every tolerance, accuracy % and benchmark timing in <code>3D_THMC_docs/</code> is an assertion in a design document. The V&amp;V framework supplies <strong>zero</strong> absolute reference values for any of its 22 declared tests.</li>
+<li><strong>Blocking conflicts are recorded</strong> in <a href="thmc/conflict_and_gap_register/"><code>thmc/conflict_and_gap_register.md</code></a> — read it before any THMC work. ⚠️ <strong>CONF-01 was RETRACTED on 07-10-2026</strong>: the proposed fractional flow has the <strong>correct sign</strong>; my original claim of <span class="arithmatex">\(df_g/dM&lt;0\)</span> came from a substitution error and is <strong>withdrawn</strong>. The real defect is the <em>closure</em> — no <span class="arithmatex">\(S_{or}\)</span>, linear instead of Corey exponents, no water term. See <a href="thmc/reservoir_engineer_ruling/"><code>thmc/reservoir_engineer_ruling.md</code></a>. The other blockers: <strong>CONF-02</strong> (HCPVI cap 99.4 % inert at the shipped default HCPVI 7.69 — the CRIT-15 shape), <strong>CONF-03</strong> (6 documents report penalty removal and NPV unification as <em>accomplished</em>; <code>FAILURE_PENALTY = -10^{12}</code> is still live and <code>tests/test_surrogate_engine.py</code> does not exist), <strong>CONF-04</strong> (economics both exiled from and inside the core — <strong>adjudicated</strong>: core exposes <span class="arithmatex">\(\partial q_i/\partial x\)</span>; prices applied off-core).</li>
+<li><strong>Staged evaluation:</strong> <a href="thmc/evaluation_plan/"><code>thmc/evaluation_plan.md</code></a> — Stage 0 documentation remediation → Stage 1 convert the documents' acceptance criteria into measurements against the <em>existing</em> engine → Stage 2 ADR decision (ADOPT / HARVEST / PILOT / REJECT) → Stage 3 scope. Recommendation: <strong>PILOT</strong>, with the language-independent items taken regardless.</li>
+</ul>
+</li>
 </ol>
 <hr />
 <h2 id="recommended-reading-order">📖 Recommended Reading Order<a class="headerlink" href="#recommended-reading-order" title="Permanent link">&para;</a></h2>
@@ -3516,6 +4910,18 @@ before treating any wiki claim below as verified: several invariants here were <
 <li>Consult <a href="audit/suspicious_logic/">Suspicious Logic</a> and <a href="development/common_pitfalls/">Common Pitfalls</a> to avoid known failure modes.</li>
 <li>Check <a href="development/change_safety_matrix/">Change Safety Matrix</a> to determine the risk tier of your task.</li>
 </ol>
+<blockquote>
+<p>If the task touches the 3D THMC design set (<code>3D_THMC_docs/</code> or <a href="thmc/"><code>agent_wiki/thmc/</code></a>),
+read <a href="thmc/conflict_and_gap_register/"><code>thmc/conflict_and_gap_register.md</code></a> <strong>before</strong> writing anything.
+That section describes a simulator which does not exist; treat every claim in it as unverified.</p>
+<p>🔴 <strong>If the task is about the compositional engine</strong> (<code>crates/compositional/</code>, <code>audit_comp/</code>,
+<a href="compositional/"><code>agent_wiki/compositional/</code></a>), start with
+<a href="compositional/vision_and_phases/"><code>compositional/vision_and_phases.md</code></a>. It is the <strong>current active
+workstream</strong>: a full-physics 3D compositional simulator in Rust, built <strong>first</strong>, coupled to the
+surrogate in a <strong>later phase</strong> (P3). During <strong>P1</strong> it is decoupled from <code>core/engine_surrogate/</code> and
+has its own flaw register (<code>COMP-nn</code>) — separation there is a <strong>development discipline to avoid
+distraction, not an architecture</strong>, and those gates retire at P2.</p>
+</blockquote>
 
 
 
@@ -3554,13 +4960,13 @@ before treating any wiki claim below as verified: several invariants here were <
         
         
           
-          <a href="architecture/overview/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
+          <a href="architecture/overview/" class="md-footer__link md-footer__link--next" aria-label="Next: Architecture Overview">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Overview
+                Architecture Overview
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -3610,6 +5016,8 @@ before treating any wiki claim below as verified: several invariants here were <
       <script src="assets/javascripts/bundle.60a45f97.min.js"></script>
       
         <script src="javascripts/mathjax.js"></script>
+      
+        <script src="javascripts/status_banner.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

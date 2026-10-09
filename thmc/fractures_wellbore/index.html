@@ -1,0 +1,5340 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Two engines under one roof. The SHIPPED Python/PyQt6 surrogate engine, and the 3D THMC reservoir simulator (the "compositional engine") currently in heavy development in Rust. Architecture, physics, build plan, and the full audit trail.">
+      
+      
+      
+        <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/thmc/fractures_wellbore/">
+      
+      
+        <link rel="prev" href="../solver_and_numerics/">
+      
+      
+        <link rel="next" href="../addenda/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>Fractures & Wellbore - CO₂ EOR Optimizer — Technical Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+  
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+  
+  <style>:root{--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 32C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h224V368c0-26.5 21.5-48 48-48h112V96c0-35.3-28.7-64-64-64zm384 320H336c-8.8 0-16 7.2-16 16v112l32-32 64-64z"/></svg>');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7.2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8.2-40.1l216-368C228.7 39.5 241.8 32 256 32m0 128c-13.3 0-24 10.7-24 24v112c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24m32 224a32 32 0 1 0-64 0 32 32 0 1 0 64 0"/></svg>');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M368 128c0 44.4-25.4 83.5-64 106.4V256c0 17.7-14.3 32-32 32h-96c-17.7 0-32-14.3-32-32v-21.6c-38.6-23-64-62.1-64-106.4C80 57.3 144.5 0 224 0s144 57.3 144 128m-200 48a32 32 0 1 0 0-64 32 32 0 1 0 0 64m144-32a32 32 0 1 0-64 0 32 32 0 1 0 64 0M3.4 273.7c7.9-15.8 27.1-22.2 42.9-14.3L224 348.2l177.7-88.8c15.8-7.9 35-1.5 42.9 14.3s1.5 35-14.3 42.9L295.6 384l134.8 67.4c15.8 7.9 22.2 27.1 14.3 42.9s-27.1 22.2-42.9 14.3L224 419.8 46.3 508.6c-15.8 7.9-35 1.5-42.9-14.3s-1.5-35 14.3-42.9L152.4 384 17.7 316.6c-15.8-7.9-22.2-27.1-14.3-42.9"/></svg>');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#hydraulic-fracturing-and-complex-wellbore-d8" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="CO₂ EOR Optimizer — Technical Documentation" class="md-header__button md-logo" aria-label="CO₂ EOR Optimizer — Technical Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3v-2H5V9h3V7zm6 0a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm0 2h2v6h-2zm5 1.5V12h3v1.5h-1.5A1.5 1.5 0 0 0 16 15v3h4.5v-1.5h-3V15H19a1.5 1.5 0 0 0 1.5-1.5V12a1.5 1.5 0 0 0-1.5-1.5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CO₂ EOR Optimizer — Technical Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fractures & Wellbore
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/fgfalll/WAG_optimisation" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fgfalll/WAG_optimisation
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/overview/" class="md-tabs__link">
+          
+  
+    
+  
+  🐍 Python Engine (Shipped)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../compositional/" class="md-tabs__link">
+          
+  
+    
+  
+  🦀 Rust Engine (In Development)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  📐 Design Source (3D THMC Docs)
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="CO₂ EOR Optimizer — Technical Documentation" class="md-nav__button md-logo" aria-label="CO₂ EOR Optimizer — Technical Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3v-2H5V9h3V7zm6 0a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm0 2h2v6h-2zm5 1.5V12h3v1.5h-1.5A1.5 1.5 0 0 0 16 15v3h4.5v-1.5h-3V15H19a1.5 1.5 0 0 0 1.5-1.5V12a1.5 1.5 0 0 0-1.5-1.5z"/></svg>
+
+    </a>
+    CO₂ EOR Optimizer — Technical Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/fgfalll/WAG_optimisation" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fgfalll/WAG_optimisation
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    🐍 Python Engine (Shipped)
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            🐍 Python Engine (Shipped)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Overview
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/module_map/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module Map
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/execution_flow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Execution Flow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dependency_graph/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dependency Graph
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/source_of_truth_map/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Source of Truth Map
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/source_of_truth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Subsystem Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/shared_earth_workstation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Shared Earth Workstation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/subsurface_studio_workbench/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Subsurface Studio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/model_qa_qc_and_self_assurance/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Model QA/QC & Assurance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Physics Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Physics Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/reservoir_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reservoir Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/fluid_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fluid Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/pvt_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PVT Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/co2_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CO₂ Properties
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/displacement_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Displacement Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/relative_permeability/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Relative Permeability
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/recovery_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recovery Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/co2_storage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CO₂ Storage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/units_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Units Audit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Data & Parameters
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Data & Parameters
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/inputs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inputs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/outputs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Outputs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/parameters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameter Registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/units/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Units & Conversions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Development Guide
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Development Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/common_pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Common Pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/change_safety_matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Change Safety Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/safe_modification_rules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Safe Modification Rules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/continuity_gate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Continuity Gate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/finding_registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Finding Registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/coding_rules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Coding Rules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/extension_points/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Extension Points
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/agent_skills/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Agent Skills
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Audit Reports
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            Audit Reports
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/agent_checklist/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Agent Pre-Flight Checklist
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../audit/simulation_run_audits/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Simulation Run Audits
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_5_2" id="__nav_2_5_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            Simulation Run Audits
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    05-10-2026 Round 2 Verification (FLAGGED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    04-10-2026 Forensic Audit (FLAGGED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5_2_4" id="__nav_2_5_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    24-09-2026 Baseline Run
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_5_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            24-09-2026 Baseline Run
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/24-09-2026_single_simulation_baseline/audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Technical Audit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/24-09-2026_single_simulation_baseline/run_evaluation_report/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluation Report
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/resolved_issues/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resolved Issues
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/scientific_flaws/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Scientific Flaws
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/mathematical_flaws/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mathematical Flaws
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/suspicious_logic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Suspicious Logic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/technical_debt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Technical Debt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/data_management_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Management
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/optimization_widget_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimization Widget
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/dialogs_models_utils_widgets_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dialogs, Models, Utils & Widgets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/dead_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dead Code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/hardcoded_values/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardcoded Values
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/fallbacks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fallbacks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/hidden_calibration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hidden Calibration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/duplicate_logic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Duplicate Logic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/parameter_provenance/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameter Provenance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/verification_gaps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Verification Gaps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Verification
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            Verification
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/verification_strategy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Strategy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/mathematical_verification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mathematical
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/physical_verification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Physical
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/numerical_verification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Numerical
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/conservation_tests/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conservation Tests
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/reference_solutions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reference Solutions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/convergence_studies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Convergence Studies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/limiting_cases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Limiting Cases
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/test_matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Test Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Validation
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            Validation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/validation_status/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Status
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/benchmarks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchmarks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/cmg_reference_validation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CMG GEM Reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/conservation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conservation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/test_suite_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Test Suite
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/known_limitations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Known Limitations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/tests/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tests Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Decisions
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/architecture_decisions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture Decisions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/scientific_decisions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Scientific Decisions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_9" id="__nav_2_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Code Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9">
+            <span class="md-nav__icon md-icon"></span>
+            Code Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/classes/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Classes
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_9_2" id="__nav_2_9_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_9_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9_2">
+            <span class="md-nav__icon md-icon"></span>
+            Classes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/optimization_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/physical_data_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Physical Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/surrogate_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Surrogate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/functions/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Functions
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_9_3" id="__nav_2_9_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_9_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9_3">
+            <span class="md-nav__icon md-icon"></span>
+            Functions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/recovery_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/simulation_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simulation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/thermo_pvt_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Thermodynamic & PVT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/modules/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_9_4" id="__nav_2_9_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_9_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9_4">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_engine_surrogate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Surrogate Engine
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_objectives_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Objectives & Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_optimisation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimisation Engine
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/evaluation_analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluation & Analysis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/ui_utils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UI & Utilities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/dormant_engines/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dormant Engines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    🦀 Rust Engine (In Development)
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            🦀 Rust Engine (In Development)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../compositional/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Start Here
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Start Here
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/vision_and_phases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision & Phases (P1→P2→P3)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/build_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Build Plan M0→M6 + M4.5 + M7
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mandatory Invariants
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Mandatory Invariants
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/engine_invariants/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    All Seven (start at §0 index)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/engine_spec_closures/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spec Closures (§7c–§7n)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/engine_numerics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Numerics & Status Lattice (§7o–§7w)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/engine_constitutive/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Constitutive / M7b (§7x–§7hh)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Interface Contracts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Interface Contracts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/output_schema/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Output Schema (APPROVED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/data_architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Architecture (DECIDED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Process & Discipline
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Process & Discipline
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/separation_doctrine/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Separation Doctrine + C-7
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/register_spec/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Separate Flaw Register (INV-5)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/integration_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    P2 Integration Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Literature & Research
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Literature & Research
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/literature_todo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Literature TODO (L-1…L-9)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/python_attempt_postmortem/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Why the Python attempt failed
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Problems & Gaps
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            Problems & Gaps
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conflict_and_gap_register/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conflict & Gap Register (68 conflicts)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/spec_defects/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spec Defects by Milestone
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/spec_corrections_log/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spec Corrections Log (C-1…C-225)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compositional/data_model_gap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data-Model Gap (Python)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    📐 Design Source (3D THMC Docs)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            📐 Design Source (3D THMC Docs)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../doc_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Source Document Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture_design/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture Design
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../solver_and_numerics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Solver & Numerics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Fractures & Wellbore
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Fractures & Wellbore
+  </span>
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-scope-correction" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Scope correction
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-section-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Section map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-11-edfm-integration-the-strongest-part-of-d8" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. §1.1 — EDFM integration (the strongest part of D8)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-12-eos-and-delumping" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. §1.2 — EoS and Delumping
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. §1.2 — EoS and Delumping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-accuracy-table-d8-12-the-only-quantitative-validation-artefact-in-d8" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Accuracy table (D8 §1.2 — the only quantitative validation artefact in D8)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-13-surrogate-engine-and-gep-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. §1.3 — Surrogate engine and GEP integration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-2-module-1-hydraulic-fracturing-and-proppant-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. §2 — Module 1: hydraulic fracturing and proppant transport
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. §2 — Module 1: hydraulic fracturing and proppant transport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-fracture-geometry-21-3-models-one-relation" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 Fracture geometry (§2.1) — 3 models, one relation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-proppant-transport-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2 Proppant transport (§2.2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-conductivity-dynamics-23" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3 Conductivity dynamics (§2.3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-breakthrough-and-koval-24" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.4 Breakthrough and Koval (§2.4)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-3-module-2-wellbore-and-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. §3 — Module 2: wellbore and completion
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. §3 — Module 2: wellbore and completion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-casing-string-31-5-elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1 Casing string (§3.1) — 5 elements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-cement-sheath-32" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.2 Cement sheath (§3.2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-perforations-33" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.3 Perforations (§3.3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-drift-flux-wellbore-hydraulics-34" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.4 Drift-flux wellbore hydraulics (§3.4)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-11-rust-types-verbatim" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. §1.1 — Rust types (verbatim)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. §1.1 — Rust types (verbatim)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-simulatorerror" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.1 SimulatorError
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-fracturegeometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.2 FractureGeometry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-matrixcell" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.3 MatrixCell
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-edfmintersection" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.4 EDFMIntersection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-trait-fracturematrixflux" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.5 trait FractureMatrixFlux
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-4-economics-and-the-npv-unification-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. §4 — Economics and the NPV-unification criteria
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. §4 — Economics and the NPV-unification criteria">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-the-three-numbered-npv-unification-acceptance-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.1 The three numbered NPV-unification acceptance criteria
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-hard-architectural-constraints-d8-declares-as-de-facto-invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Hard architectural constraints D8 declares as de-facto invariants
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-d8-gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. D8 gaps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addenda/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Addenda (Produced Water / Remediation)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../satellite_toolkit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Satellite Toolkit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vv_testing_framework/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    V&V Testing Framework
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../evaluation_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluation Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reservoir_engineer_ruling/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reservoir Engineer Ruling (07-10)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-scope-correction" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Scope correction
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-section-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Section map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-11-edfm-integration-the-strongest-part-of-d8" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. §1.1 — EDFM integration (the strongest part of D8)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-12-eos-and-delumping" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. §1.2 — EoS and Delumping
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. §1.2 — EoS and Delumping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-accuracy-table-d8-12-the-only-quantitative-validation-artefact-in-d8" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Accuracy table (D8 §1.2 — the only quantitative validation artefact in D8)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-13-surrogate-engine-and-gep-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. §1.3 — Surrogate engine and GEP integration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-2-module-1-hydraulic-fracturing-and-proppant-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. §2 — Module 1: hydraulic fracturing and proppant transport
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. §2 — Module 1: hydraulic fracturing and proppant transport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-fracture-geometry-21-3-models-one-relation" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 Fracture geometry (§2.1) — 3 models, one relation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-proppant-transport-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2 Proppant transport (§2.2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-conductivity-dynamics-23" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3 Conductivity dynamics (§2.3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-breakthrough-and-koval-24" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.4 Breakthrough and Koval (§2.4)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-3-module-2-wellbore-and-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. §3 — Module 2: wellbore and completion
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. §3 — Module 2: wellbore and completion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-casing-string-31-5-elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1 Casing string (§3.1) — 5 elements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-cement-sheath-32" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.2 Cement sheath (§3.2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-perforations-33" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.3 Perforations (§3.3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-drift-flux-wellbore-hydraulics-34" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.4 Drift-flux wellbore hydraulics (§3.4)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-11-rust-types-verbatim" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. §1.1 — Rust types (verbatim)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. §1.1 — Rust types (verbatim)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-simulatorerror" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.1 SimulatorError
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-fracturegeometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.2 FractureGeometry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-matrixcell" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.3 MatrixCell
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-edfmintersection" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.4 EDFMIntersection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-trait-fracturematrixflux" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.5 trait FractureMatrixFlux
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-4-economics-and-the-npv-unification-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. §4 — Economics and the NPV-unification criteria
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. §4 — Economics and the NPV-unification criteria">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-the-three-numbered-npv-unification-acceptance-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      9.1 The three numbered NPV-unification acceptance criteria
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-hard-architectural-constraints-d8-declares-as-de-facto-invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Hard architectural constraints D8 declares as de-facto invariants
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-d8-gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. D8 gaps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="hydraulic-fracturing-and-complex-wellbore-d8">Hydraulic Fracturing and Complex Wellbore — D8<a class="headerlink" href="#hydraulic-fracturing-and-complex-wellbore-d8" title="Permanent link">&para;</a></h1>
+<p>Source: <code>3D_THMC_docs/Hydraulic Fracturing and Complex Wellbore Architecture Specification.md</code>
+(282 lines, 38 772 bytes). <strong>Design intent only.</strong></p>
+<hr />
+<h2 id="1-scope-correction">1. Scope correction<a class="headerlink" href="#1-scope-correction" title="Permanent link">&para;</a></h2>
+<p>D8 is <strong>not</strong> a fracture-model catalogue. It names <strong>three</strong> fracture geometry formulations
+(<strong>P3D</strong>, <strong>Planar-3D</strong>, <strong>DFN</strong>) and is otherwise an <strong>EDFM coupling + wellbore + NPV-unification</strong>
+document. Zero occurrences of PKN, KGD, DPM, cohesive zone, phase-field, peridynamics, PFC or RBSM.
+No fracture-evolution, proppant or wellbore Rust types exist — those sections are prose and equations
+only. See <a href="../doc_inventory/"><code>doc_inventory.md</code></a> §5.</p>
+<hr />
+<h2 id="2-section-map">2. Section map<a class="headerlink" href="#2-section-map" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>§</th>
+<th>Title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.1</td>
+<td>Module architecture and FVM/FEM integration via <strong>EDFM</strong></td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>Thermodynamic phase-equilibrium core (EoS and Delumping)</td>
+</tr>
+<tr>
+<td>1.3</td>
+<td>Integration with the surrogate engine and GEP algorithms</td>
+</tr>
+<tr>
+<td>2.1</td>
+<td>HF fracture geometry dynamics (<code>L_f</code>, <code>H_f</code>, <code>w_f</code>)</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>Proppant transport, settling, pack formation</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td>Fracture conductivity dynamics and permeability degradation</td>
+</tr>
+<tr>
+<td>2.4</td>
+<td>Fluid breakthrough hydraulics and the Koval fractional-flow model</td>
+</tr>
+<tr>
+<td>3.1</td>
+<td>Wellbore and casing geometry</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td>Cement sheath integrity</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td>Perforation-zone dynamics and productivity (IPR) limiting</td>
+</tr>
+<tr>
+<td>3.4</td>
+<td>Multi-segment drift-flux wellbore hydraulics</td>
+</tr>
+<tr>
+<td>4.1</td>
+<td>Dynamic CAPEX model and infrastructure sizing</td>
+</tr>
+<tr>
+<td>4.2</td>
+<td>Unified DCF NPV model + <strong>3 numbered NPV-unification acceptance criteria</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-11-edfm-integration-the-strongest-part-of-d8">3. §1.1 — EDFM integration (the strongest part of D8)<a class="headerlink" href="#3-11-edfm-integration-the-strongest-part-of-d8" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>Integration of discrete fracture geometry into the 3D FVM/FEM grid is performed on the basis of the
+<strong>Embedded Discrete Fracture Model (EDFM)</strong>. With EDFM, fractures geometrically intersect the matrix
+FVM/FEM grid <strong>without the need to rebuild the mesh</strong>. Mass and energy transfer between matrix and
+fracture is computed by geometric transmissibility factors on the geometric-intersection face.</p>
+</blockquote>
+<p>This is architecturally consistent with D1 §2.2's NNC list-array approach and with D2 §5.1's NNC
+transmissibility. <strong>EDFM, NNC, DP/DP and MINC form the one coherent idea across D1, D2 and D8</strong>:
+fracture–matrix coupling without mesh rebuild.</p>
+<hr />
+<h2 id="4-12-eos-and-delumping">4. §1.2 — EoS and Delumping<a class="headerlink" href="#4-12-eos-and-delumping" title="Permanent link">&para;</a></h2>
+<p><strong>Thermodynamic kernel:</strong> isothermal flash over PR, SRK, VT-PR, VT-SRK, PC-SAFT; <strong>Michelsen stability
+test</strong> then <strong>Rachford–Rice</strong> root-finding by Newton–Raphson with step limiting:</p>
+<div class="arithmatex">\[f(V) = \sum_{i=1}^{N_c}\frac{z_i\,(K_i - 1)}{1 + V\,(K_i - 1)} = 0\]</div>
+<p>with <span class="arithmatex">\(K_i = y_i/x_i\)</span> corrected each step via fugacity coefficients <span class="arithmatex">\(\varphi_i^V\)</span>, <span class="arithmatex">\(\varphi_i^L\)</span>.</p>
+<p><strong>Surface-facility composition</strong> via <strong>delumping ("Delumping Mix-Method")</strong> consistent with detailed PVT
+data and <strong>Nichita's analytical approach</strong>.</p>
+<h3 id="41-accuracy-table-d8-12-the-only-quantitative-validation-artefact-in-d8">4.1 Accuracy table (D8 §1.2 — the only quantitative validation artefact in D8)<a class="headerlink" href="#41-accuracy-table-d8-12-the-only-quantitative-validation-artefact-in-d8" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>EoS</th>
+<th>Applicability</th>
+<th>MAPD density error</th>
+<th>f-theory viscosity</th>
+<th>FVT viscosity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PR-EOS</td>
+<td><code>P &lt; 50 MPa</code></td>
+<td><strong>3.0 – 8.0 %</strong></td>
+<td><strong>~ 5.0 %</strong></td>
+<td>3.0 – 4.0 %</td>
+</tr>
+<tr>
+<td>SRK-EOS</td>
+<td><code>P &lt; 50 MPa</code></td>
+<td><strong>4.0 – 9.0 %</strong></td>
+<td><strong>~ 5.0 %</strong></td>
+<td>3.0 – 4.0 %</td>
+</tr>
+<tr>
+<td>HTHP VT-SRK</td>
+<td>7–276 MPa, 278–533 K, shift ~ <code>(Mω)^{-1}</code></td>
+<td><strong>1.0 – 2.0 % (1.5 %)</strong></td>
+<td><strong>~ 5.0 %</strong></td>
+<td><strong>&lt; 3.0 %</strong></td>
+</tr>
+<tr>
+<td>HTHP VT-PR</td>
+<td>7–276 MPa, 278–533 K</td>
+<td><strong>1.0 – 4.0 % (2.0 %)</strong></td>
+<td><strong>~ 5.0 %</strong></td>
+<td><strong>&lt; 3.0 %</strong></td>
+</tr>
+<tr>
+<td>PC-SAFT</td>
+<td>7–276 MPa, 278–533 K</td>
+<td><strong>~ 1.0 %</strong></td>
+<td><strong>N/A</strong></td>
+<td><strong>&lt; 2.0 %</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>CONF-49 — a documented accuracy ceiling of 8–9 %.</strong> PR and SRK are declared to have <strong>8–9 %</strong>
+mean-absolute-relative-percent density error<strong>. Any adoption must state which EoS governs the
+optimisation objective, because at that error level recovery-factor differences between candidate
+designs are inside the fluid-model noise band. </strong>PC-SAFT is the only row at ~1 %** and is the only one
+in the set with a defensible density claim.</p>
+</blockquote>
+<hr />
+<h2 id="5-13-surrogate-engine-and-gep-integration">5. §1.3 — Surrogate engine and GEP integration<a class="headerlink" href="#5-13-surrogate-engine-and-gep-integration" title="Permanent link">&para;</a></h2>
+<p><strong>GEP surrogates</strong> are compiled to bytecode <code>Vec</code> instructions or <strong>JIT</strong> functions consuming
+<code>&amp;[MatrixCell]</code> and returning production/pressure surrogates, bypassing Python runtime overhead.
+Also <strong><code>C-ABI / FFI</code></strong> (<code>unsafe extern "C"</code>) bindings.</p>
+<p><strong>GEP constraints:</strong> fixed-length chromosome strings; gene = head <code>h</code> (functions <code>F</code> + terminals <code>T</code>)
+and tail <code>t</code> (terminals only) with <span class="arithmatex">\(t = h\cdot(n_{max}-1)+1\)</span>; ORF read left-to-right, top-to-bottom;
+remainder outside the active ORF is non-coding; sub-ETs joined by addition, multiplication or logical
+IF; mutation replaces head symbols with function/terminal but tail symbols <strong>only with terminals</strong>.</p>
+<blockquote>
+<p>⚠️ <strong>CONF-50.</strong> <code>MatrixCell</code> (see §8.2) carries <code>cell_id</code>, <code>volume</code>, <code>pressure</code>,
+<code>permeability: [f64;3]</code>, <code>porosity</code> — <strong>no saturations, no composition, no temperature, no
+transmissibility</strong>. A GEP surrogate consuming <code>&amp;[MatrixCell]</code> therefore cannot represent any
+multiphase state. The type and the stated use are incompatible. The same type also cannot carry the
+§2.1 fracture geometry, which has no home in any struct.</p>
+</blockquote>
+<hr />
+<h2 id="6-2-module-1-hydraulic-fracturing-and-proppant-transport">6. §2 — Module 1: hydraulic fracturing and proppant transport<a class="headerlink" href="#6-2-module-1-hydraulic-fracturing-and-proppant-transport" title="Permanent link">&para;</a></h2>
+<h3 id="61-fracture-geometry-21-3-models-one-relation">6.1 Fracture geometry (§2.1) — 3 models, one relation<a class="headerlink" href="#61-fracture-geometry-21-3-models-one-relation" title="Permanent link">&para;</a></h3>
+<p><strong>Models:</strong> <code>Pseudo-3D (P3D)</code>, <code>Planar-3D</code>, <code>Discrete Fracture Network (DFN)</code>.</p>
+<p><strong>Net pressure:</strong> <span class="arithmatex">\(p_{net}(x,z) = p_{fluid}(x,z) - \sigma_h(z)\)</span>, <span class="arithmatex">\(\sigma_h\)</span> = minimum horizontal stress.</p>
+<p><strong>Opening:</strong> <span class="arithmatex">\(w_f(x,z) = C_w\cdot\dfrac{1-\nu^2}{E}\cdot p_{net}(x,z)\cdot H_f\)</span>
+(<span class="arithmatex">\(E\)</span> = Young's, <span class="arithmatex">\(\nu\)</span> = Poisson's, <span class="arithmatex">\(C_w\)</span> = shape/geometric coefficient)</p>
+<p><strong>Length/height growth:</strong> front propagation set by local fluid mass balance against viscous-critical
+fracture toughness <span class="arithmatex">\(K_{IC}\)</span> [Pa·m^0.5]. In P3D, vertical growth <span class="arithmatex">\(H_f\)</span> across barrier layers is limited by
+a stress jump <span class="arithmatex">\(\Delta\sigma_h\)</span>.</p>
+<blockquote>
+<p>⚠️ <strong>CONF-51.</strong> No per-model equations, degrees of freedom, or applicability ranges are given — one
+geometry relation is applied to all three models. <span class="arithmatex">\(w_f \propto H_f\)</span> is dimensionally consistent but is
+<strong>not</strong> the standard PKN/DPM relation. <span class="arithmatex">\(C_w\)</span> has <strong>no value</strong>, <span class="arithmatex">\(K_{IC}\)</span> has <strong>no value</strong>, and the
+propagation criterion is qualitative. D8 is not implementable as a fracture model.</p>
+</blockquote>
+<h3 id="62-proppant-transport-22">6.2 Proppant transport (§2.2)<a class="headerlink" href="#62-proppant-transport-22" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[\frac{\partial(w_f C_p)}{\partial t} + \nabla\cdot(w_f C_p\,\mathbf{u}_p) - \frac{\partial}{\partial z}(w_f C_p\,v_{settling}) = 0\]</div>
+<p><strong>Discretisation:</strong> upwind <strong>TVD</strong>, high order, with flux limiters <strong>Superbee</strong> or <strong>Van Leer</strong>:</p>
+<div class="arithmatex">\[F_{i+1/2} = F^{Low}_{i+1/2} + \varphi(r_i)\left(F^{High}_{i+1/2} - F^{Low}_{i+1/2}\right)\]</div>
+<p>Time integration: explicit-implicit <strong>TVD Runge–Kutta</strong>.</p>
+<p><strong>Settling</strong> — Stokes corrected for confined walls and steric hindrance ("Power-Gower" model as printed):</p>
+<div class="arithmatex">\[v_{settling} = \frac{g\,d_p^2(\rho_p - \rho_f)}{18\,\mu_f}\,(1-C_p)^{n}\,f_{wall}(w_f/d_p)\]</div>
+<p><strong>Pack formation:</strong> at local concentration <span class="arithmatex">\(C_{p,max}\approx 0.58\text{–}0.63\)</span> a static proppant pack
+forms in the lower fracture; packed-fracture <span class="arithmatex">\(w_f\)</span> under closure set by granular-medium equilibrium.</p>
+<h3 id="63-conductivity-dynamics-23">6.3 Conductivity dynamics (§2.3)<a class="headerlink" href="#63-conductivity-dynamics-23" title="Permanent link">&para;</a></h3>
+<p>Closure stress <span class="arithmatex">\(\sigma_{closure} = p_{confining} - p_{pore}\)</span>. Modified Kozeny–Carman with <strong>StimLab</strong>
+degradation curves:</p>
+<div class="arithmatex">\[k_f(\sigma_{closure}) = k_{f,0}\cdot\Phi_{crush}(\sigma_{closure})\cdot\Phi_{embed}(\sigma_{closure})\]</div>
+<p><strong>Inputs:</strong> <code>w_f_initial</code>, <code>d_prop</code>, <code>sigma_closure</code>, <code>rock_youngs_modulus</code>, <code>proppant_strength</code>,
+<code>concentration_area</code> [kg/m²], <code>gel_residue_damage</code> (0..1).
+<strong>Outputs:</strong> <code>w_f_effective</code>, <code>k_f_effective</code>, <code>fracture_conductivity</code> = <span class="arithmatex">\(k_f\cdot w_f\)</span>.</p>
+<h3 id="64-breakthrough-and-koval-24">6.4 Breakthrough and Koval (§2.4)<a class="headerlink" href="#64-breakthrough-and-koval-24" title="Permanent link">&para;</a></h3>
+<p>Per-pattern injection rate <span class="arithmatex">\(q_{inj,pattern}\)</span> [m³/s / MSCFD] drives breakthrough.
+RF cap and <span class="arithmatex">\(f_g(t)\)</span> are <strong>verbatim identical</strong> to D1 §6.1 / D6 §4.5. → <strong>CONF-01, CONF-02</strong>.</p>
+<hr />
+<h2 id="7-3-module-2-wellbore-and-completion">7. §3 — Module 2: wellbore and completion<a class="headerlink" href="#7-3-module-2-wellbore-and-completion" title="Permanent link">&para;</a></h2>
+<h3 id="71-casing-string-31-5-elements">7.1 Casing string (§3.1) — 5 elements<a class="headerlink" href="#71-casing-string-31-5-elements" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Conductor</strong> 2. <strong>Intermediate casings</strong> 3. <strong>Production casing</strong> 4. <strong>Liners / tail sections</strong></li>
+<li><strong>Tubing</strong></li>
+</ol>
+<p><strong>Mandatory per-segment parameters:</strong> <code>D_in</code> [m/in], <code>D_out</code> [m/in], wall thickness <code>t_w</code> [mm/in],
+steel surface mean-absolute-roughness <code>ε</code> [mm/in], plus <code>MD</code> and <code>TVD</code> [m/ft].</p>
+<blockquote>
+<p>⚠️ <strong>CONF-52.</strong> No completion-type taxonomy at all: no vertical/horizontal builder distinction, no
+multilateral, no lower/upper completion, no gravel pack, no screen, no fish-mouthed vs. slotted liner,
+no packers, no plugs, no stage-isolation tooling, no inflow-profiling model. ICD/AICD appear only as a
+phrase in §3.4; <strong>AICD is never mentioned</strong>, and no device characteristic curve or parameter is given.</p>
+</blockquote>
+<h3 id="72-cement-sheath-32">7.2 Cement sheath (§3.2)<a class="headerlink" href="#72-cement-sheath-32" title="Permanent link">&para;</a></h3>
+<p>Parameters: inter-annular cement thickness [mm/in]; <code>E_cem</code>; <code>ν_cem</code>; <strong>bond strength to casing</strong> and
+<strong>to formation</strong>.</p>
+<p>The module computes cement stress state under changing inner-column pressure and temperature;
+<strong>exceeding the material strength limit models micro-annulus formation and longitudinal annular leak
+paths causing inter-reservoir crossflow</strong>.</p>
+<blockquote>
+<p>⚠️ <strong>CONF-53.</strong> No damage model, no tension criterion, no cyclic-count provision, no
+thermal-expansion coefficient. "Exceeding the strength limit" is not an evaluable condition without a
+damage law.</p>
+</blockquote>
+<h3 id="73-perforations-33">7.3 Perforations (§3.3)<a class="headerlink" href="#73-perforations-33" title="Permanent link">&para;</a></h3>
+<p>Parameters: shot density [holes/m, shots/ft]; hole <strong>diameter</strong> [mm/in]; channel depth <code>L_p</code> [mm/in];
+<strong>phasing angle 60°, 90°, 120°, 180°</strong>; skin factor <code>S_perf</code> of the damaged zone.</p>
+<p><strong>IPR clamp:</strong> <span class="arithmatex">\(q_{o,well} \le 1\,000\)</span> BOPD per well via Darcy/Vogel IPR. Field injection
+<span class="arithmatex">\(q_{inj,field} = q_{inj,pattern}\times N_{inj}\)</span>, range <strong>20 000–60 000 MSCFD</strong> field-wide or
+<strong>1 000–2 500 MSCFD</strong> per pattern.</p>
+<blockquote>
+<p>⚠️ <strong>CONF-54.</strong> Only a <strong>single perforated interval</strong> is defined — no perforation-cluster or stage-tower
+geometry, so no stage-isolation or diversion capability exists in the model. Also note the 20 000–60 000
+MSCFD field-wide range against 1 000–2 500 MSCFD per pattern is only consistent for specific pattern
+counts (8–60 patterns at 40-acre spacing ⇒ 320–2 400 acres); the reconciliation is not stated.
+This range <strong>directly contradicts D5 §1.1's anti-pattern text</strong>, which cites
+"rate clamped to 5 000 MSCFD instead of the 20 000–60 000 MSCFD range" as a <em>defect signature</em>.</p>
+</blockquote>
+<h3 id="74-drift-flux-wellbore-hydraulics-34">7.4 Drift-flux wellbore hydraulics (§3.4)<a class="headerlink" href="#74-drift-flux-wellbore-hydraulics-34" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[\frac{dp}{dz} = \rho_m g\sin\theta + \frac{f_m\,\rho_m\,v_m^2}{2D} + \rho_m v_m\frac{dv_m}{dz},\qquad \rho_m = \alpha_g\rho_g + \alpha_l\rho_l\]</div>
+<p>Gas slip: <span class="arithmatex">\(v_g = C_0 v_m + V_{gj}\)</span> — distribution coefficient <span class="arithmatex">\(C_0\)</span> + drift velocity.</p>
+<p>Non-isothermal heat transfer (conduction + convection) through casings and cement sheath.
+Annular flow and <strong>ICD / ICV</strong> operation are listed as modelled.</p>
+<hr />
+<h2 id="8-11-rust-types-verbatim">8. §1.1 — Rust types (verbatim)<a class="headerlink" href="#8-11-rust-types-verbatim" title="Permanent link">&para;</a></h2>
+<h3 id="81-simulatorerror">8.1 <code>SimulatorError</code><a class="headerlink" href="#81-simulatorerror" title="Permanent link">&para;</a></h3>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="sd">/// Системний перелік помилок обчислювального рушія симулятора</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">,</span><span class="w"> </span><span class="nb">PartialEq</span><span class="p">)]</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">SimulatorError</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">FlashConvergenceError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="n">MatrixInversionError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="n">EDFMGeometryError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="n">ProppantTransportError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="n">WellboreHydraulicsError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">}</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="k">impl</span><span class="w"> </span><span class="n">fmt</span><span class="p">::</span><span class="n">Display</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">SimulatorError</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">fmt</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">fmt</span><span class="p">::</span><span class="n">Formatter</span><span class="o">&lt;'</span><span class="nb">_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">fmt</span><span class="p">::</span><span class="nb">Result</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">FlashConvergenceError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Flash Convergence Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">MatrixInversionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Matrix Inversion Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">EDFMGeometryError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"EDFM Geometry Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">ProppantTransportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Proppant Transport Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">WellboreHydraulicsError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Wellbore Hydraulics Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">}</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="k">impl</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">SimulatorError</span><span class="w"> </span><span class="p">{}</span>
+</span></code></pre></div>
+<p>Line 15 of D8 requires: <strong>no numerical non-convergence may trigger <code>panic!</code>; all compute methods return
+<code>Result&lt;T, SimulatorError&gt;</code>.</strong></p>
+<h3 id="82-fracturegeometry">8.2 <code>FractureGeometry</code><a class="headerlink" href="#82-fracturegeometry" title="Permanent link">&para;</a></h3>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="sd">/// Геометричні та фільтраційні параметри елемента тріщини</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">)]</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">FractureGeometry</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">fracture_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">length</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Довжина тріщини [m / ft]</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">height</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Висота тріщини [m / ft]</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">aperture</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">        </span><span class="c1">// Розкриття wf [m / ft]</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">permeability</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">    </span><span class="c1">// Проникність kf [mD / D]</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">conductivity</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">    </span><span class="c1">// Провідність kf * wf [mD·m / D·ft]</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Carries <strong>no</strong> <span class="arithmatex">\(\sigma_h\)</span>, <span class="arithmatex">\(E\)</span>, <span class="arithmatex">\(\nu\)</span>, <span class="arithmatex">\(K_{IC}\)</span>, coordinates, or per-step geometry.</p>
+<h3 id="83-matrixcell">8.3 <code>MatrixCell</code><a class="headerlink" href="#83-matrixcell" title="Permanent link">&para;</a></h3>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="sd">/// Властивості матричного осередку сітки FVM/FEM</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">)]</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">MatrixCell</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">cell_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">volume</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">            </span><span class="c1">// Об'єм осередку [m³ / ft³]</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">pressure</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Поточний тиск [Pa / psi]</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">permeability</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="kt">f64</span><span class="p">;</span><span class="w"> </span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="c1">// Проникність по X, Y, Z [mD / D]</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">porosity</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Пористість [безрозмірна]</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="84-edfmintersection">8.4 <code>EDFMIntersection</code><a class="headerlink" href="#84-edfmintersection" title="Permanent link">&para;</a></h3>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="sd">/// Результат геометричного перетину тріщини з осередком матриці за моделлю EDFM</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">)]</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">EDFMIntersection</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">intersection_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">cell_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">fracture_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">intersection_area</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="c1">// Площа перетину [m² / ft²]</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">average_distance</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">  </span><span class="c1">// Середня серединна відстань від матриці до тріщини [m / ft]</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">transmissibility</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">  </span><span class="c1">// Коефіцієнт провідності EDFM [m³/(Pa·s) / bbl/(psi·day)]</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="85-trait-fracturematrixflux">8.5 <code>trait FractureMatrixFlux</code><a class="headerlink" href="#85-trait-fracturematrixflux" title="Permanent link">&para;</a></h3>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="sd">/// Інтерфейс для потокобезпечного обчислення міжфазних та міжпросторових потоків (Send + Sync)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">FractureMatrixFlux</span><span class="p">:</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="sd">/// Чисте обчислення масового потоку компонента між матрицею та тріщиною без внутрішньої мутації стану</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">calculate_mass_flux</span><span class="p">(</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">        </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">        </span><span class="n">matrix</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MatrixCell</span><span class="p">,</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">        </span><span class="n">fracture</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">FractureGeometry</span><span class="p">,</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">        </span><span class="n">intersection</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">EDFMIntersection</span><span class="p">,</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">        </span><span class="n">fluid_viscosity</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">        </span><span class="n">fluid_density</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">SimulatorError</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="sd">/// Обчислення оновленого коефіцієнта провідності EDFM для батч-стрибка тиску</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">compute_transmissibility</span><span class="p">(</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">        </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">        </span><span class="n">fracture</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">FractureGeometry</span><span class="p">,</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">        </span><span class="n">matrix</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MatrixCell</span><span class="p">,</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">        </span><span class="n">intersection_area</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">        </span><span class="n">average_distance</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">SimulatorError</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="p">}</span>
+</span></code></pre></div>
+<blockquote>
+<p>⚠️ <strong>CONF-50 (continued).</strong> <code>calculate_mass_flux</code> takes only <strong>viscosity and density</strong> — no pressure
+difference, no composition, no capillary term, no phase saturations — and returns a <strong>single <code>f64</code></strong>
+rather than a component vector. With D2 §4.1's actual transfer function
+<span class="arithmatex">\(q_{m-f,\alpha} = \sigma V_{block}\frac{K_m k_{r\alpha}}{\mu_\alpha}\Delta\Phi_{\alpha,m-f}\)</span>,
+the trait signature <strong>cannot express</strong> the physics D2 specifies: no <span class="arithmatex">\(\sigma\)</span>, no <span class="arithmatex">\(V_{block}\)</span>, no
+<span class="arithmatex">\(k_{r\alpha}\)</span>, no <span class="arithmatex">\(\Delta\Phi\)</span>, no phase index <span class="arithmatex">\(\alpha\)</span>, and no component index <span class="arithmatex">\(i\)</span>.</p>
+</blockquote>
+<hr />
+<h2 id="9-4-economics-and-the-npv-unification-criteria">9. §4 — Economics and the NPV-unification criteria<a class="headerlink" href="#9-4-economics-and-the-npv-unification-criteria" title="Permanent link">&para;</a></h2>
+<p><strong>Dynamic CAPEX (identical to D1/D6/D7):</strong></p>
+<div class="arithmatex">\[\text{CAPEX} = N_{inj}\times\$1.5\text{M} + N_{prod}\times\$1.0\text{M} + N_{patterns}\times\$250\text{k} + \$3\text{M} + \$10\text{M}\left(\frac{Q_{recycle,peak}}{20\,000}\right)^{0.65} + \$5\text{M}\]</div>
+<p><strong>Unified DCF:</strong> <code>r = 0.10</code> example, mid-year factor <span class="arithmatex">\(DF(t)=(1+r)^{-(t-0.5)}\)</span>.</p>
+<p><strong>Required cross-artefact agreement:</strong> <code>economic_npv_usd</code> (manifest) = <code>results["npv"]</code> (engine) =
+<code>Cumulative_NPV_USD</code> (<code>cash_flows_yearly.csv</code>) to within <strong>$0.01</strong>.</p>
+<h3 id="91-the-three-numbered-npv-unification-acceptance-criteria">9.1 The three numbered NPV-unification acceptance criteria<a class="headerlink" href="#91-the-three-numbered-npv-unification-acceptance-criteria" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Single computational trajectory.</strong> NPV calculation paths in <code>surrogate_engine.py</code>,
+   <code>surrogate_models.py</code> and <code>run_exporter.py</code> must be fully unified. The simplified averaging method
+   of cash flows (of the type <code>N_p / 15</code>) is <strong>strictly forbidden</strong>.</li>
+<li><strong>Absolute agreement accuracy (0.00 discrepancy).</strong> The three artefacts above must agree within <strong>0.01</strong>.</li>
+<li><strong>Complete removal of heuristic penalties.</strong> Non-physical multipliers and algorithmic penalty
+   barriers (<code>result *= breakthrough_impact</code>, <code>-1.0×10^{12}</code>) fully removed; gas-breakthrough dynamics
+   regulated <strong>exclusively</strong> by rising recycle/compression operating costs in the DCF.</li>
+</ol>
+<blockquote>
+<p>[!CAUTION]
+<strong>CONF-55 — D8 names live Python files as if the fix were already made.</strong> Criterion 1 requires changes
+to <code>surrogate_engine.py</code>, <code>surrogate_models.py</code> and <code>run_exporter.py</code> — all of which exist. Criterion 3
+asserts the penalties are "fully removed" — but <code>FAILURE_PENALTY = -1e12</code> remains a <strong>documented
+invariant</strong> (<code>agent_wiki/README.md</code> invariant 12), and <code>core/objectives/wrapper.py</code> is documented as
+applying "containment/remediation penalties" to <code>profiles["npv"]</code>. <strong>D8 §4.2 criteria 1–3 are, at
+present, unfulfilled requirements written as accomplishments.</strong></p>
+<p>Note also criterion 1 forbids <code>N_p / 15</code>-style averaging — compare the <strong>live</strong> implementation at
+<code>core/engine_surrogate/surrogate_engine.py:646-651</code>, which sums per-timestep annual cash flows
+directly. Criterion 1's second half appears already satisfied in the active engine; its first half
+(unifying three files) has not been measured.</p>
+</blockquote>
+<hr />
+<h2 id="10-hard-architectural-constraints-d8-declares-as-de-facto-invariants">10. Hard architectural constraints D8 declares as de-facto invariants<a class="headerlink" href="#10-hard-architectural-constraints-d8-declares-as-de-facto-invariants" title="Permanent link">&para;</a></h2>
+<ol>
+<li>No heap allocation per cell in computational loops.</li>
+<li>State in contiguous <code>Vec&lt;T&gt;</code> / typed arena.</li>
+<li>Zero-copy <code>&amp;[T]</code> / <code>&amp;mut [T]</code>.</li>
+<li>No <code>panic!</code>; all methods return <code>Result</code>.</li>
+<li>Traits are <code>Send + Sync</code> with pure functions.</li>
+</ol>
+<blockquote>
+<p>These five are compatible in principle with the live Python engine only by analogy (NumPy arrays are
+contiguous, and <code>agent_wiki/README.md</code> invariant 12 already mandates zero silent swallowing and
+explicit mathematical penalties). <strong>Items 1–3 have no Python analogue</strong> — NumPy allocates freely.
+Item 4 and 5 map onto existing conventions; items 1–3 do not. See
+<a href="../evaluation_plan/"><code>evaluation_plan.md</code></a> §4.</p>
+</blockquote>
+<hr />
+<h2 id="11-d8-gaps">11. D8 gaps<a class="headerlink" href="#11-d8-gaps" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Gap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No fracture-network model catalogue (PKN/KGD/DPM/cohesive/phase-field/Peridynamics/PFC/RBSM — 0 hits)</td>
+</tr>
+<tr>
+<td>No per-model fracture equations, dofs or applicability ranges</td>
+</tr>
+<tr>
+<td>No completion-type taxonomy, gravel pack, ICD/AICD specs, micro-annulus mechanics</td>
+</tr>
+<tr>
+<td>No HF workflow: stage count, cluster spacing, perforation strategy per stage, fluid rheology, proppant schedule, shut-in schedule</td>
+</tr>
+<tr>
+<td>No geomechanics section: no Mohr–Coulomb envelope, no slip tendency <span class="arithmatex">\(T_s\)</span>, no fault reactivation, no poroelastic stress path, no geomechanical injection ceiling</td>
+</tr>
+<tr>
+<td><strong>No test or validation section</strong>: no <code>#[test]</code>, no benchmark dataset, no acceptance list, no property-based tests, no V&amp;V hierarchy, no convergence requirement</td>
+</tr>
+<tr>
+<td>§2.2 and §2.4 both use duplicated <code>1.</code> bullet numbering</td>
+</tr>
+<tr>
+<td><code>τ = 1.5</code> treated as dimensionless against a pore-volume multiple</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../solver_and_numerics/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Solver &amp; Numerics">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Solver & Numerics
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../addenda/" class="md-footer__link md-footer__link--next" aria-label="Next: Addenda (Produced Water / Remediation)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Addenda (Produced Water / Remediation)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/fgfalll/WAG_optimisation" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "navigation.indexes", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "toc.follow"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="../../javascripts/status_banner.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

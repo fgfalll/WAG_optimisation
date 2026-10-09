@@ -1,0 +1,5786 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Two engines under one roof. The SHIPPED Python/PyQt6 surrogate engine, and the 3D THMC reservoir simulator (the "compositional engine") currently in heavy development in Rust. Architecture, physics, build plan, and the full audit trail.">
+      
+      
+      
+        <link rel="canonical" href="https://fgfalll.github.io/WAG_optimisation/compositional/data_architecture/">
+      
+      
+        <link rel="prev" href="../output_schema/">
+      
+      
+        <link rel="next" href="../separation_doctrine/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>Data Architecture (DECIDED) - CO₂ EOR Optimizer — Technical Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+  
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+  
+  <style>:root{--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M64 32C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h224V368c0-26.5 21.5-48 48-48h112V96c0-35.3-28.7-64-64-64zm384 320H336c-8.8 0-16 7.2-16 16v112l32-32 64-64z"/></svg>');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7.2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8.2-40.1l216-368C228.7 39.5 241.8 32 256 32m0 128c-13.3 0-24 10.7-24 24v112c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24m32 224a32 32 0 1 0-64 0 32 32 0 1 0 64 0"/></svg>');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M368 128c0 44.4-25.4 83.5-64 106.4V256c0 17.7-14.3 32-32 32h-96c-17.7 0-32-14.3-32-32v-21.6c-38.6-23-64-62.1-64-106.4C80 57.3 144.5 0 224 0s144 57.3 144 128m-200 48a32 32 0 1 0 0-64 32 32 0 1 0 0 64m144-32a32 32 0 1 0-64 0 32 32 0 1 0 64 0M3.4 273.7c7.9-15.8 27.1-22.2 42.9-14.3L224 348.2l177.7-88.8c15.8-7.9 35-1.5 42.9 14.3s1.5 35-14.3 42.9L295.6 384l134.8 67.4c15.8 7.9 22.2 27.1 14.3 42.9s-27.1 22.2-42.9 14.3L224 419.8 46.3 508.6c-15.8 7.9-35 1.5-42.9-14.3s-1.5-35 14.3-42.9L152.4 384 17.7 316.6c-15.8-7.9-22.2-27.1-14.3-42.9"/></svg>');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-architecture-postgresql-pgvector-with-a-layered-file-substrate" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="CO₂ EOR Optimizer — Technical Documentation" class="md-header__button md-logo" aria-label="CO₂ EOR Optimizer — Technical Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3v-2H5V9h3V7zm6 0a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm0 2h2v6h-2zm5 1.5V12h3v1.5h-1.5A1.5 1.5 0 0 0 16 15v3h4.5v-1.5h-3V15H19a1.5 1.5 0 0 0 1.5-1.5V12a1.5 1.5 0 0 0-1.5-1.5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            CO₂ EOR Optimizer — Technical Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Data Architecture (DECIDED)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/fgfalll/WAG_optimisation" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fgfalll/WAG_optimisation
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/overview/" class="md-tabs__link">
+          
+  
+    
+  
+  🐍 Python Engine (Shipped)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  🦀 Rust Engine (In Development)
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../thmc/" class="md-tabs__link">
+          
+  
+    
+  
+  📐 Design Source (3D THMC Docs)
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="CO₂ EOR Optimizer — Technical Documentation" class="md-nav__button md-logo" aria-label="CO₂ EOR Optimizer — Technical Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3v-2H5V9h3V7zm6 0a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm0 2h2v6h-2zm5 1.5V12h3v1.5h-1.5A1.5 1.5 0 0 0 16 15v3h4.5v-1.5h-3V15H19a1.5 1.5 0 0 0 1.5-1.5V12a1.5 1.5 0 0 0-1.5-1.5z"/></svg>
+
+    </a>
+    CO₂ EOR Optimizer — Technical Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/fgfalll/WAG_optimisation" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fgfalll/WAG_optimisation
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    🐍 Python Engine (Shipped)
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            🐍 Python Engine (Shipped)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Overview
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/module_map/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Module Map
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/execution_flow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Execution Flow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/dependency_graph/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dependency Graph
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/source_of_truth_map/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Source of Truth Map
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/source_of_truth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Subsystem Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/shared_earth_workstation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Shared Earth Workstation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/subsurface_studio_workbench/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Subsurface Studio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/model_qa_qc_and_self_assurance/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Model QA/QC & Assurance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Physics Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Physics Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/reservoir_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reservoir Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/fluid_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fluid Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/pvt_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PVT Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/co2_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CO₂ Properties
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/displacement_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Displacement Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/relative_permeability/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Relative Permeability
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/recovery_model/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recovery Model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/co2_storage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CO₂ Storage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../physics/units_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Units Audit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Data & Parameters
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Data & Parameters
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/inputs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inputs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/outputs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Outputs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/parameters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameter Registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data/units/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Units & Conversions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Development Guide
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Development Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/common_pitfalls/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Common Pitfalls
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/change_safety_matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Change Safety Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/safe_modification_rules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Safe Modification Rules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/continuity_gate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Continuity Gate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/finding_registry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Finding Registry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/coding_rules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Coding Rules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/extension_points/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Extension Points
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/agent_skills/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Agent Skills
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Audit Reports
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            Audit Reports
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/agent_checklist/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Agent Pre-Flight Checklist
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../audit/simulation_run_audits/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Simulation Run Audits
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_5_2" id="__nav_2_5_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            Simulation Run Audits
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/05-10-2026_remediation_verification_round2/audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    05-10-2026 Round 2 Verification (FLAGGED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    04-10-2026 Forensic Audit (FLAGGED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5_2_4" id="__nav_2_5_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    24-09-2026 Baseline Run
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_5_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            24-09-2026 Baseline Run
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/24-09-2026_single_simulation_baseline/audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Technical Audit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/simulation_run_audits/24-09-2026_single_simulation_baseline/run_evaluation_report/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluation Report
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/resolved_issues/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resolved Issues
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/scientific_flaws/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Scientific Flaws
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/mathematical_flaws/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mathematical Flaws
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/suspicious_logic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Suspicious Logic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/technical_debt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Technical Debt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/data_management_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Management
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/optimization_widget_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimization Widget
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/dialogs_models_utils_widgets_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dialogs, Models, Utils & Widgets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/dead_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dead Code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/hardcoded_values/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardcoded Values
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/fallbacks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fallbacks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/hidden_calibration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hidden Calibration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/duplicate_logic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Duplicate Logic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/parameter_provenance/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameter Provenance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../audit/verification_gaps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Verification Gaps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Verification
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            Verification
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/verification_strategy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Strategy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/mathematical_verification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mathematical
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/physical_verification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Physical
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/numerical_verification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Numerical
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/conservation_tests/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conservation Tests
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/reference_solutions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reference Solutions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/convergence_studies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Convergence Studies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/limiting_cases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Limiting Cases
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../verification/test_matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Test Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Validation
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            Validation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/validation_status/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Status
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/benchmarks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchmarks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/cmg_reference_validation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CMG GEM Reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/conservation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conservation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/test_suite_audit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Test Suite
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/known_limitations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Known Limitations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/tests/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tests Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Decisions
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/architecture_decisions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture Decisions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/scientific_decisions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Scientific Decisions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_9" id="__nav_2_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Code Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9">
+            <span class="md-nav__icon md-icon"></span>
+            Code Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/classes/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Classes
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_9_2" id="__nav_2_9_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_9_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9_2">
+            <span class="md-nav__icon md-icon"></span>
+            Classes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/optimization_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/physical_data_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Physical Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/classes/surrogate_classes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Surrogate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/functions/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Functions
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_9_3" id="__nav_2_9_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_9_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9_3">
+            <span class="md-nav__icon md-icon"></span>
+            Functions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/recovery_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recovery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/simulation_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simulation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/functions/thermo_pvt_functions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Thermodynamic & PVT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_9_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../code/modules/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_9_4" id="__nav_2_9_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_9_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9_4">
+            <span class="md-nav__icon md-icon"></span>
+            Modules
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_engine_surrogate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Surrogate Engine
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_objectives_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Objectives & Data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/core_optimisation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Optimisation Engine
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/evaluation_analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluation & Analysis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/ui_utils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UI & Utilities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../code/modules/dormant_engines/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dormant Engines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    🦀 Rust Engine (In Development)
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            🦀 Rust Engine (In Development)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Start Here
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1" id="__nav_3_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Start Here
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision_and_phases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision & Phases (P1→P2→P3)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Build Plan M0→M6 + M4.5 + M7
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Mandatory Invariants
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Mandatory Invariants
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine_invariants/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    All Seven (start at §0 index)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine_spec_closures/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spec Closures (§7c–§7n)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine_numerics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Numerics & Status Lattice (§7o–§7w)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine_constitutive/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Constitutive / M7b (§7x–§7hh)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Interface Contracts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Interface Contracts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../output_schema/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Output Schema (APPROVED)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Data Architecture (DECIDED)
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Data Architecture (DECIDED)
+  </span>
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-store-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Store map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0b-python-satellite-gaps-measured-08-10-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      0b. ⚠️ Python satellite gaps — measured 08-10-2026
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0c-volume-reality-check-measured-08-10-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      0c. ⚠️ Volume reality check — measured 08-10-2026
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-why-a-database-not-more-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Why a database, not more JSON
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-store-split" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Store split
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-why-this-is-better-for-the-engine-than-more-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Why this is better for the engine than more JSON
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Why this is better for the engine than more JSON">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-grid-storage-the-design-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Grid storage — the design decision
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-schema-outline" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Schema outline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Schema outline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-core-reservoir-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Core reservoir definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-fluid-and-thermodynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Fluid and thermodynamics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-petrophysics-and-initial-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 Petrophysics and initial state
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-wells-and-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4 Wells and operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-runs-and-provenance-required-by-inv-1-and-inv-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5 Runs and provenance — required by INV-1 and INV-4
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-economics-a-separate-engine-per-inv-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6 Economics — a separate engine, per INV-3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#47-findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.7 Findings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-vector-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Vector store
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Vector store">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-a-traintest-leakage-warning" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 A train/test leakage warning
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-consequences-for-the-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Consequences for the plan
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Consequences for the plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-p1-needs-a-run-specification-concept-not-just-a-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 P1 needs a run-specification concept, not just a schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-what-moves-out-of-the-file-based-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2 What moves out of the file-based model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-numeric-controls-currently-absent-entirely" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3 Numeric controls — currently absent entirely
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-backward-compatibility-non-negotiable" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Backward compatibility — non-negotiable
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-sequencing" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Sequencing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-open-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Open decisions
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Process & Discipline
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Process & Discipline
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../separation_doctrine/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Separation Doctrine + C-7
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../register_spec/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Separate Flaw Register (INV-5)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    P2 Integration Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Literature & Research
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Literature & Research
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../literature_todo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    📚 Literature TODO (L-1…L-9)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python_attempt_postmortem/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Why the Python attempt failed
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Problems & Gaps
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            Problems & Gaps
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../thmc/conflict_and_gap_register/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Conflict & Gap Register (68 conflicts)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec_defects/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spec Defects by Milestone
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec_corrections_log/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spec Corrections Log (C-1…C-225)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_model_gap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data-Model Gap (Python)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../thmc/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    📐 Design Source (3D THMC Docs)
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            📐 Design Source (3D THMC Docs)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../thmc/doc_inventory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Source Document Inventory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../thmc/architecture_design/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture Design
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../thmc/solver_and_numerics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Solver & Numerics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../thmc/fractures_wellbore/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fractures & Wellbore
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../thmc/addenda/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Addenda (Produced Water / Remediation)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../thmc/satellite_toolkit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Satellite Toolkit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../thmc/vv_testing_framework/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    V&V Testing Framework
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../thmc/evaluation_plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluation Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../thmc/reservoir_engineer_ruling/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reservoir Engineer Ruling (07-10)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0-store-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Store map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0b-python-satellite-gaps-measured-08-10-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      0b. ⚠️ Python satellite gaps — measured 08-10-2026
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0c-volume-reality-check-measured-08-10-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      0c. ⚠️ Volume reality check — measured 08-10-2026
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-why-a-database-not-more-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Why a database, not more JSON
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-store-split" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Store split
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-why-this-is-better-for-the-engine-than-more-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Why this is better for the engine than more JSON
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Why this is better for the engine than more JSON">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-grid-storage-the-design-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Grid storage — the design decision
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-schema-outline" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Schema outline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Schema outline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-core-reservoir-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Core reservoir definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-fluid-and-thermodynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Fluid and thermodynamics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-petrophysics-and-initial-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 Petrophysics and initial state
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-wells-and-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4 Wells and operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-runs-and-provenance-required-by-inv-1-and-inv-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.5 Runs and provenance — required by INV-1 and INV-4
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-economics-a-separate-engine-per-inv-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6 Economics — a separate engine, per INV-3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#47-findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.7 Findings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-vector-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Vector store
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Vector store">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-a-traintest-leakage-warning" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 A train/test leakage warning
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-consequences-for-the-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Consequences for the plan
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Consequences for the plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-p1-needs-a-run-specification-concept-not-just-a-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.1 P1 needs a run-specification concept, not just a schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-what-moves-out-of-the-file-based-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.2 What moves out of the file-based model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-numeric-controls-currently-absent-entirely" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3 Numeric controls — currently absent entirely
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-backward-compatibility-non-negotiable" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Backward compatibility — non-negotiable
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-sequencing" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Sequencing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-open-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Open decisions
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="data-architecture-postgresql-pgvector-with-a-layered-file-substrate">Data Architecture — PostgreSQL + pgvector, with a layered file substrate<a class="headerlink" href="#data-architecture-postgresql-pgvector-with-a-layered-file-substrate" title="Permanent link">&para;</a></h1>
+<p><strong>Decisions:</strong>
+- <strong>08-10-2026 — project data: PostgreSQL + <code>pgvector</code>.</strong> To make data usable by <strong>both</strong> engines,
+  transition from file-based configuration to a database.
+- <strong>08-10-2026 — simulation output: a layered file substrate</strong> (S4) — <code>petekIO</code> in memory; <strong>HDF5 /
+  VTK-HDF</strong>, <strong>RESQML 2.0.1 / GRDECL</strong> for spatial; <strong>DuckDB / SQLite (libSQL)</strong> and <strong>Parquet / Arrow</strong>
+  for tabular. Engine emits <strong>all raw values</strong>; satellite tools interpret and format.</p>
+<p>⚠️ <strong>These are complementary, not competing.</strong> Simulation output is <strong>open, tool-neutral files</strong>; project
+definition is a <strong>transactional database</strong>. Full detail: <a href="../output_schema/"><code>output_schema.md</code></a> §5.</p>
+<blockquote>
+<p>✅ <strong>This dissolves the P1 separation tension cleanly.</strong> The engine writes <em>standard open formats</em>. The
+Python satellite reads them with <code>h5py</code> — <strong>already a project dependency</strong> (<code>requirements.txt</code>,
+<code>pyproject.toml</code>, and used by <code>validation/sr3_reader.py</code>). <strong>No FFI, no shared library, no Rust in the
+Python process.</strong> The two engines share <em>data</em>, never <em>code</em>.</p>
+</blockquote>
+<hr />
+<h2 id="0-store-map">0. Store map<a class="headerlink" href="#0-store-map" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Store</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>In-memory state during a run</td>
+<td><code>petekIO</code> GeoData slabs (<code>f64</code>, zero-allocation)</td>
+<td>Spec L1</td>
+</tr>
+<tr>
+<td>3D/4D spatial output fields</td>
+<td><strong>HDF5 / VTK-HDF</strong> (<code>.h5</code>, <code>.vtu</code>)</td>
+<td>Spec L2</td>
+</tr>
+<tr>
+<td>Grid interchange</td>
+<td><strong>RESQML 2.0.1 / GRDECL</strong>, <code>.pproj</code></td>
+<td>Spec L2</td>
+</tr>
+<tr>
+<td>Well + field time series</td>
+<td><strong>Apache Parquet / Arrow</strong></td>
+<td>Spec L3</td>
+</tr>
+<tr>
+<td>Solver diagnostics, MBE, run logs</td>
+<td><strong>DuckDB / SQLite (libSQL)</strong></td>
+<td>Spec L3</td>
+</tr>
+<tr>
+<td>V&amp;V reference results</td>
+<td>SPE 1/3/5/9/10/11 suite</td>
+<td>Spec L4</td>
+</tr>
+<tr>
+<td><strong>Project / reservoir definition</strong></td>
+<td><strong>PostgreSQL</strong></td>
+<td>Decided 07-10</td>
+</tr>
+<tr>
+<td><strong>Training pairs, realisation ensembles</strong></td>
+<td><strong><code>pgvector</code></strong></td>
+<td>Decided 08-10</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="0b-python-satellite-gaps-measured-08-10-2026">0b. ⚠️ Python satellite gaps — measured 08-10-2026<a class="headerlink" href="#0b-python-satellite-gaps-measured-08-10-2026" title="Permanent link">&para;</a></h2>
+<p>Checked in the project <code>.venv</code> (<code>.venv\Scripts\python.exe</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Status</th>
+<th>Needed for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>h5py</code> <strong>3.16.0</strong></td>
+<td>✅ installed</td>
+<td>reading Spec L2 — <strong>already a dependency</strong></td>
+</tr>
+<tr>
+<td><code>numpy</code> <strong>2.5.3</strong>, <code>pandas</code> <strong>3.0.5</strong>, <code>scipy</code> <strong>1.18.1</strong>, <code>sklearn</code> <strong>1.9.1</strong></td>
+<td>✅ installed</td>
+<td>analysis, ML</td>
+</tr>
+<tr>
+<td><strong><code>pyarrow</code></strong></td>
+<td>❌ <strong>MISSING</strong></td>
+<td>reading Spec L3 Parquet</td>
+</tr>
+<tr>
+<td><strong><code>duckdb</code></strong></td>
+<td>❌ <strong>MISSING</strong></td>
+<td>Spec L3 SQL</td>
+</tr>
+<tr>
+<td><code>torch</code></td>
+<td>❌ absent</td>
+<td>expected — the neural surrogate is <em>yet to be developed</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Both missing packages are cheap and on the critical path.</strong> Without them the satellite cannot read a
+single Parquet or DuckDB artifact the engine produces. Tracked as correction <strong>C-27</strong> in
+<a href="../spec_corrections_log/"><code>spec_corrections_log.md</code></a>.</p>
+<hr />
+<h2 id="0c-volume-reality-check-measured-08-10-2026">0c. ⚠️ Volume reality check — measured 08-10-2026<a class="headerlink" href="#0c-volume-reality-check-measured-08-10-2026" title="Permanent link">&para;</a></h2>
+<p>Per-cell float fields per timestep across all nine domains, at <span class="arithmatex">\(N_c = 6\)</span>: <strong>116</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Cells</th>
+<th>Per timestep</th>
+<th>100 timesteps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SPE 5 (7×7×3)</td>
+<td>147</td>
+<td>0.07 MB</td>
+<td>0.01 GB</td>
+</tr>
+<tr>
+<td>200 k</td>
+<td>200 000</td>
+<td>92.8 MB</td>
+<td>9.3 GB</td>
+</tr>
+<tr>
+<td><strong>SPE 10 (D5 Level 5)</strong></td>
+<td>1 100 000</td>
+<td><strong>510.4 MB</strong></td>
+<td><strong>51.0 GB</strong></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Implication</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>⚠️ <strong>HDF5 chunking + compression is mandatory.</strong> 51 GB uncompressed for a 100-step SPE-10 run is not viable</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠️ <strong>1.1 M cells × 1 field <code>f32</code> = 4.4 MB.</strong> Reading one field per 16.6 ms frame is <strong>not viable from disk</strong> — the caching strategy in <a href="../output_schema/"><code>output_schema.md</code></a> §3.1 must be implemented, not just documented</td>
+</tr>
+<tr>
+<td>3</td>
+<td>✅ <strong>Daily/monthly aggregation before writing</strong> cuts volume ~30× versus micro-steps</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⚠️ <strong>Not every run populates every domain</strong> — see the capability mechanism (<strong>INV-6</strong>) in <a href="../engine_invariants/"><code>engine_invariants.md</code></a> §6</td>
+</tr>
+<tr>
+<td>5</td>
+<td>⚠️ <strong>Open branch B-1:</strong> a PCA / Karhunen–Loève reduced basis over 116 correlated fields would cut storage <strong>and</strong> shrink the RL observation space. Worth deciding before the dataset grows</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-why-a-database-not-more-json">1. Why a database, not more JSON<a class="headerlink" href="#1-why-a-database-not-more-json" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Problem today</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Grid is dimensions-only</td>
+<td><code>ReservoirData.grid</code> = <code>{"NX":[50],"NY":[50],"NZ":[10]}</code> (<code>tests/scientific/conftest.py:19</code>)</td>
+</tr>
+<tr>
+<td>Porosity/permeability are <strong>scalars</strong></td>
+<td><code>data_models.py:431-432</code></td>
+</tr>
+<tr>
+<td>Geology is <strong>2D</strong></td>
+<td><code>grid_resolution: Tuple[int, int]</code> (<code>:370</code>)</td>
+</tr>
+<tr>
+<td>Fluid is <strong>2 components, 1 <span class="arithmatex">\(k_{ij}\)</span></strong></td>
+<td><code>config/fluid_composition.json</code></td>
+</tr>
+<tr>
+<td>PVT tables are single-element lists</td>
+<td><code>config/base_config.json</code> → <code>PVTPropertiesDefaults</code></td>
+</tr>
+<tr>
+<td>Economics incomplete</td>
+<td>No gas price; storage credit defaults to <code>0.0</code> in code, absent from the pool</td>
+</tr>
+<tr>
+<td>Everything is process-local state</td>
+<td><code>EORParameters</code> / <code>ReservoirData</code> passed through call chains</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A single file cannot serve two engines with different needs.</strong> The surrogate needs a small, fast,
+coarse summary; the compositional engine needs cell-level arrays, component vectors and run provenance.
+A database lets both read the same source with different projections, and gives versioning, transactions
+and concurrent access for free — which a JSON file cannot.</p>
+<hr />
+<h2 id="2-store-split">2. Store split<a class="headerlink" href="#2-store-split" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Store</th>
+<th>Holds</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PostgreSQL</strong></td>
+<td>Reservoir definition, grid, geology, fluid composition, PVT, SCAL, wells, schedules, numeric controls, economic parameters, run manifests, findings</td>
+<td>Relational, transactional, versioned. Correct choice for structured reservoir data</td>
+</tr>
+<tr>
+<td><strong>Vector store</strong></td>
+<td>Per-cell property fields; compositional output fields; <strong>training datasets for the neural surrogate</strong></td>
+<td>High-dimensional arrays and nearest-neighbour retrieval over realisation ensembles</td>
+</tr>
+<tr>
+<td><strong>Rust engine</strong></td>
+<td>Pure computation. <strong>Holds no persistent state.</strong> Loads a run specification, writes results</td>
+<td>Keeps the engine testable and reproducible</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>The vector store is not a replacement for PostgreSQL.</strong> It is a <em>projection</em> for array-shaped and
+similarity-search workloads. The system of record is PostgreSQL; the vector store is derived and
+<strong>rebuildable</strong>.</p>
+</blockquote>
+<hr />
+<h2 id="3-why-this-is-better-for-the-engine-than-more-json">3. Why this is better for the engine than more JSON<a class="headerlink" href="#3-why-this-is-better-for-the-engine-than-more-json" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>JSON today</th>
+<th>PostgreSQL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Per-cell arrays (1.1M cells, D5 Level 5)</td>
+<td>Awkward; memory-bound</td>
+<td>Native large objects / partitioned rows</td>
+</tr>
+<tr>
+<td>Transactional multi-table update</td>
+<td>No</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Schema migration with rollback</td>
+<td>Manual</td>
+<td>Versioned migrations</td>
+</tr>
+<tr>
+<td>Concurrent read during a write</td>
+<td>No</td>
+<td>Yes — MVCC</td>
+</tr>
+<tr>
+<td>Audit trail of a reservoir's history</td>
+<td>None</td>
+<td>Native</td>
+</tr>
+<tr>
+<td>Reproducibility</td>
+<td>Depends on file provenance</td>
+<td>Row version + transaction id</td>
+</tr>
+<tr>
+<td>Two engines reading different projections</td>
+<td>Duplicate files</td>
+<td><strong>Views / projections</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="31-grid-storage-the-design-decision">3.1 Grid storage — the design decision<a class="headerlink" href="#31-grid-storage-the-design-decision" title="Permanent link">&para;</a></h3>
+<p><code>ReservoirData.grid</code> must become real grid data. Options:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Assessment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Row per cell</td>
+<td>Correct and queryable, but 1.1M rows × many properties. Needs <strong>partitioning by region/layer</strong></td>
+</tr>
+<tr>
+<td><strong>Array column</strong> (<code>float8[]</code>) per property</td>
+<td>Simple; whole-field load is one read. Poor for per-cell queries</td>
+</tr>
+<tr>
+<td><strong>Hybrid</strong> — array column per property + a region/layer index table</td>
+<td>✅ <strong>Recommended.</strong> Whole-field load for the engine (its access pattern is sweep, not query), plus the index table for region queries, validation and UI</td>
+</tr>
+</tbody>
+</table>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">-- recommended shape (illustrative)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">grid_property</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="n">reservoir_id</span><span class="w">   </span><span class="n">uuid</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">reservoir</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">property</span><span class="w">       </span><span class="nb">text</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">   </span><span class="c1">-- 'porosity' | 'permeability' | 'ntg' | 'transmissibility'</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="n">layer_id</span><span class="w">       </span><span class="nb">int</span><span class="w">  </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="k">values</span><span class="w">         </span><span class="n">float8</span><span class="p">[]</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">reservoir_id</span><span class="p">,</span><span class="w"> </span><span class="n">property</span><span class="p">,</span><span class="w"> </span><span class="n">layer_id</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">);</span>
+</span></code></pre></div>
+<blockquote>
+<p><strong>Rust integration:</strong> arrays come back contiguous, which maps directly onto the SoA flat-slab layout the
+design set requires (<code>../thmc/architecture_design.md</code> §2.1). <strong>A DB array column and an SoA slab are the
+same memory layout.</strong> This is the natural fit — and it is a reason to prefer PostgreSQL over, say, an
+object store.</p>
+</blockquote>
+<hr />
+<h2 id="4-schema-outline">4. Schema outline<a class="headerlink" href="#4-schema-outline" title="Permanent link">&para;</a></h2>
+<p>Designed at the <strong>domain</strong> level. Table names are provisional.</p>
+<h3 id="41-core-reservoir-definition">4.1 Core reservoir definition<a class="headerlink" href="#41-core-reservoir-definition" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Key columns</th>
+<th>Replaces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reservoir</code></td>
+<td><code>id</code>, <code>name</code>, <code>schema_version</code>, <code>created_at</code></td>
+<td><code>ReservoirData</code> scalars (<code>:422-435</code>)</td>
+</tr>
+<tr>
+<td><code>grid</code></td>
+<td><code>reservoir_id</code>, <code>nx</code>, <code>ny</code>, <code>nz</code>, <code>dx</code>, <code>dy</code>, <code>dz</code>, <code>active_mask</code>, <code>ntg</code>, <code>corner_point_uri</code></td>
+<td><strong><code>ReservoirData.grid</code></strong> (<code>:417</code>)</td>
+</tr>
+<tr>
+<td><code>grid_property</code></td>
+<td>see §3.1</td>
+<td><code>average_porosity</code>, <code>average_permeability</code> <strong>scalars</strong> (<code>:431-432</code>)</td>
+</tr>
+<tr>
+<td><code>region</code></td>
+<td><code>reservoir_id</code>, <code>region_id</code>, <code>name</code>, <code>perm_multiplier</code>, <code>poro_multiplier</code></td>
+<td><code>regions</code> (<code>:419</code>), <code>LayerDefinition</code> (<code>:408</code>)</td>
+</tr>
+<tr>
+<td><code>layer</code></td>
+<td><code>reservoir_id</code>, <code>layer_id</code>, <code>thickness</code>, <code>n_top</code>, <code>n_bottom</code></td>
+<td><code>LayerDefinition.thickness</code> only</td>
+</tr>
+<tr>
+<td><code>fault</code></td>
+<td><code>reservoir_id</code>, <code>strike</code>, <code>dip</code>, <code>dip_direction</code>, <code>throw</code>, <code>heave</code>, <code>length</code>, <code>z_top</code>, <code>z_base</code>, <code>transmissibility_multiplier</code>, <code>damage_zone_width</code>, <code>friction_coefficient</code>, <code>cohesion</code>, <code>shale_gouge_ratio</code>, <code>is_active</code></td>
+<td><code>FaultData</code> (<code>:220-242</code>) — already well specified, needs persistence</td>
+</tr>
+<tr>
+<td><code>fault_transmissibility</code></td>
+<td><code>fault_id</code>, <code>cell_i</code>, <code>cell_j</code>, <code>multiplier</code></td>
+<td><strong>absent today</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-fluid-and-thermodynamics">4.2 Fluid and thermodynamics<a class="headerlink" href="#42-fluid-and-thermodynamics" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Key columns</th>
+<th>Replaces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fluid</code></td>
+<td><code>reservoir_id</code>, <code>eos_type</code>, <code>n_components</code>, <code>volume_translation_model</code></td>
+<td><code>eos_composition</code> (<code>config/fluid_composition.json</code>)</td>
+</tr>
+<tr>
+<td><code>component</code></td>
+<td><code>fluid_id</code>, <code>name</code>, <code>mole_fraction</code>, <code>molecular_weight</code>, <code>boiling_point</code>, <code>critical_temperature</code>, <code>critical_pressure</code>, <code>acentric_factor</code>, <code>c7_plus_flag</code></td>
+<td><code>EOSModelParameters.component_properties</code> (<code>:311</code>) — <strong>2 rows today</strong></td>
+</tr>
+<tr>
+<td><code>binary_interaction</code></td>
+<td><code>fluid_id</code>, <code>component_i</code>, <code>component_j</code>, <code>kij</code>, <code>source</code></td>
+<td><code>binary_interaction_coeffs</code> (<code>:312</code>) — <strong>2×2 today</strong></td>
+</tr>
+<tr>
+<td><code>pvt_table</code></td>
+<td><code>reservoir_id</code>, <code>property</code>, <code>pressure</code>, <code>temperature</code>, <code>value</code></td>
+<td><code>PVTPropertiesDefaults</code> <strong>single-element lists</strong></td>
+</tr>
+<tr>
+<td><code>pvt_region</code></td>
+<td><code>reservoir_id</code>, <code>region_id</code>, <code>composition_spec</code></td>
+<td><strong>absent</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>source</code> on <code>binary_interaction</code> is mandatory.</strong> Per the M1 references
+(<a href="../spec_defects/"><code>spec_defects.md</code></a> §2), each <span class="arithmatex">\(k_{ij}\)</span> must record whether it came from experimental
+regression, the Abudour et al. (2014) QSPR fallback, or a default. <strong>A <span class="arithmatex">\(k_{ij}\)</span> with no provenance is
+not usable</strong> — that is exactly <strong>CONF-31</strong>.</p>
+</blockquote>
+<h3 id="43-petrophysics-and-initial-state">4.3 Petrophysics and initial state<a class="headerlink" href="#43-petrophysics-and-initial-state" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Key columns</th>
+<th>Replaces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rock_type</code></td>
+<td><code>reservoir_id</code>, <code>name</code>, <code>fzi</code>, <code>rqi</code>, <code>swc</code>, <code>sor</code>, <code>sgc</code>, <code>sgr</code></td>
+<td><strong>global scalars only</strong> today</td>
+</tr>
+<tr>
+<td><code>relative_permeability</code></td>
+<td><code>rock_type_id</code>, <code>phase</code>, <code>corey_exponent</code>, <code>endpoint_kr</code>, <code>table_uri</code></td>
+<td><code>CoreyParameters</code> (<code>:2115</code>) — <strong>no water term, no Pc, no hysteresis</strong></td>
+</tr>
+<tr>
+<td><code>capillary_pressure</code></td>
+<td><code>rock_type_id</code>, <code>sw</code>, <code>pc</code>, <code>leverett_j</code></td>
+<td><strong>absent</strong></td>
+</tr>
+<tr>
+<td><code>hysteresis</code></td>
+<td><code>rock_type_id</code>, <code>model</code> (killough/carlson), <code>scan_table_uri</code></td>
+<td><strong>absent</strong></td>
+</tr>
+<tr>
+<td><code>initial_state</code></td>
+<td><code>reservoir_id</code>, <code>cell_index</code>, <code>pressure</code>, <code>temperature</code>, <code>so</code>, <code>sw</code>, <code>sg</code>, <code>z[]</code></td>
+<td><code>initial_water_saturation</code> <strong>scalar</strong> (<code>:430</code>)</td>
+</tr>
+<tr>
+<td><code>free_water_level</code></td>
+<td><code>reservoir_id</code>, <code>depth_ft</code></td>
+<td><strong>absent</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="44-wells-and-operations">4.4 Wells and operations<a class="headerlink" href="#44-wells-and-operations" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Key columns</th>
+<th>Replaces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>well</code></td>
+<td><code>reservoir_id</code>, <code>name</code>, <code>well_index</code>, <code>skin_factor</code>, <code>wellbore_radius_ft</code></td>
+<td><code>WellData</code> (<code>:64-75</code>)</td>
+</tr>
+<tr>
+<td><code>well_trajectory</code></td>
+<td><code>well_id</code>, <code>md</code>, <code>tvd</code>, <code>x</code>, <code>y</code></td>
+<td><code>well_path: Optional[np.ndarray]</code> — flat</td>
+</tr>
+<tr>
+<td><code>well_completion</code></td>
+<td><code>well_id</code>, <code>completion_type</code>, <code>md_top</code>, <code>md_bottom</code></td>
+<td><strong>absent</strong></td>
+</tr>
+<tr>
+<td><code>perforation_cluster</code></td>
+<td><code>well_id</code>, <code>stage</code>, <code>cluster</code>, <code>md_top</code>, <code>md_bottom</code>, <code>phasing_deg</code>, <code>hole_diameter</code></td>
+<td><code>perforations: List[List[float]]</code> — flat, no clustering</td>
+</tr>
+<tr>
+<td><code>cement_sheath</code></td>
+<td><code>well_id</code>, <code>md_top</code>, <code>md_bottom</code>, <code>thickness</code>, <code>bond_strength</code></td>
+<td><strong>absent</strong></td>
+</tr>
+<tr>
+<td><code>icd</code></td>
+<td><code>well_id</code>, <code>md_top</code>, <code>md_bottom</code>, <code>device_type</code>, <code>characteristic</code></td>
+<td><strong>absent</strong></td>
+</tr>
+<tr>
+<td><code>well_schedule</code></td>
+<td><code>well_id</code>, <code>day</code>, <code>action</code>, <code>rate</code>, <code>duration_days</code>, <code>bhp_target</code>, <code>trigger_condition</code>, <code>trigger_value</code></td>
+<td><code>WellScheduleEntry</code> (<code>:198-207</code>) — note <code>max_operations = 100</code> hard cap</td>
+</tr>
+<tr>
+<td><code>fault_mechanics</code></td>
+<td><code>reservoir_id</code>, …</td>
+<td><code>GeomechanicsParameters</code> (<code>:1576</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="45-runs-and-provenance-required-by-inv-1-and-inv-4">4.5 Runs and provenance — required by INV-1 and INV-4<a class="headerlink" href="#45-runs-and-provenance-required-by-inv-1-and-inv-4" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Key columns</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run</code></td>
+<td><code>id</code>, <code>reservoir_id</code>, <code>engine</code>, <strong><code>engine_version</code></strong>, <strong><code>build_hash</code></strong>, <code>status</code>, <code>started_at</code>, <code>finished_at</code>, <code>manifest_id</code></td>
+<td><strong>INV-1</strong>: terminal status. <strong>INV-4</strong>: provenance per sample</td>
+</tr>
+<tr>
+<td><code>run_control_vector</code></td>
+<td><code>run_id</code>, <code>parameter_name</code>, <code>value</code></td>
+<td><strong>INV-4</strong>: the <span class="arithmatex">\(x\)</span> half of the training pair</td>
+</tr>
+<tr>
+<td><code>run_result</code></td>
+<td><code>run_id</code>, <code>timestep</code>, <code>variable</code>, <code>component</code>, <code>value</code></td>
+<td><strong>INV-4</strong>: the <span class="arithmatex">\(y\)</span> half</td>
+</tr>
+<tr>
+<td><code>run_error</code></td>
+<td><code>run_id</code>, <code>error_variant</code>, <code>message</code>, <code>cell_id</code>, <code>context</code></td>
+<td><strong>INV-1</strong>: typed error taxonomy, persisted</td>
+</tr>
+<tr>
+<td><code>schedule_stage</code></td>
+<td><code>run_id</code>, <code>from</code>, <code>to</code>, <code>action</code>, <code>target</code></td>
+<td><code>utils/run_exporter.py</code> already produces a manifest — <strong>extend, don't replace</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>INV-1 consequence.</strong> <code>run.status</code> must have a terminal state that is <strong>not</strong> "success with
+degraded output". A failed run writes <code>run_error</code> and produces <strong>no usable artifact</strong>.</p>
+</blockquote>
+<h3 id="46-economics-a-separate-engine-per-inv-3">4.6 Economics — a <strong>separate engine</strong>, per INV-3<a class="headerlink" href="#46-economics-a-separate-engine-per-inv-3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Key columns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>economic_scenario</code></td>
+<td><code>reservoir_id</code>, <code>name</code>, <code>discount_rate</code>, <code>capex</code>, <code>base_date</code></td>
+</tr>
+<tr>
+<td><code>price_deck</code></td>
+<td><code>scenario_id</code>, <code>commodity</code>, <code>year</code>, <code>price</code>, <code>escalation</code></td>
+</tr>
+<tr>
+<td><code>cost_item</code></td>
+<td><code>scenario_id</code>, <code>category</code>, <code>unit_cost</code>, <code>basis</code></td>
+</tr>
+<tr>
+<td><code>carbon_terms</code></td>
+<td><code>scenario_id</code>, <code>storage_credit_usd_per_tonne</code>, <code>carbon_tax_usd_per_tonne</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Today:</strong> 11 keys in <code>EconomicParametersDefaults</code>, <strong>no gas price</strong>, <strong>no storage credit</strong>, no
+escalation, no terminal value. See <a href="../data_model_gap/"><code>data_model_gap.md</code></a> §7. This is the future
+economic engine's scope, <strong>not</strong> the compositional engine's.</p>
+</blockquote>
+<h3 id="47-findings">4.7 Findings<a class="headerlink" href="#47-findings" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Key columns</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>finding</code></td>
+<td><code>id</code> (<strong><code>COMP-nn</code></strong>), <code>severity</code>, <code>category</code>, <code>location</code>, <code>observed</code>, <code>expected</code>, <code>impact</code>, <code>evidence</code>, <strong><code>verification</code></strong>, <code>status</code></td>
+<td><strong>Mirrors <code>audit_comp</code> register</strong> (INV-5). Keep the markdown register as the git-tracked source of record; mirror to DB for querying</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-vector-store">5. Vector store<a class="headerlink" href="#5-vector-store" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Collection</th>
+<th>Contents</th>
+<th>Origin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cell_fields</code></td>
+<td>Per-cell property realisations, per region, per geological realisation</td>
+<td>Generated from <code>grid_property</code></td>
+</tr>
+<tr>
+<td><code>realisation_ensemble</code></td>
+<td>Geo-statistical realisations for history matching / UQ</td>
+<td>Variogram parameters + seed</td>
+</tr>
+<tr>
+<td><strong><code>training_pairs</code></strong></td>
+<td><strong><span class="arithmatex">\((x,y)\)</span> for the neural surrogate</strong></td>
+<td><strong>Compositional engine runs (INV-4)</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>training_pairs</code> is the reason a vector store is in scope.</strong> Per-reservoir surrogate training
+(INV-4) needs large labelled sets with nearest-neighbour retrieval over input vectors for
+curriculum sampling and out-of-distribution detection.</p>
+</blockquote>
+<h3 id="51-a-traintest-leakage-warning">5.1 A train/test leakage warning<a class="headerlink" href="#51-a-traintest-leakage-warning" title="Permanent link">&para;</a></h3>
+<p>Compositional runs are <strong>expensive</strong>. If the same well configuration appears in both train and test
+splits, reported surrogate accuracy is meaningless — the network memorises the configuration, not the
+physics.</p>
+<p><strong>Required:</strong> split by <strong>geological realisation</strong> and by <strong>development pattern</strong>, not randomly over
+samples. This must be stated in the dataset schema from the start; retrofitting it is painful.</p>
+<hr />
+<h2 id="6-consequences-for-the-plan">6. Consequences for the plan<a class="headerlink" href="#6-consequences-for-the-plan" title="Permanent link">&para;</a></h2>
+<h3 id="61-p1-needs-a-run-specification-concept-not-just-a-schema">6.1 P1 needs a <strong>run-specification</strong> concept, not just a schema<a class="headerlink" href="#61-p1-needs-a-run-specification-concept-not-just-a-schema" title="Permanent link">&para;</a></h3>
+<p>The engine must be loadable from the DB while still testable standalone. Define:</p>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Run specification</strong></td>
+<td>A self-contained, versioned object the engine consumes: reservoir + grid + fluid + PVT + SCAL + wells + schedule + numeric controls</td>
+</tr>
+<tr>
+<td><strong>Single source</strong></td>
+<td>Built from PostgreSQL, serialised into the engine's own binary form (<strong>CONF-30b</strong> — <code>petekIO</code> is named 3× and defined 0×)</td>
+</tr>
+<tr>
+<td><strong>Deterministic</strong></td>
+<td>Same spec ⇒ same output. Required by INV-4 and by every M-gate</td>
+</tr>
+<tr>
+<td><strong>Hashable</strong></td>
+<td><code>engine_version</code> + <code>build_hash</code> + <code>spec_hash</code> together identify a result completely</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>This resolves an architectural tension.</strong> <a href="../separation_doctrine/"><code>separation_doctrine.md</code></a> forbids
+the Rust crate importing Python modules during P1. A shared database schema satisfies that: the DB is
+<strong>data</strong>, not code. Both engines read the same tables without either importing the other.</p>
+</blockquote>
+<h3 id="62-what-moves-out-of-the-file-based-model">6.2 What moves out of the file-based model<a class="headerlink" href="#62-what-moves-out-of-the-file-based-model" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Retired / superseded</th>
+<th>Replacement</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config/base_config.json</code> (26 KB, 132-key flat section)</td>
+<td><code>price_deck</code>, <code>cost_item</code>, <code>numeric_control</code> tables</td>
+<td>Metadata pattern reused from <code>EmpiricalFittingParameters</code></td>
+</tr>
+<tr>
+<td><code>config/fluid_composition.json</code> (2 components)</td>
+<td><code>component</code> + <code>binary_interaction</code> tables</td>
+<td>With mandatory <code>source</code> provenance</td>
+</tr>
+<tr>
+<td><code>config/fault_properties.json</code></td>
+<td><code>fault</code> table</td>
+<td>Already well specified (<code>FaultData</code>)</td>
+</tr>
+<tr>
+<td><code>ReservoirData.grid</code> (dimensions only)</td>
+<td><code>grid</code> + <code>grid_property</code></td>
+<td><strong>The critical change</strong></td>
+</tr>
+<tr>
+<td><code>.tphd</code> project files</td>
+<td><code>reservoir</code> + tables</td>
+<td>⚠️ <strong>Backward compatibility is not optional</strong> — see §7</td>
+</tr>
+<tr>
+<td><code>core/data_models.py</code> dataclasses</td>
+<td>Typed Rust structs + DB schema</td>
+<td><strong>Python dataclasses become read models / validation shims</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-numeric-controls-currently-absent-entirely">6.3 Numeric controls — currently absent entirely<a class="headerlink" href="#63-numeric-controls-currently-absent-entirely" title="Permanent link">&para;</a></h3>
+<p>Needs its own table, because there is <strong>nothing</strong> in the value pool for it:</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nonlinear solve</td>
+<td>Newton max iterations, Jacobian convergence tolerance, line-search max steps, damping factor min</td>
+</tr>
+<tr>
+<td><strong>Linear algebra</strong></td>
+<td>Preconditioner, drop tolerance, fill-reducing ordering, Krylov restart — <strong>CONF-14</strong></td>
+</tr>
+<tr>
+<td>Timestep</td>
+<td>initial <span class="arithmatex">\(\Delta t\)</span>, min, max, growth factor, cut factor</td>
+</tr>
+<tr>
+<td>Thermodynamics</td>
+<td>flash tolerance, Rachford–Rice bracket policy, stability-test sample count</td>
+</tr>
+<tr>
+<td>Conservation</td>
+<td>per-component mass-balance tolerance — <strong>the M4 gate</strong></td>
+</tr>
+<tr>
+<td>Parallelism</td>
+<td>thread count, subdomain decomposition</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-backward-compatibility-non-negotiable">7. Backward compatibility — non-negotiable<a class="headerlink" href="#7-backward-compatibility-non-negotiable" title="Permanent link">&para;</a></h2>
+<p><code>agent_wiki/README.md</code> invariant 13 requires <code>.tphd</code> projects to round-trip, and
+<code>utils/project_file_handler.py</code> uses <strong>shallow</strong> <code>ProjectEncoder</code> encoding — <strong>never</strong> recursive
+<code>dataclasses.asdict()</code>.</p>
+<p>Moving to a database <strong>must not orphan existing projects</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Import path</strong></td>
+<td><code>.tphd</code> → PostgreSQL, a one-time migration with a <strong>recorded source provenance</strong> per reservoir</td>
+</tr>
+<tr>
+<td><strong>Export path</strong></td>
+<td>PostgreSQL → <code>.tphd</code>, so file-based workflows survive</td>
+</tr>
+<tr>
+<td><strong>Versioning</strong></td>
+<td><code>reservoir.schema_version</code> — <code>ReservoirData.schema_version = "2.0"</code> exists today (<code>:447</code>) and is the current marker</td>
+</tr>
+<tr>
+<td><strong>Round-trip test</strong></td>
+<td>⚠️ <code>pytest tests/test_project_save_load.py -v</code> remains a <strong>mandatory gate for every schema change</strong>, database or not</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-sequencing">8. Sequencing<a class="headerlink" href="#8-sequencing" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Work</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Schema design + migrations</td>
+<td>Start with <code>grid</code>, <code>grid_property</code>, <code>fluid</code>, <code>component</code>, <code>binary_interaction</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Run-specification format — <strong>resolves CONF-30b</strong></td>
+<td>⚠️ <strong>Do this in P1.</strong> The engine needs a loadable spec before any gate can run</td>
+</tr>
+<tr>
+<td>3</td>
+<td>PostgreSQL instance, connection layer, test fixtures</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Rust read path: spec → in-memory</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Rust write path: results → <code>run</code>, <code>run_result</code>, <code>run_error</code></td>
+<td><strong>INV-1</strong>, <strong>INV-4</strong></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Vector store: <code>cell_fields</code>, <code>training_pairs</code></td>
+<td>After the engine emits data</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>.tphd</code> import/export</td>
+<td><strong>Invariant 13 gate</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Retire the flat <code>EORParametersDefaults</code> section</td>
+<td>Late — nothing depends on it early</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>Step 2 is P1 work, not P2.</strong> Every M-gate needs a run specification. If the DB migration is
+deferred to P2, the engine must first carry a second, throwaway file format — which is precisely the
+<strong>CONF-30b</strong> mistake the design set already makes.</p>
+</blockquote>
+<hr />
+<h2 id="9-open-decisions">9. Open decisions<a class="headerlink" href="#9-open-decisions" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Managed or self-hosted PostgreSQL?</strong> Affects how run data leaves the machine</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Which vector store</strong> — pgvector (Postgres extension) or a dedicated engine? ⚠️ <code>pgvector</code> keeps one system of record; a dedicated engine gives more capability. Recommendation: <strong>pgvector</strong> until a measured need appears</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>How is <code>training_pairs</code> split</strong> to prevent well-configuration leakage between train and test? (§5.1)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Does the surrogate engine read PostgreSQL directly, or does a read model feed it?</strong> Performance differs sharply — the surrogate must stay fast</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Multi-tenancy / reservoir sharing</strong> — is one reservoir visible to multiple users?</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Retention</strong> — run outputs are large. How long are they kept, and does <code>training_pairs</code> outlive the run?</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Does <code>audit_comp</code> mirror into the DB, or stay markdown-only?</strong> (INV-5; §4.7)</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../output_schema/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Output Schema (APPROVED)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Output Schema (APPROVED)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../separation_doctrine/" class="md-footer__link md-footer__link--next" aria-label="Next: Separation Doctrine + C-7">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Separation Doctrine + C-7
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/fgfalll/WAG_optimisation" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "navigation.indexes", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "toc.follow"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="../../javascripts/status_banner.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
