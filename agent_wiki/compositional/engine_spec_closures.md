@@ -884,6 +884,10 @@ continuous function, no 0° discontinuity, and $S_h(0^\circ)$ moves from $+0.365
 **RMS error 0.0076** on a 0.25–0.73 range. ✅ $\alpha_0(\theta)\approx 0.25 + 0.476\log_4 N$ — to within
 rounding, **$\alpha_0$ is an affine function of $\ln N$, the plane count.**
 
+> 🔴 **SUPERSEDED BY §7h.2a.** The 120° value in the table above is **wrong** ($0.618$, should be $0.648$),
+> two rows are missing, and the fitted coefficient $0.476$ does not survive the source data. Read §7h.2a
+> instead. This section is retained only so the error's origin stays visible.
+
 > 🔴 **$\ln N$ is the wellbore flow-convergence penalty.** Every additional perforation plane converges
 > into the same near-wellbore region, so **more planes ⇒ more convergence ⇒ more skin ⇒ worse.**
 > Monotonically **larger** $\alpha_0$ therefore means **worse**.
@@ -897,10 +901,390 @@ rounding, **$\alpha_0$ is an affine function of $\ln N$, the plane count.**
 > stress. The submitted table makes $0^\circ$ the only *damaging* case and $90^\circ$ the *best* —
 > **the reverse of both** the table's own structure and standard practice.
 >
+> 🔴 **SUPERSEDED BY §7h.2b.3 (C-232).** Both this claim (C-98) and its withdrawal (C-100) were **half
+> right**: $s_H$ and $s_{wb}$ do favour more phasing, and $s_V$ does favour less. ✅ **The net is
+> parameter-dependent**, and the measured optimum moves between 45°, 60° and 90°. Read §7h.2b.3.
+>
 > ⚠️ **This cannot be settled from the material supplied**, because the $\alpha_0$ values are attributed
 > to a specific table in a paper whose DOI **does not resolve** (C-99). **Until then the 0°/90° skin
 > ordering is declared-absent**, not asserted — the engine emits $S_h$ with a
 > `PhasingConventionUnverified` warning rather than a confidence it has not earned.
+
+### 7h.2a ✅ C-226 — the source table obtained; one wrong digit, two missing rows, and an inverted inversion
+
+Table 1 of Karakas & Tariq (1991) was supplied on **09-10-2026**. 🔴 **L-1 closes.** Four things follow,
+and the first three are defects in material I previously certified.
+
+#### 7h.2a.1 ✅ The table, transcribed
+
+*Table 1 — "DEPENDENCY OF $r_{wo}$ ON PHASING".*
+
+| $r_{wo}/(r_{wo}+L_p)$ | Phasing | Phasing angle $\theta$ | No. of planes $N$ |
+|---|---|---|---|
+| **0.250** | 0/360 | $0^\circ$ | 1 |
+| **0.500** | 180 | $180^\circ$ | 2 |
+| **0.648** | 120 | $120^\circ$ | 3 |
+| **0.726** | 90 | $90^\circ$ | 4 |
+| **0.813** | 60 | $60^\circ$ | 6 |
+| **0.860** | 45 | $45^\circ$ | 8 |
+
+**Status:** `VERIFIED` against the supplied source image. ✅ DOI `10.2118/18247-PA` independently
+re-confirmed against `api.crossref.org` on the same date — HTTP 200, title, journal, **6**(01), 73–82,
+1991-02-01, 91 citing references, all matching.
+
+#### 7h.2a.2 🔴 C-227 — my §7h.2 transcribed 0.618 where the source says 0.648
+
+| $\theta$ | $N$ | §7h.2 recorded | **Source** | |
+|---|---|---|---|---|
+| 0° | 1 | 0.250 | 0.250 | ✅ |
+| 180° | 2 | 0.500 | 0.500 | ✅ |
+| **120°** | **3** | **0.618** | **0.648** | 🔴 **WRONG DIGIT** |
+| 90° | 4 | 0.726 | 0.726 | ✅ |
+| **60°** | **6** | **— absent —** | **0.813** | 🔴 **ROW MISSING** |
+| **45°** | **8** | **— absent —** | **0.860** | 🔴 **ROW MISSING** |
+
+Three rows right, one digit wrong, two rows missing. 🔴 **The error is in the digit a reader is least able to
+suspect** — $0.618$ is exactly as plausible a number as $0.648$, and the *fit* was good enough
+(RMS 0.0076) that the bad row looked like ordinary scatter rather than an error.
+
+> 📌 **The standing lesson, now with a second instance.** The first was **C-116**: I searched 129 PDFs and
+> found nothing, then recorded the table from the submission text rather than marking it absent. The second
+> is here: I had a table in hand that *looked* authoritative, and never transcribed it row-by-row against
+> the source. 🔴 **A table quoted in a submission is a claim about a table, not a table.** Where a numeric
+> table enters a constitutive path, the correction log records **row count and every row**, and a `#[cfg(test)]`
+> test asserts the row count — so a dropped row fails the build instead of passing review.
+
+#### 7h.2a.3 🔴 C-228 — the fitted coefficient 0.476 does not survive the source data
+
+§7h.2 published $\alpha_0\approx0.250+0.476\log_4N$ as a measured relation. Re-fitted on all **six** source rows:
+
+| Fit | Coefficients | RMS |
+|---|---|---|
+| §7h.2 — 4 rows, incl. the bad digit | $0.2536 + 0.4709\log_4N$ | 0.0073 |
+| **Source — 6 rows, all correct** | $\mathbf{0.2843 + 0.4113\log_4N}$ | **0.0298** |
+
+🔴 **The intercept moves $+0.0343$ and the slope moves $-0.0647$; RMS degrades 3.9×.** ✅ **C-100's
+statement that "my measurement stands" is now withdrawn** — the *direction* it preserved survives, the
+*number* does not.
+
+🔴 **And C-102's proposed replacement is also wrong**, though less badly:
+
+| $\theta$ | $N$ | Table | C-102: $0.250+0.476\log_4(360/\theta)$ | error |
+|---|---|---|---|---|
+| 0° | 1 | 0.250 | **undefined** — $360/0$ | 🔴 **NaN generator** |
+| 180° | 2 | 0.500 | 0.488 | −0.012 |
+| 120° | 3 | 0.648 | 0.627 | −0.021 |
+| 90° | 4 | 0.726 | 0.726 | +0.000 |
+| 60° | 6 | 0.813 | 0.865 | +0.052 |
+| 45° | 8 | 0.860 | **0.964** | 🔴 **+0.104** |
+
+It reproduced only the rows it was fitted on, **overshoots by 0.104 at 45°**, and remains **undefined at
+$0^\circ$** — the very NaN-generation defect C-102 was written to close. 🔴 **C-102 is REOPENED.**
+
+✅ **The disposition that survives: use the six tabulated values exactly.** Measured justification — the
+table is finite-element output, as the abstract states (*"pseudoskins obtained by accurate finite-element
+simulations"*), so **no closed form should be expected**. Successive ratios of $(1-\alpha_0)$ are
+$1.500,\ 1.420,\ 1.285,\ 1.465,\ 1.336$ — **not geometric, not a power law**. Interpolation between the six
+angles is permitted **only if** the tabulated angles return their exact values and the fit is labelled
+interpolation-only with its own measured RMS recorded in-code.
+
+#### 7h.2a.4 🔴 C-229 — the engine's expression is not the inversion of the tabulated quantity
+
+🔴 **This is the substantive defect, and it survives all the numerical corrections above.**
+
+The tabulated quantity is the **ratio** $r_{wo}/(r_{wo}+L_p)$. Its inversion is:
+
+$$r_{wo} \;=\; \frac{\alpha_0\,L_p}{1-\alpha_0}$$
+
+The submitted — and currently specified — expression is a **multiplication**:
+$r'_w=\alpha_0\,(r_w+L_p)$.
+
+🔴 **These are not the same function, and the difference is unbounded.** Measured with $r_w=0.108$ m,
+$L_p=0.300$ m:
+
+| $\theta$ | $N$ | $\alpha_0$ | Spec: $\alpha_0(r_w{+}L_p)$ | Source: $\alpha_0L_p/(1{-}\alpha_0)$ | ratio |
+|---|---|---|---|---|---|
+| 0° | 1 | 0.250 | 0.1020 | 0.1000 | 0.98 |
+| 180° | 2 | 0.500 | 0.2040 | 0.3000 | 1.47 |
+| 120° | 3 | 0.648 | 0.2644 | 0.5523 | 2.09 |
+| 90° | 4 | 0.726 | 0.2962 | 0.7949 | 2.68 |
+| 60° | 6 | 0.813 | 0.3317 | 1.3043 | 3.93 |
+| 45° | 8 | 0.860 | 0.3509 | **1.8429** | **5.25** |
+
+🔴 **The specified form saturates at $r_w+L_p=0.408$ m.** The table requires **1.843 m** at $45^\circ$ —
+**4.5× beyond the ceiling the expression can ever reach.** For every phasing beyond $\sim90^\circ$ the engine
+is pinned near saturation while the physics keeps growing.
+
+> 🔴 **$r_{wo}$ is an *effective* radius and is not bounded by the physical wellbore radius $r_w$.** That is
+> the whole content of the parameter: it stands for the inflow area a set of perforations presents, which
+> for eight planes is larger than the casing bore. ✅ **Multiplying by $(r_w+L_p)$ encodes the opposite
+> assumption** — that the effective radius is a fixed fraction of a geometric scale — **and no choice of
+> $\alpha_0$ table can rescue it.** This is the **same class** as the factor-3/$\sqrt3$ inversions already
+> logged (C-161, C-164, C-205, C-214, C-217): 🔴 **a correct table behind a wrong algebra.**
+
+**Required change.** Replace the multiplication with the inversion, and treat $r_{wo}$ as an unbounded
+effective radius. Consequences that must be checked, not assumed:
+
+| | Spec as written | After inversion |
+|---|---|---|
+| $S_h(0^\circ)$ | $+0.365$ → $+0.057$ | $+0.077$ |
+| $S_h(45^\circ)$ | ≈ $-0.60$ (saturated) | $-2.837$ |
+| $S_h$ span | ~0.66 | **~2.91** |
+
+⚠️ **The skin span quadruples.** That is a large change to well-productivity output and it must not be
+adopted silently — 🔴 but the alternative is to retain a formula that provably cannot represent its own
+source table.
+
+#### 7h.2a.5 ✅ The direction question is closed, and it confirms C-100
+
+§7h.2/C-98 claimed larger $\alpha_0$ meant **worse**. I withdrew that as **C-100**; ✅ **the source table
+independently confirms the withdrawal.** Derived, not asserted:
+
+1. The table is titled *"DEPENDENCY OF $r_{wo}$ ON PHASING"* — $r_{wo}$ is an **effective radius**.
+2. $r_{wo}/(r_{wo}+L_p)$ is **monotone increasing** in $r_{wo}>0$, so ranking by $\alpha_0$ ranks by $r_{wo}$.
+3. ✅ **More planes ⇒ larger $r_{wo}$.** Measured $r_{wo}/L_p$: $0.333\to1.000\to1.841\to2.650\to4.348\to6.143$
+   for $N=1\to2\to3\to4\to6\to8$ — **strictly increasing, 18× over the table**.
+4. ✅ **Larger $r_{wo}$ ⇒ smaller $S_h$** in $S_h=\ln(r_w/r'_w)$ — measured $+0.077\to-2.837$, monotone.
+
+**The paper's abstract says the same thing in its own words:** *"Results indicate the importance of angular
+phasing, in addition to perforation penetration, in **overcoming** the effects of formation damage on well
+productivity."* ✅ **Phasing helps.** C-98's reading was wrong; C-100 was right; the table proves it.
+
+⚠️ **What remains true from C-98** — and is unaffected — is that ✅ **field practice often prefers $0^\circ$ /
+$180^\circ$ alignment with $\sigma_{H,\max}$.** ✅ **But for a different mechanism**: permeability anisotropy
+and stress alignment, both **outside** the isotropic hydraulics $\alpha_0$ encodes. 🔴 **That mechanism is
+exactly what C-101 showed the anisotropy transform cannot deliver** — $\theta'=\arctan(\sqrt{k_x/k_y}\tan\theta)$
+has $0^\circ$ and $90^\circ$ as fixed points, so it leaves both anchors untouched. **C-101 stays open.**
+
+> 📌 **Register effect.** ✅ **L-1 closed. CONF-31's $\alpha_0$ half is closed** with tabulated values.
+> ⚠️ **CONF-31 stays open** — the $S_v$ ($a_1{=}-2.025$, $a_2{=}0.0943$, $b_1{=}3.0373$, $b_2{=}1.8115$) and
+> $S_{wb}$ ($c_1{=}0.0066$, $c_2{=}5.32$) coefficients are **not** in Table 1 and remain `SOURCE_PENDING`
+> → **L-8**. **C-102 reopened.** 🔴 **C-229 is new and blocking** for the perforation-skin module.
+
+### 7h.2b ✅🔴 C-230 — full paper obtained: C-229 WITHDRAWN, the tables are complete, and the direction dispute is resolved
+
+The **complete 10-page paper** was obtained on **09-10-2026**. It contains **five** tables and **twenty-four**
+numbered equations. 🔴 **C-229 is withdrawn** — I misread a subscript and then invented an inversion that
+the paper does not contain. ✅ **Everything else in §7h.2a stands, and L-8 closes.**
+
+#### 7h.2b.1 🔴 C-230 — C-229 WITHDRAWN. Table 1's column is $r_{we}/(r_w+L_p)$, which *is* $\alpha_\theta$
+
+| | what I wrote | what the paper says |
+|---|---|---|
+| Table 1 column | $r_{wo}/(r_{wo}+L_p)$ | $\boxed{r_{we}/(r_w+L_p)}$ |
+| the subscript | `wo` | **`we`** — *effective well* radius |
+| the denominator | $r_{wo}+L_p$ | **$r_w+L_p$** |
+
+And **Eq. 7** (p. 75) is, verbatim:
+
+$$r_{we}(\theta)=\begin{cases}\tfrac14 L_p & \theta=0^\circ\\[2pt] \alpha_\theta\,(r_w+L_p) & \text{otherwise}\end{cases} \tag{7}$$
+
+✅ **The specified expression $r'_w=\alpha_0(r_w+L_p)$ is Eq. 7, exactly.** ✅ **The paper states it in
+words on p. 76:** *"the effective well radius (as shown in Table 1) logarithmically approaches its maximum
+value of $(r_w+L_p)$."* ✅ **So $\alpha_\theta=r_{we}/(r_w+L_p)\le0.860<1$ and $r_{we}<r_w+L_p$ — bounded,
+by construction, and correctly so.**
+
+> 🔴 **C-229 was a transcription error promoted to a physics claim.** I read `r_we` as `r_wo` from a
+> low-resolution crop, treated the quantity as a *ratio of an unbounded radius to itself*, and concluded
+> the engine "saturates". ✅ **It does not saturate — that is what the tabulated $\alpha_\theta<1$ is for.**
+> ⚠️ **The specific error:** having failed to read a two-letter subscript, I invented an algebra that no
+> source contained, and my "measured" 5.25× divergence was an artefact of that invention.
+> 📌 **Standing rule: a correction that changes the _structure_ of an equation — inverting it, bounding it,
+> rescaling it — may only be written after the equation has been read from the source, not inferred from a
+> tabulated quantity.**
+
+**Evidence that Table 1 is $\alpha_\theta$, independent of the header.** ✅ **Table 3 closes it.** Solving
+$s_p=0$ with **Eq. 6 + Eq. 7 + Eq. 9** and comparing against Table 3's $L_{p\min}/r_w$:
+
+| $\theta$ | Table 3 | $s_H$ (Eq. 6) | $s_{wb}$ (Eq. 9) | $s_p$ | residual |
+|---|---|---|---|---|---|
+| 180° | 1.37 | −0.1697 | 0.1760 | **+0.0062** | ✅ |
+| 120° | 0.77 | −0.1371 | 0.1333 | **−0.0038** | ✅ |
+| 90° | 0.53 | −0.1051 | 0.1061 | **+0.0011** | ✅ |
+| 60° | 0.33 | −0.0782 | 0.0849 | **+0.0068** | ✅ |
+| 45° | 0.23 | −0.0562 | 0.0584 | **+0.0023** | ✅ |
+
+🔴 **Three tables I transcribed independently agree to $\lvert s_p\rvert\le0.0068$ across five phasings.**
+✅ That is the acceptance test the three-part standard demands — and it is the test **C-227 lacked**.
+
+#### 7h.2b.2 ✅ C-231 — L-8 CLOSES. Tables 2, 3, 4 and 5 are obtained; every outstanding coefficient exists
+
+#### TABLE 2 — variables $c_1$ and $c_2$ in Eq. 9
+
+| Perforation phasing (degrees) | $c_1$ | $c_2$ |
+|---|---|---|
+| 0 (360) | $1.6\times10^{-1}$ | 2.675 |
+| 180 | $2.6\times10^{-2}$ | 4.532 |
+| **120** | **$6.6\times10^{-3}$** | **5.320** |
+| 90 | $1.9\times10^{-3}$ | 6.155 |
+| 60 | $3.0\times10^{-4}$ | 7.509 |
+| 45 | $4.6\times10^{-5}$ | 8.791 |
+
+✅ **The spec's "$c_1=0.0066$, $c_2=5.32$" is the 120° row — real, correctly transcribed, but it silently
+pinned one phasing as though it were universal.** 🔴 **All six rows are required.**
+
+#### TABLE 3 — minimum perforation length for $s_p\le0$ as a function of phasing
+
+| Phasing (degrees) | $L_{p\min}/r_w$ |
+|---|---|
+| 0 (360) | 4.62 |
+| 180 | 1.37 |
+| 120 | 0.77 |
+| 90 | 0.53 |
+| 60 | 0.33 |
+| 45 | 0.23 |
+
+#### TABLE 4 — vertical-skin correlation coefficients
+
+| Phasing | $a_1$ | $a_2$ | $b_1$ | $b_2$ |
+|---|---|---|---|---|
+| 0 (360) | −2.091 | 0.0453 | 5.1313 | 1.8672 |
+| **180** | **−2.025** | **0.0943** | **3.0373** | **1.8115** |
+| 120 | −2.018 | 0.0634 | 1.6136 | 1.7770 |
+| 90 | −1.905 | 0.1038 | 1.5674 | 1.6935 |
+| 60 | −1.898 | 0.1023 | 1.3654 | 1.6490 |
+| 45 | −1.788 | 0.2398 | 1.1915 | 1.6392 |
+
+✅ **The spec's "$a_1=-2.025$, $a_2=0.0943$, $b_1=3.0373$, $b_2=1.8115$" is the 180° row — again real,
+again wrongly universal.** 🔴 **Same defect as Table 2, same remedy.**
+
+#### TABLE 5 — skin caused by boundary effect, 180° phasing
+
+| $r_e/(r_w+L_p)$ | 18.0 | 10.0 | 2.0 | 1.5 | 1.2 |
+|---|---|---|---|---|---|
+| $s_x$ | 0.000 | −0.001 | −0.002 | −0.024 | −0.085 |
+
+✅ *"generally negligible for $r_d\ge1.5(r_w+L_p)$."*
+
+> ✅ **Every item L-1 and L-8 were waiting on now exists in the paper.** ⚠️ **What does not exist is any
+> closed form.** Tables 1–5 are all finite-element output — the abstract says so explicitly:
+> *"pseudoskins obtained by accurate finite-element simulations."* ✅ **Each must be used as a table.**
+
+#### 7h.2b.3 🔴 C-232 — the direction dispute is resolved, and **both** C-98 and C-100 were half right
+
+This is the substantive result. 🔴 **The skin has three components and they do not all point the same way.**
+
+| Component | Source | As phasing goes 0° → 45° | Prefers |
+|---|---|---|---|
+| $s_H=\ln(r_w/r_{we})$ | Eq. 6 | **falls** (measured +1.792 → −0.360) | **more** phasing |
+| $s_{wb}=c_1e^{c_2r_{wD}}$ | Eqs. 9, Tab. 2 | **falls** (0.797 → 0.009) | **more** phasing |
+| $s_V=10^ah_D^{b-1}r_{pD}^b$ | Eqs. 12–14, Tab. 4 | **rises** (0.024 → 0.324) | **less** phasing |
+| $s_p=s_H+s_V+s_{wb}$ | Eq. 16 | **no fixed direction** | **parameter-dependent** |
+
+✅ Measured net optimum, varying the dimensionless groups:
+
+| $h_D$ | $r_{pD}$ | $r_{wD}$ | $\arg\min_\theta s_p$ |
+|---|---|---|---|
+| 0.05 | 0.20 | 0.60 | **45°** |
+| 0.50 | 0.10 | 0.35 | **90°** |
+| 0.50 | 0.10 | 0.60 | **60°** |
+| 2.00 | 0.30 | 0.60 | **60°** |
+
+✅ **The optimum moves. It is not monotone in phasing, and there is no single best phasing.**
+
+> ✅ **This is what the paper says in prose** — p. 76: *"At plane-flow conditions, well productivity will
+> continue to improve with smaller phasings"* (the $s_V$ term), against p. 77: *"changing (or reducing) the
+> phasings from 0 to 180° would more than double the effective perforated penetration"* (the $s_H$ term).
+> 🔴 **C-98 read only the first. C-100 read only the second. Each was wrong for the other term.**
+> 📌 **Ruled: phasing is an optimisable input, never a rule.** The engine computes all three components and
+> reports the net; 🔴 **it must not encode a preferred phasing, and must not optimise $\theta$ analytically —
+> the tables give six discrete points, so an optimum between them requires the interpolation decision
+> C-102 left open.**
+
+#### 7h.2b.4 🔴 C-233 — C-91 is VINDICATED, and the 0° ambiguity is unresolvable from the paper
+
+Eq. 7's first branch gives $r_{we}=L_p/4$; Table 1's 0(360) row gives $0.250(r_w+L_p)$.
+✅ **They are equal only if $r_w=0$** — measured difference **4.0 %** at the paper's own $r_w$/$L_p$.
+
+🔴 **Table 1 tabulates a 0(360) value that Eq. 7 discards at $0^\circ$,** and the paper never reconciles
+them. ✅ **Table 3's 0° row discriminates in favour of branch 1:** at $L_p/r_w=4.62$, $s_p=+0.113$ with
+branch 1 against $s_p=-0.083$ with branch 2, and the other five phasings all land within $0.007$ of zero.
+✅ **Branch 1 is the governing one at $0^\circ$** — but the margin is an inference from Table 3, not a
+statement by the authors. ⚠️ **Recorded as `AMBIGUOUS_SOURCE`, resolved by inference, and flagged at runtime.**
+
+#### 7h.2b.5 🔴 C-234 — Eq. 9's stated domain is violated by the paper's own worked example
+
+✅ Eq. 9 is stated valid for $0.30\le r_{wD}\le0.90$. ✅ Eq. 5 gives $r_{wD}=r_w/(L_p+r_w)$, and the
+paper's worked case is $r_w=0.4$ in, $L_p=10$ in $\Rightarrow$ $\mathbf{r_{wD}=0.0386}$ — 🔴 **below the
+range by a factor of 8.** ✅ Table 3's 0° row sits at $r_{wD}=0.178$, 🔴 **also below the range.**
+
+> 🔴 **So $s_{wb}$ cannot be evaluated where the 0° case lives.** Measured: Table 3's 0° residual
+> ($+0.113$) is **17× the worst non-zero residual** ($0.007$) — consistent with the 0° row being FE-derived
+> rather than correlation-derived, exactly as the authors state (*"for 0 (or 360) and 180° phasings, for which
+> Prats' vertical fracture solutions are directly applicable"*).
+> 📌 **Ruled: outside $0.30\le r_{wD}\le0.90$, $s_{wb}$ is `SOURCE_PENDING` and the runtime emits
+> `ValidityWarning::WellboreSkinOutsideCorrelationDomain`. It must not be extrapolated, and it must not be
+> clamped** — a clamp would silently fabricate a skin. ✅ **The governing §7s.6 rule already covers this.**
+
+#### 7h.2b.6 🔴 C-235 — anisotropy has **no** phasing transform; C-101's mechanism does not exist in the paper
+
+✅ **The paper never rotates, rescales or otherwise transforms the phasing angle.** Anisotropy enters
+**only** through the two dimensionless groups:
+
+$$h_D=\frac{h}{L_p}\sqrt{\frac{k_H}{k_V}}\quad\text{(Eq. 3)} \qquad r_{pD}=\frac{r_p}{2h}\left(1+\sqrt{\frac{k_V}{k_H}}\right)\quad\text{(Eq. 4 / Eq. 18)}$$
+
+✅ p. 78: *"In anisotropic formations, the dimensionless spacing is modified by the square root of the
+anisotropy ratio… the flow into perforations in the vertical plane is elliptical in anisotropic formations."*
+
+🔴 **The submitted $\theta'=\arctan(\sqrt{k_x/k_y}\tan\theta)$ has no counterpart anywhere in the paper.**
+✅ **C-101's criticism is upheld and the remedy is now available:** ✅ **delete the transform, and apply
+anisotropy through $h_D$ and $r_{pD}$** — which is the mechanism the source actually uses.
+⚠️ Note $k_H/k_V$ and $k_V/k_H$ both appear, 🔴 **in different equations and with opposite roles**; the
+substitution must be equation-by-equation, never a blanket "anisotropy factor".
+
+#### 7h.2b.7 🔴 C-236 — Eq. 21: the total skin is **not** a sum, and $s_p$ is scaled by $k/k_d$
+
+🔴 **Eq. 2** states $s_t=s_p+s_{dp}$. 🔴 **Eq. 21** states $s_t=s_{do}+\tfrac{k}{k_d}(s_p+s_x)$ with
+$s_{do}=(\tfrac{k}{k_d}-1)\ln(r_d/r_w)$ (Eq. 19). ✅ **They are different assemblies**, and the operative
+one for perforations terminating inside the damaged zone is Eq. 21.
+
+⚠️ **Measured consequence at $k/k_d=10$:** Eq. 2 gives $s_t=s_p+s_{dp}$; Eq. 21 gives $s_t=s_{do}+10s_p$.
+🔴 **A skin of −2.0 becomes −20.** ✅ For perforations *extending beyond* the damaged zone the paper instead
+prescribes $L'_p=L_p-[1-(k_d/k)]L_d$ (Eq. 22) and $r'_w=r_w+[1-(k_d/k)]L_d$ (Eq. 23), noting that
+$r_w+L_p=r'_w+L'_p$ is conserved ✅ — 🔴 **so $\alpha_\theta$, which is defined on $r_w+L_p$, is unchanged by
+the damage substitution, and only $r_{wD}$ changes.** 🔴 That coupling is easy to miss and changes $s_{wb}$.
+
+#### 7h.2b.8 ✅ C-237 — the canonical 7-step procedure, adopted verbatim as the module's control flow
+
+✅ **p. 80 gives an ordered procedure.** Adopting it as the module's specification removes any freedom in
+assembly order, which is the defect class behind C-101 and C-229.
+
+| Step | Compute | Equations | Tables | Stated domain |
+|---|---|---|---|---|
+| 1 | $s_H$ | 6, 7 | **1** | — |
+| 2 | $s_{wb}$ | 9 | **2** | $0.30\le r_{wD}\le0.90$ |
+| 3 | $s_V$ | 12, 13, 14 | **4** | $h_D\le10$, $r_{pD}\ge0.01$ |
+| 4 | $s_p=s_H+s_V+s_{wb}$ | 16 | — | — |
+| 5 | $s_c$; $s'_p=s_p+s_c$ | 17 | — | — |
+| 6 | $s_t$ (perfs in damaged zone) | 19, 20, 21 | **5** | — |
+| 6′ | $L'_p$, $r'_w$ (perfs beyond) | 22, 23 | — | limiting cases only |
+| 7 | anisotropy: $r_{pe}$ | 18 | — | — |
+
+✅ **Eq. 24** closes the chain: $\dfrac{F_p}{q_o}=\dfrac{\ln(r_e/r_w)}{\ln(r_e/r_w)+s_t}$ — ✅ **the engine's
+perforation productivity ratio, and the quantity a benchmark must check.**
+
+⚠️ **Two alternative $s_V$ routes exist and the spec must pick one.** ✅ Eq. 12 (this paper) and ✅ **Eq. 15**
+(after Kuchuk et al. 13, p. 77): $s_V=-h_D\ln(2\pi r_{pD})-\tfrac{1}{12}h_D^2$, stated for $h_D\le5$, obtained
+by the horizontal-well analogy. 🔴 **They are not the same functional form** — Eq. 12 is a power law in
+$h_D$, Eq. 15 is linear-plus-quadratic — yet the paper overlays them on log-log and calls the agreement
+*"satisfactory"*. 🔴 **The engine must choose one, record the choice, and not blend them.**
+
+#### 7h.2b.9 Register effect
+
+| | |
+|---|---|
+| ✅ **Closed** | **L-1** (Tables 1) · **L-8** (Tables 2, 3, 4, 5) · **CONF-31's coefficient defect** — every named correlation now has published coefficients |
+| 🔴 **Withdrawn** | **C-229** (C-230) · and with it the "$S_h$ span 0.66 → 2.91" consequence I reported an hour ago — **it was an artefact** |
+| ✅ **Upheld** | **C-91** (C-233) · **C-227** (digit and rows confirmed) · **C-228** (fit confirmed invalid) · **C-101** (C-235, remedy now available) |
+| 🔴 **Resolved as parameter-dependent** | **C-98 / C-100** (C-232) — **both were half right** |
+| ⚠️ **Still open** | **C-102** (no closed form for $\alpha_\theta$; interpolation undefined) · the $r_{wD}$ gap (C-234) · the $0^\circ$ ambiguity (C-233) · **Eq. 15 vs Eq. 12 choice** |
+
+> 📌 **The register gained four tables and lost a claim.** 🔴 **The net lesson is not "I found the paper" —
+> it is that two of my five findings about this table were wrong in *direction*, and I only found out because
+> three independent tables were finally available to cross-check each other.** ⚠️ **Tables 1, 2 and 3 form
+> a closed verification triangle — which is why the residuals in §7h.2b.1 are the acceptance evidence, and
+> why C-227 would have been caught immediately had I looked for that triangle instead of fitting four rows
+> I had transcribed from memory.**
 
 ### 7h.3 🔴🔴 C-99 — C-96 re-verification failed; a claim was relabelled, not corrected
 

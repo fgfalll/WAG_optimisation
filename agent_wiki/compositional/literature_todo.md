@@ -36,18 +36,25 @@ unobtainable). Supersedes nothing; the authority for provenance remains
 
 | Field | Value |
 |---|---|
-| **Status** | 🔴 **NOT OBTAINABLE LOCALLY.** A search for `karakas` / `tarik` across **all pages of all 129 PDFs** in `D:\RAG` returns **zero hits** (**C-116**) |
-| **DOI (verified, §4)** | `10.2118/18247-PA` |
+| **Status** | ✅ **CLOSED 09-10-2026 (C-226)** — Table 1 obtained and transcribed. 🔴 **It exposed a transcription error in my own §7h.2 and invalidated the fitted coefficient.** See §7h.2a |
+| **DOI (verified, §4)** | `10.2118/18247-PA` — ✅ **re-verified against `api.crossref.org` 09-10-2026**: HTTP 200, title, journal, **6**(01), 73–82, 1991-02-01 all match. 91 citing references. |
 | **Confirmed metadata** | Karakas, M. & **Tariq**, S. M. (1991), *Semianalytical Productivity Models for Perforated Completions*, SPE Production Engineering **6**(01), 73–82 |
-| **What is needed** | Test 3 only — **Table 1**, the wellbore effect factor $\alpha_0$ |
-| **Values in dispute** | $\alpha_0$: **0.250** (0°/360°), **0.500** (180°), **0.618** (120°), **0.726** (90°) |
-| **Also needed** | The $S_v$ correlation coefficients $a_1{=}-2.025$, $a_2{=}0.0943$, $b_1{=}3.0373$, $b_2{=}1.8115$; the $S_{wb}$ constants $c_1{=}0.0066$, $c_2{=}5.32$; the $S_{cz}$ form; and the **sign convention** for $S_h$ |
-| **Why it blocks** | **CONF-31.** Every $\alpha_0$-dependent result — the whole perforation-skin module |
-| **Interim rule** | `SOURCE_PENDING`; runtime emits `ValidityWarning::CorrelationProvenanceUnverified`. ⚠️ **M7c cannot be gated on it** |
-| **Search terms** | `Karakas Tariq 1991 semianalytical productivity models perforated completions SPE-18247` · `perforation skin factor horizontal well phasing alpha_0 table` |
+| **What was needed** | Test 3 only — **Table 1**, *"DEPENDENCY OF $r_{wo}$ ON PHASING"* |
+| **Values obtained** | $r_{wo}/(r_{wo}+L_p)$, **all six rows** — see the table in [`engine_spec_closures.md`](engine_spec_closures.md) §7h.2a |
+| **🔴 Was wrong** | My §7h.2 recorded $\alpha_0(120^\circ)=0.618$. 🔴 **The source says $0.648$.** Two rows ($60^\circ$/6 and $45^\circ$/8 planes) were **missing entirely** |
+| **Direction** | ✅ **Settled by the table's own structure.** $r_{wo}$ is an *effective radius*; the ratio is monotone increasing in it, so **more planes ⇒ larger $r_{wo}$ ⇒ lower skin ⇒ better.** Consistent with the abstract: *"Results indicate the importance of angular phasing … in overcoming the effects of formation damage"* |
+| **Also needed** | ✅ **OBTAINED (C-231).** Tables 2, 3, 4 and 5 — all six phasings for each. ✅ See §7h.2b.2 |
+| **Closed defect** | ✅ **CONF-31's coefficient defect is closed** — every named correlation has published coefficients. ⚠️ **CONF-31 stays open** on: 🔴 **C-102** no closed form for $\alpha_\theta$, ⚠️ **C-233** the $0^\circ$ ambiguity, ⚠️ **C-234** the $r_{wD}$ gap outside Eq. 9's domain |
 
-> 🔴 **This is the single highest-value outstanding item.** 46 corrections have been produced; CONF-31 is
-> the last one standing, and it cannot close without this table.
+> 📌 **How this closed.** The owner supplied the table image after locating the paper. The lesson is the one
+> recorded at §7h.2a: 🔴 **a table transcribed without the source in hand is a table of remembered values.**
+> My four-row version had three rows right and one digit wrong — 🔴 **and the error was in the digit that a
+> reader is least able to check**, since $0.618$ looks exactly as plausible as $0.648$.
+
+> ✅ **Nothing about Karakas & Tariq remains unobtained.** 🔴 **What remains is a set of _decisions_, not
+> sources** — see §7h.2b: the $0^\circ$ ambiguity (C-233), the $r_{wD}$ domain gap (C-234), whether
+> $\alpha_\theta$ gets a closed form or stays tabulated (C-102), and whether $S_V$ comes from Eq. 12 or
+> Eq. 15 (C-237). ⚠️ **M7c must not be gated on any of them.**
 
 ---
 
@@ -116,7 +123,8 @@ Each is a **named correlation with no coefficient**, the original CONF-31 patter
 | **$K_{IC}$** | Fracture propagation | 🔴 named in a summary, **absent from every equation** (**C-82**) |
 | **$A_s$** | Hydrate specific surface area | Gibbs' theorem requires it to **shrink** as hydrate decomposes (**C-75**) |
 | **$K$, $q_{inj}$** | CONF-15 $t_{bt}$ | See [`../thmc/conflict_and_gap_register.md`](../thmc/conflict_and_gap_register.md) |
-| **Glaso, Joback–Reid, PPR78, Huron–Vidal, QSPR, Karakas–Tarik** | **CONF-31** | Named by the design set, **no coefficient given anywhere** |
+| **Glaso, Joback–Reid, PPR78, Huron–Vidal, QSPR** | **CONF-31** | Named by the design set, **no coefficient given anywhere** |
+| ~~Karakas–Tarik~~ | — | ✅ **RESOLVED 09-10-2026 (C-231).** ✅ Tables 1–5 obtained: $c_1,c_2$ (Tab. 2), $L_{p\min}/r_w$ (Tab. 3), $a_1,a_2,b_1,b_2$ (Tab. 4), $s_x$ (Tab. 5). 🔴 **These are finite-element tables, not closed forms** — see §7h.2b.2 |
 
 ---
 

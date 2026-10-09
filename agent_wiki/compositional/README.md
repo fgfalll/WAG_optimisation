@@ -213,9 +213,9 @@ checked against them. Any file in `tests/scientific/` that imports `core.data_mo
 
 | Page | Purpose |
 |---|---|
-| 📚 [`literature_todo.md`](literature_todo.md) | **L-1…L-9** — outstanding research, each with the 3-part acceptance standard and a search protocol. ⚠️ **L-1 (Karakas & Tariq α₀) is unobtainable** — do not gate work on it |
+| 📚 [`literature_todo.md`](literature_todo.md) | **L-1…L-9** — outstanding research, each with the 3-part acceptance standard and a search protocol. ✅ **L-1 (Karakas & Tariq α₀ table) CLOSED 09-10-2026** — 🔴 **but it exposed C-227…C-229; the perforation-skin expression is still wrong.** ⚠️ **L-8 ($S_v$/$S_{wb}$) is unobtainable** — do not gate work on it |
 | 🔴 [`../thmc/conflict_and_gap_register.md`](../thmc/conflict_and_gap_register.md) | **68 conflicts** — the authoritative status. **24 closed · 0 blocking reds · 26 open** |
-| 🔴 [`spec_corrections_log.md`](spec_corrections_log.md) | **The authority rule** — `3D_THMC_docs` are immutable, the wiki carries the corrected spec. **C-1…C-225 across 34 rulings**, including **three retractions of my own claims** |
+| 🔴 [`spec_corrections_log.md`](spec_corrections_log.md) | **The authority rule** — `3D_THMC_docs` are immutable, the wiki carries the corrected spec. **C-1…C-237 across 38 rulings**, including **three retractions of my own claims** |
 | [`spec_defects.md`](spec_defects.md) | `CONF-*` items to fix **in the spec**, indexed by milestone. **M1 references verified** |
 | [`data_model_gap.md`](data_model_gap.md) | Evidence that `core/data_models.py` and `config/base_config.json` cannot express a full simulation |
 | [`python_attempt_postmortem.md`](python_attempt_postmortem.md) | 🔴 **Why the first attempt failed** — six numerical-method root causes, all language-independent. **Read before M2** |
@@ -243,7 +243,7 @@ Audit of this section for internal contradiction and for anything that would let
 | **A-1** | 🔴 [`build_plan.md`](build_plan.md) §M7+ read **"Deferred, each a separate decision"**, contradicting §M0.2b (*"the earlier deferral is **void**"*), [`vision_and_phases.md`](vision_and_phases.md) §5.2 #10, and [`output_schema.md`](output_schema.md) §9. An agent reading M0→M6 then reaching §M7+ would treat **most of the approved engine as out of scope** | **Critical** | ✅ Rewritten as **§M7 — IN SCOPE**, with M7a–M7h tabulated, their blocking conflicts listed, and an explicit *do not invent gates* instruction |
 | **A-2** | 🔴 This README's §1.2 listed geochemistry, THMC/Biot, fractures, faults, GPU and adjoint as **"explicitly out of scope"** — the same contradiction, in the **entry-point file** | **Critical** | ✅ Rewritten as §1.2 "Scope of what may be built early", separating **in scope** from **may be started at M1** |
 | **A-3** | 🔴 This README stated **"Total ≈ 8–11 person-months"**, which §M0.2b explicitly voids (*"This is not an 8–11 person-month plan"*) | High | ✅ Replaced: the estimate is now labelled *compositional core only*, and it states plainly that **no defensible total exists today** |
-| **A-4** | ⚠️ This README's page index claimed *"19 corrections + 7 open branches"* — the log is **C-1…C-225 across 34 rulings** | Medium | ✅ Updated, with the register's live state |
+| **A-4** | ⚠️ This README's page index claimed *"19 corrections + 7 open branches"* — the log is **C-1…C-237 across 38 rulings** | Medium | ✅ Updated, with the register's live state |
 | **A-5** | ⚠️ The invariants summary here listed **4** invariants; **INV-5** and **INV-7** were missing. `register_spec.md` (which *owns* INV-5) contains **zero** `INV-` references | Medium | ✅ Full INV-1…INV-7 list restored in both places. ⚠️ The `register_spec.md` gap is **unfixed** — see Q4 |
 | **A-6** | 🔴 [`engine_invariants.md`](engine_invariants.md) had **no index**, and its section order was `§1…§9` then `§7c…§7hh` — so the "Invariant summary" sat at line 337 with **2 500 lines of logically-earlier material after it** | High | ✅ Added **§0 INDEX**, then ✅ **split into four topic files** (§-numbers preserved exactly; all 43 verified to resolve) |
 | **A-7** | 🔴 **Nothing prevented disconnected modules** — no integration gate, no "module must be wired in", no end-to-end test. M1–M4 are independent stacks, each passing its own gate, with **nothing requiring them to work together** | **Critical** | ✅ **M4.5 Integration Slice** + ✅ **C-7 coherence gate** (permanent, never retired) |
@@ -274,6 +274,6 @@ All four questions were answered on 09-10-2026 and are now implemented:
 - **Cross-links**: all resolve across all 25 files.
 - **Encoding**: clean, no mojibake.
 - **Conflict register**: 68 conflicts, 72 index rows, 23 closed, 0 blocking reds.
-- **Corrections log**: `C-1…C-225`, 34 rulings.
+- **Corrections log**: `C-1…C-237`, 38 rulings.
 - **`build_plan.md` M0.1 blocked-on-M7b note**: consistent with `CONF-66`'s state in the register.
 - **§M7 honesty note**: correctly states that all 36 rulings landed on **M7b**, ahead of its milestone.

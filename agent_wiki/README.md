@@ -72,9 +72,9 @@ eliminate modification risk.
 |---|---|
 | [**Conflict & Gap Register**](thmc/conflict_and_gap_register.md) | **68 conflicts** across the 8 design docs — the authoritative status |
 | [**Reservoir Engineer Ruling**](thmc/reservoir_engineer_ruling.md) | The 07-10-2026 adjudication, incl. the CONF-01 retraction |
-| [**Spec Corrections Log**](compositional/spec_corrections_log.md) | **C-1…C-225** across 34 rulings — every correction and retraction |
+| [**Spec Corrections Log**](compositional/spec_corrections_log.md) | **C-1…C-237** across 38 rulings — every correction and retraction |
 | [**Spec Defects**](compositional/spec_defects.md) | `CONF-*` items indexed by milestone |
-| [**📚 Literature TODO**](compositional/literature_todo.md) | **L-1…L-9** — outstanding research, with the acceptance standard |
+| [**📚 Literature TODO**](compositional/literature_todo.md) | **L-1…L-9** — outstanding research, with the acceptance standard. ✅ **L-1, L-7, L-8 closed** — ✅ the full Karakas & Tariq (1991) paper was obtained and **all five tables transcribed**, which closed **CONF-31's coefficient defect** and resolved the phasing dispute as **parameter-dependent** |
 | [**Python Attempt Post-mortem**](compositional/python_attempt_postmortem.md) | Why the first attempt failed — six language-independent causes |
 | [**Data-Model Gap**](compositional/data_model_gap.md) | Why `core/data_models.py` cannot express a full simulation |
 

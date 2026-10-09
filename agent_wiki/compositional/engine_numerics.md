@@ -557,7 +557,7 @@ strictly unconstrained under **INV-7**. ✅ Consistent with owner decision 1 and
 | # | Where | Vanishing quantity used as divisor / comparator |
 |---|---|---|
 | **C-69** | Verma-Pruess clogging | $\phi_0 - \phi_c$ denominator |
-| **C-102** | $\alpha_0$ phasing fit | crosses zero at $\theta = 43.5^\circ$ |
+| **C-102** | $\alpha_0$ phasing fit | crosses zero at $\theta = 43.5^\circ$; 🔴 **also undefined at $0^\circ$ and +0.104 at $45^\circ$ — REOPENED by C-228** |
 | **C-115** | symbol-register range type | `(f64,f64)` cannot express an open bound |
 | **C-134** | adaptive AMG coarsening | tie-break on traversal order / address |
 | **C-143** | Tier A residual normalisation | $\sum_f\lvert\mathbf{F}\rvert + M/\Delta t$ |

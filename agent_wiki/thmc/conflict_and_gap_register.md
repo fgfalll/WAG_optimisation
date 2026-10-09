@@ -840,10 +840,28 @@ Recorded so a future implementation does not discard these.
 | `Tnav manuals\tNavWellDesignerGuideEnglish.pdf` (433 pp) | Well design, skin, IPR | **CONF-68**, **CONF-15** |
 | `vdocuments.mx_shared-earth-modeling.pdf` (319 pp) | **Fanchi (2002)**, *Shared Earth Modeling*, **Butterworth-Heinemann / Elsevier Science** | ⚠️ A **different Fanchi work** than the one cited for the $r_w$ domain (**C-118**) |
 
-> 🔴 **The one thing the library could NOT supply, and the thing that matters most:** a literal search for
-> `karakas` / `tarik` across **all pages of all 129 PDFs** returns **zero hits**. The **Karakas & Tariq
-> (1991) α₀ table is not obtainable locally**, so **CONF-31's blocker stands** (**C-116**). The α₀ table
-> is `SOURCE_PENDING` and any α₀-dependent result must carry a provenance warning.
+> ✅ **UPDATE 09-10-2026 (C-226 … C-231) — this gap is CLOSED.** The owner obtained the paper, first
+> supplying **Table 1**, then the **full 10-page text**. ✅ DOI `10.2118/18247-PA` re-verified against
+> Crossref. ✅ **Tables 1–5 all transcribed** — $\alpha_\theta$ (Tab. 1, six rows: **0.250** · **0.500** ·
+> **0.648** · **0.726** · **0.813** · **0.860**), $c_1,c_2$ (Tab. 2), $L_{p\min}/r_w$ (Tab. 3),
+> $a_1,a_2,b_1,b_2$ (Tab. 4), $s_x$ (Tab. 5).
+> ✅ **CONF-31's coefficient defect is CLOSED.**
+>
+> 🔴 **What the full text exposed** — recorded in [`engine_spec_closures.md`](../compositional/engine_spec_closures.md)
+> §7h.2a–§7h.2b: 🔴 **C-227** my §7h.2 transcribed **0.618** where the source says **0.648** and dropped two
+> rows; 🔴 **C-228** the fitted coefficient **0.476** does not survive a six-row refit; 🔴🔴 **C-229
+> WITHDRAWN (C-230)** — I misread the subscript $r_{we}$ as $r_{wo}$ and invented an inversion the paper does
+> not contain; ✅ **C-231** all coefficients obtained; ✅🔴 **C-232** the phasing dispute is resolved —
+> $S_H$/$S_{wb}$ favour more phasing and $S_V$ favours less, so the **optimum is parameter-dependent**
+> (measured: 45°, 60° or 90°); ✅ **C-233** the $0^\circ$ branch ambiguity is real (C-91 vindicated);
+> 🔴 **C-234** Eq. 9's domain is violated where the $0^\circ$ case lives; 🔴 **C-235** anisotropy has **no**
+> phasing transform — C-101's mechanism does not exist; 🔴 **C-236** Eq. 21 scales $S_p$ by $k/k_d$.
+> ⚠️ **CONF-31 stays open** on four decisions, not sources: C-102, C-233, C-234, C-237.
+>
+> 📌 **Original finding, retained:** a literal search for `karakas` / `tarik` across **all pages of all 129
+> PDFs** returns **zero hits** (**C-116**). ✅ The table was real and the search was correct — 🔴 **but I
+> then quoted a four-row version of the table from the submission text anyway, and measured a fit to it**
+> (see **C-227**). A table that cannot be sourced must be marked absent.
 >
 > ⚠️ **Two false positives were eliminated rather than reported as support:** `KAPPA DDA book`'s \"tariq\"
 > is **Umair Tariq**, a KAPPA engineer in the acknowledgements; its \"wellbore effect\" means **wellbore
