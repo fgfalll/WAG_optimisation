@@ -1,12 +1,38 @@
 # CO₂ EOR Optimizer — Technical Wiki
 
-Welcome to the **CO₂ EOR Optimizer Agent Wiki**. This repository of technical knowledge documents the **actual implementation, physical models, numerical approximations, execution pathways, and architectural realities** of the CO₂ Enhanced Oil Recovery Optimizer codebase (`co2eor_optimizer`, v0.8.5).
+> [!WARNING]
+> **This repository is under massive active development.**
+>
+> **Two engines, in very different states. Never read one as a description of the other.**
 
-This documentation is designed for **reservoir engineers, AI pair-programmers, scientific computing auditors, and software architects**. It provides unambiguous, machine-readable, and scientifically grounded guidance to enable rapid comprehension, prevent accidental regression of scientific invariants, and eliminate modification risk.
+| | 🐍 **Python engine** | 🦀 **Rust engine** |
+|---|---|---|
+| **What it is** | A **physics-informed surrogate** — a deliberately reduced-order, curve-driven reservoir model | A **full 3D THMC compositional reservoir simulator** — transport + phase equilibrium + geomechanics + geochemistry |
+| **Status** | ✅ **Shipped, active.** Describes running code today | 🔴 **Under construction. No engine code exists yet** |
+| **Language** | Python 3 + PyQt6 | Rust (toolchain installs at the start of M0) |
+| **Role** | Screens and ranks $10^3$–$10^5$ candidates per optimisation run | Evaluates a handful of candidates per run with solved physics, **and generates the training data** for a future neural surrogate |
+| **Documents here** | [architecture](architecture/overview.md), [physics](physics/reservoir_model.md), [audit](audit/technical_debt.md) | [compositional/](compositional/README.md) + [thmc/](thmc/README.md) |
+| **Named** | "the surrogate" | "the **compositional engine**" = "the **3D THMC engine**" — **the same artefact**, two names |
+
+!!! danger "Read this before citing anything about the Rust engine"
+    Every page under [`compositional/`](compositional/README.md) and [`thmc/`](thmc/README.md) is a
+    **specification, a correction, or an audit trail** — never a report of running software. 🔴 A tolerance,
+    a milestone, or a "verified" claim on those pages describes **what the engine must do**, not what it
+    does. 📌 The naming trap: *"compositional"* is a **legacy of an earlier narrower scope** when the THMC
+    layers sat in a deferred bucket. 🔴 **Reading it literally — as thermodynamics and multiphase flow only —
+    means shipping roughly one third of approved scope.** See
+    [vision_and_phases §5.4](compositional/vision_and_phases.md).
+
+This documentation is designed for **reservoir engineers, AI pair-programmers, scientific computing
+auditors, and software architects**. It provides unambiguous, machine-readable, and scientifically grounded
+guidance to enable rapid comprehension, prevent accidental regression of scientific invariants, and
+eliminate modification risk.
 
 ---
 
 ## 🧭 Documentation Structure
+
+### 🐍 Python engine — shipped
 
 | Section | Purpose |
 |---|---|
@@ -23,6 +49,61 @@ This documentation is designed for **reservoir engineers, AI pair-programmers, s
 | [**Verification**](verification/verification_strategy.md) | 7-level V&V hierarchy, conservation tests, convergence studies |
 | [**Validation**](validation/benchmarks.md) | SPE 5, CMG GEM reference benchmarks |
 | [**Decisions**](decisions/architecture_decisions.md) | Architecture & scientific rationale records (ADRs) |
+| [**Code Reference**](code/inventory.md) | Class, function and module inventories |
+
+### 🦀 Rust engine — in development
+
+🔴 **Nothing in this group is running code.** Start at
+[**compositional/README.md**](compositional/README.md).
+
+| Section | Purpose |
+|---|---|
+| [**Vision & Phases**](compositional/vision_and_phases.md) | P1 develop → P2 integrate → P3 couple; all decisions taken |
+| [**Build Plan M0→M7**](compositional/build_plan.md) | Milestones with **measured** gates, incl. **M4.5 integration slice** and the **M7b** body |
+| [**Mandatory Invariants**](compositional/engine_invariants.md) | 🔴 **INV-1…INV-7 + ten standing CI rules.** Start at §0 |
+| [**Output Schema**](compositional/output_schema.md) | 🔵 **APPROVED** — 9 domains, 116 fields/cell/timestep |
+| [**Data Architecture**](compositional/data_architecture.md) | 🔵 **DECIDED** — PostgreSQL + `pgvector` |
+| [**Separation Doctrine**](compositional/separation_doctrine.md) | P1 discipline + the **C-7** coherence gate |
+| [**Separate Register**](compositional/register_spec.md) | **INV-5** — `COMP-nn` namespace |
+
+### 🔴 Problems, gaps & research
+
+| Section | Purpose |
+|---|---|
+| [**Conflict & Gap Register**](thmc/conflict_and_gap_register.md) | **68 conflicts** across the 8 design docs — the authoritative status |
+| [**Reservoir Engineer Ruling**](thmc/reservoir_engineer_ruling.md) | The 07-10-2026 adjudication, incl. the CONF-01 retraction |
+| [**Spec Corrections Log**](compositional/spec_corrections_log.md) | **C-1…C-225** across 34 rulings — every correction and retraction |
+| [**Spec Defects**](compositional/spec_defects.md) | `CONF-*` items indexed by milestone |
+| [**📚 Literature TODO**](compositional/literature_todo.md) | **L-1…L-9** — outstanding research, with the acceptance standard |
+| [**Python Attempt Post-mortem**](compositional/python_attempt_postmortem.md) | Why the first attempt failed — six language-independent causes |
+| [**Data-Model Gap**](compositional/data_model_gap.md) | Why `core/data_models.py` cannot express a full simulation |
+
+### 📐 Design source
+
+| Section | Purpose |
+|---|---|
+| [**3D THMC Simulator**](thmc/README.md) | **Design intent only** — 8 Ukrainian design docs (`3D_THMC_docs/`), normalised for agents: architecture, solver, 6-level V&V, satellite toolkit, addenda, fracturing/wellbore |
+| [**Doc Inventory**](thmc/doc_inventory.md) | What each source document contains |
+
+> [!CAUTION]
+> **`thmc/` describes a simulator that does not exist.** `3D_THMC_docs/` (8 Ukrainian design documents,
+> added 07-10-2026, untracked) specifies a **Rust** 3D THMC compositional core. Verified 07-10-2026:
+> the working tree contains **no `.rs` file, no `Cargo.toml`, and no CI** — only `pyproject.toml`.
+> Every acceptance criterion in the core spec is **unchecked `[ ]`**.
+>
+> **The active engine remains `core/engine_surrogate/`** (invariant 1 below). Nothing in `thmc/` may be
+> cited as evidence of engine behaviour.
+>
+> **Read [`agent_wiki/thmc/conflict_and_gap_register.md`](thmc/conflict_and_gap_register.md) before
+> working in this area.** Blocking conflicts are recorded there. Two carry a **2026-10-07 correction**:
+> **CONF-01 was retracted** — the proposed fractional flow has the **correct sign**; the defect is in
+> its *closure* (no $S_{or}$, no Corey exponents, no water term). Do not repeat the original claim.
+> **CONF-02** the proposed HCPVI recovery cap is **99.4 % inert** at the shipped default HCPVI 7.69
+> (structurally identical to **CRIT-15**); **CONF-03** six documents report penalty removal and NPV
+> unification as *accomplished* when `FAILURE_PENALTY = -10^{12}` is still a live invariant and
+> `tests/test_surrogate_engine.py` **does not exist**; **CONF-04** economics is simultaneously exiled
+> from the core and given an in-core adjoint gradient — **now adjudicated** in
+> [`thmc/reservoir_engineer_ruling.md`](thmc/reservoir_engineer_ruling.md).
 
 > [!WARNING]
 > **Audit status — read before trusting any "RESOLVED" mark below.**
@@ -153,6 +234,103 @@ Before reading or modifying any file in this repository, keep the following **co
     - **A `RESOLVED` mark requires a measurement.** `python -m audit.continuity check <ID>` must report `CONFIRMED` before a status is written. On 05-10-2026 seventeen marks were written without one; eight needed reversing and two were regressions. See [`development/continuity_gate.md`](development/continuity_gate.md).
     - **One commit closes one issue.** `python -m audit.continuity check-commit "<subject>" "<body>"` rejects `Closes #1, #2`.
 
+16. **The Compositional Engine Is a Second Engine, Built First and Coupled Later** (added 07-10-2026) —
+    🔴 **CURRENT ACTIVE WORKSTREAM.** A full-physics **3D compositional engine in Rust** is being built
+    at `crates/compositional/`, because **no available simulator covers the full spectrum of this
+    project's tasks**.
+    - **Prior art:** an `EngineFactory` **and a Python compositional engine were built, then removed**
+      after the attempt failed. Rust is the second attempt. See
+      [`compositional/engine_invariants.md`](compositional/engine_invariants.md) §6.
+    - **The two engines have different jobs, not different quality levels.** The surrogate
+      (`core/engine_surrogate/`) **screens and ranks** at $10^3$–$10^5$ evaluations per run. The
+      compositional engine **evaluates** a small number of candidates with solved physics.
+    - 🔴 **Seven mandatory invariants** — [`compositional/engine_invariants.md`](compositional/engine_invariants.md):
+      **INV-1 fail loudly, never fall back** (every error returns a typed error and *stops*); **INV-2 runs
+      only when the user starts it**; **INV-3 simulation only** (a separate economic engine owns field
+      development); **INV-4 output is training-ready** (labelled $(x,y)$ pairs, full fields, versioned,
+      provenance — the engine also **trains a per-reservoir neural surrogate**, not yet built);
+      **INV-5 own flaw register** (`COMP-nn`, a separate module — the Python register cannot hold a `.rs`
+      location); **INV-6 capability declaration vs. failure** (`NOT_IMPLEMENTED` ≠ `FAILED`);
+      **INV-7 unconstrained** (absurd input still gets full physical evaluation).
+    - 🔴 **Coherence is enforced, not assumed** — [`build_plan.md`](compositional/build_plan.md) **M4.5**
+      requires an end-to-end run (spec → solve → output), and
+      [`separation_doctrine.md`](compositional/separation_doctrine.md) **C-7** requires every `pub` module to
+      be reachable from the driver and exercised by a test. 📌 **This is the gate against disconnected
+      modules**: a crate can pass every per-module unit test and still not produce one run.
+    - 📌 **The invariants are split across four topic files** (09-10-2026, §-numbers preserved exactly):
+      [`engine_invariants.md`](compositional/engine_invariants.md) (the seven invariants) ·
+      [`engine_spec_closures.md`](compositional/engine_spec_closures.md) (`CONF-*` closures, DOIs, provenance) ·
+      [`engine_numerics.md`](compositional/engine_numerics.md) (architecture, newtypes, status lattice, tolerances) ·
+      [`engine_constitutive.md`](compositional/engine_constitutive.md) (fracture, Drucker–Prager, Lode angle).
+      **Read the §0 index in `engine_invariants.md` first** — it maps milestones to sections.
+    - ✅ **The two engines complement.** The surrogate is **not** retired; P3 coupling definitely exists.
+      **Python is left as-is** — the 73 legacy findings remain the Python audit.
+    - 🔵 **Output schema APPROVED 08-10-2026** — 9 domains, **116 float fields per cell per timestep**,
+      three temporal resolutions (micro-step / daily / monthly-yearly), global indexing
+      $I_{global}=i+(j-1)N_x+(k-1)N_xN_y$ plus NNC arrays. Formats: **HDF5/VTK-HDF**, **RESQML 2.0.1 /
+      GRDECL**, **Parquet/Arrow**, **DuckDB/SQLite**.
+      🔴 **The engine emits all raw values; satellite tools interpret and format them.**
+      ⚠️ **This is a TARGET specification. No engine exists** — current state is M0, not started.
+      ⚠️ **Measured: 510 MB per timestep at SPE-10 scale, 51 GB for 100 steps** — ruled remedy is
+      **chunked HDF5 with `zstd`** plus an **active-frame RAM cache**.
+      🔴 **Two-output contract (ruled):** spatial → HDF5; time-series → Parquet/DuckDB.
+      **The satellite economic engine never reads HDF5.**
+      Full spec: [`compositional/output_schema.md`](compositional/output_schema.md).
+    - ✅ **Ruling of 08-10-2026 applied** — economics purged (**CONF-64/65**), Koval unified (**CONF-63**),
+      $\epsilon_p$ removed from the elastic baseline (**CONF-66**), $\text{Fe}^{2+}$ added to the aqueous
+      species (**CONF-67**), skin floor corrected (**CONF-68**), **CONF-35 resolved** by unit conversion
+      ($1$ MSCF CO₂ $\approx 0.0519$ t). ⚠️ Two of my own framings were **withdrawn by measurement** —
+      see [`compositional/spec_corrections_log.md`](compositional/spec_corrections_log.md) C-37, C-38.
+      Full adjudication: [`thmc/reservoir_engineer_ruling.md`](thmc/reservoir_engineer_ruling.md) §6–§9.
+    - 🔴 **Python post-mortem recorded** — the first attempt failed on **six numerical-method defects**,
+      **not** on execution speed. Yields five new requirements (**Heidemann–Khalil** critical solver,
+      exponential soft-start, well control modes in the global Jacobian, permeability-collapse selection
+      rule). [`compositional/python_attempt_postmortem.md`](compositional/python_attempt_postmortem.md).
+    - 🔴 **Spec authority rule:** `3D_THMC_docs/` are **immutable references**; the **wiki carries the
+      corrected specification**. Every deviation is logged with source and line in
+      [`compositional/spec_corrections_log.md`](compositional/spec_corrections_log.md) —
+      **19 corrections, 7 open branches**.
+    - ⚠️ **Scope re-baselined 08-10-2026** to the **full 3D THMC programme** (coupled thermal +
+      geomechanics + geochemistry, fractures/EDFM, wellbore, Schwarz sub-domains, GPU, adjoint, ES-MDA).
+      The earlier "M7+ deferred" framing is **void**. **Resolving scope has not resolved specification** —
+      CONF-13/14/25/51/16/18/47/08/63/66 all remain open.
+    - ✅ **Simulation learning committed** — full output enables RL to tune the surrogate on full physics.
+      A known, accepted long process. The **economic engine is on the critical path** for the reward.
+    - **Phase model** — [`compositional/vision_and_phases.md`](compositional/vision_and_phases.md):
+      **P1 DEVELOP** (standalone, own register — separation is a **development discipline to avoid
+      distraction, not an architecture**) → **P2 INTEGRATE** → **P3 COUPLE**. P3 begins only after the
+      engine is verified on all features and fronts.
+    - ⚠️ **During P1 only:** do not import anything from `core/`, `evaluation/`, `validation/`, `utils/`
+      or `ui/`. **These gates retire by ADR at P2.**
+    - **Own flaw register** at `audit_comp/`, namespace **`COMP-nn`**. ⚠️ `audit/registry.py:114`
+      `LOCATION_RE` accepts `.py` only — the existing register **cannot** record a Rust finding.
+    - **No code exists.** Rust toolchain installation is **deferred by decision** until after
+      documentation, at the start of development.
+    - Plan: [`compositional/build_plan.md`](compositional/build_plan.md) — **M0 → M6**, each gated by a
+      measured value. **M1 references verified 07-10-2026**:
+      [`compositional/spec_defects.md`](compositional/spec_defects.md) §2a.
+    - 🔵 **Data layer decided:** **PostgreSQL + vector store**, replacing file-based config —
+      [`compositional/data_architecture.md`](compositional/data_architecture.md).
+    - ⚠️ **`core/data_models.py` and `config/base_config.json` cannot express a full simulation** —
+      `ReservoirData.grid` holds **only dimensions**, porosity/permeability are **scalars**, no NTG,
+      transmissibility, corner-point geometry or 3D facies, the shipped fluid has **2 components and 1
+      binary interaction coefficient**, PVT tables are single-element lists. Evidence:
+      [`compositional/data_model_gap.md`](compositional/data_model_gap.md).
+    - ⚠️ **`agent_wiki/development/extension_points.md` is unbuildable** — it instructs edits to
+      `config/default_config.json`, `core/engine_factory.py`, `core/models/`, `core/surrogate_engine.py`,
+      `core/analytical_models.py`, **none of which exist**. `EngineFactory` was built and removed. Verify
+      every path with `Test-Path`.
+    - ⚠️ **UI/UX is out of scope** until the Rust engine is fully built and tested.
+    - **The active engine for the existing application remains `core/engine_surrogate/`** (invariant 1).
+
+17. **The 3D THMC Design Set Is Design Intent, Not Implementation** (added 07-10-2026):
+    - [`agent_wiki/thmc/`](thmc/README.md) is a **normalised, agent-readable transcription** of the 8 Ukrainian design documents in `3D_THMC_docs/`. They describe a **Rust** 3D THMC compositional core.
+    - ⚠️ **No Rust code exists in this repository.** Verified 07-10-2026: `*.rs` → 0, `Cargo.toml` → 0, CI → 0. All 6 acceptance criteria in the core spec are **unchecked `[ ]`**.
+    - **100 % of optimisation evaluations still route to `core/engine_surrogate/`.** The THMC set changes nothing about engine routing.
+    - **Never cite a THMC number as validated.** Every tolerance, accuracy % and benchmark timing in `3D_THMC_docs/` is an assertion in a design document. The V&V framework supplies **zero** absolute reference values for any of its 22 declared tests.
+    - **Blocking conflicts are recorded** in [`thmc/conflict_and_gap_register.md`](thmc/conflict_and_gap_register.md) — read it before any THMC work. ⚠️ **CONF-01 was RETRACTED on 07-10-2026**: the proposed fractional flow has the **correct sign**; my original claim of $df_g/dM<0$ came from a substitution error and is **withdrawn**. The real defect is the *closure* — no $S_{or}$, linear instead of Corey exponents, no water term. See [`thmc/reservoir_engineer_ruling.md`](thmc/reservoir_engineer_ruling.md). The other blockers: **CONF-02** (HCPVI cap 99.4 % inert at the shipped default HCPVI 7.69 — the CRIT-15 shape), **CONF-03** (6 documents report penalty removal and NPV unification as *accomplished*; `FAILURE_PENALTY = -10^{12}` is still live and `tests/test_surrogate_engine.py` does not exist), **CONF-04** (economics both exiled from and inside the core — **adjudicated**: core exposes $\partial q_i/\partial x$; prices applied off-core).
+    - **Staged evaluation:** [`thmc/evaluation_plan.md`](thmc/evaluation_plan.md) — Stage 0 documentation remediation → Stage 1 convert the documents' acceptance criteria into measurements against the *existing* engine → Stage 2 ADR decision (ADOPT / HARVEST / PILOT / REJECT) → Stage 3 scope. Recommendation: **PILOT**, with the language-independent items taken regardless.
+
 ---
 
 ## 📖 Recommended Reading Order
@@ -162,3 +340,15 @@ Before reading or modifying any file in this repository, keep the following **co
 3. Review [Recovery Model](physics/recovery_model.md) and [Displacement Model](physics/displacement_model.md) before touching recovery or rate calculations.
 4. Consult [Suspicious Logic](audit/suspicious_logic.md) and [Common Pitfalls](development/common_pitfalls.md) to avoid known failure modes.
 5. Check [Change Safety Matrix](development/change_safety_matrix.md) to determine the risk tier of your task.
+
+> If the task touches the 3D THMC design set (`3D_THMC_docs/` or [`agent_wiki/thmc/`](thmc/README.md)),
+> read [`thmc/conflict_and_gap_register.md`](thmc/conflict_and_gap_register.md) **before** writing anything.
+> That section describes a simulator which does not exist; treat every claim in it as unverified.
+>
+> 🔴 **If the task is about the compositional engine** (`crates/compositional/`, `audit_comp/`,
+> [`agent_wiki/compositional/`](compositional/README.md)), start with
+> [`compositional/vision_and_phases.md`](compositional/vision_and_phases.md). It is the **current active
+> workstream**: a full-physics 3D compositional simulator in Rust, built **first**, coupled to the
+> surrogate in a **later phase** (P3). During **P1** it is decoupled from `core/engine_surrogate/` and
+> has its own flaw register (`COMP-nn`) — separation there is a **development discipline to avoid
+> distraction, not an architecture**, and those gates retire at P2.

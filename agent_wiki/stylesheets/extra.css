@@ -39,3 +39,57 @@
 .md-tabs__link--active {
   font-weight: 700;
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   Status banner — the repo is under MASSIVE ACTIVE DEVELOPMENT.
+   A Rust 3D THMC reservoir simulator is being built from scratch. Shown on
+   every page so a reader can never mistake a *target* for a *shipped fact*.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.md-banner,
+.md-banner[data-md-component="banner"] {
+  background: linear-gradient(90deg, #b26a00 0%, #d97706 45%, #b26a00 100%);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 0.35rem 1rem;
+  text-align: center;
+}
+
+.md-banner a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 700;
+}
+
+.md-banner a:hover {
+  color: #fff5e6;
+}
+
+/* Hide the banner on print */
+@media print {
+  .md-banner { display: none; }
+}
+
+/* Rust tab marker — amber accent so the in-development engine is visually distinct
+   from the shipped Python engine at a glance. */
+.md-tabs__link[href*="compositional/"],
+.md-tabs__link[href*="thmc/"] {
+  position: relative;
+}
+
+/* Inline warning ribbon used inside pages that describe the Rust engine */
+.md-typeset .rust-status {
+  border-left: 4px solid #d97706;
+  background: rgba(217, 119, 6, 0.09);
+  padding: 0.7em 1em;
+  border-radius: 0 4px 4px 0;
+  margin: 1em 0;
+  font-size: 0.82rem;
+}
+
+.md-typeset .rust-status > strong:first-child {
+  color: #d97706;
+}
