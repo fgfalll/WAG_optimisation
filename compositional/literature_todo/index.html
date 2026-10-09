@@ -4781,11 +4781,11 @@ substring test and fails this one — that is exactly the gate defect recorded a
 </tr>
 <tr>
 <td><strong>What was needed</strong></td>
-<td>Test 3 only — <strong>Table 1</strong>, <em>"DEPENDENCY OF <span class="arithmatex">\(r_{wo}\)</span> ON PHASING"</em></td>
+<td>Test 3 only — <strong>Table 1</strong>, <em>"DEPENDENCY OF <span class="arithmatex">\(r_{we}\)</span> ON PHASING"</em></td>
 </tr>
 <tr>
 <td><strong>Values obtained</strong></td>
-<td><span class="arithmatex">\(r_{wo}/(r_{wo}+L_p)\)</span>, <strong>all six rows</strong> — see the table in <a href="../engine_spec_closures/"><code>engine_spec_closures.md</code></a> §7h.2a</td>
+<td><span class="arithmatex">\(\alpha_0=r_{we}/(r_w+L_p)\)</span>, <strong>all six rows</strong> — 0.250 · 0.500 · <strong>0.648</strong> · 0.726 · 0.813 · 0.860. ✅ Table in <a href="../engine_spec_closures/"><code>engine_spec_closures.md</code></a> §7h.2a.1</td>
 </tr>
 <tr>
 <td><strong>🔴 Was wrong</strong></td>
@@ -4793,7 +4793,7 @@ substring test and fails this one — that is exactly the gate defect recorded a
 </tr>
 <tr>
 <td><strong>Direction</strong></td>
-<td>✅ <strong>Settled by the table's own structure.</strong> <span class="arithmatex">\(r_{wo}\)</span> is an <em>effective radius</em>; the ratio is monotone increasing in it, so <strong>more planes ⇒ larger <span class="arithmatex">\(r_{wo}\)</span> ⇒ lower skin ⇒ better.</strong> Consistent with the abstract: <em>"Results indicate the importance of angular phasing … in overcoming the effects of formation damage"</em></td>
+<td>🔴 <strong>The phasing optimum is PARAMETER-DEPENDENT (C-232).</strong> <span class="arithmatex">\(S_H\)</span> and <span class="arithmatex">\(S_{wb}\)</span> both fall as phasing goes <span class="arithmatex">\(0^\circ\to45^\circ\)</span> — <em>more</em> phasing is better — while <span class="arithmatex">\(S_V\)</span> <strong>rises</strong> — <em>less</em> is better. Measured net optimum: <strong>45° / 60° / 90°</strong> depending on <span class="arithmatex">\(h_D\)</span>, <span class="arithmatex">\(r_{pD}\)</span>, <span class="arithmatex">\(r_{wD}\)</span>. ✅ <strong>Both earlier readings (C-98, C-100) were half right</strong>; see §7h.2b.3</td>
 </tr>
 <tr>
 <td><strong>Also needed</strong></td>
@@ -4985,7 +4985,7 @@ for the citation's <em>existence</em>, not for the <em>specific numbers</em> dra
 <td>Named by the design set, <strong>no coefficient given anywhere</strong></td>
 </tr>
 <tr>
-<td>~~Karakas–Tarik~~</td>
+<td>Karakas–Tarik ✅ <strong>resolved</strong></td>
 <td>—</td>
 <td>✅ <strong>RESOLVED 09-10-2026 (C-231).</strong> ✅ Tables 1–5 obtained: <span class="arithmatex">\(c_1,c_2\)</span> (Tab. 2), <span class="arithmatex">\(L_{p\min}/r_w\)</span> (Tab. 3), <span class="arithmatex">\(a_1,a_2,b_1,b_2\)</span> (Tab. 4), <span class="arithmatex">\(s_x\)</span> (Tab. 5). 🔴 <strong>These are finite-element tables, not closed forms</strong> — see §7h.2b.2</td>
 </tr>
