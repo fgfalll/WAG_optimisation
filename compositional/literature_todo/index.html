@@ -4769,45 +4769,51 @@ substring test and fails this one — that is exactly the gate defect recorded a
 <tbody>
 <tr>
 <td><strong>Status</strong></td>
-<td>🔴 <strong>NOT OBTAINABLE LOCALLY.</strong> A search for <code>karakas</code> / <code>tarik</code> across <strong>all pages of all 129 PDFs</strong> in <code>D:\RAG</code> returns <strong>zero hits</strong> (<strong>C-116</strong>)</td>
+<td>✅ <strong>CLOSED 09-10-2026 (C-226)</strong> — Table 1 obtained and transcribed. 🔴 <strong>It exposed a transcription error in my own §7h.2 and invalidated the fitted coefficient.</strong> See §7h.2a</td>
 </tr>
 <tr>
 <td><strong>DOI (verified, §4)</strong></td>
-<td><code>10.2118/18247-PA</code></td>
+<td><code>10.2118/18247-PA</code> — ✅ <strong>re-verified against <code>api.crossref.org</code> 09-10-2026</strong>: HTTP 200, title, journal, <strong>6</strong>(01), 73–82, 1991-02-01 all match. 91 citing references.</td>
 </tr>
 <tr>
 <td><strong>Confirmed metadata</strong></td>
 <td>Karakas, M. &amp; <strong>Tariq</strong>, S. M. (1991), <em>Semianalytical Productivity Models for Perforated Completions</em>, SPE Production Engineering <strong>6</strong>(01), 73–82</td>
 </tr>
 <tr>
-<td><strong>What is needed</strong></td>
-<td>Test 3 only — <strong>Table 1</strong>, the wellbore effect factor <span class="arithmatex">\(\alpha_0\)</span></td>
+<td><strong>What was needed</strong></td>
+<td>Test 3 only — <strong>Table 1</strong>, <em>"DEPENDENCY OF <span class="arithmatex">\(r_{wo}\)</span> ON PHASING"</em></td>
 </tr>
 <tr>
-<td><strong>Values in dispute</strong></td>
-<td><span class="arithmatex">\(\alpha_0\)</span>: <strong>0.250</strong> (0°/360°), <strong>0.500</strong> (180°), <strong>0.618</strong> (120°), <strong>0.726</strong> (90°)</td>
+<td><strong>Values obtained</strong></td>
+<td><span class="arithmatex">\(r_{wo}/(r_{wo}+L_p)\)</span>, <strong>all six rows</strong> — see the table in <a href="../engine_spec_closures/"><code>engine_spec_closures.md</code></a> §7h.2a</td>
+</tr>
+<tr>
+<td><strong>🔴 Was wrong</strong></td>
+<td>My §7h.2 recorded <span class="arithmatex">\(\alpha_0(120^\circ)=0.618\)</span>. 🔴 <strong>The source says <span class="arithmatex">\(0.648\)</span>.</strong> Two rows (<span class="arithmatex">\(60^\circ\)</span>/6 and <span class="arithmatex">\(45^\circ\)</span>/8 planes) were <strong>missing entirely</strong></td>
+</tr>
+<tr>
+<td><strong>Direction</strong></td>
+<td>✅ <strong>Settled by the table's own structure.</strong> <span class="arithmatex">\(r_{wo}\)</span> is an <em>effective radius</em>; the ratio is monotone increasing in it, so <strong>more planes ⇒ larger <span class="arithmatex">\(r_{wo}\)</span> ⇒ lower skin ⇒ better.</strong> Consistent with the abstract: <em>"Results indicate the importance of angular phasing … in overcoming the effects of formation damage"</em></td>
 </tr>
 <tr>
 <td><strong>Also needed</strong></td>
-<td>The <span class="arithmatex">\(S_v\)</span> correlation coefficients <span class="arithmatex">\(a_1{=}-2.025\)</span>, <span class="arithmatex">\(a_2{=}0.0943\)</span>, <span class="arithmatex">\(b_1{=}3.0373\)</span>, <span class="arithmatex">\(b_2{=}1.8115\)</span>; the <span class="arithmatex">\(S_{wb}\)</span> constants <span class="arithmatex">\(c_1{=}0.0066\)</span>, <span class="arithmatex">\(c_2{=}5.32\)</span>; the <span class="arithmatex">\(S_{cz}\)</span> form; and the <strong>sign convention</strong> for <span class="arithmatex">\(S_h\)</span></td>
+<td>✅ <strong>OBTAINED (C-231).</strong> Tables 2, 3, 4 and 5 — all six phasings for each. ✅ See §7h.2b.2</td>
 </tr>
 <tr>
-<td><strong>Why it blocks</strong></td>
-<td><strong>CONF-31.</strong> Every <span class="arithmatex">\(\alpha_0\)</span>-dependent result — the whole perforation-skin module</td>
-</tr>
-<tr>
-<td><strong>Interim rule</strong></td>
-<td><code>SOURCE_PENDING</code>; runtime emits <code>ValidityWarning::CorrelationProvenanceUnverified</code>. ⚠️ <strong>M7c cannot be gated on it</strong></td>
-</tr>
-<tr>
-<td><strong>Search terms</strong></td>
-<td><code>Karakas Tariq 1991 semianalytical productivity models perforated completions SPE-18247</code> · <code>perforation skin factor horizontal well phasing alpha_0 table</code></td>
+<td><strong>Closed defect</strong></td>
+<td>✅ <strong>CONF-31's coefficient defect is closed</strong> — every named correlation has published coefficients. ⚠️ <strong>CONF-31 stays open</strong> on: 🔴 <strong>C-102</strong> no closed form for <span class="arithmatex">\(\alpha_\theta\)</span>, ⚠️ <strong>C-233</strong> the <span class="arithmatex">\(0^\circ\)</span> ambiguity, ⚠️ <strong>C-234</strong> the <span class="arithmatex">\(r_{wD}\)</span> gap outside Eq. 9's domain</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>🔴 <strong>This is the single highest-value outstanding item.</strong> 46 corrections have been produced; CONF-31 is
-the last one standing, and it cannot close without this table.</p>
+<p>📌 <strong>How this closed.</strong> The owner supplied the table image after locating the paper. The lesson is the one
+recorded at §7h.2a: 🔴 <strong>a table transcribed without the source in hand is a table of remembered values.</strong>
+My four-row version had three rows right and one digit wrong — 🔴 <strong>and the error was in the digit that a
+reader is least able to check</strong>, since <span class="arithmatex">\(0.618\)</span> looks exactly as plausible as <span class="arithmatex">\(0.648\)</span>.</p>
+<p>✅ <strong>Nothing about Karakas &amp; Tariq remains unobtained.</strong> 🔴 <strong>What remains is a set of <em>decisions</em>, not
+sources</strong> — see §7h.2b: the <span class="arithmatex">\(0^\circ\)</span> ambiguity (C-233), the <span class="arithmatex">\(r_{wD}\)</span> domain gap (C-234), whether
+<span class="arithmatex">\(\alpha_\theta\)</span> gets a closed form or stays tabulated (C-102), and whether <span class="arithmatex">\(S_V\)</span> comes from Eq. 12 or
+Eq. 15 (C-237). ⚠️ <strong>M7c must not be gated on any of them.</strong></p>
 </blockquote>
 <hr />
 <h2 id="3-pending-replace-the-fabricated-doi">3. 🟠 PENDING — replace the fabricated DOI<a class="headerlink" href="#3-pending-replace-the-fabricated-doi" title="Permanent link">&para;</a></h2>
@@ -4974,9 +4980,14 @@ for the citation's <em>existence</em>, not for the <em>specific numbers</em> dra
 <td>See <a href="../../thmc/conflict_and_gap_register/"><code>../thmc/conflict_and_gap_register.md</code></a></td>
 </tr>
 <tr>
-<td><strong>Glaso, Joback–Reid, PPR78, Huron–Vidal, QSPR, Karakas–Tarik</strong></td>
+<td><strong>Glaso, Joback–Reid, PPR78, Huron–Vidal, QSPR</strong></td>
 <td><strong>CONF-31</strong></td>
 <td>Named by the design set, <strong>no coefficient given anywhere</strong></td>
+</tr>
+<tr>
+<td>~~Karakas–Tarik~~</td>
+<td>—</td>
+<td>✅ <strong>RESOLVED 09-10-2026 (C-231).</strong> ✅ Tables 1–5 obtained: <span class="arithmatex">\(c_1,c_2\)</span> (Tab. 2), <span class="arithmatex">\(L_{p\min}/r_w\)</span> (Tab. 3), <span class="arithmatex">\(a_1,a_2,b_1,b_2\)</span> (Tab. 4), <span class="arithmatex">\(s_x\)</span> (Tab. 5). 🔴 <strong>These are finite-element tables, not closed forms</strong> — see §7h.2b.2</td>
 </tr>
 </tbody>
 </table>
