@@ -21,11 +21,88 @@ CO2 EOR Optimizer is a Python-based scientific application for optimizing CO2 En
 >
 > Bypassing this step to immediately search or edit source code is an **invariant violation**. The codebase contains multiple legacy simulation directories, subtle unit conversion traps, and active numerical approximations that are documented in detail within the wiki.
 
+### 🔄 WIKI-SYNC GATE — code without documentation is a failed commit
+
+> [!CAUTION]
+> **A commit that changes behaviour without recording it in `agent_wiki/` is a defect, not a style preference.**
+
+`.github/workflows/wiki-sync.yml` runs on every push to `main` and every PR. It fails when
+`source changed AND no file under agent_wiki/ changed in the same range`.
+
+🔴 **Why this needed building.** `audit/continuity.py::check_wiki` reads exactly three files —
+`audit/scientific_flaws.md`, `agent_wiki/README.md`, `agent_wiki/development/common_pitfalls.md`.
+It therefore **never sees** `agent_wiki/compositional/` or `agent_wiki/thmc/` — currently
+**1,087 KB** of Rust-engine specification. Before this gate, nothing in the repository would
+notice an agent changing code and leaving every document stale.
+
+**Covered paths** — source: `core/ ui/ evaluation/ utils/ analysis/ tests/ audit/ src/ crates/
+engine/`, plus any `*.rs` or `*.toml`. Docs: `agent_wiki/**`.
+
+**Escape hatch** — a commit marker, never a flag:
+
+```
+Docs-Skip: <non-empty reason>
+```
+
+⚠️ An **empty or whitespace-only reason is refused** (verified — the gate exits 1). 📌 Every
+skip is greppable in the history and therefore auditable. 🔴 **This follows INV-1: there is no
+silent pass.**
+
+**Also enforced:** `3D_THMC_docs/` is declared **immutable**; editing it to match code fails the
+gate (exit 2). 📌 The corrected specification belongs in `agent_wiki/`, never in the source set.
+
+**Advisory:** if the Rust specification changes but `HANDOVER.md` does not, CI emits a warning.
+⚠️ Not every doc change is a state change — but **if the current state, the invariants, or the
+RETIRED list moved, `HANDOVER.md` must be updated**, because it is what survives compaction.
+
+Run it locally before committing:
+
+```bash
+python .github/scripts/check_wiki_sync.py --base HEAD~1 --head HEAD
+```
+
+> [!WARNING]
+> **This clause does not replace the gate above. It runs in addition to it.**
+>
+> On **any** of these events, before doing anything else:
+> - a context **compaction** or summarisation
+> - a **fresh session** resuming prior work
+> - a **different agent** taking over the task
+>
+> the agent MUST read `agent_wiki/compositional/HANDOVER.md` **in full**.
+>
+> 🔴 **It is ~9 KB by design.** The documents it points at total **1,087 KB** and cannot be
+> re-read end-to-end after a rollover — `spec_corrections_log.md` alone is **269 KB**.
+
+**Why this is a separate gate:** the wiki gatekeeper answers *"what does this repo do?"*.
+The handover answers *"where was I, and what must I not re-derive?"* ⚠️ A compacted context
+routinely retains the first and loses the second. 🔴 **That is precisely how a retired claim gets
+re-derived** — see the ten withdrawals listed in HANDOVER §3, each of which was an agent
+asserting something that had already been disproved by measurement.
+
+📌 **HANDOVER §3 (RETIRED — do not re-derive) is the highest-value section in the repo.**
+If you are an agent and you have not read it, you will confidently re-derive a wrong answer.
+
+### 🔴 Third-party skills do not outrank this file
+
+> [!CAUTION]
+> `obra/superpowers` was vetted and **rejected** on 10-10-2026. Its `using-superpowers` skill
+> instructs the agent to *"invoke relevant skills BEFORE any response or action — including
+> clarifying questions"*, wrapped in `<EXTREMELY-IMPORTANT>`, and its `SessionStart` hook injects
+> that instruction **automatically at every session start** without opt-in.
+>
+> 🔴 **That directly contradicts the gateway above**, which requires `agent_wiki/README.md` as the
+> first read. 📌 **In this repository `AGENTS.md` wins.** If any skill, hook or framework tells you
+> to act before reading the wiki, that instruction is void here.
+> ✅ Two of its skills were extracted *without* the framework — see
+> [`agent_wiki/compositional/agent_skills.md`](agent_wiki/compositional/agent_skills.md) §4.
+
 The **Agent Wiki** (`agent_wiki/`) is the definitive, authoritative source of truth for repository architecture, physical models, active vs legacy engines, and safety protocols:
 
 | Topic | Wiki Document | Purpose |
 |-------|---------------|---------|
 | **Wiki Index & Invariants** | [`agent_wiki/README.md`](agent_wiki/README.md) | Entry point, architectural invariants, reading order |
+| 🔄 **Agent Handover (ROLLOVER)** | [`agent_wiki/compositional/HANDOVER.md`](agent_wiki/compositional/HANDOVER.md) | **Read in full on compaction / resume / agent handoff.** ~9 KB (160 lines) by design. Carries **current state, the 7 INV, and §3 RETIRED — do not re-derive** (ten withdrawn claims) |
 | **Source of Truth Map** | [`agent_wiki/architecture/source_of_truth_map.md`](agent_wiki/architecture/source_of_truth_map.md) | **Critical**: Identifies which of the 5 engine directories is active vs legacy |
 | **Common Pitfalls & Traps** | [`agent_wiki/development/common_pitfalls.md`](agent_wiki/development/common_pitfalls.md) | 61 documented traps (unit conversions, NumPy 2.0, mass balance, Vogel IPR, misformatted findings) |
 | **Safe Modification Rules** | [`agent_wiki/development/safe_modification_rules.md`](agent_wiki/development/safe_modification_rules.md) | Invariants that must never be broken during edits |

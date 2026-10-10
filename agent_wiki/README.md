@@ -58,6 +58,7 @@ eliminate modification risk.
 
 | Section | Purpose |
 |---|---|
+| 🔄 [**Agent Handover**](compositional/HANDOVER.md) | **ROLLOVER GATE — read in full on compaction, session resume, or agent handoff.** ~9 KB (160 lines) by design. Carries current state, the seven invariants, and **§3 RETIRED — do not re-derive** (ten withdrawn claims). 🔴 The Rust-engine docs total **1,087 KB** and cannot be re-read linearly |
 | [**Vision & Phases**](compositional/vision_and_phases.md) | P1 develop → P2 integrate → P3 couple; all decisions taken |
 | [**Build Plan M0→M7**](compositional/build_plan.md) | Milestones with **measured** gates, incl. **M4.5 integration slice** and the **M7b** body |
 | [**Mandatory Invariants**](compositional/engine_invariants.md) | 🔴 **INV-1…INV-7 + ten standing CI rules.** Start at §0 |

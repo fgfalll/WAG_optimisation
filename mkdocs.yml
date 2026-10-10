@@ -256,6 +256,7 @@ nav:
   # ═══════════════════════════════════════════════════════════════════════
   - 🦀 Rust Engine (In Development):
       - Start Here:
+          - 🔄 Agent Handover (ROLLOVER — read on compaction/resume): compositional/HANDOVER.md
           - ⚠️ Overview & Status: compositional/README.md
           - Vision & Phases (P1→P2→P3): compositional/vision_and_phases.md
           - Build Plan M0→M6 + M4.5 + M7: compositional/build_plan.md
@@ -273,6 +274,7 @@ nav:
           - P2 Integration Plan: compositional/integration_plan.md
       - Literature & Research:
           - 📚 Literature TODO (L-1…L-9): compositional/literature_todo.md
+          - 🧰 Agent Skills + Registry Gaps: compositional/agent_skills.md
           - Why the Python attempt failed: compositional/python_attempt_postmortem.md
       - Problems & Gaps:
           - Conflict & Gap Register (68 conflicts): thmc/conflict_and_gap_register.md

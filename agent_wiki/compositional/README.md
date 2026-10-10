@@ -195,6 +195,7 @@ checked against them. Any file in `tests/scientific/` that imports `core.data_mo
 
 | Page | Purpose |
 |---|---|
+| 🔄 [`HANDOVER.md`](HANDOVER.md) | **ROLLOVER GATE.** ⚠️ **Read in full on compaction, session resume, or agent handoff.** ~6 KB by design. Carries current state, the seven invariants, **§3 RETIRED — do not re-derive**, and the standing CI rules. 🔴 The docs below total 1,087 KB and **cannot be re-read linearly** |
 | [`engine_invariants.md`](engine_invariants.md) | 🔴 **INV-1…INV-7** + ten standing CI rules. ⚠️ **Start at its §0 index**, which maps milestones to sections — do not read end to end |
 | [`engine_spec_closures.md`](engine_spec_closures.md) | Adjudicated `CONF-*` closures, DOI resolution, provenance and literature rules (§7c–§7n) |
 | [`engine_numerics.md`](engine_numerics.md) | Architecture, newtypes and the status lattice, determinism, tolerances, precision (§7o–§7w) |
