@@ -1,0 +1,228 @@
+{
+  "note": "Categorically separated verdicts. No composite accuracy score exists by design.",
+  "evidence_tier_order": [
+    "MATHEMATICAL_CORRECTNESS",
+    "PHYSICAL_CONSISTENCY",
+    "NUMERICAL_DISCRETIZATION",
+    "IMPLEMENTATION",
+    "PARAMETER_PROVENANCE",
+    "ANALYTICAL_VERIFICATION",
+    "EXPERIMENTAL_VALIDATION",
+    "BENCHMARK_AGREEMENT",
+    "EXECUTION_SPEED"
+  ],
+  "checks": [
+    {
+      "finding_id": "CRIT-01",
+      "category": "MATHEMATICAL",
+      "claimed": "RESOLVED",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-02",
+      "category": "SOFTWARE",
+      "claimed": "RESOLVED",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "IMPLEMENTATION",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-03",
+      "category": "PHYSICAL",
+      "claimed": "RESOLVED",
+      "verdict": "STILL_OPEN",
+      "evidence": "P_b is the literal constant min(P_init, 2800.0); no Standing (or any) bubble-point correlation exists in the repository (grep Rsb/pb_standing/18.2 -> 0 hits). Every reservoir at or above that initial pressure shares one P_b regardless of API.",
+      "measured": "default P_b = 2800.0 psi",
+      "evidence_tier": "PHYSICAL_CONSISTENCY",
+      "residual": "P_b is the literal constant min(P_init, 2800.0); no Standing (or any) bubble-point correlation exists in the repository (grep Rsb/pb_standing/18.2 -> 0 hits). Every reservoir at or above that initial pressure shares one P_b regardless of API.",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "CRIT-04",
+      "category": "MATHEMATICAL",
+      "claimed": "RESOLVED",
+      "verdict": "CONFIRMED",
+      "evidence": "coefficient 5.035 matches derived 5.0351",
+      "measured": "5.035 vs 5.0351",
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": null,
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-05",
+      "category": "PHYSICAL",
+      "claimed": "RESOLVED",
+      "verdict": "CONFIRMED",
+      "evidence": "Papay (1968) coefficients present; Z < 1 with a dense-gas dip at the engine default Tpr ~ 1.58",
+      "measured": "1500psi Z=0.8490, 2500psi Z=0.8269, 3500psi Z=0.8679, 4500psi Z=0.9717",
+      "evidence_tier": "PHYSICAL_CONSISTENCY",
+      "residual": null,
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-06",
+      "category": "MATHEMATICAL",
+      "claimed": "RESOLVED",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "NUMERICAL_DISCRETIZATION",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-07",
+      "category": "MATHEMATICAL",
+      "claimed": "RESOLVED",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-08",
+      "category": "SOFTWARE",
+      "claimed": "RESOLVED",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "IMPLEMENTATION",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-11",
+      "category": "PHYSICAL",
+      "claimed": "RESOLVED",
+      "verdict": "CONFIRMED",
+      "evidence": "WAG water rate carries the scf->MSCF factor (at B_g definition); 5,000 MSCFD -> 25,000 bpd (was 25 bpd before remediation)",
+      "measured": "25 -> 25,000 bpd, exactly 1000x",
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": null,
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-12",
+      "category": "MATHEMATICAL",
+      "claimed": "RESOLVED",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-13",
+      "category": "PROVENANCE",
+      "claimed": "RESOLVED",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "PARAMETER_PROVENANCE",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-14",
+      "category": "PHYSICAL",
+      "claimed": "n/a (invariant)",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "PHYSICAL_CONSISTENCY",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-16",
+      "category": "SOFTWARE",
+      "claimed": "RESOLVED",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "IMPLEMENTATION",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "CRIT-18",
+      "category": "PHYSICAL",
+      "claimed": "RESOLVED",
+      "verdict": "PARTIALLY_RESOLVED",
+      "evidence": "annual_rev includes oil + storage credit only. annual_hc_gas_mscf is allocated, accumulated and published but never referenced in the cash flow; produced CO2 earns no sale revenue. npv is the primary objective, so the optimiser ranks on a truncated model.",
+      "measured": "missing from revenue: ['annual_hc_gas_mscf', 'annual_co2_prod_mscf']",
+      "evidence_tier": "PHYSICAL_CONSISTENCY",
+      "residual": "annual_rev includes oil + storage credit only. annual_hc_gas_mscf is allocated, accumulated and published but never referenced in the cash flow; produced CO2 earns no sale revenue. npv is the primary objective, so the optimiser ranks on a truncated model.",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "CRIT-21",
+      "category": "PROVENANCE",
+      "claimed": "RESOLVED",
+      "verdict": "STILL_OPEN",
+      "evidence": "c_g(CO2) is a hard-coded power law clip(1.5e-4*(2000/p)**0.8, ...) while a Peng-Robinson EOS exists in the same class (_setup_pr_eos_co2). Measured disagreement with -(1/B)dB/dP from PR: 2.6x-8.3x. Uncited.",
+      "measured": "power law, no citation",
+      "evidence_tier": "PARAMETER_PROVENANCE",
+      "residual": "c_g(CO2) is a hard-coded power law clip(1.5e-4*(2000/p)**0.8, ...) while a Peng-Robinson EOS exists in the same class (_setup_pr_eos_co2). Measured disagreement with -(1/B)dB/dP from PR: 2.6x-8.3x. Uncited.",
+      "should_reopen": true
+    },
+    {
+      "finding_id": "HIGH-23",
+      "category": "PHYSICAL",
+      "claimed": "n/a (invariant)",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "PHYSICAL_CONSISTENCY",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "INV-LEDGER",
+      "category": "MATHEMATICAL",
+      "claimed": "n/a (invariant)",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    },
+    {
+      "finding_id": "INV-RECYCLE",
+      "category": "MATHEMATICAL",
+      "claimed": "n/a (invariant)",
+      "verdict": "UNKNOWN_EVIDENCE_REQUIRED",
+      "evidence": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "measured": null,
+      "evidence_tier": "MATHEMATICAL_CORRECTNESS",
+      "residual": "probe raised ModuleNotFoundError: No module named 'numpy'",
+      "should_reopen": false
+    }
+  ],
+  "wiki_issues": [],
+  "counts": {
+    "CONFIRMED": 3,
+    "CONFIRMED_BUT_INERT": 0,
+    "PARTIALLY_RESOLVED": 1,
+    "REGRESSED": 0,
+    "STILL_OPEN": 2,
+    "UNKNOWN_EVIDENCE_REQUIRED": 12
+  },
+  "requires_reopening": [
+    "CRIT-03",
+    "CRIT-18",
+    "CRIT-21"
+  ]
+}

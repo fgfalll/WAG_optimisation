@@ -1,4 +1,3 @@
-import json
 from PyQt6.QtWidgets import (
     QDialog, QHBoxLayout, QVBoxLayout, QListWidget, QLineEdit, QTextEdit,
     QPushButton, QSplitter, QWidget, QGroupBox, QCheckBox, QMessageBox, QListWidgetItem

@@ -6,10 +6,12 @@ from copy import deepcopy
 import sys
 from pathlib import Path
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, message=".*pkg_resources is deprecated as an API.*")
+
 try:
     from UQpy.distributions import Normal, Uniform, Lognormal, JointIndependent
 
-    Triangular = None
     from UQpy.sampling import LatinHypercubeSampling
     from UQpy.run_model import RunModel
     from UQpy.surrogates import PolynomialChaosExpansion as PCE
@@ -24,7 +26,6 @@ except ImportError as e:
     )
     OptimizationEngine, EconomicParameters = object, object
     Normal, Uniform, Lognormal, JointIndependent = object, object, object, object
-    Triangular = None
     LatinHypercubeSampling, RunModel, PCE, Sobol = object, object, object, object
 
 import plotly.graph_objects as go
@@ -309,9 +310,6 @@ class UncertaintyQuantificationEngine:
 
         param_names = [p["name"] for p in self.param_definitions]
         
-        # In UQpy 4.1.6, we use PceSensitivity for analytical Sobol indices from PCE
-        from UQpy.sensitivity import PceSensitivity
-        
         try:
             # Manually calculate Sobol indices because PceSensitivity.run() is broken 
             # in UQpy 4.1.6 for single output (it calls get_moments() which fails).
@@ -471,71 +469,3 @@ class UncertaintyQuantificationEngine:
             yaxis_title="Sensitivity Index",
         )
         return fig, None
-
-        data = mc_results_df[objective_col].dropna()
-        if data.empty:
-            return None
-
-        fig = make_subplots(
-            rows=1,
-            cols=2,
-            subplot_titles=("Histogram (PDF)", "Cumulative Distribution (CDF)"),
-        )
-        fig.add_trace(
-            go.Histogram(x=data, name="PDF", histnorm="probability density"),
-            row=1,
-            col=1,
-        )
-
-        sorted_data = np.sort(data)
-        y_cdf = np.arange(1, len(sorted_data) + 1) / len(sorted_data)
-        fig.add_trace(
-            go.Scatter(x=sorted_data, y=y_cdf, name="CDF", mode="lines"), row=1, col=2
-        )
-
-        title_text = (
-            f"Uncertainty Distribution for {objective_col.replace('_', ' ').title()}"
-        )
-        fig.update_layout(title_text=title_text, showlegend=False)
-        fig.update_xaxes(
-            title_text=objective_col.replace("_", " ").title(), row=1, col=1
-        )
-        fig.update_xaxes(
-            title_text=objective_col.replace("_", " ").title(), row=1, col=2
-        )
-        fig.update_yaxes(title_text="Density", row=1, col=1)
-        fig.update_yaxes(title_text="Cumulative Probability", row=1, col=2)
-        return fig
-
-    def plot_pce_sobol_indices(
-        self, pce_results: Dict[str, Any]
-    ) -> Optional[go.Figure]:
-        main_effects = pce_results.get("sobol_main_effects")
-        total_effects = pce_results.get("sobol_total_effects")
-
-        if not all([main_effects, total_effects]):
-            logger.warning("Cannot plot Sobol indices: Results are missing.")
-            return None
-
-        param_names = list(main_effects.keys())
-        fig = go.Figure(
-            data=[
-                go.Bar(
-                    name="Main Effect (S1)",
-                    x=param_names,
-                    y=list(main_effects.values()),
-                ),
-                go.Bar(
-                    name="Total Effect (ST)",
-                    x=param_names,
-                    y=list(total_effects.values()),
-                ),
-            ]
-        )
-        fig.update_layout(
-            barmode="group",
-            title_text=f"Sobol Sensitivity Indices for {pce_results['target_objective'].replace('_', ' ').title()}",
-            xaxis_title="Uncertain Parameters",
-            yaxis_title="Sensitivity Index",
-        )
-        return fig

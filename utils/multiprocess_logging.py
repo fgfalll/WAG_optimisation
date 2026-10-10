@@ -7,11 +7,13 @@ import logging
 import logging.handlers
 import multiprocessing
 import os
-import sys
 import threading
+import uuid
 from functools import partial
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
+
+from utils.path_utils import get_logs_dir
 
 _queue: Optional[multiprocessing.Queue] = None
 _listener: Optional[logging.handlers.QueueListener] = None
@@ -40,7 +42,7 @@ class SafeFileHandler(logging.FileHandler):
         """
         try:
             super().emit(record)
-        except (PermissionError, OSError) as e:
+        except (PermissionError, OSError):
             # Silently drop log records if file is locked or inaccessible
             # This prevents crashes during multiprocessing on Windows
             # The logs are lost, but the application continues to run
@@ -50,6 +52,17 @@ class SafeFileHandler(logging.FileHandler):
             # to prevent cascading failures in the logging system
             pass
 
+
+class SafeQueueListener(logging.handlers.QueueListener):
+    """
+    QueueListener that gracefully handles broken pipes on Windows during shutdown.
+    """
+    def dequeue(self, block: bool) -> logging.LogRecord:
+        try:
+            return super().dequeue(block)
+        except (EOFError, BrokenPipeError, OSError):
+            # Return the sentinel to gracefully stop the listener
+            return None
 
 def setup_queue_logging(
     log_file_path: Path,
@@ -85,7 +98,7 @@ def setup_queue_logging(
         formatter = logging.Formatter(format_str)
         file_handler.setFormatter(formatter)
 
-        _listener = logging.handlers.QueueListener(
+        _listener = SafeQueueListener(
             _queue,
             file_handler,
             respect_handler_level=True
@@ -137,7 +150,7 @@ def _reset_all_loggers() -> None:
 
         # Create a list of items first to avoid RuntimeError during iteration
         loggers_to_reset = []
-        for name, logger_obj in logger_dict.items():
+        for logger_obj in logger_dict.values():
             if isinstance(logger_obj, logging.Logger):
                 loggers_to_reset.append(logger_obj)
 
@@ -268,3 +281,61 @@ def shutdown_queue_logging() -> None:
             _queue.close()
             _queue.join_thread()
             _queue = None
+
+
+def init_application_logging(
+    config: Optional[Any] = None,
+    session_id: Optional[str] = None,
+    qt_handler: Optional[logging.Handler] = None,
+) -> Path:
+    """
+    Initialize application-level queue logging based on configuration settings.
+
+    Args:
+        config: Optional ConfigManager instance or configuration mapping.
+        session_id: Unique session identifier string.
+        qt_handler: Optional Qt GUI logging handler (e.g., QtLogHandler).
+
+    Returns:
+        Path to the configured log file.
+    """
+    log_config = {}
+    if config is not None:
+        if hasattr(config, "get"):
+            log_config = config.get("Logging", {}) or {}
+        elif isinstance(config, dict):
+            log_config = config.get("Logging", {}) or {}
+
+    log_format_str = log_config.get(
+        "format", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    log_file_str = log_config.get("log_file", "app_co2eor.log") or "app_co2eor.log"
+
+    session_logging = log_config.get("session_based", True)
+    if session_logging:
+        sid = session_id or str(uuid.uuid4())[:8]
+        log_file_str = f"session_{sid}.log"
+
+    log_level_str = log_config.get("level", "WARNING").upper()
+    log_level = getattr(logging, log_level_str, logging.DEBUG)
+
+    logs_dir = get_logs_dir()
+    try:
+        logs_dir.mkdir(parents=True, exist_ok=True)
+    except OSError as e:
+        logging.warning(
+            f"Could not create logs directory. Logging to current directory. Error: {e}"
+        )
+        logs_dir = Path.cwd()
+
+    log_file_path = logs_dir / log_file_str
+    setup_queue_logging(log_file_path, log_level, log_format_str)
+
+    if qt_handler is not None:
+        root_logger = logging.getLogger()
+        root_logger.addHandler(qt_handler)
+
+    logger = logging.getLogger(__name__)
+    logger.info(f"Logging configured for multiprocess safety. File: {log_file_path}")
+    return log_file_path
+

@@ -1,6 +1,10 @@
 from __future__ import annotations
 import logging
 from typing import Optional, Any, Dict, List, Tuple
+import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QGridLayout, QGroupBox, QLabel, QLineEdit,

@@ -2,20 +2,14 @@
 Fast Surrogate Engine for CO2 EOR Optimization
 ==============================================
 
-This module provides ultra-fast surrogate models for optimization screening.
-Uses analytical models and response surfaces instead of numerical simulation.
-
-Performance Targets:
-- Evaluation time: < 1ms per scenario
-- Accuracy: < 10% relative error vs simple engine
-- Memory: < 100MB for trained models
-- Speedup: 1000x faster than simple engine
+Physics-informed intermediate reservoir simulation engine for CO2 EOR.
 """
 
 from .surrogate_models import (
     BaseSurrogateModel,
     AnalyticalSurrogate,
-    ResponseSurfaceSurrogate,
+    create_surrogate_model,
+    get_available_surrogate_models,
 )
 from .surrogate_engine import SurrogateEngine, SurrogateEngineWrapper
 from .analytical_models import (
@@ -24,38 +18,59 @@ from .analytical_models import (
     MiscibleSurrogate,
     ImmiscibleSurrogate,
     HybridSurrogate,
+    PhDHybridSurrogate,
 )
-from .response_surfaces import (
-    PolynomialResponseSurface,
-    RBFResponseSurface,
+from .profile_generator_fast import FastProfileGenerator
+from .pvt_state import SolventExtendedPVTEngine
+from .geomechanics_fault import GeomechanicsFaultModel
+from .relative_permeability import (
+    stone_1_three_phase_relperm,
+    carlson_trapped_gas,
+    carlson_imbibition_gas_relperm,
+    corey_two_phase_relperm,
+    normalize_saturations,
 )
-from .model_factory import create_surrogate_model, get_available_surrogate_models
-from .feature_transformer import FeatureTransformer
+from .well_mechanics import (
+    calculate_peaceman_index_horizontal,
+    calculate_peaceman_index_vertical,
+    calculate_vertical_perforation_overlap,
+    calculate_interwell_transmissibility,
+    generate_synthetic_well_trajectory,
+    validate_well_network,
+)
 
 __all__ = [
-    # Base classes
+    # Base and Surrogate Models
     "BaseSurrogateModel",
     "AnalyticalSurrogate",
-    "ResponseSurfaceSurrogate",
-    # Main engine
+    "create_surrogate_model",
+    "get_available_surrogate_models",
+    # Main Engine
     "SurrogateEngine",
     "SurrogateEngineWrapper",
-    # Analytical models
+    # Physics Engines
+    "FastProfileGenerator",
+    "SolventExtendedPVTEngine",
+    "GeomechanicsFaultModel",
+    "stone_1_three_phase_relperm",
+    "carlson_trapped_gas",
+    "carlson_imbibition_gas_relperm",
+    "corey_two_phase_relperm",
+    "normalize_saturations",
+    # Well Mechanics
+    "calculate_peaceman_index_horizontal",
+    "calculate_peaceman_index_vertical",
+    "calculate_vertical_perforation_overlap",
+    "calculate_interwell_transmissibility",
+    "generate_synthetic_well_trajectory",
+    "validate_well_network",
+    # Analytical Recovery Models
     "AnalyticalRecoveryModel",
     "BuckleyLeverettSurrogate",
     "MiscibleSurrogate",
     "ImmiscibleSurrogate",
     "HybridSurrogate",
-    # Response surfaces
-    "PolynomialResponseSurface",
-    "RBFResponseSurface",
-    # Factory
-    "create_surrogate_model",
-    "get_available_surrogate_models",
-    # Utilities
-    "FeatureTransformer",
+    "PhDHybridSurrogate",
 ]
 
-# Version info
-__version__ = "0.1.0"
-__author__ = "CO2 EOR Optimizer Team"
+__version__ = "0.8.5"

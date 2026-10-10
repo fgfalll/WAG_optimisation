@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Dict
+from typing import List, Optional
 
 import numpy as np
 from PyQt6.QtWidgets import (
@@ -21,6 +21,7 @@ from PyQt6.QtWidgets import (
     QFormLayout,
     QTabWidget,
     QTableWidget,
+    QTableWidgetItem,
 )
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QEvent
@@ -44,14 +45,7 @@ except ImportError:
     MATPLOTLIB_AVAILABLE = False
     logging.warning("Matplotlib not found. Log plotting will be disabled.")
 
-try:
-    from core.data_models import WellData
-except ImportError:
-
-    class WellData:
-        pass
-
-    logging.critical("LogViewerDialog: Could not import WellData model.")
+from core.data_models import WellData
 
 logger = logging.getLogger(__name__)
 
@@ -188,8 +182,6 @@ class WellViewerDialog(QDialog):
         self.perforations_table.setHorizontalHeaderLabels([self.tr("Top MD"), self.tr("Bottom MD")])
         self.perforations_layout.addWidget(self.perforations_table)
         self.right_tabs.addTab(self.perforations_group, self.tr("Perforations"))
-
-        splitter.addWidget(self.logs_group)
 
         splitter.setSizes([200, 800])
         main_layout.addWidget(splitter, 1)

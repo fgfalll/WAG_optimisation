@@ -13,7 +13,7 @@ __author__ = "TIndustials"
 __email__ = "contact@tarascv.netlify.app"
 __url__ = "https://tarascv.netlify.app/"
 
-from path_utils import get_app_root, get_resource_path
+from utils.path_utils import get_app_root, get_resource_path
 
 __all__ = [
     "__version__",

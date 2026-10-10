@@ -8,57 +8,95 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox, QLabel,
     QPushButton, QTabWidget, QFileDialog, QMessageBox, QLineEdit,
     QDialog, QListWidget, QListWidgetItem,
-    QSizePolicy, QCheckBox, QTableWidget, QTableWidgetItem,
-    QRadioButton, QHeaderView, QApplication, QSplitter, QComboBox, QFormLayout
+    QSizePolicy, QCheckBox, QTableWidget, QTableWidgetItem, QAbstractItemView,
+    QRadioButton, QHeaderView, QApplication, QSplitter, QComboBox, QFormLayout,
+    QDoubleSpinBox, QScrollArea, QFrame, QStackedWidget
 )
-from PyQt6.QtGui import QIcon, QPixmap
+from PyQt6.QtGui import QIcon, QPixmap, QColor
 from PyQt6.QtCore import pyqtSignal, Qt, QLocale, QEvent
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.figure import Figure
 
 import plotly.graph_objects as go
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 
 try:
     from utils.preferences_manager import PreferencesManager
-    from config_manager import ConfigManager
-except ImportError:
+    from utils.config_manager import ConfigManager
+except ImportError as e:
     PreferencesManager = None
     ConfigManager = None
-    logging.critical("DataManagementWidget: PreferencesManager or ConfigManager not found. Unit system preferences will not work.")
+    logging.critical(f"DataManagementWidget: PreferencesManager or ConfigManager not found ({e}). Unit system preferences will not work.")
 
 try:
     from .widgets.parameter_input_group import ParameterInputGroup
     from .widgets.pvt_editor_dialog import PVTEditorDialog
     from .widgets.log_viewer_dialog import WellViewerDialog
     from .widgets.manual_well_dialog import ManualWellDialog
-except ImportError as e:
-    class ParameterInputGroup(QWidget):
-        def set_label_text(self, text: str): pass
-        def get_value(self): return None
-        def set_value(self, value): pass
-        def clear_error(self): pass
-        def show_error(self, msg: str): pass
-    class PVTEditorDialog(QDialog): pass
-    class LogViewerDialog(QDialog): pass
-    class ManualWellDialog(QDialog): pass
-    logging.critical(f"DataManagementWidget: Failed to import critical UI components: {e}")
+    from .widgets.geostatistics_visualizer_widget import GeostatisticsVisualizerWidget
+    from .widgets.geology_cross_section_widget import GeologyCrossSectionWidget
+    from .widgets.fault_geometry_visualizer_widget import FaultGeometryVisualizerWidget
+    from .widgets.well_trajectory_renderer_widget import WellTrajectoryRendererWidget
+    from .dialogs.visual_audit_modal import VisualAuditModal
+except ImportError:
+    try:
+        from ui.widgets.parameter_input_group import ParameterInputGroup
+        from ui.widgets.pvt_editor_dialog import PVTEditorDialog
+        from ui.widgets.log_viewer_dialog import WellViewerDialog
+        from ui.widgets.manual_well_dialog import ManualWellDialog
+        from ui.widgets.geostatistics_visualizer_widget import GeostatisticsVisualizerWidget
+        from ui.widgets.geology_cross_section_widget import GeologyCrossSectionWidget
+        from ui.widgets.fault_geometry_visualizer_widget import FaultGeometryVisualizerWidget
+        from ui.widgets.well_trajectory_renderer_widget import WellTrajectoryRendererWidget
+        from ui.dialogs.visual_audit_modal import VisualAuditModal
+    except ImportError as e:
+        class ParameterInputGroup(QWidget):
+            def set_label_text(self, text: str): pass
+            def get_value(self): return None
+            def set_value(self, value): pass
+            def clear_error(self): pass
+            def show_error(self, msg: str): pass
+        class PVTEditorDialog(QDialog): pass
+        class WellViewerDialog(QDialog): pass
+        class ManualWellDialog(QDialog): pass
+        class GeostatisticsVisualizerWidget(QWidget): pass
+        class GeologyCrossSectionWidget(QWidget): pass
+        class FaultGeometryVisualizerWidget(QWidget): pass
+        class WellTrajectoryRendererWidget(QWidget): pass
+        class VisualAuditModal(QDialog): pass
+        logging.critical(f"DataManagementWidget: Failed to import critical UI components: {e}")
 
-from core.data_models import WellData, ReservoirData, EOSModelParameters, PVTProperties, GeostatisticalParams, LayerDefinition
-from parsers.las_parser import parse_las, MissingWellNameError
+from core.data_models import WellData, ReservoirData, EOSModelParameters, PVTProperties, GeostatisticalParams, LayerDefinition, EmpiricalFittingParameters
+from core.reservoir_state_manager import ReservoirStateManager
+from core.engine_surrogate.well_mechanics import (
+    validate_well_network,
+    calculate_peaceman_index_horizontal,
+    calculate_peaceman_index_vertical,
+    calculate_vertical_perforation_overlap,
+    calculate_interwell_transmissibility,
+)
 
-# Data integration and engine factory for engine compatibility
+# Data integration for engine compatibility
 try:
     from core.data_integration_engine import DataIntegrationEngine
-    from core.engine_factory import EngineFactory
     DATA_INTEGRATION_AVAILABLE = True
-    ENGINE_FACTORY_AVAILABLE = True
 except ImportError:
     DATA_INTEGRATION_AVAILABLE = False
-    ENGINE_FACTORY_AVAILABLE = False
-    logging.warning("DataIntegrationEngine or EngineFactory not available. Engine integration will be limited.")
+    logging.warning("DataIntegrationEngine not available. Engine integration will be limited.")
+
+try:
+    from ui.workbench import SubsurfaceWorkbenchWidget
+    WORKBENCH_AVAILABLE = True
+except ImportError:
+    try:
+        from .workbench import SubsurfaceWorkbenchWidget
+        WORKBENCH_AVAILABLE = True
+    except ImportError as e:
+        WORKBENCH_AVAILABLE = False
+        SubsurfaceWorkbenchWidget = None
+        logging.warning(f"SubsurfaceWorkbenchWidget not available: {e}")
 
 
 logger = logging.getLogger(__name__)
@@ -76,22 +114,22 @@ class DataManagementWidget(QWidget):
         'perm': ("Perm ({unit})", "lineedit", float, {'default_value': 100.0}),
         'area': ("Area ({unit})", "lineedit", float, {'default_value': 1000.0}),
         'thickness': ("Net Pay ({unit})", "lineedit", float, {'default_value': 50.0}),
-        'swi': ("Initial Water Sat. (Swi)", "lineedit", float, {'default_value': 0.25, 'decimals': 3}),
-        'boi': ("Initial Oil FVF (Boi)", "lineedit", float, {'default_value': 1.2, 'decimals': 3}),
+        'swi': ("Initial Sw (Swi)", "lineedit", float, {'default_value': 0.25, 'decimals': 3}),
+        'boi': ("Initial Bo (Boi)", "lineedit", float, {'default_value': 1.2, 'decimals': 3}),
         'ooip_stb': ("Direct OOIP ({unit})", "lineedit", float, {'default_value': 10000000.0}),
-        'length': ("Reservoir Length ({unit})", "lineedit", float, {'default_value': 2000.0}),
+        'length': ("Length ({unit})", "lineedit", float, {'default_value': 2000.0}),
         'dip_angle': ("Dip Angle (°)", "lineedit", float, {'default_value': 0.0}),
-        'density_contrast': ("Density Contrast (g/cm³)", "lineedit", float, {'default_value': 0.3, 'decimals': 3}),
-        'interfacial_tension': ("Interfacial Tension (dynes/cm)", "lineedit", float, {'default_value': 5.0}),
-        'rock_compressibility': ("Rock Compressibility (1/psi)", "lineedit", float, {'default_value': 3e-6, 'decimals': 8}),
+        'density_contrast': ("Density Diff (g/cm³)", "lineedit", float, {'default_value': 0.3, 'decimals': 3}),
+        'interfacial_tension': ("IFT (dynes/cm)", "lineedit", float, {'default_value': 5.0}),
+        'rock_compressibility': ("Rock Comp (1/psi)", "lineedit", float, {'default_value': 3e-6, 'decimals': 8}),
         'kv_kh_ratio': ("Kv/Kh Ratio", "lineedit", float, {'default_value': 0.1, 'decimals': 3}),
-        's_gc': ("Critical Gas Saturation (Sgc)", "lineedit", float, {'default_value': 0.05, 'decimals': 3}),
-        'n_o': ("Corey Exponent - Oil (No)", "lineedit", float, {'default_value': 2.0, 'decimals': 2}),
-        'n_g': ("Corey Exponent - Gas (Ng)", "lineedit", float, {'default_value': 2.0, 'decimals': 2}),
-        's_wc': ("Connate Water Saturation (Swc)", "lineedit", float, {'default_value': 0.2, 'decimals': 3}),
-        's_orw': ("Residual Oil Sat. - Water (Sorw)", "lineedit", float, {'default_value': 0.2, 'decimals': 3}),
-        'n_w': ("Corey Exponent - Water (Nw)", "lineedit", float, {'default_value': 2.0, 'decimals': 2}),
-        'n_ow': ("Corey Exponent - Oil in Water (Now)", "lineedit", float, {'default_value': 2.0, 'decimals': 2}),
+        's_gc': ("Sgc (Gas)", "lineedit", float, {'default_value': 0.05, 'decimals': 3}),
+        'n_o': ("No (Oil)", "lineedit", float, {'default_value': 2.0, 'decimals': 2}),
+        'n_g': ("Ng (Gas)", "lineedit", float, {'default_value': 2.0, 'decimals': 2}),
+        's_wc': ("Swc (Water)", "lineedit", float, {'default_value': 0.2, 'decimals': 3}),
+        's_orw': ("Sorw (Oil/W)", "lineedit", float, {'default_value': 0.2, 'decimals': 3}),
+        'n_w': ("Nw (Water)", "lineedit", float, {'default_value': 2.0, 'decimals': 2}),
+        'n_ow': ("Now (Oil-W)", "lineedit", float, {'default_value': 2.0, 'decimals': 2}),
         
         'rock_type': ("Rock Type", "combobox", str, {
             'default_value': 'sandstone',
@@ -152,6 +190,7 @@ class DataManagementWidget(QWidget):
         'perm': 'permeability',
         'area': 'area',
         'thickness': 'length',
+        'length': 'length',
         'ooip_stb': 'volume',
         'temperature': 'temperature',
         'ref_pres': 'pressure',
@@ -163,17 +202,45 @@ class DataManagementWidget(QWidget):
         'co2_visc': 'viscosity'
     }
 
+    DEFAULT_UNITS = {
+        'permeability': 'mD',
+        'area': 'acres',
+        'length': 'ft',
+        'volume': 'STB',
+        'temperature': '°F',
+        'pressure': 'psia',
+        'gor': 'scf/STB',
+        'fvf': 'rb/STB',
+        'viscosity': 'cP'
+    }
+
     def __init__(self, parent: Optional[QWidget] = None, preferences_manager: Optional[PreferencesManager] = None, config_manager: Optional[ConfigManager] = None):
         super().__init__(parent)
         self.well_data_list: List[WellData] = []
         self.reservoir_data: Optional[ReservoirData] = None
         self.pvt_properties: Optional[PVTProperties] = None
         self.detailed_pvt_data: Optional[Dict[str, Any]] = None
+        self.state_manager = ReservoirStateManager(self)
 
         self.preferences_manager = preferences_manager
         self.config_manager = config_manager
         if self.preferences_manager is None and parent is not None:
             self.preferences_manager = getattr(parent, 'preferences_manager', None)
+        if self.preferences_manager is None:
+            try:
+                from utils.preferences_manager import get_preferences_manager
+                self.preferences_manager = get_preferences_manager()
+            except Exception:
+                pass
+
+        if self.config_manager is None and parent is not None:
+            self.config_manager = getattr(parent, 'config_manager', None)
+        if self.config_manager is None:
+            try:
+                from utils.config_manager import ConfigManager
+                self.config_manager = ConfigManager()
+            except Exception:
+                pass
 
         # Initialize data integration engine for engine compatibility
         self.data_integration_engine = DataIntegrationEngine() if DATA_INTEGRATION_AVAILABLE else None
@@ -192,6 +259,12 @@ class DataManagementWidget(QWidget):
         self._toggle_ooip_mode()
         self._calculate_and_display_ooip()
         self._update_calculated_eor_params()
+        self.calculated_mmp_value: Optional[float] = None
+        self._calculate_and_display_mmp()
+        self._plot_rel_perm_curves(switch_tab=False)
+        self._render_3d_subsurface_view()
+        if hasattr(self, 'right_tab_widget') and hasattr(self, 'view_3d_widget'):
+            self.right_tab_widget.setCurrentWidget(self.view_3d_widget)
 
         self.use_detailed_pvt_checkbox.setChecked(False)
         self._toggle_detailed_pvt_button(False)
@@ -200,7 +273,9 @@ class DataManagementWidget(QWidget):
             self.preferences_manager.display_preferences_changed.connect(self._on_preferences_changed)
             self.preferences_manager.units_preferences_changed.connect(self._on_preferences_changed)
 
-        self.setStyleSheet("...")
+    def set_engine_type(self, engine_type: str) -> None:
+        """Compatibility method for engine type selection."""
+        logger.debug(f"DataManagementWidget: engine_type set to '{engine_type}'")
 
     def changeEvent(self, event: QEvent):
         if event.type() == QEvent.Type.LanguageChange:
@@ -213,6 +288,8 @@ class DataManagementWidget(QWidget):
         self.ooip_direct_radio.toggled.connect(self._toggle_ooip_mode)
 
         self.use_layered_model_checkbox.toggled.connect(self._toggle_layered_model)
+        if hasattr(self, 'use_geostatistical_model_checkbox'):
+            self.use_geostatistical_model_checkbox.toggled.connect(self._toggle_geostatistical_model)
         self.use_detailed_pvt_checkbox.toggled.connect(self._toggle_detailed_pvt_button)
 
         self.add_layer_btn.clicked.connect(self._add_layer_row)
@@ -222,8 +299,11 @@ class DataManagementWidget(QWidget):
         self.detailed_pvt_btn.clicked.connect(self._open_pvt_editor)
 
         self.add_well_btn.clicked.connect(self._add_well_manually)
+        self.import_las_btn.clicked.connect(self._import_las_file)
         self.remove_well_btn.clicked.connect(self._remove_selected_well)
         self.view_well_btn.clicked.connect(self._view_selected_well)
+        self.right_tab_widget.currentChanged.connect(self._on_right_tab_changed)
+        self.main_tab_widget.currentChanged.connect(self._on_main_tab_changed)
 
 
 
@@ -236,7 +316,7 @@ class DataManagementWidget(QWidget):
         self.main_tab_widget.setTabText(2, self.tr("Wells"))
         self.main_tab_widget.setTabText(3, self.tr("Surrogate Tuning"))
 
-        self.generate_data_btn.setText(self.tr("Generate Project Data"))
+        self.generate_data_btn.setText(self.tr("Synchronize & Generate Project Data"))
 
         self.dims_group.setTitle(self.tr("Grid Dimensions"))
         self.ooip_group.setTitle(self.tr("OOIP Determination"))
@@ -245,9 +325,13 @@ class DataManagementWidget(QWidget):
         self.ooip_calc_params_group.setTitle(self.tr("Volumetric Parameters"))
         self.ooip_direct_input_group.setTitle(self.tr("Direct OOIP Value"))
         self.use_layered_model_checkbox.setText(self.tr("Use Layered Reservoir Model"))
+        if hasattr(self, 'use_geostatistical_model_checkbox'):
+            self.use_geostatistical_model_checkbox.setText(self.tr("Use Geostatistical Heterogeneity Model"))
         
         self.uniform_props_group.setTitle(self.tr("Uniform Properties"))
         self.layered_props_group.setTitle(self.tr("Layered Properties"))
+        if hasattr(self, 'geostatistical_props_group'):
+            self.geostatistical_props_group.setTitle(self.tr("Geostatistical Spatial Parameters"))
         self.rel_perm_group.setTitle(self.tr("Relative Permeability"))
         self.plot_rel_perm_btn.setText(self.tr("Plot Curves"))
         self.calculated_params_group.setTitle(self.tr("Calculated Parameters"))
@@ -257,8 +341,12 @@ class DataManagementWidget(QWidget):
 
         self.wells_group.setTitle(self.tr("Well Data"))
         self.add_well_btn.setText(self.tr("Add Well"))
+        if hasattr(self, 'place_well_3d_btn'):
+            self.place_well_3d_btn.setText(self.tr("📍 Place on 3D"))
         self.remove_well_btn.setText(self.tr("Remove Well"))
-        self.view_well_btn.setText(self.tr("View Well"))
+        self.view_well_btn.setText(self.tr("View / Edit Well"))
+        if hasattr(self, 'focus_well_3d_btn'):
+            self.focus_well_3d_btn.setText(self.tr("🔭 Focus in 3D"))
 
 
 
@@ -272,38 +360,186 @@ class DataManagementWidget(QWidget):
         self.ooip_direct_input_group.setVisible(not is_calc_mode)
 
     def _on_preferences_changed(self):
-        if not self.preferences_manager:
-            return
-
         for param_name, widget in self.manual_inputs_widgets.items():
             if param_name in self.UNIT_CATEGORY_MAP:
                 category = self.UNIT_CATEGORY_MAP[param_name]
-                unit = self.preferences_manager.get_display_unit(category)
+                unit = None
+                if self.preferences_manager:
+                    unit = self.preferences_manager.get_display_unit(category)
+                if not unit:
+                    unit = self.DEFAULT_UNITS.get(category, "")
                 
-                label_template, _, _, _ = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS}[param_name]
-                
-                if "{unit}" in label_template:
-                    widget.set_label_text(label_template.format(unit=unit))
+                defs = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS}
+                if param_name in defs:
+                    label_template = defs[param_name][0]
+                    if "{unit}" in label_template:
+                        widget.set_label_text(label_template.format(unit=unit))
 
         self._calculate_and_display_ooip()
         self._update_calculated_eor_params()
 
     def _setup_ui(self):
-        main_layout = QHBoxLayout(self)
+        root_layout = QVBoxLayout(self)
+        root_layout.setContentsMargins(0, 0, 0, 0)
+        root_layout.setSpacing(0)
+
+        # Legacy view mode controls retained in background for test/backward compatibility
+        self.btn_view_workbench = QPushButton("3D Subsurface Studio")
+        self.btn_view_classic = QPushButton("Classic Split-Form")
+
+        # Background Classic Splitter (kept in memory so existing test suites and field dicts work)
+        self.classic_container = QWidget()
+        classic_layout = QHBoxLayout(self.classic_container)
+        classic_layout.setContentsMargins(4, 4, 4, 4)
         splitter = QSplitter(Qt.Orientation.Horizontal)
         
         left_panel = self._create_left_panel()
         right_panel = self._create_right_panel()
+        left_panel.setMinimumWidth(440)
         
         splitter.addWidget(left_panel)
         splitter.addWidget(right_panel)
-        splitter.setSizes([480, 520])
-        
-        main_layout.addWidget(splitter)
+        splitter.setCollapsible(0, False)
+        splitter.setCollapsible(1, False)
+        splitter.setStretchFactor(0, 1)
+        splitter.setStretchFactor(1, 1)
+        splitter.setSizes([540, 660])
+        classic_layout.addWidget(splitter)
+
+        # Primary Modern Subsurface Studio Workbench
+        if WORKBENCH_AVAILABLE and SubsurfaceWorkbenchWidget is not None:
+            self.workbench = SubsurfaceWorkbenchWidget(self, config_manager=self.config_manager)
+            self.workbench.project_data_updated.connect(self._on_workbench_project_data_updated)
+            self.workbench.status_message_updated.connect(self.status_message_updated.emit)
+            root_layout.addWidget(self.workbench, stretch=1)
+        else:
+            self.workbench = None
+            root_layout.addWidget(self.classic_container, stretch=1)
+
+    def _switch_to_workbench_view(self):
+        if not self.workbench:
+            return
+        self.btn_view_workbench.setChecked(True)
+        self.btn_view_classic.setChecked(False)
+        self.btn_view_workbench.setStyleSheet("""
+            QPushButton {
+                background-color: #0d6efd;
+                color: #ffffff;
+                border: 1px solid #0b5ed7;
+                border-radius: 4px;
+                padding: 3px 12px;
+                font-weight: bold;
+                font-size: 11px;
+            }
+            QPushButton:hover {
+                background-color: #0b5ed7;
+            }
+        """)
+        self.btn_view_classic.setStyleSheet("""
+            QPushButton {
+                background-color: #ffffff;
+                color: #475569;
+                border: 1px solid #cbd5e1;
+                border-radius: 4px;
+                padding: 3px 12px;
+                font-size: 11px;
+            }
+            QPushButton:hover {
+                background-color: #e2e8f0;
+                color: #1e293b;
+            }
+        """)
+        self._sync_classic_to_workbench()
+        self.view_stack.setCurrentIndex(0)
+        self.status_message_updated.emit("Switched to 3D Subsurface Studio Workbench", 2500)
+
+    def _switch_to_classic_view(self):
+        self.btn_view_workbench.setChecked(False)
+        self.btn_view_classic.setChecked(True)
+        self.btn_view_classic.setStyleSheet("""
+            QPushButton {
+                background-color: #0d6efd;
+                color: #ffffff;
+                border: 1px solid #0b5ed7;
+                border-radius: 4px;
+                padding: 3px 12px;
+                font-weight: bold;
+                font-size: 11px;
+            }
+            QPushButton:hover {
+                background-color: #0b5ed7;
+            }
+        """)
+        self.btn_view_workbench.setStyleSheet("""
+            QPushButton {
+                background-color: #ffffff;
+                color: #475569;
+                border: 1px solid #cbd5e1;
+                border-radius: 4px;
+                padding: 3px 12px;
+                font-size: 11px;
+            }
+            QPushButton:hover {
+                background-color: #e2e8f0;
+                color: #1e293b;
+            }
+        """)
+        self._sync_workbench_to_classic()
+        self.view_stack.setCurrentIndex(1)
+        self.status_message_updated.emit("Switched to Classic Split-Form View", 2500)
+
+    def _sync_classic_to_workbench(self):
+        if not self.workbench:
+            return
+        all_defs = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS, **self.SURROGATE_TUNING_DEFS}
+        for name, widget in self.manual_inputs_widgets.items():
+            val = widget.get_value()
+            if val is not None:
+                p_type = all_defs.get(name, (None, None, str))[2]
+                try:
+                    self.manual_inputs_values[name] = self._coerce_value(val, p_type)
+                except Exception:
+                    self.manual_inputs_values[name] = val
+        self.workbench.manual_inputs_values.update(self.manual_inputs_values)
+        self.workbench.well_data_list = list(self.well_data_list)
+        if hasattr(self, 'calculated_mmp_value') and self.calculated_mmp_value:
+            self.workbench.calculated_mmp_value = float(self.calculated_mmp_value)
+        self.workbench._refresh_all_views()
+
+    def _sync_workbench_to_classic(self):
+        if not self.workbench:
+            return
+        wb_data = self.workbench.get_current_project_data()
+        self._on_workbench_project_data_updated(wb_data)
+
+    def _on_workbench_project_data_updated(self, payload: Dict[str, Any]):
+        manual = payload.get("manual_inputs", {})
+        self.manual_inputs_values.update(manual)
+        all_defs = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS, **self.SURROGATE_TUNING_DEFS}
+        for name, val in manual.items():
+            if name in self.manual_inputs_widgets and val is not None:
+                try:
+                    p_type = all_defs.get(name, (None, None, str))[2]
+                    self.manual_inputs_widgets[name].set_value(val, emit_signal=False)
+                except Exception:
+                    pass
+
+        self.reservoir_data = payload.get("reservoir_data")
+        self.pvt_properties = payload.get("pvt_properties") or payload.get("pvt_data")
+        self.well_data_list = list(payload.get("well_data_list") or payload.get("wells") or [])
+        if "calculated_mmp" in payload:
+            self.calculated_mmp_value = payload["calculated_mmp"]
+        elif "mmp_value" in payload:
+            self.calculated_mmp_value = payload["mmp_value"]
+
+        self._update_wells_tab_data()
+        self.project_data_updated.emit(self.get_current_project_data())
 
     def _create_left_panel(self) -> QWidget:
         panel = QWidget()
         layout = QVBoxLayout(panel)
+        layout.setContentsMargins(4, 4, 4, 4)
+        layout.setSpacing(6)
         
         self.main_tab_widget = QTabWidget()
         
@@ -317,51 +553,130 @@ class DataManagementWidget(QWidget):
         self.main_tab_widget.addTab(self.wells_tab, QIcon.fromTheme("view-list-tree"), "Wells")
         self.main_tab_widget.addTab(self.surrogate_tuning_tab, QIcon.fromTheme("sliders"), "Surrogate Tuning")
 
-        layout.addWidget(self.main_tab_widget)
+        layout.addWidget(self.main_tab_widget, stretch=1)
+
+        # Action card footer
+        action_footer = QFrame()
+        action_footer.setFrameShape(QFrame.Shape.StyledPanel)
+        action_footer.setStyleSheet("QFrame { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 4px; }")
+        footer_layout = QVBoxLayout(action_footer)
+        footer_layout.setContentsMargins(6, 6, 6, 6)
+        footer_layout.setSpacing(6)
+
+        btn_action_layout = QHBoxLayout()
+        self.pre_flight_audit_btn = QPushButton(QIcon.fromTheme("system-run"), "Pre-Flight Physical Audit")
+        self.pre_flight_audit_btn.setToolTip("Run physics, material balance, and geomechanical Class VI verification")
+        self.pre_flight_audit_btn.clicked.connect(self._launch_pre_flight_audit)
         
-        self.generate_data_btn = QPushButton(QIcon.fromTheme("go-jump"), "Generate Project Data")
-        layout.addWidget(self.generate_data_btn)
+        self.visual_audit_btn = QPushButton(QIcon.fromTheme("system-search"), "Visual Audit Gate")
+        self.visual_audit_btn.setToolTip("Open Shared Earth visual inspection and confirmation gate")
+        self.visual_audit_btn.clicked.connect(self._launch_visual_audit)
+
+        self.model_workstation_btn = QPushButton(QIcon.fromTheme("applications-science"), "Model Workstation")
+        self.model_workstation_btn.setToolTip("Open full-scale multi-domain Shared Earth Model evaluation dashboard")
+        self.model_workstation_btn.clicked.connect(self._launch_model_workstation)
         
+        btn_action_layout.addWidget(self.pre_flight_audit_btn)
+        btn_action_layout.addWidget(self.visual_audit_btn)
+        btn_action_layout.addWidget(self.model_workstation_btn)
+        footer_layout.addLayout(btn_action_layout)
+
+        self.generate_data_btn = QPushButton(QIcon.fromTheme("go-jump"), "Synchronize & Generate Project Data")
+        self.generate_data_btn.setToolTip("Compile input parameters, calculate grid properties, and synchronize across the optimizer")
+        self.generate_data_btn.setStyleSheet("font-weight: bold; padding: 6px;")
+        footer_layout.addWidget(self.generate_data_btn)
+
+        layout.addWidget(action_footer)
+
         return panel
 
     def _create_right_panel(self) -> QWidget:
         panel = QWidget()
         layout = QVBoxLayout(panel)
+        layout.setContentsMargins(2, 2, 2, 2)
         
         self.right_tab_widget = QTabWidget()
         
-        # 2D Plot View
-        self.plot_view_widget = QWidget()
-        plot_view_layout = QVBoxLayout(self.plot_view_widget)
-        self.plot_view = QWebEngineView()
-        plot_view_layout.addWidget(self.plot_view)
-        self.right_tab_widget.addTab(self.plot_view_widget, "2D Plot")
-        
-        # 3D View
+        # 1. 3D Subsurface View (Tab 0 - Default on project startup)
+        # 100% PyVista hardware OpenGL — no Matplotlib 3D
+        from ui.workbench.components.pyvista_reservoir_canvas import PyVistaReservoirCanvas
         self.view_3d_widget = QWidget()
         view_3d_layout = QVBoxLayout(self.view_3d_widget)
-        self.canvas_3d = FigureCanvas(plt.figure())
-        self.ax_3d = self.canvas_3d.figure.add_subplot(111, projection='3d')
-        view_3d_layout.addWidget(self.canvas_3d)
-        self.right_tab_widget.addTab(self.view_3d_widget, "3D View")
+        view_3d_layout.setContentsMargins(2, 2, 2, 2)
+        view_3d_layout.setSpacing(0)
+
+        self.canvas_3d = PyVistaReservoirCanvas(self)
+        view_3d_layout.addWidget(self.canvas_3d, stretch=1)
+
+        # Wire PyVista picking signals to well placement / selection
+        self.canvas_3d.surface_clicked.connect(self._prompt_add_well_at_coords)
+        self.canvas_3d.well_clicked.connect(self._on_pyvista_well_picked)
+
+        self.right_tab_widget.addTab(self.view_3d_widget, "3D Subsurface View")
+
+        # 2. Stratigraphy & Cross-Sections (Tab 1)
+        self.geology_cross_section_widget = GeologyCrossSectionWidget(self)
+        self.right_tab_widget.addTab(self.geology_cross_section_widget, "Stratigraphy & Cross-Sections")
+
+        # 3. Geostatistics & Spatial (Tab 2)
+        self.geostat_widget = GeostatisticsVisualizerWidget(self)
+        self.geostat_tab_widget = self.geostat_widget
+        self.geostat_fig = self.geostat_widget.fig
+        self.geostat_canvas = self.geostat_widget.canvas
+        self.ax_variogram = self.geostat_widget.ax_variogram
+        self.ax_spatial_field = self.geostat_widget.ax_realization
+        self.right_tab_widget.addTab(self.geostat_widget, "Geostatistics & Spatial")
+
+        # 4. Fault & Containment (Tab 3)
+        self.fault_widget = FaultGeometryVisualizerWidget(self)
+        self.right_tab_widget.addTab(self.fault_widget, "Fault & Containment")
+
+        # 5. Relative Permeability (Tab 4)
+        self.relperm_tab_widget = QWidget()
+        relperm_tab_layout = QVBoxLayout(self.relperm_tab_widget)
+        relperm_tab_layout.setContentsMargins(4, 4, 4, 4)
+        self.relperm_fig = Figure(figsize=(7, 4), tight_layout=True)
+        self.relperm_canvas = FigureCanvas(self.relperm_fig)
+        self.ax_water_oil = self.relperm_fig.add_subplot(121)
+        self.ax_gas_oil = self.relperm_fig.add_subplot(122)
+        relperm_tab_layout.addWidget(self.relperm_canvas)
+        self.right_tab_widget.addTab(self.relperm_tab_widget, "Relative Permeability")
+
+        # 6. 2D Plot View (Plotly Diagnostics) (Tab 5)
+        self.plot_view_widget = QWidget()
+        plot_view_layout = QVBoxLayout(self.plot_view_widget)
+        plot_view_layout.setContentsMargins(4, 4, 4, 4)
+        self.plot_view = QWebEngineView()
+        plot_view_layout.addWidget(self.plot_view)
+        self.right_tab_widget.addTab(self.plot_view_widget, "2D Diagnostics")
         
         layout.addWidget(self.right_tab_widget)
         
         return panel
 
     def _create_reservoir_tab(self) -> QWidget:
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        
         tab_panel = QWidget()
+        tab_panel.setMinimumWidth(420)
         res_main_layout = QVBoxLayout(tab_panel)
+        res_main_layout.setContentsMargins(6, 6, 6, 6)
+        res_main_layout.setSpacing(8)
         
         self.dims_group = QGroupBox("Grid Dimensions")
-        dims_layout = QHBoxLayout(self.dims_group)
-        for name in ['nx', 'ny', 'nz']:
+        dims_layout = QGridLayout(self.dims_group)
+        dims_layout.setContentsMargins(4, 4, 4, 4)
+        dims_layout.setSpacing(4)
+        for i, name in enumerate(['nx', 'ny', 'nz']):
             label, w_type, p_type, kwargs = self.MANUAL_RES_DEFS[name]
             input_group = ParameterInputGroup(param_name=name, label_text=label, input_type=w_type, **kwargs)
             input_group.setProperty("param_type", p_type)
             input_group.finalValueChanged.connect(self._on_parameter_changed)
             self.manual_inputs_widgets[name] = input_group
-            dims_layout.addWidget(input_group)
+            dims_layout.addWidget(input_group, 0, i)
         res_main_layout.addWidget(self.dims_group)
         
         self.ooip_group = QGroupBox("OOIP Determination")
@@ -402,15 +717,22 @@ class DataManagementWidget(QWidget):
         ooip_layout.addWidget(self.ooip_direct_input_group)
         res_main_layout.addWidget(self.ooip_group)
         
+        # Heterogeneity and Layering selection (Vertical layout to avoid text truncation)
+        model_choice_layout = QVBoxLayout()
+        model_choice_layout.setSpacing(4)
         self.use_layered_model_checkbox = QCheckBox("Use Layered Reservoir Model")
-        res_main_layout.addWidget(self.use_layered_model_checkbox)
+        self.use_geostatistical_model_checkbox = QCheckBox("Use Geostatistical Heterogeneity Model")
+        model_choice_layout.addWidget(self.use_layered_model_checkbox)
+        model_choice_layout.addWidget(self.use_geostatistical_model_checkbox)
+        res_main_layout.addLayout(model_choice_layout)
 
-        
-
-        
         self.uniform_props_group = QGroupBox("Uniform Properties")
         uniform_props_layout = QGridLayout(self.uniform_props_group)
-        for i, name in enumerate(['poro', 'perm', 'rock_compressibility', 'kv_kh_ratio']):
+        uniform_res_keys = [
+            'poro', 'perm', 'rock_compressibility', 'kv_kh_ratio',
+            'dip_angle', 'density_contrast', 'interfacial_tension'
+        ]
+        for i, name in enumerate(uniform_res_keys):
             label, w_type, p_type, kwargs = self.MANUAL_RES_DEFS[name]
             input_group = ParameterInputGroup(param_name=name, label_text=label, input_type=w_type, **kwargs)
             input_group.setProperty("param_type", p_type)
@@ -420,10 +742,12 @@ class DataManagementWidget(QWidget):
         self.manual_inputs_widgets['poro'].finalValueChanged.connect(self._calculate_and_display_ooip)
         res_main_layout.addWidget(self.uniform_props_group)
         
+        # Layered Properties Group
         self.layered_props_group = QGroupBox("Layered Properties")
         layered_props_layout = QVBoxLayout(self.layered_props_group)
         self.layers_table = QTableWidget()
         self.layers_table.setColumnCount(4)
+        self.layers_table.setHorizontalHeaderLabels(["PV Fraction", "Perm Multiplier", "Porosity", "Thickness (ft)"])
         self.layers_table.horizontalHeader().setStretchLastSection(True)
         self._add_layer_row(pv_frac=0.4, perm_factor=2.5, poro=0.22, thickness=10.0)
         self._add_layer_row(pv_frac=0.6, perm_factor=0.5, poro=0.18, thickness=15.0)
@@ -436,6 +760,51 @@ class DataManagementWidget(QWidget):
         layered_props_layout.addWidget(self.layers_table)
         layered_props_layout.addLayout(layer_button_layout)
         res_main_layout.addWidget(self.layered_props_group)
+        self.layered_props_group.setVisible(False)
+
+        # Geostatistical Properties Group
+        self.geostatistical_props_group = QGroupBox("Geostatistical Spatial Parameters")
+        geostat_layout = QGridLayout(self.geostatistical_props_group)
+        
+        geostat_layout.addWidget(QLabel("Variogram Type:"), 0, 0)
+        self.geostat_variogram_combo = QComboBox()
+        self.geostat_variogram_combo.addItems(["spherical", "exponential", "gaussian", "matern"])
+        geostat_layout.addWidget(self.geostat_variogram_combo, 0, 1)
+
+        geostat_layout.addWidget(QLabel("Correlation Range (ft):"), 1, 0)
+        self.geostat_range_spin = QDoubleSpinBox()
+        self.geostat_range_spin.setRange(10.0, 50000.0)
+        self.geostat_range_spin.setValue(500.0)
+        self.geostat_range_spin.setDecimals(1)
+        geostat_layout.addWidget(self.geostat_range_spin, 1, 1)
+
+        geostat_layout.addWidget(QLabel("Sill (Variance σ²):"), 2, 0)
+        self.geostat_sill_spin = QDoubleSpinBox()
+        self.geostat_sill_spin.setRange(0.01, 10.0)
+        self.geostat_sill_spin.setValue(1.0)
+        self.geostat_sill_spin.setDecimals(2)
+        geostat_layout.addWidget(self.geostat_sill_spin, 2, 1)
+
+        geostat_layout.addWidget(QLabel("Nugget Effect:"), 3, 0)
+        self.geostat_nugget_spin = QDoubleSpinBox()
+        self.geostat_nugget_spin.setRange(0.0, 5.0)
+        self.geostat_nugget_spin.setValue(0.05)
+        self.geostat_nugget_spin.setDecimals(2)
+        geostat_layout.addWidget(self.geostat_nugget_spin, 3, 1)
+
+        geostat_layout.addWidget(QLabel("Anisotropy Ratio (X/Y):"), 4, 0)
+        self.geostat_aniso_spin = QDoubleSpinBox()
+        self.geostat_aniso_spin.setRange(0.1, 20.0)
+        self.geostat_aniso_spin.setValue(1.0)
+        self.geostat_aniso_spin.setDecimals(2)
+        geostat_layout.addWidget(self.geostat_aniso_spin, 4, 1)
+
+        self.plot_geostat_btn = QPushButton(QIcon.fromTheme("view-statistics"), "Generate Variogram & Realization")
+        self.plot_geostat_btn.clicked.connect(self._plot_geostatistics_diagnostics)
+        geostat_layout.addWidget(self.plot_geostat_btn, 5, 0, 1, 2)
+
+        res_main_layout.addWidget(self.geostatistical_props_group)
+        self.geostatistical_props_group.setVisible(False)
         
         self.rel_perm_group = QGroupBox("Relative Permeability")
         rel_perm_layout = QGridLayout(self.rel_perm_group)
@@ -446,9 +815,9 @@ class DataManagementWidget(QWidget):
             input_group.setProperty("param_type", p_type)
             input_group.finalValueChanged.connect(self._on_parameter_changed)
             self.manual_inputs_widgets[name] = input_group
-            rel_perm_layout.addWidget(input_group, i // 3, i % 3)
+            rel_perm_layout.addWidget(input_group, i // 2, i % 2)
         self.plot_rel_perm_btn = QPushButton(QIcon.fromTheme("view-statistics"), "Plot Curves")
-        rel_perm_layout.addWidget(self.plot_rel_perm_btn, (len(rel_perm_keys)) // 3, (len(rel_perm_keys)) % 3)
+        rel_perm_layout.addWidget(self.plot_rel_perm_btn, (len(rel_perm_keys)) // 2, (len(rel_perm_keys)) % 2)
         res_main_layout.addWidget(self.rel_perm_group)
 
         self.calculated_params_group = QGroupBox("Calculated Parameters")
@@ -468,19 +837,32 @@ class DataManagementWidget(QWidget):
         
         res_main_layout.addWidget(self.calculated_params_group)
         
-        self.layered_props_group.setVisible(False)
         self.uniform_props_group.setVisible(True)
-        
-        
         res_main_layout.addStretch()
-        return tab_panel
+        
+        scroll_area.setWidget(tab_panel)
+        return scroll_area
 
     def _create_pvt_tab(self) -> QWidget:
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+
         tab_panel = QWidget()
         pvt_main_layout = QVBoxLayout(tab_panel)
+        pvt_main_layout.setContentsMargins(8, 8, 8, 8)
+        pvt_main_layout.setSpacing(10)
 
         self.use_detailed_pvt_checkbox = QCheckBox("Use Detailed PVT Model")
         pvt_main_layout.addWidget(self.use_detailed_pvt_checkbox)
+
+        self.enforce_step_flash_checkbox = QCheckBox("Enforce Per-Step Flash Calculations (Default: Project PVT Baseline Propagation)")
+        self.enforce_step_flash_checkbox.setToolTip(
+            "When unchecked (default), uses analytical table propagation from project PVT baseline (fast).\n"
+            "When checked, enforces rigorous Peng-Robinson EOS flash calculations on every simulation step."
+        )
+        self.enforce_step_flash_checkbox.setChecked(False)
+        pvt_main_layout.addWidget(self.enforce_step_flash_checkbox)
         
         pvt_props_group = QGroupBox("PVT Properties")
         pvt_props_layout = QGridLayout(pvt_props_group)
@@ -501,45 +883,190 @@ class DataManagementWidget(QWidget):
         self.calc_pvt_btn = QPushButton(QIcon.fromTheme("calculator"), "Estimate PVT from Correlations (Standing/Beggs)")
         self.calc_pvt_btn.clicked.connect(self._calculate_pvt_properties)
         pvt_main_layout.addWidget(self.calc_pvt_btn)
+
+        # Minimum Miscibility Pressure (MMP) Analysis & Fluid Miscibility Group
+        self.mmp_analysis_group = QGroupBox("Minimum Miscibility Pressure (MMP) & Fluid Miscibility")
+        mmp_layout = QVBoxLayout(self.mmp_analysis_group)
+
+        mmp_controls_layout = QHBoxLayout()
+        mmp_method_label = QLabel("Correlation Method:")
+        self.mmp_method_combo = QComboBox()
+        self.mmp_method_combo.addItem("Auto-Select (Best Fit)", "auto")
+        self.mmp_method_combo.addItem("Cronquist (DOE Standard)", "cronquist")
+        self.mmp_method_combo.addItem("Yellig-Metcalfe", "yellig_metcalfe")
+        self.mmp_method_combo.addItem("Lee Correlation", "lee")
+        self.mmp_method_combo.addItem("Alston et al.", "alston")
+        self.mmp_method_combo.addItem("Holm-Josendal", "holm_josendal")
+
+        self.calc_mmp_btn = QPushButton(QIcon.fromTheme("system-run"), "Calculate MMP")
+        self.calc_mmp_btn.clicked.connect(self._calculate_and_display_mmp)
+
+        mmp_controls_layout.addWidget(mmp_method_label)
+        mmp_controls_layout.addWidget(self.mmp_method_combo, 1)
+        mmp_controls_layout.addWidget(self.calc_mmp_btn)
+        mmp_layout.addLayout(mmp_controls_layout)
+
+        mmp_results_layout = QHBoxLayout()
+        self.mmp_value_label = QLabel("Calculated MMP: -- psia")
+        self.mmp_value_label.setStyleSheet("font-size: 13px; font-weight: bold; color: #1e3d59;")
+        self.mmp_status_badge = QLabel("Miscibility Status: Uncalculated")
+        self.mmp_status_badge.setStyleSheet(
+            "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #6c757d; color: white;"
+        )
+        self.mmp_status_badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        mmp_results_layout.addWidget(self.mmp_value_label)
+        mmp_results_layout.addStretch()
+        mmp_results_layout.addWidget(self.mmp_status_badge)
+        mmp_layout.addLayout(mmp_results_layout)
+
+        self.mmp_comparison_label = QLabel("Initial Reservoir Pressure vs MMP: --")
+        self.mmp_comparison_label.setStyleSheet("font-size: 11px; color: #555;")
+        mmp_layout.addWidget(self.mmp_comparison_label)
+
+        pvt_main_layout.addWidget(self.mmp_analysis_group)
         
         pvt_main_layout.addStretch()
-        return tab_panel
+        scroll_area.setWidget(tab_panel)
+        return scroll_area
 
     def _create_wells_tab(self) -> QWidget:
         tab_panel = QWidget()
         wells_main_layout = QVBoxLayout(tab_panel)
-        
-        self.wells_group = QGroupBox("Well Data")
+        wells_main_layout.setContentsMargins(4, 4, 4, 4)
+        wells_main_layout.setSpacing(6)
+
+        # Sub-tabs inside Wells: [3D Trajectories & Pattern | Inter-Well Transmissibility & Overlap]
+        self.wells_sub_tabs = QTabWidget()
+
+        # --- Sub-tab 1: Well Inventory & Engineering Mechanics ---
+        tab_trajectories = QWidget()
+        traj_layout = QVBoxLayout(tab_trajectories)
+        traj_layout.setContentsMargins(4, 4, 4, 4)
+        traj_layout.setSpacing(6)
+
+        # Well Data Group
+        self.wells_group = QGroupBox(self.tr("Well Architecture & Inventory"))
         wells_layout = QVBoxLayout(self.wells_group)
-        
+        wells_layout.setContentsMargins(6, 6, 6, 6)
+        wells_layout.setSpacing(4)
+
         self.well_list_widget = QListWidget()
+        self.well_list_widget.setMinimumHeight(135)
+        self.well_list_widget.currentItemChanged.connect(self._on_well_selected)
         wells_layout.addWidget(self.well_list_widget)
-        
-        buttons_layout = QHBoxLayout()
-        self.add_well_btn = QPushButton(QIcon.fromTheme("list-add"), "Add Well")
-        self.remove_well_btn = QPushButton(QIcon.fromTheme("list-remove"), "Remove Well")
-        self.view_well_btn = QPushButton(QIcon.fromTheme("document-open"), "View Well")
-        buttons_layout.addWidget(self.add_well_btn)
-        buttons_layout.addWidget(self.remove_well_btn)
-        buttons_layout.addWidget(self.view_well_btn)
-        buttons_layout.addStretch()
-        
-        wells_layout.addLayout(buttons_layout)
-        
-        # Info label for one-well support
+
+        btn_row1 = QHBoxLayout()
+        btn_row1.setSpacing(4)
+        self.add_well_btn = QPushButton(QIcon.fromTheme("list-add"), self.tr("Add Well"))
+        self.place_well_3d_btn = QPushButton(self.tr("📍 Place on 3D"))
+        self.place_well_3d_btn.setToolTip(self.tr("Click on the 3D Subsurface Model to position wellhead"))
+        self.place_well_3d_btn.clicked.connect(self._activate_3d_well_placement_mode)
+        self.import_las_btn = QPushButton(QIcon.fromTheme("document-open"), self.tr("Import LAS..."))
+        btn_row1.addWidget(self.add_well_btn)
+        btn_row1.addWidget(self.place_well_3d_btn)
+        btn_row1.addWidget(self.import_las_btn)
+        wells_layout.addLayout(btn_row1)
+
+        btn_row2 = QHBoxLayout()
+        btn_row2.setSpacing(4)
+        self.view_well_btn = QPushButton(QIcon.fromTheme("document-open"), self.tr("View / Edit Well"))
+        self.remove_well_btn = QPushButton(QIcon.fromTheme("list-remove"), self.tr("Remove Well"))
+        self.focus_well_3d_btn = QPushButton(self.tr("🔭 Focus in 3D"))
+        self.focus_well_3d_btn.setToolTip(self.tr("View and highlight this well in the 3D Shared Earth model"))
+        self.focus_well_3d_btn.clicked.connect(self._focus_selected_well_in_3d)
+        btn_row2.addWidget(self.view_well_btn)
+        btn_row2.addWidget(self.remove_well_btn)
+        btn_row2.addWidget(self.focus_well_3d_btn)
+        wells_layout.addLayout(btn_row2)
+
+        # Selected Well Mechanics Inspection Card
+        self.selected_well_mechanics_label = QLabel(self.tr("Select a well above to inspect 3D mechanics & Peaceman WI"))
+        self.selected_well_mechanics_label.setWordWrap(True)
+        self.selected_well_mechanics_label.setStyleSheet(
+            "padding: 8px; background: #e9ecef; border: 1px solid #ced4da; border-radius: 4px; font-size: 8.5pt; color: #1e3d59;"
+        )
+        wells_layout.addWidget(self.selected_well_mechanics_label)
+
+        # Info label for one-well support / pattern guidance
         self.well_info_label = QLabel()
         self.well_info_label.setWordWrap(True)
-        self.well_info_label.setStyleSheet("color: #555; font-style: italic; margin-top: 5px;")
+        self.well_info_label.setStyleSheet("color: #555; font-style: italic; font-size: 8pt; margin-top: 2px;")
         wells_layout.addWidget(self.well_info_label)
-        
-        wells_main_layout.addWidget(self.wells_group)
-        
+
+        traj_layout.addWidget(self.wells_group)
+        traj_layout.addStretch()
+
+        self.well_trajectory_renderer = None
+
+        self.wells_sub_tabs.addTab(tab_trajectories, self.tr("Well Inventory && Mechanics"))
+
+        # --- Sub-tab 2: Inter-Well Transmissibility & Perforation Overlap Validation ---
+        tab_interwell = QWidget()
+        interwell_layout = QVBoxLayout(tab_interwell)
+        interwell_layout.setContentsMargins(6, 6, 6, 6)
+        interwell_layout.setSpacing(6)
+
+        # Header status card
+        header_card = QFrame()
+        header_card.setFrameShape(QFrame.Shape.StyledPanel)
+        header_card.setStyleSheet("QFrame { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 6px; }")
+        hc_layout = QVBoxLayout(header_card)
+        hc_layout.setContentsMargins(4, 4, 4, 4)
+        hc_layout.setSpacing(4)
+
+        self.pattern_assignment_label = QLabel("Operating Pattern: Single-Well Huff-n-Puff")
+        self.pattern_assignment_label.setStyleSheet("font-weight: bold; color: #1e3d59; font-size: 9pt;")
+        hc_layout.addWidget(self.pattern_assignment_label)
+
+        self.overlap_validation_badge = QLabel("Vertical Overlap Status: Evaluating...")
+        self.overlap_validation_badge.setStyleSheet(
+            "padding: 4px 8px; border-radius: 4px; font-weight: bold; background: #6c757d; color: white;"
+        )
+        hc_layout.addWidget(self.overlap_validation_badge)
+
+        overlap_guide = QLabel(
+            "Criterion: Vertical perforation overlap ratio Ω = h_overlap / min(h_i, h_j) must be ≥ 20% "
+            "between injector-producer pairs to establish continuous hydraulic sweep without bypassing pay."
+        )
+        overlap_guide.setWordWrap(True)
+        overlap_guide.setStyleSheet("color: #495057; font-size: 8pt;")
+        hc_layout.addWidget(overlap_guide)
+
+        interwell_layout.addWidget(header_card)
+
+        # Table of Inter-Well Pairs
+        self.interwell_table = QTableWidget()
+        self.interwell_table.setColumnCount(7)
+        self.interwell_table.setHorizontalHeaderLabels([
+            "Injector", "Producer", "Distance (ft)", "Overlap h (ft)",
+            "Overlap %", "Transmissibility (RB/d/psi)", "Sweep Status"
+        ])
+        self.interwell_table.horizontalHeader().setStretchLastSection(True)
+        self.interwell_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.interwell_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.interwell_table.setStyleSheet("font-size: 8pt;")
+        interwell_layout.addWidget(self.interwell_table, stretch=1)
+
+        # Actions row
+        btn_validate_interwell = QPushButton(QIcon.fromTheme("system-run"), "Validate Network Connectivity")
+        btn_validate_interwell.clicked.connect(self._validate_and_update_interwell_table)
+        interwell_layout.addWidget(btn_validate_interwell)
+
+        self.wells_sub_tabs.addTab(tab_interwell, "Inter-Well Transmissibility & Overlap")
+
+        wells_main_layout.addWidget(self.wells_sub_tabs)
         return tab_panel
 
     def _create_surrogate_tuning_tab(self) -> QWidget:
         """Create surrogate engine tuning parameters tab"""
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+
         tab_panel = QWidget()
         layout = QVBoxLayout(tab_panel)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(10)
         
         # Add Calculate Button
         btn_layout = QHBoxLayout()
@@ -607,7 +1134,8 @@ class DataManagementWidget(QWidget):
         layout.addLayout(groups_layout)
         layout.addStretch()
 
-        return tab_panel
+        scroll_area.setWidget(tab_panel)
+        return scroll_area
 
     def _calculate_tuning_parameters(self):
         try:
@@ -754,6 +1282,10 @@ class DataManagementWidget(QWidget):
             sender.show_error(str(e))
             if param_name in self.manual_inputs_values: del self.manual_inputs_values[param_name]
         self._update_calculated_eor_params()
+        if param_name in ['s_wc', 's_orw', 's_gc', 'n_w', 'n_ow', 'n_o', 'n_g', 'k_ro_0', 'k_rg_0', 'k_rw_0']:
+            self._plot_rel_perm_curves(switch_tab=False)
+        if param_name in ['nx', 'ny', 'nz', 'length', 'area', 'thickness', 'perm']:
+            self._render_3d_subsurface_view()
 
 
     def _create_reservoir_data_from_ui(self) -> ReservoirData:
@@ -805,6 +1337,41 @@ class DataManagementWidget(QWidget):
                     grid['PERMY'][:, :, current_z:current_z+layer_thickness_cells] = perm
                     grid['PERMZ'][:, :, current_z:current_z+layer_thickness_cells] = perm * self.manual_inputs_values.get('kv_kh_ratio', 0.1)
                     current_z += layer_thickness_cells
+        elif hasattr(self, 'use_geostatistical_model_checkbox') and self.use_geostatistical_model_checkbox.isChecked():
+            # Geostatistical model with variogram realization
+            geostat_params = GeostatisticalParams(
+                variogram_type=self.geostat_variogram_combo.currentText(),
+                range=float(self.geostat_range_spin.value()),
+                sill=float(self.geostat_sill_spin.value()),
+                nugget=float(self.geostat_nugget_spin.value()),
+                anisotropy_ratio=float(self.geostat_aniso_spin.value()),
+                grid_resolution=(nx, ny)
+            )
+            try:
+                from core.geology.geostatistical_modeling import create_geostatistical_grid
+                base_poro = float(self.manual_inputs_values.get('poro', 0.2))
+                base_perm = float(self.manual_inputs_values.get('perm', 100.0))
+                norm_grid = create_geostatistical_grid((nx, ny), {
+                    'variogram_type': self.geostat_variogram_combo.currentText(),
+                    'range': float(self.geostat_range_spin.value()),
+                    'sill': float(self.geostat_sill_spin.value()),
+                    'nugget': float(self.geostat_nugget_spin.value()),
+                    'anisotropy_ratio': float(self.geostat_aniso_spin.value()),
+                })
+                k_2d = base_perm * np.exp(2.0 * (norm_grid - 0.5))
+                poro_2d = np.clip(base_poro * (k_2d / max(base_perm, 1e-3))**0.25, 0.05, 0.40)
+                grid['PORO'] = np.repeat(poro_2d[:, :, np.newaxis], nz, axis=2)
+                grid['PERMX'] = np.repeat(k_2d[:, :, np.newaxis], nz, axis=2)
+                grid['PERMY'] = grid['PERMX'] / max(float(self.geostat_aniso_spin.value()), 0.1)
+                grid['PERMZ'] = grid['PERMX'] * float(self.manual_inputs_values.get('kv_kh_ratio', 0.1))
+                avg_perm = float(np.mean(k_2d))
+                k_flat = np.sort(k_2d.flatten())
+                k_50 = float(np.percentile(k_flat, 50))
+                k_84_1 = float(np.percentile(k_flat, 15.9))
+                if k_50 > 0:
+                    v_dp = float(np.clip((k_50 - k_84_1) / k_50, 0.0, 0.95))
+            except Exception as e:
+                logger.error(f"Error creating geostatistical grid: {e}", exc_info=True)
         else:
             # Uniform model
             poro = self.manual_inputs_values.get('poro', 0.2)
@@ -829,6 +1396,23 @@ class DataManagementWidget(QWidget):
             except (TypeError, ValueError, KeyError):
                 pass # Keep default if calculation fails
 
+        avg_perm = float(self.manual_inputs_values.get('perm', 100.0))
+        v_dp = 0.0
+        if layer_definitions:
+            total_thickness = sum(layer.thickness for layer in layer_definitions if layer.thickness > 0)
+            if total_thickness > 0:
+                weighted_k = sum((layer.permeability_multiplier * avg_perm) * layer.thickness for layer in layer_definitions if layer.thickness > 0)
+                avg_perm = float(weighted_k / total_thickness)
+                k_values = [layer.permeability_multiplier * avg_perm for layer in layer_definitions if layer.thickness > 0]
+                if len(k_values) >= 3:
+                    sorted_k = sorted(k_values, reverse=True)
+                    k_50 = float(np.percentile(sorted_k, 50))
+                    k_84_1 = float(np.percentile(sorted_k, 15.9))
+                    v_dp = float(np.clip((k_50 - k_84_1) / max(k_50, 1e-5), 0.0, 0.95))
+                elif len(k_values) == 2:
+                    k_max, k_min = max(k_values), min(k_values)
+                    v_dp = float(np.clip((k_max - k_min) / max(k_max, 1e-5), 0.0, 0.95))
+
         reservoir_data = ReservoirData(
             grid=grid,
             pvt_tables=self.detailed_pvt_data if self.detailed_pvt_data else {},
@@ -840,14 +1424,22 @@ class DataManagementWidget(QWidget):
             area_acres=self.manual_inputs_values.get('area'),
             thickness_ft=self.manual_inputs_values.get('thickness'),
             average_porosity=self.manual_inputs_values.get('poro'),
+            average_permeability=avg_perm,
+            v_dp_coefficient=v_dp,
             initial_water_saturation=self.manual_inputs_values.get('swi'),
             oil_fvf=self.manual_inputs_values.get('boi'),
             rock_type=self.manual_inputs_values.get('rock_type'),
             depositional_environment=self.manual_inputs_values.get('depositional_environment'),
             structural_complexity=self.manual_inputs_values.get('structural_complexity'),
+            dip_angle=self.manual_inputs_values.get('dip_angle', 0.0),
+            density_contrast=self.manual_inputs_values.get('density_contrast', 0.3),
+            interfacial_tension=self.manual_inputs_values.get('interfacial_tension', 5.0),
             layer_definitions=layer_definitions,
             geostatistical_params=geostat_params,
         )
+
+        if hasattr(self, 'state_manager') and self.state_manager:
+            self.state_manager.set_reservoir_data(reservoir_data, notify=False)
 
         eos_composition_data = self.config_manager.get_section("eos_composition")
         if eos_composition_data:
@@ -885,26 +1477,8 @@ class DataManagementWidget(QWidget):
                     expected_shape = (len(component_names), 5)
 
                     if component_properties.shape != expected_shape:
-                        from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
                         error_msg = f"EOS component_properties shape {component_properties.shape} != expected {expected_shape}"
                         logger.error(error_msg)
-
-                        # Report to centralized error manager
-                        report_caught_error(
-                            operation="validate EOS component properties shape",
-                            exception=ValueError(error_msg),
-                            context={
-                                "component_names": component_names,
-                                "expected_shape": expected_shape,
-                                "actual_shape": component_properties.shape,
-                                "config_source": "EORParameters" if hasattr(self, 'current_eor_params') else "unknown"
-                            },
-                            user_action_suggested="Check EOS configuration file for correct component properties matrix dimensions",
-                            show_dialog=True,
-                            severity=ErrorSeverity.WARNING,
-                            category=ErrorCategory.CONFIGURATION
-                        )
-
                         QMessageBox.warning(self, "EOS Configuration Error",
                                           f"Invalid EOS component properties shape.\n"
                                           f"Expected: {expected_shape}, Got: {component_properties.shape}\n"
@@ -912,25 +1486,8 @@ class DataManagementWidget(QWidget):
                         component_properties = self._create_default_eos_properties(component_names)
                         logger.warning(f"USING DEFAULT EOS PROPERTIES: {component_properties.shape}")
                 else:
-                    from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
                     error_msg = "EOS component_properties not found in configuration"
                     logger.error(error_msg)
-
-                    # Report to centralized error manager
-                    report_caught_error(
-                        operation="load EOS component properties from configuration",
-                        exception=KeyError(error_msg),
-                        context={
-                            "component_names": component_names,
-                            "config_keys": list(self.eor_params.keys()) if hasattr(self, 'eor_params') else [],
-                            "config_source": "EORParameters" if hasattr(self, 'current_eor_params') else "unknown"
-                        },
-                        user_action_suggested="Add EOS component properties to configuration file or use configuration manager to generate proper EOS data",
-                        show_dialog=True,
-                        severity=ErrorSeverity.WARNING,
-                        category=ErrorCategory.CONFIGURATION
-                    )
-
                     QMessageBox.warning(self, "EOS Configuration Error",
                                       f"{error_msg}.\n"
                                       f"Using default EOS component properties instead.")
@@ -943,26 +1500,8 @@ class DataManagementWidget(QWidget):
                     expected_shape = (len(component_names), len(component_names))
 
                     if binary_interaction_coeffs.shape != expected_shape:
-                        from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
                         error_msg = f"EOS binary_interaction_coeffs shape {binary_interaction_coeffs.shape} != expected {expected_shape}"
                         logger.error(error_msg)
-
-                        # Report to centralized error manager
-                        report_caught_error(
-                            operation="validate EOS binary interaction coefficients shape",
-                            exception=ValueError(error_msg),
-                            context={
-                                "component_names": component_names,
-                                "expected_shape": expected_shape,
-                                "actual_shape": binary_interaction_coeffs.shape,
-                                "config_source": "EORParameters" if hasattr(self, 'current_eor_params') else "unknown"
-                            },
-                            user_action_suggested="Check EOS configuration file for correct binary interaction coefficients matrix dimensions (should be square matrix NxN where N is number of components)",
-                            show_dialog=True,
-                            severity=ErrorSeverity.WARNING,
-                            category=ErrorCategory.CONFIGURATION
-                        )
-
                         QMessageBox.warning(self, "EOS Configuration Error",
                                           f"Invalid EOS binary interaction coefficients shape.\n"
                                           f"Expected: {expected_shape}, Got: {binary_interaction_coeffs.shape}\n"
@@ -970,25 +1509,8 @@ class DataManagementWidget(QWidget):
                         binary_interaction_coeffs = np.eye(len(component_names))
                         logger.warning(f"USING DEFAULT EOS BINARY COEFFICIENTS: {binary_interaction_coeffs.shape}")
                 else:
-                    from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
                     error_msg = "EOS binary_interaction_coeffs not found in configuration"
                     logger.error(error_msg)
-
-                    # Report to centralized error manager
-                    report_caught_error(
-                        operation="load EOS binary interaction coefficients from configuration",
-                        exception=KeyError(error_msg),
-                        context={
-                            "component_names": component_names,
-                            "config_keys": list(self.eor_params.keys()) if hasattr(self, 'eor_params') else [],
-                            "config_source": "EORParameters" if hasattr(self, 'current_eor_params') else "unknown"
-                        },
-                        user_action_suggested="Add EOS binary interaction coefficients to configuration file or use configuration manager to generate proper EOS data",
-                        show_dialog=True,
-                        severity=ErrorSeverity.WARNING,
-                        category=ErrorCategory.CONFIGURATION
-                    )
-
                     QMessageBox.warning(self, "EOS Configuration Error",
                                       f"{error_msg}.\n"
                                       f"Using default identity matrix instead.")
@@ -1063,9 +1585,10 @@ class DataManagementWidget(QWidget):
             oil_viscosity = pvto_data[:, 3] if pvto_data.size > 0 and pvto_data.shape[1] > 3 else np.array([])
 
             gas_fvf = pvtg_data[:, 1] if pvtg_data.size > 0 and pvtg_data.shape[1] > 1 else np.array([])
-            co2_viscosity = np.array([self.manual_inputs_values.get('co2_visc', 0.02)] * len(pressure_points)) if pressure_points.size > 0 else np.array([])
+            gas_visc = self.manual_inputs_values.get('gas_viscosity_cp', self.manual_inputs_values.get('co2_visc', 0.02))
+            co2_viscosity = np.array([gas_visc] * len(pressure_points)) if pressure_points.size > 0 else np.array([])
 
-            return PVTProperties(
+            pvt_props = PVTProperties(
                 pressure_points=pressure_points,
                 oil_fvf=oil_fvf,
                 oil_viscosity=oil_viscosity,
@@ -1078,10 +1601,10 @@ class DataManagementWidget(QWidget):
                 api_gravity=self.manual_inputs_values.get('api_gravity', 35.0),
                 c7_plus_fraction=self.manual_inputs_values.get('c7_plus_fraction', 0.35),
                 co2_solubility_scm_per_bbl=self.manual_inputs_values.get('co2_solubility_scm_per_bbl', 200.0),
-                oil_viscosity_cp=self.manual_inputs_values.get('oil_visc', 0.8),
+                oil_viscosity_cp=self.manual_inputs_values.get('oil_viscosity_cp', self.manual_inputs_values.get('oil_visc', 0.8)),
             )
         else:
-            return PVTProperties(
+            pvt_props = PVTProperties(
                 pressure_points=np.array([]),
                 oil_fvf=np.array([]),
                 oil_viscosity=np.array([]),
@@ -1102,59 +1625,10 @@ class DataManagementWidget(QWidget):
                 gas_fvf_simple=self.manual_inputs_values.get('gas_fvf_simple', 0.01),
             )
 
-    def _add_pvt_row(self):
-        row_position = self.pvt_table.rowCount()
-        self.pvt_table.insertRow(row_position)
+        if hasattr(self, 'state_manager') and self.state_manager:
+            self.state_manager.set_pvt_properties(pvt_props, notify=False)
 
-    def _remove_pvt_row(self):
-        current_row = self.pvt_table.currentRow()
-        if current_row >= 0:
-            self.pvt_table.removeRow(current_row)
-
-    def _plot_pvt_data(self):
-        try:
-            pressure_points = []
-            oil_fvf = []
-            oil_viscosity = []
-            gas_fvf = []
-            co2_viscosity = []
-            rs = []
-
-            for row in range(self.pvt_table.rowCount()):
-                try:
-                    pressure_points.append(float(self.pvt_table.item(row, 0).text()))
-                    oil_fvf.append(float(self.pvt_table.item(row, 1).text()))
-                    oil_viscosity.append(float(self.pvt_table.item(row, 2).text()))
-                    gas_fvf.append(float(self.pvt_table.item(row, 3).text()))
-                    co2_viscosity.append(float(self.pvt_table.item(row, 4).text()))
-                    rs.append(float(self.pvt_table.item(row, 5).text()))
-                except (ValueError, AttributeError):
-                    # Skip rows with invalid data
-                    pass
-
-            if not pressure_points:
-                QMessageBox.warning(self, "No Data", "No valid PVT data to plot.")
-                return
-
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=pressure_points, y=oil_fvf, mode='lines+markers', name='Oil FVF'))
-            fig.add_trace(go.Scatter(x=pressure_points, y=oil_viscosity, mode='lines+markers', name='Oil Viscosity'))
-            fig.add_trace(go.Scatter(x=pressure_points, y=gas_fvf, mode='lines+markers', name='Gas FVF'))
-            fig.add_trace(go.Scatter(x=pressure_points, y=co2_viscosity, mode='lines+markers', name='CO2 Viscosity'))
-            fig.add_trace(go.Scatter(x=pressure_points, y=rs, mode='lines+markers', name='Rs'))
-
-            fig.update_layout(
-                title="PVT Properties",
-                xaxis_title="Pressure",
-                yaxis_title="Value",
-            )
-
-            self.plot_view.setHtml(fig.to_html(include_plotlyjs='cdn'))
-            self.right_tab_widget.setCurrentIndex(0)
-
-        except Exception as e:
-            QMessageBox.critical(self, "Plotting Error", f"Could not plot PVT data:\n{e}")
-            logger.error(f"Error plotting PVT data: {e}", exc_info=True)
+        return pvt_props
 
     def _process_manual_data(self):
         try:
@@ -1220,7 +1694,12 @@ class DataManagementWidget(QWidget):
             else:
                 # Check for injector/producer requirements based on scheme
                 injection_scheme = self.config_manager.get_section("eor_parameters").get("injection_scheme", "continuous").lower()
-                has_injector = any(w.metadata.get('type') == 'injector' or w.metadata.get('status', '').lower() == 'injector' for w in self.well_data_list)
+                has_injector = any(
+                    w.metadata.get('type') == 'injector' or
+                    'injector' in str(w.metadata.get('status', '')).lower() or
+                    'inj' in w.name.lower()
+                    for w in self.well_data_list
+                )
                 
                 if injection_scheme != "huff_n_puff" and not has_injector:
                     # Continuous/WAG usually need an explicit injector.
@@ -1300,6 +1779,7 @@ class DataManagementWidget(QWidget):
                 "pvt_properties": pvt_properties,
                 "well_data_list": self.well_data_list,
                 "detailed_pvt_data": self.detailed_pvt_data,
+                "mmp_value": getattr(self, "calculated_mmp_value", self.manual_inputs_values.get("mmp_value")),
             }
 
             # Process data through integration engine if available for engine compatibility
@@ -1328,6 +1808,9 @@ class DataManagementWidget(QWidget):
                         "reservoir_parameters": {
                             "grid_dimensions": {"nx": nx, "ny": ny, "nz": nz},
                             "block_sizes": {"dx": dx, "dy": dy, "dz": dz},
+                            "thickness_ft": thickness_ft,
+                            "area_acres": area_acres,
+                            "length_ft": length_ft,
                             "initial_pressure": self.manual_inputs_values.get('initial_pressure', 4000.0),
                             "temperature": self.manual_inputs_values.get('temperature', 150.0),
                             "rock_compressibility": self.manual_inputs_values.get('rock_compressibility', 3e-6),
@@ -1355,27 +1838,44 @@ class DataManagementWidget(QWidget):
                             "injection_rate": 5000.0,  # Default injection rate - will be set by optimization widget
                             "target_pressure_psi": 3000.0,  # Default target pressure
                             "mobility_ratio": mobility_ratio,  # Use calculated value
-                            "WAG_ratio": 1.0,  # Default WAG ratio
+                            "wag_ratio": 1.0,  # Default WAG ratio
+                            "WAG_ratio": 1.0,  # Backwards compatibility
                             "default_mmp_fallback": 2500.0,  # Default MMP fallback
                             "default_oil_viscosity_cp": self.manual_inputs_values.get('oil_viscosity_cp', 1.0),
                             "default_co2_viscosity_cp": self.manual_inputs_values.get('gas_viscosity_cp', 0.02),
+                            "enforce_step_flash": bool(getattr(self, 'enforce_step_flash_checkbox', None) and self.enforce_step_flash_checkbox.isChecked()),
+                            "s_gc": self.manual_inputs_values.get('s_gc', 0.05),
+                            "s_wc": self.manual_inputs_values.get('s_wc', 0.20),
+                            "s_orw": self.manual_inputs_values.get('s_orw', 0.25),
+                            "n_w": self.manual_inputs_values.get('n_w', 2.0),
+                            "n_ow": self.manual_inputs_values.get('n_ow', 2.0),
+                            "n_o": self.manual_inputs_values.get('n_o', 2.0),
+                            "n_g": self.manual_inputs_values.get('n_g', 2.0),
                         },
-                        "operational_parameters": {
-                            "project_lifetime_years": 15,  # Default project lifetime - will be set by optimization widget
-                            "recovery_model_selection": "phd_hybrid",
-                        },
-                        "economic_parameters": {
-                            "oil_price_usd_per_bbl": 70.0,  # Default from config
-                            "co2_purchase_cost_usd_per_tonne": 50.0,  # Default from config
-                            "co2_recycle_cost_usd_per_tonne": 15.0,  # Default
-                            "co2_storage_credit_usd_per_tonne": 25.0,  # Default
-                            "water_injection_cost_usd_per_bbl": 1.0,  # Default
-                            "water_disposal_cost_usd_per_bbl": 2.0,  # Default
-                            "discount_rate_fraction": 0.10,  # Default
-                            "capex_usd": 5_000_000.0,  # Default
-                            "fixed_opex_usd_per_year": 200_000.0,  # Default
-                            "variable_opex_usd_per_bbl": 5.0,  # Default
-                        },
+                        "operational_parameters": (
+                            self.config_manager.get_section("OperationalParametersDefaults")
+                            if hasattr(self, "config_manager") and self.config_manager and self.config_manager.get_section("OperationalParametersDefaults")
+                            else {
+                                "project_lifetime_years": 15,
+                                "recovery_model_selection": "phd_hybrid",
+                            }
+                        ),
+                        "economic_parameters": (
+                            self.config_manager.get_section("EconomicParametersDefaults")
+                            if hasattr(self, "config_manager") and self.config_manager and self.config_manager.get_section("EconomicParametersDefaults")
+                            else {
+                                "oil_price_usd_per_bbl": 70.0,
+                                "co2_purchase_cost_usd_per_tonne": 50.0,
+                                "co2_recycle_cost_usd_per_tonne": 15.0,
+                                "co2_storage_credit_usd_per_tonne": 25.0,
+                                "water_injection_cost_usd_per_bbl": 1.0,
+                                "water_disposal_cost_usd_per_bbl": 2.0,
+                                "discount_rate_fraction": 0.10,
+                                "capex_usd": 5_000_000.0,
+                                "fixed_opex_usd_per_year": 200_000.0,
+                                "variable_opex_usd_per_bbl": 5.0,
+                            }
+                        ),
                         "fitting_parameters": {
                             "c7_plus_fraction": self.manual_inputs_values.get('c7_plus_fraction', 0.35),
                             "alpha_base": self.manual_inputs_values.get('alpha_base', 1.0),
@@ -1386,14 +1886,20 @@ class DataManagementWidget(QWidget):
                             "transverse_mixing_calibration": self.manual_inputs_values.get('transverse_mixing_calibration', 0.5),
                             "omega_tl": self.manual_inputs_values.get('omega_tl', 0.6),
                             "k_ro_0": self.manual_inputs_values.get('k_ro_0', 0.8),
-                            "k_rg_0": self.manual_inputs_values.get('k_rg_0', 1.0),
+                            "k_rg_0": self.manual_inputs_values.get('k_rg_0', 0.3),
                             "n_o": self.manual_inputs_values.get('n_o', 2.0),
                             "n_g": self.manual_inputs_values.get('n_g', 2.0),
                         },
                         "well_data": [
                             {
                                 "name": w.name,
-                                "type": w.metadata.get('type', 'producer'),
+                                "type": (
+                                    "injector" if (
+                                        str(w.metadata.get('type', '')).lower() == 'injector' or
+                                        'injector' in str(w.metadata.get('status', '')).lower() or
+                                        'inj' in w.name.lower()
+                                    ) else "producer"
+                                ),
                                 "x": w.well_path[0][0] if w.well_path is not None and len(w.well_path) > 0 else 0,
                                 "y": w.well_path[0][1] if w.well_path is not None and len(w.well_path) > 0 else 0,
                                 "z": w.well_path[0][2] if w.well_path is not None and len(w.well_path) > 0 and len(w.well_path[0]) > 2 else 0,
@@ -1423,6 +1929,14 @@ class DataManagementWidget(QWidget):
                         project_data["operational_parameters"] = engine_data.get("operational_parameters")
                         project_data["economic_parameters"] = engine_data.get("economic_parameters")
                         project_data["well_data_list"] = engine_data.get("well_data", [])
+                        project_data["fitting_parameters"] = engine_data.get("fitting_parameters")
+                        project_data["mmp_value"] = getattr(self, "calculated_mmp_value", self.manual_inputs_values.get("mmp_value"))
+                        if hasattr(self, 'state_manager') and self.state_manager:
+                            self.state_manager.set_well_data_list(self.well_data_list, notify=False)
+                            if engine_data.get("eor_parameters"):
+                                self.state_manager.set_eor_parameters(engine_data.get("eor_parameters"), notify=False)
+                            if engine_data.get("fitting_parameters"):
+                                self.state_manager.set_fitting_parameters(engine_data.get("fitting_parameters"), notify=False)
                         logger.info("Data successfully processed for surrogate engine")
 
                 except Exception as e:
@@ -1435,10 +1949,20 @@ class DataManagementWidget(QWidget):
              QMessageBox.critical(self, self.tr("Generation Error"), self.tr("An error occurred while processing manual data:\n\n{e}").format(e=e))
              logger.error(f"Error processing manual data: {e}", exc_info=True)
 
+    def _get_item_well_name(self, item: QListWidgetItem) -> str:
+        name = item.data(Qt.ItemDataRole.UserRole)
+        if name:
+            return str(name)
+        text = item.text()
+        for prefix in ["[INJ] ", "[PROD] "]:
+            if text.startswith(prefix):
+                return text[len(prefix):]
+        return text
+
     def _update_well_table_tooltips(self):
         for i in range(self.well_list_widget.count()):
             item = self.well_list_widget.item(i)
-            well_name = item.text()
+            well_name = self._get_item_well_name(item)
             well_data = next((w for w in self.well_data_list if w.name == well_name), None)
             if well_data:
                 tooltip = f"""<b>Well:</b> {well_data.name}<br>
@@ -1449,12 +1973,19 @@ class DataManagementWidget(QWidget):
                 item.setToolTip(tooltip)
 
     def _add_well_to_ui(self, well_data: WellData):
-        item = QListWidgetItem(QIcon.fromTheme("document"), well_data.name)
+        is_inj = (
+            str(well_data.metadata.get("type", "")).lower() == "injector" or
+            "injector" in str(well_data.metadata.get("status", "")).lower() or
+            "inj" in well_data.name.lower()
+        )
+        badge = "[INJ]" if is_inj else "[PROD]"
+        item = QListWidgetItem(QIcon.fromTheme("document"), f"{badge} {well_data.name}")
+        item.setData(Qt.ItemDataRole.UserRole, well_data.name)
         self.well_list_widget.addItem(item)
         self._update_well_table_tooltips()
         self._update_calculated_eor_params()
         self._update_well_info_label()
-
+        self._update_wells_tab_data()
 
     def _remove_selected_well(self):
         selected_items = self.well_list_widget.selectedItems()
@@ -1463,7 +1994,7 @@ class DataManagementWidget(QWidget):
             return
 
         for item in selected_items:
-            well_name = item.text()
+            well_name = self._get_item_well_name(item)
             # Remove from internal list
             self.well_data_list = [w for w in self.well_data_list if w.name != well_name]
             # Remove from UI
@@ -1471,7 +2002,134 @@ class DataManagementWidget(QWidget):
         
         self.status_message_updated.emit(self.tr("Removed selected well(s)."), 3000)
         self._update_calculated_eor_params()
-        self._update_well_info_label()
+        self._update_wells_tab_data()
+        self._render_3d_subsurface_view()
+        self._update_geology_cross_section_view()
+        self._update_geostat_view()
+        self._update_fault_view()
+
+    def _get_reservoir_params_dict(self) -> Dict[str, Any]:
+        area_acres = float(self.manual_inputs_values.get('area', 1000.0) or 1000.0)
+        length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
+        width_ft = (area_acres * 43560.0) / max(length_ft, 1.0)
+        depth_ft = float(self.manual_inputs_values.get('depth', 1000.0) or 1000.0)
+        thick_ft = float(self.manual_inputs_values.get('thickness', 100.0) or 100.0)
+        perm_md = float(self.manual_inputs_values.get('permeability', 100.0) or 100.0)
+        porosity = float(self.manual_inputs_values.get('porosity', 0.20) or 0.20)
+        return {
+            "area_acres": area_acres,
+            "length_ft": length_ft,
+            "width_ft": width_ft,
+            "depth_ft": depth_ft,
+            "net_pay_ft": thick_ft,
+            "permeability_md": perm_md,
+            "porosity": porosity,
+        }
+
+    def _on_well_selected(self, current: Optional[QListWidgetItem], previous: Optional[QListWidgetItem]):
+        if not current or not hasattr(self, 'selected_well_mechanics_label'):
+            return
+        well_name = self._get_item_well_name(current)
+        well = next((w for w in self.well_data_list if w.name == well_name), None)
+        if not well:
+            return
+
+        res_params = self._get_reservoir_params_dict()
+        k_md = res_params["permeability_md"]
+        h_ft = res_params["net_pay_ft"]
+
+        meta = getattr(well, "metadata", {}) or {}
+        traj = str(meta.get("trajectory_type", "Vertical"))
+        lat_len = float(meta.get("lateral_length", 1500.0) if "horiz" in traj.lower() else 0.0)
+
+        wi = well.calculate_peaceman_index(k_mD=k_md, h_ft=h_ft, dx_ft=100.0, dy_ft=100.0)
+
+        perfs = getattr(well, "perforations", []) or [
+            [p.get("top", 0), p.get("bottom", 0)] for p in getattr(well, "perforation_properties", [])
+        ]
+        perf_str = ", ".join([f"[{p[0]:.0f}-{p[1]:.0f} ft]" for p in perfs if len(p) >= 2]) if perfs else f"[{res_params['depth_ft']:.0f}-{res_params['depth_ft']+h_ft:.0f} ft]"
+
+        role = "Injector" if ("inj" in well.name.lower() or "injector" in str(meta.get("type", "")).lower() or "injector" in str(meta.get("status", "")).lower()) else "Producer"
+
+        lat_desc = f" | L_lat: {lat_len:.0f} ft" if "horiz" in traj.lower() else ""
+        text = (
+            f"<b>{well.name}</b> ({role}) | <b>Trajectory:</b> {traj}{lat_desc}<br>"
+            f"<b>Perforations:</b> {perf_str} | <b>Peaceman WI:</b> <b>{wi:.2f} STB/d/psi</b>"
+        )
+        self.selected_well_mechanics_label.setText(text)
+
+        if hasattr(self, 'well_trajectory_renderer') and self.well_trajectory_renderer is not None:
+            self.well_trajectory_renderer.highlight_well(well.name)
+        self.highlighted_well_name = well.name
+        self._render_3d_subsurface_view()
+
+    def _validate_and_update_interwell_table(self):
+        if not hasattr(self, 'interwell_table'):
+            return
+
+        res_params = self._get_reservoir_params_dict()
+        validation = validate_well_network(
+            wells=self.well_data_list,
+            reservoir_k_md=res_params["permeability_md"],
+            kv_kh=0.10,
+            reservoir_h_ft=res_params["net_pay_ft"],
+            dx_ft=100.0,
+            dy_ft=100.0,
+            dz_ft=20.0,
+            mu_oil_cp=2.0,
+            min_overlap_threshold=0.20,
+        )
+
+        if hasattr(self, 'pattern_assignment_label'):
+            self.pattern_assignment_label.setText(f"Operating Pattern: {validation['operating_pattern']}")
+
+        if hasattr(self, 'overlap_validation_badge'):
+            if validation["overall_verdict"] == "PASSED":
+                if validation["total_wells"] <= 1:
+                    self.overlap_validation_badge.setText("Status: Cyclic Single-Well Operation")
+                    self.overlap_validation_badge.setStyleSheet(
+                        "padding: 4px 8px; border-radius: 4px; font-weight: bold; background: #17a2b8; color: white;"
+                    )
+                else:
+                    self.overlap_validation_badge.setText("Status: Valid Pattern Sweep (Ω >= 20%)")
+                    self.overlap_validation_badge.setStyleSheet(
+                        "padding: 4px 8px; border-radius: 4px; font-weight: bold; background: #28a745; color: white;"
+                    )
+            else:
+                self.overlap_validation_badge.setText("Status: WARNING - Ineffective Vertical Sweep (Ω < 20%)")
+                self.overlap_validation_badge.setStyleSheet(
+                    "padding: 4px 8px; border-radius: 4px; font-weight: bold; background: #dc3545; color: white;"
+                )
+
+        pairs = validation["interwell_pairs"]
+        self.interwell_table.setRowCount(len(pairs))
+        for row, pair in enumerate(pairs):
+            self.interwell_table.setItem(row, 0, QTableWidgetItem(str(pair["injector"])))
+            self.interwell_table.setItem(row, 1, QTableWidgetItem(str(pair["producer"])))
+            self.interwell_table.setItem(row, 2, QTableWidgetItem(f"{pair['distance_ft']:.1f}"))
+            self.interwell_table.setItem(row, 3, QTableWidgetItem(f"{pair['overlap_ft']:.1f}"))
+            self.interwell_table.setItem(row, 4, QTableWidgetItem(f"{pair['omega_pct']:.1f}%"))
+            self.interwell_table.setItem(row, 5, QTableWidgetItem(f"{pair['transmissibility']:.4f}"))
+
+            status_item = QTableWidgetItem(str(pair["status"]))
+            if pair["is_valid"]:
+                status_item.setForeground(QColor("#28a745"))
+            else:
+                status_item.setForeground(QColor("#dc3545"))
+            self.interwell_table.setItem(row, 6, status_item)
+
+    def _update_wells_tab_data(self):
+        if hasattr(self, 'well_trajectory_renderer') and self.well_trajectory_renderer is not None:
+            self.well_trajectory_renderer.set_wells_data(
+                self.well_data_list, self._get_reservoir_params_dict()
+            )
+        self._validate_and_update_interwell_table()
+        if hasattr(self, 'well_list_widget') and self.well_list_widget.count() > 0:
+            current_item = self.well_list_widget.currentItem()
+            if not current_item:
+                self.well_list_widget.setCurrentRow(0)
+            else:
+                self._on_well_selected(current_item, None)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -1495,12 +2153,14 @@ class DataManagementWidget(QWidget):
             else:
                 self.well_info_label.setText(self.tr("Huff-n-Puff: Please add at least one well."))
         else:
-            if well_count == 1:
-                self.well_info_label.setText(self.tr("Single well detected: Surrogate engine will use field-wide injection rates. For detailed simulation, both injector and producer are recommended."))
-            elif well_count == 0:
+            n_inj = sum(1 for w in self.well_data_list if w.metadata.get('type') == 'injector' or 'injector' in str(w.metadata.get('status', '')).lower() or 'inj' in w.name.lower())
+            n_prod = well_count - n_inj
+            if well_count == 0:
                 self.well_info_label.setText(self.tr("Please add at least one well for CO2-EOR optimization."))
+            elif n_inj == 0 and scheme != "primary_depletion":
+                self.well_info_label.setText(self.tr(f"{well_count} producer(s) detected with 0 injectors: Surrogate engine will use field-wide injection. Add an injector well for pattern simulation."))
             else:
-                self.well_info_label.setText("")
+                self.well_info_label.setText(self.tr(f"Configuration: {n_prod} producer(s), {n_inj} injector(s)."))
 
 
 
@@ -1517,9 +2177,20 @@ class DataManagementWidget(QWidget):
             self.pvt_properties = None
             self.detailed_pvt_data = None
             self.manual_inputs_values.clear()
+            self.calculated_mmp_value = None
+
+            # Reset MMP labels if initialized
+            if hasattr(self, 'mmp_value_label'):
+                self.mmp_value_label.setText("Calculated MMP: -- psia")
+                self.mmp_status_badge.setText("Miscibility Status: Uncalculated")
+                self.mmp_status_badge.setStyleSheet(
+                    "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #6c757d; color: white;"
+                )
+                self.mmp_comparison_label.setText("Initial Reservoir Pressure vs MMP: --")
 
             # Clear UI elements
             self.well_list_widget.clear()
+            self._update_wells_tab_data()
             self.layers_table.setRowCount(0)
 
             # Reset all manual input widgets to their default values
@@ -1533,14 +2204,10 @@ class DataManagementWidget(QWidget):
 
             # Reset checkboxes and radio buttons
             self.use_layered_model_checkbox.setChecked(False)
+            if hasattr(self, 'use_geostatistical_model_checkbox'):
+                self.use_geostatistical_model_checkbox.setChecked(False)
             self.use_detailed_pvt_checkbox.setChecked(False)
             self.ooip_calc_radio.setChecked(True)
-
-            # Reset plot views
-            self.plot_view.setHtml("")
-            self.ax_3d.clear()
-            self.canvas_3d.draw()
-            self.canvas_3d.setVisible(False)
 
             # Re-add default layers
             self._add_layer_row(pv_frac=0.4, perm_factor=2.5, poro=0.22, thickness=10.0)
@@ -1553,6 +2220,22 @@ class DataManagementWidget(QWidget):
         # Update calculated fields once after all resets
         self._calculate_and_display_ooip()
         self._update_calculated_eor_params()
+        self._calculate_and_display_mmp()
+        self._plot_rel_perm_curves(switch_tab=False)
+        self._render_3d_subsurface_view()
+        self._update_geology_cross_section_view()
+        self._update_geostat_view()
+        self._update_fault_view()
+        if hasattr(self, 'main_tab_widget'):
+            self.main_tab_widget.setCurrentIndex(0)
+        if hasattr(self, 'right_tab_widget') and hasattr(self, 'view_3d_widget'):
+            self.right_tab_widget.setCurrentWidget(self.view_3d_widget)
+        if hasattr(self, 'workbench') and self.workbench is not None:
+            try:
+                self.workbench.well_data_list.clear()
+                self.workbench._refresh_all_views()
+            except Exception as w_err:
+                logger.debug(f"Could not reset workbench on clear: {w_err}")
 
         self.status_message_updated.emit(self.tr("Project data cleared."), 3000)
 
@@ -1668,55 +2351,611 @@ class DataManagementWidget(QWidget):
     def _toggle_layered_model(self, checked):
         self.layered_props_group.setVisible(checked)
         self.uniform_props_group.setVisible(not checked)
+        if hasattr(self, 'use_geostatistical_model_checkbox'):
+            self.use_geostatistical_model_checkbox.setEnabled(not checked)
+        self._render_3d_subsurface_view()
+        if checked:
+            self._update_geology_cross_section_view()
+            if hasattr(self, 'right_tab_widget') and hasattr(self, 'geology_cross_section_widget'):
+                self.right_tab_widget.setCurrentWidget(self.geology_cross_section_widget)
+        else:
+            if hasattr(self, 'right_tab_widget') and hasattr(self, 'view_3d_widget'):
+                self.right_tab_widget.setCurrentWidget(self.view_3d_widget)
 
     def _toggle_geostatistical_model(self, checked):
-        self.geostatistical_props_group.setVisible(checked)
-        # Hide other property groups if geostat is selected
+        if hasattr(self, 'geostatistical_props_group'):
+            self.geostatistical_props_group.setVisible(checked)
         self.uniform_props_group.setVisible(not checked)
         self.layered_props_group.setVisible(not checked)
         self.use_layered_model_checkbox.setEnabled(not checked)
+        if checked:
+            self._update_geostat_view()
+            if hasattr(self, 'right_tab_widget') and hasattr(self, 'geostat_widget'):
+                self.right_tab_widget.setCurrentWidget(self.geostat_widget)
+        else:
+            if hasattr(self, 'right_tab_widget') and hasattr(self, 'view_3d_widget'):
+                self.right_tab_widget.setCurrentWidget(self.view_3d_widget)
+                self._render_3d_subsurface_view()
 
     def _remove_selected_layer(self):
         current_row = self.layers_table.currentRow()
         if current_row >= 0:
             self.layers_table.removeRow(current_row)
 
-    def _plot_rel_perm_curves(self):
+    def _plot_rel_perm_curves(self, switch_tab=True):
         try:
-            s_wc = self.manual_inputs_values.get('s_wc', 0.2)
-            s_orw = self.manual_inputs_values.get('s_orw', 0.2)
-            n_o = self.manual_inputs_values.get('n_o', 2.0)
-            n_w = self.manual_inputs_values.get('n_w', 2.0)
-            
-            if not all(isinstance(v, (int, float)) for v in [s_wc, s_orw, n_o, n_w]):
-                raise TypeError("All parameters must be numbers.")
+            s_wc = float(self.manual_inputs_values.get('s_wc', 0.20))
+            s_orw = float(self.manual_inputs_values.get('s_orw', 0.25))
+            s_gc = float(self.manual_inputs_values.get('s_gc', 0.05))
+            n_w = float(self.manual_inputs_values.get('n_w', 2.0))
+            n_ow = float(self.manual_inputs_values.get('n_ow', 2.0))
+            n_o = float(self.manual_inputs_values.get('n_o', 2.0))
+            n_g = float(self.manual_inputs_values.get('n_g', 2.0))
+            k_ro0 = float(self.manual_inputs_values.get('k_ro_0', 0.8))
+            k_rg0 = float(self.manual_inputs_values.get('k_rg_0', 0.3))
+            k_rw0 = float(self.manual_inputs_values.get('k_rw_0', 0.3))
 
-            s_w = np.linspace(s_wc, 1 - s_orw, 100)
-            
-            # Water relative permeability
-            k_rw = ((s_w - s_wc) / (1 - s_wc - s_orw))**n_w
-            
-            # Oil relative permeability
-            s_o = 1 - s_w
-            k_ro = ((s_o - s_orw) / (1 - s_wc - s_orw))**n_o
-            
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=s_w, y=k_rw, mode='lines', name='krw'))
-            fig.add_trace(go.Scatter(x=s_w, y=k_ro, mode='lines', name='kro'))
-            
-            fig.update_layout(
-                title="Relative Permeability Curves (Water-Oil)",
-                xaxis_title="Water Saturation (Sw)",
-                yaxis_title="Relative Permeability",
-                yaxis_range=[0, 1]
+            # --- 1. Matplotlib Dual-Panel Rendering ---
+            if hasattr(self, 'relperm_fig') and self.relperm_fig is not None:
+                self.ax_water_oil.clear()
+                self.ax_gas_oil.clear()
+
+                # Left Panel: Water-Oil System
+                s_w = np.linspace(0.0, 1.0, 200)
+                denom_wo = max(1.0 - s_wc - s_orw, 1e-4)
+                s_wn = np.clip((s_w - s_wc) / denom_wo, 0.0, 1.0)
+                krw = np.where(s_w < s_wc, 0.0, np.where(s_w > 1.0 - s_orw, k_rw0, k_rw0 * (s_wn ** n_w)))
+                krow = np.where(s_w < s_wc, k_ro0, np.where(s_w > 1.0 - s_orw, 0.0, k_ro0 * ((1.0 - s_wn) ** n_ow)))
+
+                self.ax_water_oil.plot(s_w, krw, label=r"$k_{rw}$ (Water)", color="#1f77b4", linewidth=2.2)
+                self.ax_water_oil.plot(s_w, krow, label=r"$k_{row}$ (Oil in Water)", color="#2ca02c", linewidth=2.2)
+                self.ax_water_oil.axvline(s_wc, color="#1f77b4", linestyle="--", alpha=0.7, label=f"$S_{{wc}}={s_wc:.2f}$")
+                self.ax_water_oil.axvline(1.0 - s_orw, color="#2ca02c", linestyle="--", alpha=0.7, label=f"$1-S_{{orw}}={1.0 - s_orw:.2f}$")
+
+                # Crossover point (wettability indication)
+                valid_mask = (s_w >= s_wc) & (s_w <= 1.0 - s_orw)
+                if np.any(valid_mask):
+                    diff = np.abs(krw - krow)
+                    cross_idx = np.argmin(np.where(valid_mask, diff, 1e9))
+                    cross_sw = s_w[cross_idx]
+                    cross_k = krw[cross_idx]
+                    wetting = "Water-Wet" if cross_sw > 0.5 else "Oil-Wet"
+                    self.ax_water_oil.plot(cross_sw, cross_k, "ko", markersize=6)
+                    self.ax_water_oil.annotate(
+                        f"Cross: {cross_sw:.2f}\n({wetting})",
+                        xy=(cross_sw, cross_k),
+                        xytext=(cross_sw - 0.15, cross_k + 0.15),
+                        arrowprops=dict(arrowstyle="->", color="black", lw=1),
+                        fontsize=8,
+                        fontweight="bold",
+                    )
+
+                self.ax_water_oil.set_title("Water-Oil System (Corey)", fontsize=11, fontweight="bold")
+                self.ax_water_oil.set_xlabel("Water Saturation ($S_w$)", fontsize=10)
+                self.ax_water_oil.set_ylabel("Relative Permeability", fontsize=10)
+                self.ax_water_oil.set_xlim(0, 1)
+                self.ax_water_oil.set_ylim(0, 1.05)
+                self.ax_water_oil.grid(True, linestyle=":", alpha=0.6)
+                self.ax_water_oil.legend(loc="upper right", fontsize=8)
+
+                # Right Panel: Gas-Liquid / CO2 System
+                s_g = np.linspace(0.0, 1.0, 200)
+                denom_go = max(1.0 - s_wc - s_gc, 1e-4)
+                s_gn = np.clip((s_g - s_gc) / denom_go, 0.0, 1.0)
+                krg = np.where(s_g < s_gc, 0.0, np.where(s_g > 1.0 - s_wc, k_rg0, k_rg0 * (s_gn ** n_g)))
+                krog = np.where(s_g < s_gc, k_ro0, np.where(s_g > 1.0 - s_wc, 0.0, k_ro0 * ((1.0 - s_gn) ** n_o)))
+
+                self.ax_gas_oil.plot(s_g, krg, label=r"$k_{rg}$ (CO$_2$/Gas)", color="#d62728", linewidth=2.2)
+                self.ax_gas_oil.plot(s_g, krog, label=r"$k_{rog}$ (Oil in Gas)", color="#17becf", linewidth=2.2)
+                self.ax_gas_oil.axvline(s_gc, color="#d62728", linestyle="--", alpha=0.7, label=f"$S_{{gc}}={s_gc:.2f}$")
+                self.ax_gas_oil.set_title("Gas-Oil System (Corey)", fontsize=11, fontweight="bold")
+                self.ax_gas_oil.set_xlabel("Gas Saturation ($S_g$)", fontsize=10)
+                self.ax_gas_oil.set_ylabel("Relative Permeability", fontsize=10)
+                self.ax_gas_oil.set_xlim(0, 1)
+                self.ax_gas_oil.set_ylim(0, 1.05)
+                self.ax_gas_oil.grid(True, linestyle=":", alpha=0.6)
+                self.ax_gas_oil.legend(loc="upper right", fontsize=8)
+
+                self.relperm_fig.tight_layout()
+                self.relperm_canvas.draw()
+
+            # --- 2. Plotly Interactive Diagnostics Rendering ---
+            from plotly.subplots import make_subplots
+            fig = make_subplots(
+                rows=1, cols=2,
+                subplot_titles=("Water-Oil System", "Gas-Oil System"),
+                horizontal_spacing=0.12
             )
-            
+            fig.add_trace(go.Scatter(x=s_w, y=krw, mode='lines', name='krw (Water)', line=dict(color='#1f77b4', width=2)), row=1, col=1)
+            fig.add_trace(go.Scatter(x=s_w, y=krow, mode='lines', name='krow (Oil)', line=dict(color='#2ca02c', width=2)), row=1, col=1)
+            fig.add_trace(go.Scatter(x=s_g, y=krg, mode='lines', name='krg (CO2)', line=dict(color='#d62728', width=2)), row=1, col=2)
+            fig.add_trace(go.Scatter(x=s_g, y=krog, mode='lines', name='krog (Oil)', line=dict(color='#17becf', width=2)), row=1, col=2)
+
+            fig.update_xaxes(title_text="Water Saturation (Sw)", range=[0, 1], row=1, col=1)
+            fig.update_yaxes(title_text="Relative Permeability", range=[0, 1.05], row=1, col=1)
+            fig.update_xaxes(title_text="Gas Saturation (Sg)", range=[0, 1], row=1, col=2)
+            fig.update_yaxes(title_text="Relative Permeability", range=[0, 1.05], row=1, col=2)
+            fig.update_layout(
+                title_text="Dual-Panel Relative Permeability Diagnostics (Corey 3-Phase)",
+                height=450,
+                margin=dict(l=40, r=40, t=50, b=40),
+            )
+
             self.plot_view.setHtml(fig.to_html(include_plotlyjs='cdn'))
-            self.right_tab_widget.setCurrentIndex(0)
+
+            if switch_tab and hasattr(self, 'relperm_tab_widget'):
+                idx = self.right_tab_widget.indexOf(self.relperm_tab_widget)
+                if idx >= 0:
+                    self.right_tab_widget.setCurrentIndex(idx)
 
         except Exception as e:
             QMessageBox.critical(self, "Plotting Error", f"Could not plot relative permeability curves:\n{e}")
             logger.error(f"Error plotting rel perm curves: {e}", exc_info=True)
+
+    def _calculate_and_display_mmp(self):
+        try:
+            from evaluation.mmp import calculate_mmp
+            pvt_props = self._create_pvt_properties_from_ui()
+            method = self.mmp_method_combo.currentData() or "auto"
+            mmp_val = calculate_mmp(pvt_props, method=method)
+            self.calculated_mmp_value = float(mmp_val)
+
+            p_res = float(self.manual_inputs_values.get("initial_pressure", 4000.0))
+            self.mmp_value_label.setText(f"Calculated MMP: {mmp_val:.1f} psia ({method.upper()})")
+
+            delta_p = p_res - mmp_val
+            if delta_p >= 0:
+                self.mmp_status_badge.setText(f"MISCIBLE (+{delta_p:.0f} psi margin)")
+                self.mmp_status_badge.setStyleSheet(
+                    "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #28a745; color: white;"
+                )
+                self.mmp_comparison_label.setText(
+                    f"Reservoir pressure ({p_res:.0f} psia) >= MMP ({mmp_val:.1f} psia). Full solvent miscibility achieved."
+                )
+            else:
+                self.mmp_status_badge.setText(f"IMMISCIBLE (Deficit: {abs(delta_p):.0f} psi)")
+                self.mmp_status_badge.setStyleSheet(
+                    "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #d9534f; color: white;"
+                )
+                self.mmp_comparison_label.setText(
+                    f"Reservoir pressure ({p_res:.0f} psia) < MMP ({mmp_val:.1f} psia). Displacement will be immiscible/multiphase unless repressurized."
+                )
+
+            # Update manual inputs values
+            self.manual_inputs_values["mmp_value"] = float(mmp_val)
+            self.manual_inputs_values["default_mmp_fallback"] = float(mmp_val)
+            logger.info(f"DataManagementWidget: Calculated MMP = {mmp_val:.1f} psia (P_res = {p_res:.1f} psia, Miscible = {delta_p >= 0})")
+            self.status_message_updated.emit(f"Calculated MMP: {mmp_val:.1f} psia ({'Miscible' if delta_p >= 0 else 'Immiscible'})", 4000)
+
+        except Exception as e:
+            logger.error(f"Error calculating MMP in DataManagementWidget: {e}", exc_info=True)
+            QMessageBox.warning(self, self.tr("MMP Calculation Error"), f"Could not calculate MMP:\n{e}")
+
+    def _on_right_tab_changed(self, index: int):
+        widget = self.right_tab_widget.widget(index)
+        if widget == getattr(self, 'view_3d_widget', None):
+            self._render_3d_subsurface_view()
+        elif widget == getattr(self, 'geology_cross_section_widget', None):
+            self._update_geology_cross_section_view()
+        elif widget == getattr(self, 'geostat_widget', None) or widget == getattr(self, 'geostat_tab_widget', None):
+            self._update_geostat_view()
+        elif widget == getattr(self, 'fault_widget', None):
+            self._update_fault_view()
+        elif widget == getattr(self, 'relperm_tab_widget', None):
+            self._plot_rel_perm_curves(switch_tab=False)
+
+    def _on_main_tab_changed(self, index: int):
+        if not hasattr(self, 'right_tab_widget'):
+            return
+        if index == 0:  # Reservoir
+            if hasattr(self, 'use_geostatistical_model_checkbox') and self.use_geostatistical_model_checkbox.isChecked():
+                if hasattr(self, 'geostat_widget'):
+                    self.right_tab_widget.setCurrentWidget(self.geostat_widget)
+                    self._update_geostat_view()
+            elif hasattr(self, 'use_layered_model_checkbox') and self.use_layered_model_checkbox.isChecked():
+                if hasattr(self, 'geology_cross_section_widget'):
+                    self.right_tab_widget.setCurrentWidget(self.geology_cross_section_widget)
+                    self._update_geology_cross_section_view()
+            elif hasattr(self, 'view_3d_widget'):
+                self.right_tab_widget.setCurrentWidget(self.view_3d_widget)
+                self._render_3d_subsurface_view()
+        elif index == 1:  # PVT
+            if hasattr(self, 'relperm_tab_widget'):
+                self.right_tab_widget.setCurrentWidget(self.relperm_tab_widget)
+        elif index == 2:  # Wells
+            if hasattr(self, 'view_3d_widget'):
+                self.right_tab_widget.setCurrentWidget(self.view_3d_widget)
+                self._render_3d_subsurface_view()
+        elif index == 3:  # Surrogate Tuning
+            if hasattr(self, 'plot_view_widget'):
+                self.right_tab_widget.setCurrentWidget(self.plot_view_widget)
+
+    def _update_geology_cross_section_view(self):
+        try:
+            if not hasattr(self, 'geology_cross_section_widget') or self.geology_cross_section_widget is None:
+                return
+            length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
+            area_acres = float(self.manual_inputs_values.get('area', 100.0) or 100.0)
+            thickness_ft = float(self.manual_inputs_values.get('thickness', 50.0) or 50.0)
+            width_ft = (area_acres * 43560.0) / max(length_ft, 1.0)
+            dip_angle = float(self.manual_inputs_values.get('dip_angle', 0.0) or 0.0)
+
+            perm_grid = None
+            poro_grid = None
+            if self.reservoir_data and self.reservoir_data.grid:
+                grid = self.reservoir_data.grid
+                if 'PERMX' in grid and isinstance(grid['PERMX'], np.ndarray) and grid['PERMX'].ndim == 3:
+                    perm_grid = grid['PERMX']
+                if 'PORO' in grid and isinstance(grid['PORO'], np.ndarray) and grid['PORO'].ndim == 3:
+                    poro_grid = grid['PORO']
+
+            self.geology_cross_section_widget.set_grid_data(
+                perm_grid=perm_grid,
+                poro_grid=poro_grid,
+                length_ft=length_ft,
+                width_ft=width_ft,
+                thickness_ft=thickness_ft,
+                dip_angle_deg=dip_angle,
+                well_data_list=self.well_data_list
+            )
+        except Exception as e:
+            logger.error(f"Error updating geology cross section view: {e}", exc_info=True)
+
+    def _update_geostat_view(self):
+        try:
+            if not hasattr(self, 'geostat_widget') or self.geostat_widget is None:
+                return
+            nx = int(self.manual_inputs_values.get('nx', 50) or 50)
+            ny = int(self.manual_inputs_values.get('ny', 50) or 50)
+            base_perm = float(self.manual_inputs_values.get('perm', 100.0) or 100.0)
+            base_poro = float(self.manual_inputs_values.get('poro', 0.20) or 0.20)
+            self.geostat_widget.set_grid_dimensions(nx, ny, base_perm, base_poro)
+            self.geostat_widget.set_well_data(self.well_data_list)
+
+            params = {}
+            if hasattr(self, 'geostat_variogram_combo'):
+                params['variogram_type'] = self.geostat_variogram_combo.currentText()
+            if hasattr(self, 'geostat_range_spin'):
+                params['range'] = self.geostat_range_spin.value()
+            if hasattr(self, 'geostat_sill_spin'):
+                params['sill'] = self.geostat_sill_spin.value()
+            if hasattr(self, 'geostat_nugget_spin'):
+                params['nugget'] = self.geostat_nugget_spin.value()
+            if hasattr(self, 'geostat_aniso_spin'):
+                params['anisotropy_ratio'] = self.geostat_aniso_spin.value()
+            if params:
+                self.geostat_widget.set_parameters(params)
+            self.geostat_widget.generate_realization()
+        except Exception as e:
+            logger.error(f"Error updating geostatistics view: {e}", exc_info=True)
+
+    def _update_fault_view(self):
+        try:
+            if not hasattr(self, 'fault_widget') or self.fault_widget is None:
+                return
+            length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
+            area_acres = float(self.manual_inputs_values.get('area', 100.0) or 100.0)
+            thickness_ft = float(self.manual_inputs_values.get('thickness', 50.0) or 50.0)
+            width_ft = (area_acres * 43560.0) / max(length_ft, 1.0)
+            top_depth = 5000.0
+            if self.well_data_list:
+                for w in self.well_data_list:
+                    if w.depths is not None and len(w.depths) > 0:
+                        top_depth = float(w.depths[0])
+                        break
+            self.fault_widget.set_reservoir_geometry(
+                length_ft=length_ft,
+                width_ft=width_ft,
+                thickness_ft=thickness_ft,
+                top_depth_ft=top_depth,
+                well_data_list=self.well_data_list
+            )
+            self.fault_widget.render_fault_3d()
+        except Exception as e:
+            logger.error(f"Error updating fault view: {e}", exc_info=True)
+
+    def _on_place_well_mode_toggled(self, checked: bool):
+        """Toggle well placement mode on the PyVista 3D canvas."""
+        if hasattr(self, 'canvas_3d') and self.canvas_3d is not None:
+            self.canvas_3d.place_well_mode = checked
+            if hasattr(self.canvas_3d, 'btn_place_well'):
+                self.canvas_3d.btn_place_well.setChecked(checked)
+            if checked and hasattr(self, 'status_message_updated'):
+                self.status_message_updated.emit(
+                    self.tr("📍 Placement Mode Active: Click anywhere on the 3D model to place a well at clicked (X, Y)."), 5000
+                )
+
+    def _activate_3d_well_placement_mode(self):
+        if hasattr(self, 'right_tab_widget'):
+            self.right_tab_widget.setCurrentIndex(0)
+        if hasattr(self, 'canvas_3d') and self.canvas_3d is not None:
+            self.canvas_3d.place_well_mode = True
+            if hasattr(self.canvas_3d, 'btn_place_well'):
+                self.canvas_3d.btn_place_well.setChecked(True)
+
+    def _focus_selected_well_in_3d(self):
+        if not hasattr(self, 'well_list_widget'):
+            return
+        selected_items = self.well_list_widget.selectedItems()
+        if not selected_items:
+            return
+        well_name = self._get_item_well_name(selected_items[0])
+        self.highlighted_well_name = well_name
+        if hasattr(self, 'right_tab_widget'):
+            self.right_tab_widget.setCurrentIndex(0)
+        # Isolate the selected well in PyVista 3D
+        if hasattr(self, 'canvas_3d') and self.canvas_3d is not None:
+            self.canvas_3d.set_isolated_well(well_name)
+        self._render_3d_subsurface_view()
+
+    def _get_reservoir_top_depth(self) -> float:
+        top_depth = 5000.0
+        if self.well_data_list:
+            for w in self.well_data_list:
+                if w.depths is not None and len(w.depths) > 0:
+                    top_depth = float(w.depths[0])
+                    break
+        return top_depth
+
+    def _on_pyvista_well_picked(self, well_name: str):
+        """Handle well picked from PyVista 3D canvas via well_clicked signal."""
+        self.highlighted_well_name = well_name
+        # Select in list widget
+        if hasattr(self, 'well_list_widget'):
+            for idx in range(self.well_list_widget.count()):
+                item = self.well_list_widget.item(idx)
+                if item and self._get_item_well_name(item) == well_name:
+                    self.well_list_widget.setCurrentRow(idx)
+                    break
+        # Isolate in 3D
+        if hasattr(self, 'canvas_3d') and self.canvas_3d is not None:
+            self.canvas_3d.set_isolated_well(well_name)
+
+    def _show_3d_context_menu(self, rx: float, ry: float, event=None):
+        from PyQt6.QtWidgets import QMenu
+        from PyQt6.QtGui import QCursor
+        menu = QMenu(self)
+        action_add = menu.addAction(self.tr(f"📍 Add Well at (X: {rx:.1f} ft, Y: {ry:.1f} ft)..."))
+        menu.addSeparator()
+        action_iso = menu.addAction(self.tr("Switch to Isometric 3D View"))
+        action_top = menu.addAction(self.tr("Switch to Top (XY) Map View"))
+        action_side = menu.addAction(self.tr("Switch to Cross-Section (XZ) View"))
+        menu.addSeparator()
+        action_refresh = menu.addAction(self.tr("Refresh 3D Model"))
+
+        chosen = menu.exec(QCursor.pos())
+        if chosen == action_add:
+            self._prompt_add_well_at_coords(rx, ry)
+        elif chosen == action_iso:
+            self._set_3d_camera_view(view_index=0)
+        elif chosen == action_top:
+            self._set_3d_camera_view(view_index=1)
+        elif chosen == action_side:
+            self._set_3d_camera_view(view_index=2)
+        elif chosen == action_refresh:
+            self._render_3d_subsurface_view()
+
+    def _prompt_add_well_at_coords(self, rx: float, ry: float):
+        top_depth = self._get_reservoir_top_depth()
+        thickness_ft = float(self.manual_inputs_values.get('thickness', 50.0) or 50.0)
+        base_depth = top_depth + thickness_ft
+
+        inj_count = sum(1 for w in self.well_data_list if "inj" in w.name.lower() or "injector" in str(w.metadata.get("type", "")).lower())
+        prod_count = len(self.well_data_list) - inj_count
+        suggested_role = "Injector" if prod_count > inj_count else "Producer (Active)"
+        suggested_name = f"Well-{'Inj' if 'Inj' in suggested_role else 'Prod'}-{len(self.well_data_list) + 1}"
+
+        existing_names = [w.name for w in self.well_data_list]
+        initial_vals = {
+            "SurfaceX": round(rx, 1),
+            "SurfaceY": round(ry, 1),
+            "TopDepth": round(top_depth, 1),
+            "BottomDepth": round(base_depth, 1),
+            "TrajectoryType": "Vertical",
+            "role": suggested_role,
+            "name": suggested_name,
+        }
+        dialog = ManualWellDialog(existing_names, parent=self, initial_values=initial_vals)
+        if dialog.exec():
+            well_data = dialog.get_well_data()
+            if well_data:
+                self.well_data_list.append(well_data)
+                self._add_well_to_ui(well_data)
+                self._render_3d_subsurface_view()
+                self._update_wells_tab_data()
+                self._update_geology_cross_section_view()
+                self._update_geostat_view()
+                self._update_fault_view()
+                if hasattr(self, 'status_message_updated'):
+                    self.status_message_updated.emit(
+                        self.tr(f"Placed well '{well_data.name}' at X={rx:.1f} ft, Y={ry:.1f} ft."), 4000
+                    )
+        else:
+            # Re-render to restore scene
+            self._render_3d_subsurface_view()
+
+    def _set_3d_camera_view(self, elev: float = 30.0, azim: float = -60.0, view_index: int = -1):
+        """Set 3D camera view via PyVista plotter. Supports indexed views or elev/azim for legacy calls."""
+        if not hasattr(self, 'canvas_3d') or self.canvas_3d is None:
+            return
+        plotter = getattr(self.canvas_3d, 'plotter', None)
+        if plotter is None:
+            return
+        try:
+            if view_index == 0:
+                plotter.view_isometric()
+            elif view_index == 1:
+                plotter.view_xy()
+            elif view_index == 2:
+                plotter.view_xz()
+            elif view_index == 3:
+                plotter.view_yz()
+            else:
+                # Legacy elev/azim: map to closest PyVista view
+                if elev >= 80:
+                    plotter.view_xy()
+                elif abs(azim) < 10:
+                    plotter.view_xz()
+                else:
+                    plotter.view_isometric()
+            plotter.camera.zoom(0.78)
+            plotter.render()
+        except Exception as e:
+            logger.debug(f"Camera view change error: {e}")
+
+
+    def _launch_pre_flight_audit(self):
+        from ui.dialogs.pre_flight_audit_dialog import PreFlightAuditDialog
+        proj_data = self.get_current_project_data()
+        dialog = PreFlightAuditDialog(proj_data, parent=self)
+        dialog.exec()
+
+    def _launch_visual_audit(self):
+        proj_data = self.get_current_project_data()
+        dialog = VisualAuditModal(proj_data, parent=self)
+        dialog.exec()
+
+    def _launch_model_workstation(self):
+        from ui.widgets.model_evaluation_dashboard import ModelEvaluationDashboard
+        from PyQt6.QtWidgets import QDialog, QVBoxLayout
+        proj_data = self.get_current_project_data()
+        dlg = QDialog(self)
+        dlg.setWindowTitle(self.tr("Model Evaluation Workstation — Single Integrated Shared Earth Model"))
+        dlg.setMinimumSize(950, 650)
+        lay = QVBoxLayout(dlg)
+        dashboard = ModelEvaluationDashboard(proj_data, parent=dlg)
+        lay.addWidget(dashboard)
+        dlg.exec()
+
+    def _render_3d_subsurface_view(self):
+        """
+        Renders an interactive 3D Shared Earth Subsurface Model using PyVista (VTK OpenGL).
+        Delegates all 3D rendering to PyVistaReservoirCanvas.render_subsurface_model().
+        """
+        try:
+            if not hasattr(self, 'canvas_3d') or self.canvas_3d is None:
+                return
+
+            length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
+            area_acres = float(self.manual_inputs_values.get('area', 100.0) or 100.0)
+            thickness_ft = float(self.manual_inputs_values.get('thickness', 50.0) or 50.0)
+            width_ft = (area_acres * 43560.0) / max(length_ft, 1.0)
+            top_depth = self._get_reservoir_top_depth()
+            perm_base = float(self.manual_inputs_values.get('perm', 100.0) or 100.0)
+            poro_base = float(self.manual_inputs_values.get('porosity', 0.20) or 0.20)
+
+            nx = int(self.manual_inputs_values.get('nx', 50) or 50)
+            ny = int(self.manual_inputs_values.get('ny', 50) or 50)
+            nz = int(self.manual_inputs_values.get('nz', 10) or 10)
+
+            # Collect fault properties
+            fault_props = None
+            if hasattr(self, "state_manager") and self.state_manager:
+                fault_props = getattr(self.state_manager, "fault_properties", None)
+            if not fault_props and hasattr(self, "reservoir_data") and self.reservoir_data:
+                fault_props = getattr(self.reservoir_data, "fault_properties", None)
+
+            # Collect distribution parameters from petrophysics settings
+            distribution_params = {}
+            if hasattr(self, 'state_manager') and self.state_manager:
+                geostat = getattr(self.state_manager, 'geostatistical_params', None)
+                if geostat and hasattr(geostat, '__dict__'):
+                    distribution_params.update(
+                        {k: v for k, v in geostat.__dict__.items() if v is not None}
+                    )
+
+            # Collect pressure for geomechanics
+            distribution_params.setdefault('initial_pressure', float(
+                self.manual_inputs_values.get('pressure', 4000.0) or 4000.0
+            ))
+
+            self.canvas_3d.render_subsurface_model(
+                nx=nx, ny=ny, nz=nz,
+                length_ft=length_ft,
+                width_ft=width_ft,
+                top_depth=top_depth,
+                thickness_ft=thickness_ft,
+                perm_base=perm_base,
+                poro_base=poro_base,
+                well_data_list=self.well_data_list if self.well_data_list else None,
+                fault_props=fault_props,
+                distribution_params=distribution_params if distribution_params else None
+            )
+
+        except Exception as e:
+            logger.error(f"Error rendering 3D Subsurface View: {e}", exc_info=True)
+
+
+    def _plot_geostatistics_diagnostics(self):
+        try:
+            if not hasattr(self, 'ax_variogram') or self.ax_variogram is None:
+                return
+
+            self.ax_variogram.clear()
+            self.ax_spatial_field.clear()
+
+            from core.geology.geostatistical_modeling import (
+                create_geostatistical_grid, calculate_variogram, theoretical_variogram
+            )
+
+            nx = self.manual_inputs_values.get('nx', 50)
+            ny = self.manual_inputs_values.get('ny', 50)
+            base_perm = float(self.manual_inputs_values.get('perm', 100.0) or 100.0)
+
+            vtype = self.geostat_variogram_combo.currentText()
+            range_val = self.geostat_range_spin.value()
+            sill_val = self.geostat_sill_spin.value()
+            nugget_val = self.geostat_nugget_spin.value()
+            aniso_val = self.geostat_aniso_spin.value()
+
+            norm_field = create_geostatistical_grid((nx, ny), {
+                'variogram_type': vtype,
+                'range': range_val,
+                'sill': sill_val,
+                'nugget': nugget_val,
+                'anisotropy_ratio': aniso_val,
+            })
+            k_field = base_perm * np.exp(2.0 * (norm_field - 0.5))
+
+            lags, exp_gamma = calculate_variogram(norm_field)
+            h_dense = np.linspace(0.1, max(float(np.max(lags)), 1.0), 100)
+            theo_gamma = theoretical_variogram(h_dense, vtype, sill_val, range_val / 20.0, nugget_val)
+
+            self.ax_variogram.plot(lags, exp_gamma, "ko", markersize=5, label=r"Experimental $\hat{\gamma}(h)$")
+            self.ax_variogram.plot(h_dense, theo_gamma, "b-", lw=2, label=f"Theoretical ({vtype.capitalize()})")
+            self.ax_variogram.axhline(sill_val + nugget_val, color="red", linestyle="--", alpha=0.7, label=f"Sill ({sill_val + nugget_val:.2f})")
+            self.ax_variogram.set_title("Semivariogram Model Fit", fontsize=10, fontweight="bold")
+            self.ax_variogram.set_xlabel("Lag Distance $h$ (cells)", fontsize=9)
+            self.ax_variogram.set_ylabel(r"Semivariance $\gamma(h)$", fontsize=9)
+            self.ax_variogram.grid(True, linestyle=":", alpha=0.6)
+            self.ax_variogram.legend(fontsize=8)
+
+            self.ax_spatial_field.imshow(k_field.T, origin="lower", cmap="viridis", aspect="auto")
+            self.ax_spatial_field.set_title(f"Permeability Realization ({nx}x{ny})", fontsize=10, fontweight="bold")
+            self.ax_spatial_field.set_xlabel("Grid X (cells)", fontsize=9)
+            self.ax_spatial_field.set_ylabel("Grid Y (cells)", fontsize=9)
+
+            length_ft = float(self.manual_inputs_values.get('length', 2000.0) or 2000.0)
+            area_acres = float(self.manual_inputs_values.get('area', 100.0) or 100.0)
+            width_ft = (area_acres * 43560.0) / max(length_ft, 1.0)
+
+            for well in self.well_data_list:
+                is_inj = "inj" in str(getattr(well, "name", "")).lower() or "injector" in str(getattr(well, "metadata", {}).get("type", "")).lower()
+                color = "#00ffff" if is_inj else "#ff0055"
+                marker = "^" if is_inj else "o"
+                sx = float(getattr(well, "metadata", {}).get("SurfaceX", length_ft * 0.5))
+                sy = float(getattr(well, "metadata", {}).get("SurfaceY", width_ft * 0.5))
+                cell_x = int(np.clip(sx / max(length_ft, 1.0) * nx, 0, nx - 1))
+                cell_y = int(np.clip(sy / max(width_ft, 1.0) * ny, 0, ny - 1))
+                self.ax_spatial_field.scatter(cell_x, cell_y, color=color, s=80, marker=marker, edgecolors="white", linewidths=1.5)
+                self.ax_spatial_field.text(cell_x + 1, cell_y + 1, well.name, color="white", fontsize=8, fontweight="bold")
+
+            self.geostat_fig.tight_layout()
+            self.geostat_canvas.draw()
+            self.right_tab_widget.setCurrentWidget(self.geostat_tab_widget)
+
+        except Exception as e:
+            logger.error(f"Error plotting geostatistical diagnostics: {e}", exc_info=True)
 
     def _open_pvt_editor(self):
         if not self.detailed_pvt_data:
@@ -1736,22 +2975,42 @@ class DataManagementWidget(QWidget):
             if well_data:
                 self.well_data_list.append(well_data)
                 self._add_well_to_ui(well_data)
+                self._render_3d_subsurface_view()
+                self._update_geology_cross_section_view()
+                self._update_geostat_view()
+                self._update_fault_view()
 
-    def _get_or_create_well(self, well_name: str) -> WellData:
-        well_data = next((w for w in self.well_data_list if w.name == well_name), None)
-        if not well_data:
-            # Create a default WellData matching the dataclass in core/data_models.py
-            well_data = WellData(
-                name=well_name,
-                depths=np.array([0.0, 1000.0]),
-                properties={},
-                units={},
-                metadata={"status": "Producer", "type": "producer"},
-                well_path=np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 1000.0]])
-            )
-            self.well_data_list.append(well_data)
-            self._add_well_to_ui(well_data)
-        return well_data
+    def _import_las_file(self):
+        filepath, _ = QFileDialog.getOpenFileName(
+            self, self.tr("Select LAS Well Log File"), "", self.tr("LAS Files (*.las);;All Files (*)")
+        )
+        if not filepath:
+            return
+        try:
+            from utils.las_parser import parse_las
+            well_data = parse_las(filepath)
+            if well_data:
+                existing_names = [w.name for w in self.well_data_list]
+                if well_data.name in existing_names:
+                    QMessageBox.warning(
+                        self, self.tr("Duplicate Well"), self.tr(f"Well '{well_data.name}' is already loaded.")
+                    )
+                    return
+                self.well_data_list.append(well_data)
+                self._add_well_to_ui(well_data)
+                self._render_3d_subsurface_view()
+                self._update_geology_cross_section_view()
+                self._update_geostat_view()
+                self._update_fault_view()
+                self.status_message_updated.emit(self.tr(f"Loaded LAS well '{well_data.name}'."), 3000)
+            else:
+                QMessageBox.warning(
+                    self, self.tr("Empty Well Data"), self.tr("No valid log curves found in LAS file.")
+                )
+        except Exception as e:
+            logger.error(f"Error parsing LAS file '{filepath}': {e}", exc_info=True)
+            QMessageBox.critical(self, self.tr("LAS Parse Error"), self.tr(f"Could not load LAS file:\n\n{e}"))
+
 
     def _view_selected_well(self):
         selected_items = self.well_list_widget.selectedItems()
@@ -1759,7 +3018,7 @@ class DataManagementWidget(QWidget):
             QMessageBox.warning(self, "No Well Selected", "Please select a well to view.")
             return
         
-        well_name = selected_items[0].text()
+        well_name = self._get_item_well_name(selected_items[0])
         well_data = next((w for w in self.well_data_list if w.name == well_name), None)
 
         if well_data:
@@ -1895,63 +3154,224 @@ class DataManagementWidget(QWidget):
             logger.error(f"Error calculating PVT properties: {e}", exc_info=True)
             QMessageBox.warning(self, self.tr("Calculation Error"), self.tr(f"Failed to estimate PVT properties: {e}"))
 
+    def get_current_project_data(self) -> Dict[str, Any]:
+        """Returns the current project data dictionary, synchronizing from UI widgets."""
+        all_defs = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS, **self.SURROGATE_TUNING_DEFS}
+        for name, widget in self.manual_inputs_widgets.items():
+            val = widget.get_value()
+            if val is not None:
+                param_type = all_defs.get(name, (None, None, str))[2]
+                try:
+                    self.manual_inputs_values[name] = self._coerce_value(val, param_type)
+                except Exception:
+                    self.manual_inputs_values[name] = val
+
+        # Ensure workbench is synchronized with current values
+        if hasattr(self, 'workbench') and self.workbench is not None:
+            self.workbench.manual_inputs_values.update(self.manual_inputs_values)
+            if self.well_data_list:
+                self.workbench.well_data_list = list(self.well_data_list)
+
+        res_data = self.reservoir_data
+        if res_data is None:
+            try:
+                res_data = self._create_reservoir_data_from_ui()
+            except Exception as e:
+                logger.warning(f"Could not construct reservoir data from UI: {e}")
+
+        pvt_data = self.pvt_properties
+        if pvt_data is None:
+            try:
+                pvt_data = self._create_pvt_properties_from_ui()
+            except Exception as e:
+                logger.warning(f"Could not construct PVT data from UI: {e}")
+
+        return {
+            "reservoir_data": res_data,
+            "pvt_properties": pvt_data,
+            "pvt_data": pvt_data,
+            "well_data_list": list(self.well_data_list),
+            "wells": list(self.well_data_list),
+            "detailed_pvt_data": self.detailed_pvt_data,
+            "manual_inputs": dict(self.manual_inputs_values),
+            "mmp_value": getattr(self, "calculated_mmp_value", self.manual_inputs_values.get("mmp_value")),
+            "calculated_mmp": getattr(self, "calculated_mmp_value", self.manual_inputs_values.get("mmp_value")),
+        }
+
     def load_project_data(self, project_data: Dict[str, Any]):
         try:
             self.clear_all_project_data()
 
             self.reservoir_data = project_data.get('reservoir_data')
             self.pvt_properties = project_data.get('pvt_properties')
-            self.well_data_list = project_data.get('well_data_list', [])
+            self.well_data_list = list(project_data.get('well_data_list', []))
             self.detailed_pvt_data = project_data.get('detailed_pvt_data')
+            if project_data.get('mmp_value') is not None:
+                self.calculated_mmp_value = float(project_data['mmp_value'])
+                self.manual_inputs_values['mmp_value'] = self.calculated_mmp_value
 
+            all_defs = {**self.MANUAL_RES_DEFS, **self.MANUAL_PVT_DEFS, **self.SURROGATE_TUNING_DEFS}
+
+            def _set_manual_val(name: str, value: Any):
+                if value is not None and name in self.manual_inputs_widgets:
+                    try:
+                        self.manual_inputs_widgets[name].set_value(value, emit_signal=False)
+                        p_type = all_defs.get(name, (None, None, str))[2]
+                        self.manual_inputs_values[name] = self._coerce_value(value, p_type)
+                    except Exception as err:
+                        logger.debug(f"Failed to set manual input {name}={value}: {err}")
+                        self.manual_inputs_values[name] = value
+
+            # 1. Restore saved manual inputs dictionary if present
+            saved_manual_inputs = project_data.get('manual_inputs', {})
+            if isinstance(saved_manual_inputs, dict):
+                for k, v in saved_manual_inputs.items():
+                    _set_manual_val(k, v)
+
+            # 2. Restore reservoir data into UI
             if self.reservoir_data:
-                # Load reservoir data into UI
-                if self.reservoir_data.grid:
-                    self.manual_inputs_widgets['nx'].set_value(self.reservoir_data.grid.get('NX', [50])[0])
-                    self.manual_inputs_widgets['ny'].set_value(self.reservoir_data.grid.get('NY', [50])[0])
-                    self.manual_inputs_widgets['nz'].set_value(self.reservoir_data.grid.get('NZ', [10])[0])
-                
-                self.manual_inputs_widgets['poro'].set_value(self.reservoir_data.average_porosity)
-                # Assuming uniform permeability for now
-                if self.reservoir_data.grid and 'PERMX' in self.reservoir_data.grid:
-                    self.manual_inputs_widgets['perm'].set_value(self.reservoir_data.grid['PERMX'][0,0,0])
+                grid = self.reservoir_data.grid or {}
+                nx_val, ny_val, nz_val = 50, 50, 10
+                if 'NX' in grid:
+                    nx_arr = np.asarray(grid['NX'])
+                    if nx_arr.size > 0:
+                        nx_val = int(nx_arr.flat[0])
+                elif self.reservoir_data.runspec and 'DIMENSIONS' in self.reservoir_data.runspec:
+                    dims = self.reservoir_data.runspec['DIMENSIONS']
+                    if len(dims) >= 3:
+                        nx_val, ny_val, nz_val = int(dims[0]), int(dims[1]), int(dims[2])
 
-                self.manual_inputs_widgets['rock_compressibility'].set_value(self.reservoir_data.rock_compressibility)
-                self.manual_inputs_widgets['swi'].set_value(self.reservoir_data.initial_water_saturation)
-                self.manual_inputs_widgets['boi'].set_value(self.reservoir_data.oil_fvf)
-                self.manual_inputs_widgets['ooip_stb'].set_value(self.reservoir_data.ooip_stb)
+                if 'NY' in grid:
+                    ny_arr = np.asarray(grid['NY'])
+                    if ny_arr.size > 0:
+                        ny_val = int(ny_arr.flat[0])
+                if 'NZ' in grid:
+                    nz_arr = np.asarray(grid['NZ'])
+                    if nz_arr.size > 0:
+                        nz_val = int(nz_arr.flat[0])
+
+                _set_manual_val('nx', nx_val)
+                _set_manual_val('ny', ny_val)
+                _set_manual_val('nz', nz_val)
+
+                # Safe permeability extraction (supporting scalar, 1D flattened, and multi-D grids)
+                perm_val = None
+                if self.reservoir_data.average_permeability is not None:
+                    perm_val = float(self.reservoir_data.average_permeability)
+                elif 'PERMX' in grid:
+                    perm_arr = np.asarray(grid['PERMX'])
+                    if perm_arr.size > 0:
+                        perm_val = float(perm_arr.flat[0])
+                if perm_val is not None:
+                    _set_manual_val('perm', perm_val)
+
+                res_fields = [
+                    ('poro', self.reservoir_data.average_porosity),
+                    ('rock_compressibility', self.reservoir_data.rock_compressibility),
+                    ('swi', self.reservoir_data.initial_water_saturation),
+                    ('boi', self.reservoir_data.oil_fvf),
+                    ('ooip_stb', self.reservoir_data.ooip_stb),
+                    ('area', self.reservoir_data.area_acres),
+                    ('thickness', self.reservoir_data.thickness_ft),
+                    ('length', self.reservoir_data.length_ft),
+                    ('dip_angle', self.reservoir_data.dip_angle),
+                    ('density_contrast', self.reservoir_data.density_contrast),
+                    ('interfacial_tension', self.reservoir_data.interfacial_tension),
+                    ('rock_type', self.reservoir_data.rock_type),
+                    ('depositional_environment', self.reservoir_data.depositional_environment),
+                    ('structural_complexity', self.reservoir_data.structural_complexity),
+                ]
+                for param_name, param_val in res_fields:
+                    _set_manual_val(param_name, param_val)
 
                 if self.reservoir_data.layer_definitions:
                     self.use_layered_model_checkbox.setChecked(True)
                     self.layers_table.setRowCount(0)
                     for layer in self.reservoir_data.layer_definitions:
-                        self._add_layer_row(pv_frac=0, perm_factor=layer.permeability_multiplier, poro=layer.porosity, thickness=layer.thickness)
-                
-                if self.reservoir_data.geostatistical_params:
+                        perm_fac = layer.permeability_multiplier if hasattr(layer, 'permeability_multiplier') else (layer.get('permeability_multiplier', 1.0) if isinstance(layer, dict) else 1.0)
+                        poro = layer.porosity if hasattr(layer, 'porosity') else (layer.get('porosity', 0.2) if isinstance(layer, dict) else 0.2)
+                        thick = layer.thickness if hasattr(layer, 'thickness') else (layer.get('thickness', 10.0) if isinstance(layer, dict) else 10.0)
+                        self._add_layer_row(pv_frac=0, perm_factor=perm_fac, poro=poro, thickness=thick)
+
+                if self.reservoir_data.geostatistical_params and hasattr(self, 'use_geostatistical_model_checkbox'):
                     self.use_geostatistical_model_checkbox.setChecked(True)
 
+            # 3. Restore PVT data into UI
             if self.pvt_properties:
-                # Load PVT data into UI
-                self.manual_inputs_widgets['temperature'].set_value(self.pvt_properties.temperature)
-                self.manual_inputs_widgets['initial_pressure'].set_value(self.reservoir_data.initial_pressure if self.reservoir_data else 4000.0)
-                self.manual_inputs_widgets['api_gravity'].set_value(self.pvt_properties.api_gravity)
-                self.manual_inputs_widgets['gas_specific_gravity'].set_value(self.pvt_properties.gas_specific_gravity)
-                self.manual_inputs_widgets['oil_viscosity_cp'].set_value(self.pvt_properties.oil_viscosity_cp)
+                pvt_fields = [
+                    ('temperature', self.pvt_properties.temperature),
+                    ('initial_pressure', self.reservoir_data.initial_pressure if self.reservoir_data else 4000.0),
+                    ('api_gravity', self.pvt_properties.api_gravity),
+                    ('gas_specific_gravity', self.pvt_properties.gas_specific_gravity),
+                    ('oil_viscosity_cp', self.pvt_properties.oil_viscosity_cp),
+                    ('gas_viscosity_cp', getattr(self.pvt_properties, 'gas_viscosity_cp', None)),
+                    ('c7_plus_fraction', getattr(self.pvt_properties, 'c7_plus_fraction', None)),
+                    ('co2_solubility_scm_per_bbl', getattr(self.pvt_properties, 'co2_solubility_scm_per_bbl', None)),
+                ]
+                for param_name, param_val in pvt_fields:
+                    _set_manual_val(param_name, param_val)
 
             if self.detailed_pvt_data:
                 self.use_detailed_pvt_checkbox.setChecked(True)
 
-            # Load wells
+            # 4. Load wells
+            self.well_list_widget.clear()
             for well_data in self.well_data_list:
                 self._add_well_to_ui(well_data)
+            self._update_wells_tab_data()
 
             self._update_calculated_eor_params()
             self._calculate_and_display_ooip()
+            self._render_3d_subsurface_view()
+            if getattr(self, 'calculated_mmp_value', None) is not None:
+                p_res = float(self.manual_inputs_values.get("initial_pressure", 4000.0))
+                mmp_val = self.calculated_mmp_value
+                self.mmp_value_label.setText(f"Calculated MMP: {mmp_val:.1f} psia")
+                delta_p = p_res - mmp_val
+                if delta_p >= 0:
+                    self.mmp_status_badge.setText(f"MISCIBLE (+{delta_p:.0f} psi margin)")
+                    self.mmp_status_badge.setStyleSheet(
+                        "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #28a745; color: white;"
+                    )
+                    self.mmp_comparison_label.setText(
+                        f"Reservoir pressure ({p_res:.0f} psia) >= MMP ({mmp_val:.1f} psia). Full solvent miscibility achieved."
+                    )
+                else:
+                    self.mmp_status_badge.setText(f"IMMISCIBLE (Deficit: {abs(delta_p):.0f} psi)")
+                    self.mmp_status_badge.setStyleSheet(
+                        "padding: 4px 10px; border-radius: 4px; font-weight: bold; background-color: #d9534f; color: white;"
+                    )
+                    self.mmp_comparison_label.setText(
+                        f"Reservoir pressure ({p_res:.0f} psia) < MMP ({mmp_val:.1f} psia). Displacement will be immiscible/multiphase unless repressurized."
+                    )
+            else:
+                self._calculate_and_display_mmp()
+            self._plot_rel_perm_curves(switch_tab=False)
+            self._update_geology_cross_section_view()
+            self._update_geostat_view()
+            self._update_fault_view()
+            if hasattr(self, 'workbench') and self.workbench is not None:
+                try:
+                    self.workbench.load_project_data(project_data)
+                except Exception as w_err:
+                    logger.warning(f"Could not load data into SubsurfaceWorkbenchWidget: {w_err}")
+
             self.status_message_updated.emit(self.tr("Project data loaded successfully."), 5000)
 
         except Exception as e:
             QMessageBox.critical(self, self.tr("Loading Error"), self.tr("An error occurred while loading project data:\n{e}").format(e=e))
             logger.error(f"Error loading project data: {e}", exc_info=True)
+
+    def populate_fields_from_demo(self, params: Dict[str, Any]):
+        """Populate project data from demo dictionary (supports both classic and workbench)."""
+        if not params:
+            return
+        if hasattr(self, 'workbench') and self.workbench is not None:
+            try:
+                self.workbench.load_project_data(params)
+            except Exception as e:
+                logger.warning(f"Failed to populate workbench from demo: {e}")
+        self.load_project_data(params)
 
 
 def _create_default_co2_eor_properties() -> np.ndarray:

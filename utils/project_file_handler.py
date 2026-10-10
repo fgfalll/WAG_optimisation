@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 class ProjectEncoder(json.JSONEncoder):
     """Custom JSON encoder for project data."""
     def default(self, o: Any) -> Any:
-        if dataclasses.is_dataclass(o):
-            d = dataclasses.asdict(o)
+        if dataclasses.is_dataclass(o) and not isinstance(o, type):
+            d = {f.name: getattr(o, f.name) for f in dataclasses.fields(o)}
             d['_dataclass'] = o.__class__.__name__
             return d
         if isinstance(o, np.ndarray):
@@ -23,6 +23,8 @@ class ProjectEncoder(json.JSONEncoder):
                 'data': o.tolist(),
                 'dtype': o.dtype.name
             }
+        if isinstance(o, (np.integer, np.floating)):
+            return o.item()
         if isinstance(o, Path):
             return str(o)
         if type(o).__name__ == 'BayesianOptimization':
@@ -37,6 +39,43 @@ def project_decoder(data: Dict[str, Any]) -> Any:
         class_name = data.pop('_dataclass')
         cls = getattr(data_models, class_name, None)
         if cls:
+            # Special backwards compatibility for nested dataclasses inside ReservoirData
+            if class_name == 'ReservoirData':
+                if isinstance(data.get('eos_model'), dict) and '_dataclass' not in data['eos_model']:
+                    try:
+                        eos_cls = getattr(data_models, 'EOSModelParameters', None)
+                        if eos_cls:
+                            data['eos_model'] = eos_cls(**data['eos_model'])
+                    except Exception as e:
+                        logger.warning(f"Failed to deserialize eos_model in ReservoirData: {e}")
+                if isinstance(data.get('layer_definitions'), list):
+                    layer_cls = getattr(data_models, 'LayerDefinition', None)
+                    if layer_cls:
+                        deserialized_layers = []
+                        for l in data['layer_definitions']:
+                            if isinstance(l, dict) and '_dataclass' not in l:
+                                try:
+                                    deserialized_layers.append(layer_cls(**l))
+                                except Exception:
+                                    deserialized_layers.append(l)
+                            else:
+                                deserialized_layers.append(l)
+                        data['layer_definitions'] = deserialized_layers
+                if isinstance(data.get('geostatistical_params'), dict) and '_dataclass' not in data['geostatistical_params']:
+                    try:
+                        geo_cls = getattr(data_models, 'GeostatisticalParams', None)
+                        if geo_cls:
+                            data['geostatistical_params'] = geo_cls(**data['geostatistical_params'])
+                    except Exception as e:
+                        logger.warning(f"Failed to deserialize geostatistical_params in ReservoirData: {e}")
+                if isinstance(data.get('geomechanics_params'), dict) and '_dataclass' not in data['geomechanics_params']:
+                    try:
+                        gm_cls = getattr(data_models, 'GeomechanicsParameters', None)
+                        if gm_cls:
+                            data['geomechanics_params'] = gm_cls(**data['geomechanics_params'])
+                    except Exception as e:
+                        logger.warning(f"Failed to deserialize geomechanics_params in ReservoirData: {e}")
+
             # The from_config_dict method is available on many of the dataclasses
             # and is designed to safely construct an instance from a dictionary.
             if hasattr(cls, 'from_config_dict'):

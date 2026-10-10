@@ -28,12 +28,10 @@ from core.data_models import (
     PulsedInjectionParams,
     EmpiricalFittingParameters,
     PhysicalConstants,
+    GeomechanicsParameters,
 )
-from core.engine_factory import EngineFactory
-from core.geology.geostatistical_modeling import (
-    create_geostatistical_grid,
-    create_facies_based_grid,
-)
+from core.geology.geostatistical_modeling import create_geostatistical_grid
+from core.engine_surrogate.surrogate_engine import SurrogateEngineWrapper
 
 _PHYS_CONSTANTS = PhysicalConstants()
 
@@ -47,9 +45,7 @@ class DataIntegrationEngine:
     """
 
     def __init__(self):
-        self.engine_factory = EngineFactory()
-        self.data_validator = DataValidator()
-        self.unit_converter = UnitConverter()
+        self.surrogate_engine = SurrogateEngineWrapper()
         self.preprocessor = DataPreprocessor()
 
         # Cache for processed data
@@ -139,38 +135,17 @@ class DataIntegrationEngine:
             # Apply geostatistical modeling if validation passes
             if validation_results["is_valid"]:
                 processed_data = self._apply_geostatistical_modeling(preprocessed_data)
-                
+
                 # Create GeomechanicsParameters object if enabled
                 geomech_obj = self._create_geomechanics_parameters(preprocessed_data)
                 if geomech_obj:
                     processed_data["geomechanics_parameters_obj"] = geomech_obj
-                
+
                 validation_results["processed_data"] = processed_data
 
             return validation_results
 
         except Exception as e:
-            # Import global error handler
-            from error_handler import report_caught_error, ErrorSeverity, ErrorCategory
-
-            # Report the error properly instead of just logging
-            report_caught_error(
-                operation="process and validate dataset",
-                exception=e,
-                context={
-                    "dataset_type": type(widget_data).__name__,
-                    "dataset_keys": list(widget_data.keys())
-                    if isinstance(widget_data, dict)
-                    else "non-dict",
-                    "validation_stage": "comprehensive",
-                    "component_results_expected": True,
-                },
-                user_action_suggested="Check dataset format and ensure all required fields are present. Verify that reservoir parameters, PVT data, and well data are properly formatted.",
-                show_dialog=True,
-                severity=ErrorSeverity.ERROR,
-                category=ErrorCategory.DATA,
-            )
-
             logger.error(f"Error in process_and_validate_dataset: {e}")
             return {
                 "is_valid": False,
@@ -270,22 +245,17 @@ class DataIntegrationEngine:
         return EmpiricalFittingParameters(
             # Fluid composition
             c7_plus_fraction=fitting_data.get("c7_plus_fraction", 0.35),
-
             # Miscibility transition parameters
             alpha_base=fitting_data.get("alpha_base", 1.0),
             miscibility_window=fitting_data.get("miscibility_window", 0.011),
-
             # Production dynamics
-            breakthrough_time_years=fitting_data.get("breakthrough_time_years", 1.5),
             trapping_efficiency=fitting_data.get("trapping_efficiency", 0.4),
-
+            recycle_growth_rate=fitting_data.get("recycle_growth_rate", 1.5),
             # Initial conditions
             initial_gor_scf_per_stb=fitting_data.get("initial_gor_scf_per_stb", 500.0),
-
             # Mobility and mixing
             transverse_mixing_calibration=fitting_data.get("transverse_mixing_calibration", 0.5),
             omega_tl=fitting_data.get("omega_tl", 0.6),
-
             # Relative permeability endpoints (Corey parameters)
             k_ro_0=fitting_data.get("k_ro_0", 0.8),
             k_rg_0=fitting_data.get("k_rg_0", 0.3),
@@ -372,13 +342,54 @@ class DataIntegrationEngine:
         pressure_points = np.linspace(1000, 6000, 50)
         pvt_tables = {
             "PRESSURE": pressure_points,
-            "OIL_FVF": 1.2 + 0.0001 * (pressure_points - 4000),
+            "OIL_FVF": 1.2 * np.exp(-1.5e-5 * (pressure_points - 4000)),
             "OIL_VISC": pvt_params.get("oil_viscosity_cp", 2.0)
-            * np.exp(-0.0003 * (pressure_points - 4000)),
+            * np.exp(0.00005 * (pressure_points - 4000)),
             "GAS_FVF": 0.005 * (4000 / pressure_points),
             "CO2_VISC": pvt_params.get("gas_viscosity_cp", 0.02)
-            * np.exp(-0.0002 * (pressure_points - 4000)),
+            * np.exp(0.0002 * (pressure_points - 4000)),
         }
+
+        # Resolve or create EOS model for CO2-EOR
+        eos_model = None
+        if "eos_model" in res_params and isinstance(res_params["eos_model"], EOSModelParameters):
+            eos_model = res_params["eos_model"]
+        elif "eos_model" in data and isinstance(data["eos_model"], EOSModelParameters):
+            eos_model = data["eos_model"]
+        elif "eos_parameters" in data and isinstance(data["eos_parameters"], EOSModelParameters):
+            eos_model = data["eos_parameters"]
+        else:
+            component_names = ["CO2", "C1", "C4-C6", "C7+", "C10+"]
+            component_properties = np.array([
+                [0.05, 44.01, 304.13, 7.376e6, 0.225],
+                [0.45, 16.04, 190.6, 4.604e6, 0.011],
+                [0.15, 58.12, 425.2, 3.796e6, 0.200],
+                [0.25, 120.0, 550.0, 2.8e6, 0.350],
+                [0.10, 180.0, 650.0, 1.8e6, 0.480],
+            ])
+            binary_interaction_coeffs = np.zeros((len(component_names), len(component_names)))
+            for i in range(1, len(component_names)):
+                binary_interaction_coeffs[0, i] = 0.12
+                binary_interaction_coeffs[i, 0] = 0.12
+
+            eos_model = EOSModelParameters(
+                eos_type="PR",
+                component_names=component_names,
+                component_properties=component_properties,
+                binary_interaction_coeffs=binary_interaction_coeffs,
+            )
+
+        # Physical dimensions in field units (ft, acres)
+        # res_params["block_sizes"] dx, dy, dz are in feet.
+        thickness_ft = float(
+            res_params.get("thickness_ft", res_params.get("thickness", nz * dz))
+        )
+        area_acres = float(
+            res_params.get("area_acres", res_params.get("area", (nx * dx * ny * dy) / 43560.0))
+        )
+        length_ft = float(
+            res_params.get("length_ft", res_params.get("length", nx * dx))
+        )
 
         return ReservoirData(
             grid=grid,
@@ -390,16 +401,16 @@ class DataIntegrationEngine:
             average_porosity=np.mean(porosity),
             average_permeability=np.mean(perm_x),
             initial_water_saturation=res_params.get("initial_water_saturation", 0.25),
-            thickness_ft=nz * dz / 0.3048,
-            area_acres=(nx * dx * ny * dy) / 4046.86,
-            length_ft=(nx * dx) / 0.3048,
+            thickness_ft=thickness_ft,
+            area_acres=area_acres,
+            length_ft=length_ft,
             rock_type=res_params.get("rock_type", "sandstone"),
             depositional_environment=res_params.get("depositional_environment", "fluvial"),
             structural_complexity=res_params.get("structural_complexity", "simple"),
-            dip_angle=res_params.get("dip_angle", 0.0),
             oil_fvf=res_params.get("oil_fvf", 1.2),
             density_contrast=res_params.get("density_contrast", 0.3),
-            interfacial_tension=res_params.get("interfacial_tension", 5.0)
+            interfacial_tension=res_params.get("interfacial_tension", 5.0),
+            eos_model=eos_model,
         )
 
     def _create_pvt_properties(self, data: Dict[str, Any]) -> PVTProperties:
@@ -416,17 +427,18 @@ class DataIntegrationEngine:
         gas_visc = pvt_params.get("gas_viscosity_cp", 0.02)
         water_visc = pvt_params.get("water_viscosity_cp", 0.5)
 
-        # Generate oil FVF correlation
-        oil_fvf = 1.2 + 0.0001 * (pressure_points - 4000) + 0.00005 * (api - 35)
+        # Generate oil FVF correlation (thermodynamically consistent compressibility: dBo/dP < 0)
+        oil_fvf = 1.2 - 0.000015 * (pressure_points - 4000) + 0.00005 * (api - 35)
+        oil_fvf = np.maximum(oil_fvf, 1.01)
 
-        # Generate oil viscosity correlation
-        oil_viscosity = oil_visc * np.exp(-0.0003 * (pressure_points - 4000))
+        # Generate oil viscosity correlation (viscosity increases slightly with pressure: dmu/dP > 0)
+        oil_viscosity = oil_visc * np.exp(0.00005 * (pressure_points - 4000))
 
         # Generate gas FVF
-        gas_fvf = 0.005 * (4000 / pressure_points) * (gas_sg / 0.65)
+        gas_fvf = 0.005 * (4000 / np.maximum(pressure_points, 14.7)) * (gas_sg / 0.65)
 
-        # Generate CO2 viscosity
-        co2_viscosity = gas_visc * np.exp(-0.0002 * (pressure_points - 4000))
+        # Generate CO2 viscosity (supercritical gas viscosity increases with pressure: dmu/dP > 0)
+        co2_viscosity = gas_visc * np.exp(0.0002 * (pressure_points - 4000))
 
         # Generate solution GOR
         rs = 200 * np.minimum(1.0, pressure_points / 4000) * (1 + 0.1 * (gas_sg - 0.65))
@@ -472,6 +484,19 @@ class DataIntegrationEngine:
                 production_period_days=eor_data.get("huff_n_puff_production_period_days", 15),
                 max_cycles=eor_data.get("huff_n_puff_max_cycles", 10),
             )
+        elif injection_scheme == "tapered":
+            tapered_params = TaperedInjectionParams(
+                initial_rate_multiplier=eor_data.get("tapered_initial_rate_multiplier", 1.5),
+                final_rate_multiplier=eor_data.get("tapered_final_rate_multiplier", 0.5),
+                duration_years=eor_data.get("tapered_duration_years", 5.0),
+                function=eor_data.get("tapered_function", "linear"),
+            )
+        elif injection_scheme == "pulsed":
+            pulsed_params = PulsedInjectionParams(
+                pulse_duration_days=int(eor_data.get("pulsed_pulse_duration_days", 7)),
+                pause_duration_days=int(eor_data.get("pulsed_pause_duration_days", 14)),
+                intensity_multiplier=eor_data.get("pulsed_intensity_multiplier", 2.0),
+            )
 
         return EORParameters(
             injection_scheme=injection_scheme,
@@ -499,18 +524,23 @@ class DataIntegrationEngine:
             well_shut_in_threshold_bpd=eor_data.get("well_shut_in_threshold_bpd", 10.0),
             max_injector_bhp_psi=eor_data.get("max_injector_bhp_psi", 8000.0),
             timestep_days=eor_data.get("timestep_days", 30.44),
+            enforce_step_flash=eor_data.get("enforce_step_flash", False),
         )
 
     def _create_operational_parameters(self, data: Dict[str, Any]) -> OperationalParameters:
         """Create complete OperationalParameters object"""
         op_data = data.get("operational_parameters", {})
 
+        rec_model = op_data.get("recovery_model_selection", "hybrid")
+        if rec_model == "phd_hybrid":
+            rec_model = "hybrid"
+
         return OperationalParameters(
             project_lifetime_years=op_data.get("project_lifetime_years", 15),
             time_resolution=op_data.get("time_resolution", "yearly"),
             target_objective_name=op_data.get("target_objective_name", None),
             target_objective_value=op_data.get("target_objective_value", None),
-            recovery_model_selection=op_data.get("recovery_model_selection", "hybrid"),
+            recovery_model_selection=rec_model,
             target_tolerance=op_data.get("target_tolerance", 0.05),
         )
 
@@ -564,47 +594,28 @@ class DataIntegrationEngine:
         return processed_wells
 
     def _validate_engine_compatibility(self, engine_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate data compatibility with both engines"""
+        """Validate data compatibility with surrogate engine only"""
         compatibility = {
-            "simple_engine": {"compatible": True, "issues": []},
-            "detailed_engine": {"compatible": True, "issues": []},
+            "surrogate_engine": {"compatible": True, "issues": []},
         }
 
         try:
-            # Test simple engine compatibility
-            simple_engine = self.engine_factory.create_engine("simple")
-            simple_validation = simple_engine.validate_parameters(
+            surrogate_validation = self.surrogate_engine.validate_parameters(
                 engine_data["reservoir_data"], engine_data["eor_parameters"]
             )
 
-            if not all(simple_validation.values()):
-                compatibility["simple_engine"]["compatible"] = False
-                compatibility["simple_engine"]["issues"] = [
+            if not all(surrogate_validation.values()):
+                compatibility["surrogate_engine"]["compatible"] = False
+                compatibility["surrogate_engine"]["issues"] = [
                     f"Parameter {param}: {status}"
-                    for param, status in simple_validation.items()
-                    if not status
-                ]
-
-            # Test detailed engine compatibility
-            detailed_engine = self.engine_factory.create_engine("detailed")
-            detailed_validation = detailed_engine.validate_parameters(
-                engine_data["reservoir_data"], engine_data["eor_parameters"]
-            )
-
-            if not all(detailed_validation.values()):
-                compatibility["detailed_engine"]["compatible"] = False
-                compatibility["detailed_engine"]["issues"] = [
-                    f"Parameter {param}: {status}"
-                    for param, status in detailed_validation.items()
+                    for param, status in surrogate_validation.items()
                     if not status
                 ]
 
         except Exception as e:
             logger.error(f"Error testing engine compatibility: {e}")
-            compatibility["simple_engine"]["compatible"] = False
-            compatibility["detailed_engine"]["compatible"] = False
-            compatibility["simple_engine"]["issues"].append(f"Engine test failed: {e}")
-            compatibility["detailed_engine"]["issues"].append(f"Engine test failed: {e}")
+            compatibility["surrogate_engine"]["compatible"] = False
+            compatibility["surrogate_engine"]["issues"].append(f"Engine test failed: {e}")
 
         return compatibility
 
@@ -700,9 +711,7 @@ class DataIntegrationEngine:
 
         return len(errors) == 0, errors
 
-    def _validate_geomechanics_parameters(
-        self, params: Dict[str, Any]
-    ) -> Tuple[bool, List[str]]:
+    def _validate_geomechanics_parameters(self, params: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """Validate geomechanics parameters"""
         errors = []
 
@@ -847,84 +856,8 @@ class DataIntegrationEngine:
         ]
 
 
-class DataValidator:
-    """Strict data validation for all parameters"""
-
-    @staticmethod
-    def validate_range(value: float, min_val: float, max_val: float, name: str) -> Tuple[bool, str]:
-        """Validate numeric range"""
-        if not (min_val <= value <= max_val):
-            return False, f"{name} must be between {min_val} and {max_val}"
-        return True, ""
-
-    @staticmethod
-    def validate_positive(value: float, name: str) -> Tuple[bool, str]:
-        """Validate positive value"""
-        if value <= 0:
-            return False, f"{name} must be positive"
-        return True, ""
-
-    @staticmethod
-    def validate_array(array: np.ndarray, name: str, min_length: int = 1) -> Tuple[bool, str]:
-        """Validate numpy array"""
-        if not isinstance(array, np.ndarray):
-            return False, f"{name} must be a numpy array"
-
-        if len(array) < min_length:
-            return False, f"{name} must have at least {min_length} elements"
-
-        return True, ""
-
-
-class UnitConverter:
-    """Handle unit conversions for different parameter types"""
-
-    @staticmethod
-    def feet_to_meters(feet: float) -> float:
-        """Convert feet to meters using PhysicalConstants"""
-        return feet * _PHYS_CONSTANTS.FT_TO_M
-
-    @staticmethod
-    def meters_to_feet(meters: float) -> float:
-        """Convert meters to feet using PhysicalConstants"""
-        return meters / _PHYS_CONSTANTS.FT_TO_M
-
-    @staticmethod
-    def acres_to_m2(acres: float) -> float:
-        """Convert acres to square meters"""
-        return acres * 4046.86  # Fixed value for area conversion
-
-    @staticmethod
-    def m2_to_acres(m2: float) -> float:
-        """Convert square meters to acres"""
-        return m2 / 4046.86  # Fixed value for area conversion
-
-    @staticmethod
-    def psi_to_pa(psi: float) -> float:
-        """Convert psi to Pascal using PhysicalConstants"""
-        return psi * _PHYS_CONSTANTS.PSI_TO_PA
-
-    @staticmethod
-    def pa_to_psi(pa: float) -> float:
-        """Convert Pascal to psi using PhysicalConstants"""
-        return pa * _PHYS_CONSTANTS.PA_TO_PSI
-
-    @staticmethod
-    def bbl_to_m3(bbl: float) -> float:
-        """Convert barrels to cubic meters using PhysicalConstants"""
-        return bbl * _PHYS_CONSTANTS.BBLS_TO_M3
-
-    @staticmethod
-    def m3_to_bbl(m3: float) -> float:
-        """Convert cubic meters to barrels using PhysicalConstants"""
-        return m3 * _PHYS_CONSTANTS.M3_TO_BBL
-
-
 class DataPreprocessor:
     """Preprocess data before engine integration"""
-
-    def __init__(self):
-        self.unit_converter = UnitConverter()
 
     def preprocess_all(self, categorized_data: Dict[str, Any]) -> Dict[str, Any]:
         """Preprocess all data categories"""
@@ -951,9 +884,9 @@ class DataPreprocessor:
         if "block_sizes" in processed:
             block_sizes = processed["block_sizes"]
             processed["block_sizes_m"] = {
-                "dx": self.unit_converter.feet_to_meters(block_sizes.get("dx", 100)),
-                "dy": self.unit_converter.feet_to_meters(block_sizes.get("dy", 100)),
-                "dz": self.unit_converter.feet_to_meters(block_sizes.get("dz", 20)),
+                "dx": float(block_sizes.get("dx", 100)) * _PHYS_CONSTANTS.FT_TO_M,
+                "dy": float(block_sizes.get("dy", 100)) * _PHYS_CONSTANTS.FT_TO_M,
+                "dz": float(block_sizes.get("dz", 20)) * _PHYS_CONSTANTS.FT_TO_M,
             }
 
         return processed

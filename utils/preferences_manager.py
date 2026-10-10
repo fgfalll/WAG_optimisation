@@ -3,17 +3,68 @@ Preferences Manager for CO2 EOR Optimization App.
 Handles user preferences storage, retrieval, and management using QSettings.
 """
 import logging
-from typing import Any, Dict, Optional, List, Union
-from dataclasses import dataclass, field, asdict
+from typing import Dict, Optional, List
+from dataclasses import dataclass, field
 from enum import Enum
-from pathlib import Path
 
 from PyQt6.QtCore import QSettings, pyqtSignal, QObject
 
 from utils.i18n_manager import I18nManager
-from utils.units_manager import units_manager
 
 logger = logging.getLogger(__name__)
+
+
+AVAILABLE_UNITS: Dict[str, List[str]] = {
+    "pressure": ["atm", "bar", "kPa", "MPa", "Pa", "psi"],
+    "temperature": ["°C", "°F", "K"],
+    "length": ["cm", "ft", "in", "km", "m", "mm"],
+    "area": ["acre", "ft2", "hectare", "km2", "m2"],
+    "volume": ["bbl", "ft3", "galUS", "L", "m3"],
+    "density": ["g/cm3", "kg/m3", "lb/ft3", "lb/gal"],
+    "viscosity": ["cP", "Pa.s"],
+    "permeability": ["D", "m2", "mD"],
+    "rate_vol": ["bbl/d", "m3/d", "m3/s"],
+    "gor": ["m3/m3", "scf/STB"],
+    "fvf": ["bbl/STB", "m3/m3", "rb/STB"],
+    "time": ["day", "hour", "min", "month", "s", "year"],
+    "api_gravity": ["api"],
+    "angle": ["degrees"],
+}
+
+SYSTEM_DISPLAY_UNITS: Dict[str, Dict[str, str]] = {
+    "SI": {
+        "pressure": "kPa",
+        "temperature": "°C",
+        "length": "m",
+        "area": "m2",
+        "volume": "m3",
+        "density": "kg/m3",
+        "viscosity": "cP",
+        "permeability": "mD",
+        "rate_vol": "m3/d",
+        "gor": "m3/m3",
+        "fvf": "m3/m3",
+        "time": "day",
+        "api_gravity": "api",
+        "angle": "degrees",
+    },
+    "Field": {
+        "pressure": "psi",
+        "temperature": "°F",
+        "length": "ft",
+        "area": "acre",
+        "volume": "bbl",
+        "density": "lb/ft3",
+        "viscosity": "cP",
+        "permeability": "mD",
+        "rate_vol": "bbl/d",
+        "gor": "scf/STB",
+        "fvf": "bbl/STB",
+        "time": "day",
+        "api_gravity": "api",
+        "angle": "degrees",
+    },
+}
 
 
 class UnitSystem(Enum):
@@ -289,7 +340,18 @@ class PreferencesManager(QObject):
         
         # Use the unit system default
         unit_system = self._display.unit_system.value
-        return units_manager.get_display_unit(category, unit_system)
+        sys_map = SYSTEM_DISPLAY_UNITS.get(unit_system, SYSTEM_DISPLAY_UNITS["Field"])
+        return sys_map.get(category, "")
+
+    @staticmethod
+    def get_available_units_for_category(category: str) -> List[str]:
+        """Returns a list of all known units for a given category."""
+        return AVAILABLE_UNITS.get(category, [])
+
+    @staticmethod
+    def get_all_unit_categories() -> List[str]:
+        """Returns a list of all known unit categories."""
+        return sorted(list(AVAILABLE_UNITS.keys()))
     
     # Property accessors for preferences
     @property
@@ -392,7 +454,7 @@ class PreferencesManager(QObject):
         # Check if unit overrides are valid for their categories
         for category in ['pressure', 'temperature', 'length', 'volume', 'density', 'viscosity', 'permeability', 'rate_vol']:
             unit_value = getattr(self._units, f"{category}_unit")
-            if unit_value and unit_value not in units_manager.get_available_units_for_category(category):
+            if unit_value and unit_value not in AVAILABLE_UNITS.get(category, []):
                 logger.warning(f"Invalid unit for {category}: {unit_value}. Resetting to default.")
                 setattr(self._units, f"{category}_unit", None)
         

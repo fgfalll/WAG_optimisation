@@ -5,10 +5,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import QPointF, QEvent
 
-try:
-    from .depth_profile_editor import DepthProfileEditor
-except ImportError:
-    class DepthProfileEditor(QWidget): pass
+from .depth_profile_editor import DepthProfileEditor
 
 class DepthProfileDialog(QDialog):
     """A dialog for editing a well's depth profile via an interactive 2D editor."""

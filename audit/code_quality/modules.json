@@ -1,0 +1,4945 @@
+[
+  {
+    "module": "__init__.py",
+    "lines": 25,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_1.py",
+    "lines": 84,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_2.py",
+    "lines": 68,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_3.py",
+    "lines": 127,
+    "classes_count": 1,
+    "functions_count": 0,
+    "classes": [
+      "_Adv"
+    ],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_4.py",
+    "lines": 72,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "fg"
+    ]
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/count2.py",
+    "lines": 27,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_clip.py",
+    "lines": 37,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "spy"
+    ]
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_counts.py",
+    "lines": 27,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_counts2.py",
+    "lines": 65,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_engine.py",
+    "lines": 42,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_hcpvi.py",
+    "lines": 27,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_inert.py",
+    "lines": 28,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_misc.py",
+    "lines": 39,
+    "classes_count": 1,
+    "functions_count": 0,
+    "classes": [
+      "FakeAdv"
+    ],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_physics.py",
+    "lines": 42,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_pvt2.py",
+    "lines": 24,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_recount.py",
+    "lines": 73,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_rf.py",
+    "lines": 29,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests.py",
+    "lines": 18,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests2.py",
+    "lines": 70,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "prod_names",
+      "fn_local_names"
+    ]
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py",
+    "lines": 295,
+    "classes_count": 0,
+    "functions_count": 3,
+    "classes": [],
+    "functions": [
+      "hdr",
+      "p",
+      "run"
+    ]
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_6.py",
+    "lines": 146,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "hdr",
+      "p"
+    ]
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py",
+    "lines": 88,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "hdr",
+      "p"
+    ]
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_8.py",
+    "lines": 45,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "agent_wiki/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_9.py",
+    "lines": 44,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "analysis/breakthrough_physics.py",
+    "lines": 638,
+    "classes_count": 2,
+    "functions_count": 12,
+    "classes": [
+      "BreakthroughParameters",
+      "CO2BreakthroughPhysics"
+    ],
+    "functions": [
+      "_to_float",
+      "create_breakthrough_analysis",
+      "__post_init__",
+      "__init__",
+      "calculate_breakthrough_time",
+      "_koval_breakthrough",
+      "_gravity_override_breakthrough",
+      "_calculate_dimensionless_weights",
+      "calculate_post_breakthrough_gor",
+      "calculate_recyclable_co2",
+      "generate_breakthrough_profile",
+      "generate_spatial_breakthrough_profile"
+    ]
+  },
+  {
+    "module": "analysis/data_validation.py",
+    "lines": 396,
+    "classes_count": 1,
+    "functions_count": 8,
+    "classes": [
+      "DataValidator"
+    ],
+    "functions": [
+      "validate_recovery_factor",
+      "validate_pressure_data",
+      "validate_production_data",
+      "_get_oil_production",
+      "_get_co2_injection",
+      "_get_co2_production",
+      "validate_simulation_results",
+      "log_validation_results"
+    ]
+  },
+  {
+    "module": "analysis/decline_curve_analysis.py",
+    "lines": 391,
+    "classes_count": 2,
+    "functions_count": 17,
+    "classes": [
+      "DCAResult",
+      "DeclineCurveAnalyzer"
+    ],
+    "functions": [
+      "__init__",
+      "exponential_decline",
+      "hyperbolic_decline",
+      "harmonic_decline",
+      "modified_hyperbolic_decline",
+      "fit_exponential",
+      "fit_hyperbolic",
+      "fit_hyperbolic_qi_di",
+      "calculate_cumulative",
+      "calculate_r_squared",
+      "analyze_production",
+      "_select_best_model",
+      "_calculate_economic_life",
+      "generate_dca_report_data",
+      "plot_decline_curve",
+      "hyperbolic_func",
+      "hyperbolic_func_fixed_b"
+    ]
+  },
+  {
+    "module": "analysis/injection_scheme_validator.py",
+    "lines": 441,
+    "classes_count": 2,
+    "functions_count": 13,
+    "classes": [
+      "InjectionSchemeValidationResult",
+      "InjectionSchemeValidator"
+    ],
+    "functions": [
+      "__init__",
+      "validate_wag_scheme",
+      "validate_huff_n_puff_scheme",
+      "_is_wag_duplicated_from_continuous",
+      "_validate_wag_alternating_pattern",
+      "_validate_huff_n_puff_pressure",
+      "_validate_huff_n_puff_co2_production",
+      "_validate_huff_n_puff_recovery",
+      "_check_pressure_decline_during_production",
+      "_analyze_co2_production_pattern",
+      "_validate_physical_constraints",
+      "_find_injection_periods",
+      "validate_mass_balance"
+    ]
+  },
+  {
+    "module": "analysis/material_balance.py",
+    "lines": 642,
+    "classes_count": 3,
+    "functions_count": 8,
+    "classes": [
+      "MaterialBalanceAnalyzer",
+      "BreakthroughParameters",
+      "CO2BreakthroughPhysics"
+    ],
+    "functions": [
+      "create_material_balance_from_optimization",
+      "__init__",
+      "_get_co2_fraction_at_reservoir",
+      "calculate_material_balance",
+      "calculate_breakthrough_aware_recycling",
+      "generate_material_balance_graphs",
+      "generate_summary_statistics",
+      "__init__"
+    ]
+  },
+  {
+    "module": "analysis/profiler.py",
+    "lines": 1181,
+    "classes_count": 1,
+    "functions_count": 19,
+    "classes": [
+      "ProductionProfiler"
+    ],
+    "functions": [
+      "__init__",
+      "_calculate_geology_enhanced_sweep_efficiency",
+      "_calculate_geology_factor",
+      "_calculate_heterogeneity_index",
+      "_get_geology_based_permeability_modifier",
+      "_calculate_geology_injection_factor",
+      "_relative_permeability",
+      "_fractional_flow",
+      "_relative_permeability_water",
+      "_water_fractional_flow",
+      "_welge_tangent",
+      "generate_all_profiles",
+      "_resample_profile",
+      "_setup_injection_scheme",
+      "_implement_wag_scheme",
+      "_implement_huff_n_puff_scheme",
+      "_implement_swag_scheme",
+      "_implement_tapered_scheme",
+      "_implement_pulsed_scheme"
+    ]
+  },
+  {
+    "module": "analysis/profiler_refactored.py",
+    "lines": 252,
+    "classes_count": 1,
+    "functions_count": 21,
+    "classes": [
+      "ProductionProfiler"
+    ],
+    "functions": [
+      "create_production_profiler",
+      "__init__",
+      "generate_all_profiles",
+      "areal_sweep_efficiency",
+      "_calculate_geology_enhanced_sweep_efficiency",
+      "_calculate_geology_factor",
+      "_calculate_heterogeneity_index",
+      "_get_geology_based_permeability_modifier",
+      "_calculate_geology_injection_factor",
+      "_relative_permeability",
+      "_fractional_flow",
+      "_relative_permeability_water",
+      "_water_fractional_flow",
+      "_welge_tangent",
+      "_setup_injection_scheme",
+      "_implement_wag_scheme",
+      "_implement_huff_n_puff_scheme",
+      "_implement_swag_scheme",
+      "_implement_tapered_scheme",
+      "_implement_pulsed_scheme",
+      "_resample_profile"
+    ]
+  },
+  {
+    "module": "analysis/sensitivity_analyzer.py",
+    "lines": 933,
+    "classes_count": 1,
+    "functions_count": 19,
+    "classes": [
+      "SensitivityAnalyzer"
+    ],
+    "functions": [
+      "__init__",
+      "set_progress_callback",
+      "_report_progress",
+      "get_configurable_parameters",
+      "_resolve_base_case_parameters",
+      "_parse_param_path",
+      "_get_config_value",
+      "_get_eos_cache_key",
+      "_cached_eos_calculation",
+      "_apply_parameter_overrides",
+      "_evaluate_scenario",
+      "run_one_way_sensitivity",
+      "run_sobol",
+      "run_reoptimization_sensitivity",
+      "run_two_way_sensitivity",
+      "plot_3d_surface",
+      "plot_tornado_chart",
+      "plot_spider_chart",
+      "evaluate_sample"
+    ]
+  },
+  {
+    "module": "analysis/uq_engine.py",
+    "lines": 471,
+    "classes_count": 2,
+    "functions_count": 16,
+    "classes": [
+      "UQpyModel",
+      "UncertaintyQuantificationEngine"
+    ],
+    "functions": [
+      "__init__",
+      "initialize",
+      "preprocess_single_sample",
+      "execute_single_sample",
+      "postprocess_single_file",
+      "finalize",
+      "__call__",
+      "_get_sampled_econ_instance",
+      "_get_sampled_model_kwargs",
+      "__init__",
+      "_create_distributions",
+      "_get_uqpy_distribution",
+      "run_mc_analysis",
+      "run_pce_analysis",
+      "plot_mc_results",
+      "plot_pce_sobol_indices"
+    ]
+  },
+  {
+    "module": "analysis/well_analysis.py",
+    "lines": 278,
+    "classes_count": 2,
+    "functions_count": 6,
+    "classes": [
+      "WellAnalysisConfig",
+      "WellAnalysis"
+    ],
+    "functions": [
+      "_get_api_from_eos",
+      "_estimate_api_profile",
+      "_calculate_temperature_profile",
+      "calculate_mmp_profile",
+      "find_miscible_zones",
+      "get_average_mmp_params_for_engine"
+    ]
+  },
+  {
+    "module": "audit/__init__.py",
+    "lines": 11,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "audit/__main__.py",
+    "lines": 98,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "module": "audit/continuity.py",
+    "lines": 1173,
+    "classes_count": 3,
+    "functions_count": 28,
+    "classes": [
+      "CheckResult",
+      "Check",
+      "WikiIssue"
+    ],
+    "functions": [
+      "_safe",
+      "probe_no_undefined_fudge_genes",
+      "probe_hcpvi_dimensionless",
+      "probe_bubble_point_correlation",
+      "probe_gas_fvf_constant",
+      "probe_zfactor_dense_gas",
+      "probe_co2_compressibility_provenance",
+      "probe_saturation_closure",
+      "probe_viscosity_sensitivity",
+      "probe_koval_sensitivity_in_config",
+      "probe_npv_revenue_completeness",
+      "probe_leakage_economics",
+      "probe_npv_rf_alignment",
+      "probe_immiscible_gradient",
+      "probe_wag_unit_scaling",
+      "probe_containment_can_prune",
+      "probe_co2_ledger_closure",
+      "probe_pvt_provenance_guards",
+      "probe_recycled_le_produced",
+      "parse_status_labels",
+      "resolve_claims",
+      "check_wiki",
+      "check_commit_issue_discipline",
+      "gate_staged_commit",
+      "run_checks",
+      "render_report",
+      "write_json_report",
+      "main"
+    ]
+  },
+  {
+    "module": "audit/generate_agent_checklist.py",
+    "lines": 512,
+    "classes_count": 0,
+    "functions_count": 8,
+    "classes": [],
+    "functions": [
+      "parse_scientific_flaws_md",
+      "parse_parameter_provenance_csv",
+      "parse_safe_harbor_items",
+      "scan_silent_fallbacks",
+      "scan_ruff_diagnostics",
+      "generate_agent_checklist_markdown",
+      "run_checklist_pipeline",
+      "commit_current"
+    ]
+  },
+  {
+    "module": "audit/pipeline.py",
+    "lines": 756,
+    "classes_count": 0,
+    "functions_count": 10,
+    "classes": [],
+    "functions": [
+      "get_python_files",
+      "run_code_quality_scan",
+      "run_fallbacks_scan",
+      "run_hardcoded_values_scan",
+      "get_scientific_flaw_register",
+      "run_scientific_flaws_scan",
+      "run_parameter_provenance_scan",
+      "generate_audit_reports",
+      "export_scientific_registers",
+      "run_full_audit"
+    ]
+  },
+  {
+    "module": "audit/registry.py",
+    "lines": 638,
+    "classes_count": 2,
+    "functions_count": 19,
+    "classes": [
+      "Finding",
+      "ValidationReport"
+    ],
+    "functions": [
+      "parse_findings",
+      "render_finding",
+      "next_id",
+      "validate",
+      "render_issue_body",
+      "_gh",
+      "ensure_labels",
+      "create_issue",
+      "cmd_validate",
+      "cmd_list",
+      "cmd_new",
+      "cmd_issue",
+      "cmd_json",
+      "main",
+      "severity_tier",
+      "is_resolved",
+      "ok",
+      "opt",
+      "val"
+    ]
+  },
+  {
+    "module": "core/__init__.py",
+    "lines": 22,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "__getattr__"
+    ]
+  },
+  {
+    "module": "core/data_integration_engine.py",
+    "lines": 931,
+    "classes_count": 2,
+    "functions_count": 27,
+    "classes": [
+      "DataIntegrationEngine",
+      "DataPreprocessor"
+    ],
+    "functions": [
+      "create_data_integration_engine",
+      "__init__",
+      "process_and_validate_dataset",
+      "_apply_geostatistical_modeling",
+      "create_engine_data_structures",
+      "_create_fitting_parameters",
+      "_generate_engine_data_structures",
+      "_create_reservoir_data",
+      "_create_pvt_properties",
+      "_create_eor_parameters",
+      "_create_operational_parameters",
+      "_create_economic_parameters",
+      "_process_well_data",
+      "_validate_engine_compatibility",
+      "_validate_reservoir_parameters",
+      "_validate_pvt_parameters",
+      "_validate_geostatistical_parameters",
+      "_validate_well_data",
+      "_validate_geomechanics_parameters",
+      "_create_geomechanics_parameters",
+      "_generate_heterogeneous_properties",
+      "_identify_data_sources",
+      "_get_processing_steps",
+      "preprocess_all",
+      "_preprocess_reservoir_parameters",
+      "_preprocess_pvt_parameters",
+      "_preprocess_well_data"
+    ]
+  },
+  {
+    "module": "core/data_models.py",
+    "lines": 2296,
+    "classes_count": 35,
+    "functions_count": 67,
+    "classes": [
+      "WellData",
+      "WellScheduleEntry",
+      "WellOperationalSchedule",
+      "FaultData",
+      "CaprockLayer",
+      "EOSModelParameters",
+      "GeostatisticalParams",
+      "LayerDefinition",
+      "ReservoirData",
+      "FaultType",
+      "FractureState",
+      "FaultGeometry",
+      "FaultProperties",
+      "EconomicParameters",
+      "HuffNPuffParams",
+      "SWAGParams",
+      "TaperedInjectionParams",
+      "PulsedInjectionParams",
+      "EORParameters",
+      "PVTProperties",
+      "FluidProperties",
+      "OperationalParameters",
+      "ProfileParameters",
+      "GeneticAlgorithmParams",
+      "BayesianOptimizationParams",
+      "GeomechanicsParameters",
+      "TuningParams",
+      "TimestepUnit",
+      "CCUSParameters",
+      "CO2StorageParameters",
+      "AdvancedEngineParams",
+      "CCUSState",
+      "PhysicalConstants",
+      "CoreyParameters",
+      "EmpiricalFittingParameters"
+    ],
+    "functions": [
+      "from_dict_to_dataclass",
+      "calculate_koval_from_reservoir",
+      "calculate_mmp_yellig_metcalfe",
+      "calculate_peaceman_index",
+      "get_trajectory_points",
+      "validate",
+      "calculate_resolved_stresses",
+      "max_sustainable_column_ft",
+      "__post_init__",
+      "__post_init__",
+      "validate",
+      "_validate_basic_parameters",
+      "_validate_physics_based_consistency",
+      "_validate_geology_parameters",
+      "calculate_ooip_from_physics",
+      "is_physics_based_model_compatible",
+      "generate_geostatistical_grid",
+      "pore_volume",
+      "calculate_normal_vector",
+      "calculate_slip_direction",
+      "__post_init__",
+      "calculate_friction_angle",
+      "__post_init__",
+      "from_config_dict",
+      "__post_init__",
+      "__post_init__",
+      "__post_init__",
+      "__post_init__",
+      "__post_init__",
+      "WAG_ratio",
+      "WAG_ratio",
+      "co2_recycling_efficiency",
+      "co2_recycling_efficiency",
+      "from_config_dict",
+      "__post_init__",
+      "from_config_dict",
+      "__post_init__",
+      "water_density",
+      "water_viscosity",
+      "oil_density",
+      "oil_viscosity",
+      "gas_density",
+      "gas_viscosity",
+      "__post_init__",
+      "from_config_dict",
+      "__post_init__",
+      "from_config_dict",
+      "__post_init__",
+      "from_config_dict",
+      "__post_init__",
+      "from_config_dict",
+      "__post_init__",
+      "from_config_dict",
+      "__post_init__",
+      "from_config_dict",
+      "from_config_dict",
+      "__post_init__",
+      "get_tensor",
+      "get_co2_properties",
+      "get_unit_conversions",
+      "get_pressure_gradients",
+      "__post_init__",
+      "kr_water",
+      "kr_gas",
+      "__post_init__",
+      "from_config_dict",
+      "to_dict"
+    ]
+  },
+  {
+    "module": "core/engine_surrogate/__init__.py",
+    "lines": 76,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "core/engine_surrogate/analytical_models.py",
+    "lines": 981,
+    "classes_count": 7,
+    "functions_count": 28,
+    "classes": [
+      "AnalyticalRecoveryModel",
+      "MiscibleSurrogate",
+      "ImmiscibleSurrogate",
+      "BuckleyLeverettSurrogate",
+      "HybridSurrogate",
+      "KovalSurrogate",
+      "PhDHybridSurrogate"
+    ],
+    "functions": [
+      "get_analytical_model",
+      "get_available_models",
+      "__init__",
+      "calculate_recovery",
+      "get_model_info",
+      "__init__",
+      "calculate_recovery",
+      "_literature_based_recovery",
+      "__init__",
+      "calculate_recovery",
+      "_literature_based_recovery",
+      "__init__",
+      "calculate_recovery",
+      "_literature_based_recovery",
+      "__init__",
+      "calculate_recovery",
+      "__init__",
+      "calculate_recovery",
+      "_literature_based_recovery",
+      "__init__",
+      "calculate_recovery",
+      "calculate_gradient",
+      "is_miscible",
+      "get_miscibility_weight",
+      "get_last_miscibility_weight",
+      "get_pressure_for_miscibility_weight",
+      "fractional_flow",
+      "fractional_flow"
+    ]
+  },
+  {
+    "module": "core/engine_surrogate/geomechanics_fault.py",
+    "lines": 232,
+    "classes_count": 2,
+    "functions_count": 2,
+    "classes": [
+      "GeomechanicalState",
+      "GeomechanicsFaultModel"
+    ],
+    "functions": [
+      "__init__",
+      "evaluate_state"
+    ]
+  },
+  {
+    "module": "core/engine_surrogate/profile_generator_fast.py",
+    "lines": 1327,
+    "classes_count": 1,
+    "functions_count": 19,
+    "classes": [
+      "FastProfileGenerator"
+    ],
+    "functions": [
+      "__init__",
+      "calculate_composite_ipr_deliverability",
+      "generate_profile",
+      "_validate_profile_constraints",
+      "_apply_wag_oil_modulation",
+      "_apply_wag_water_modulation",
+      "_plateau_decline_profile",
+      "_arps_decline_profile",
+      "_logistic_profile",
+      "_generate_huff_n_puff_production_profile",
+      "_generate_water_profile",
+      "_generate_gas_profile",
+      "_generate_injection_profile",
+      "_generate_wag_profile",
+      "_generate_huff_n_puff_profile",
+      "_generate_swag_profile",
+      "_generate_tapered_profile",
+      "_generate_pulsed_profile",
+      "generate_fast_profile"
+    ]
+  },
+  {
+    "module": "core/engine_surrogate/pvt_state.py",
+    "lines": 511,
+    "classes_count": 2,
+    "functions_count": 12,
+    "classes": [
+      "SurfaceSeparationResult",
+      "SolventExtendedPVTEngine"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_pr_eos_co2",
+      "calculate_co2_density_kg_m3",
+      "calculate_co2_fvf_rb_per_mscf",
+      "calculate_co2_viscosity_cp",
+      "calculate_hydrocarbon_solution_gor",
+      "calculate_co2_solubility_scf_per_stb",
+      "calculate_oil_swelling_factor",
+      "calculate_oil_fvf_rb_per_stb",
+      "calculate_oil_viscosity_cp",
+      "calculate_mixture_gas_properties",
+      "perform_surface_stage_separation"
+    ]
+  },
+  {
+    "module": "core/engine_surrogate/relative_permeability.py",
+    "lines": 209,
+    "classes_count": 0,
+    "functions_count": 5,
+    "classes": [],
+    "functions": [
+      "normalize_saturations",
+      "corey_two_phase_relperm",
+      "stone_1_three_phase_relperm",
+      "carlson_trapped_gas",
+      "carlson_imbibition_gas_relperm"
+    ]
+  },
+  {
+    "module": "core/engine_surrogate/surrogate_engine.py",
+    "lines": 1234,
+    "classes_count": 2,
+    "functions_count": 14,
+    "classes": [
+      "SurrogateEngine",
+      "SurrogateEngineWrapper"
+    ],
+    "functions": [
+      "_safe_float",
+      "_safe_attr",
+      "create_surrogate_engine",
+      "__init__",
+      "evaluate_scenario",
+      "_build_params_dict",
+      "_error_result",
+      "get_performance_stats",
+      "reset_performance_stats",
+      "__init__",
+      "evaluate_scenario",
+      "get_engine_info",
+      "validate_parameters",
+      "get_performance_stats"
+    ]
+  },
+  {
+    "module": "core/engine_surrogate/surrogate_models.py",
+    "lines": 668,
+    "classes_count": 2,
+    "functions_count": 16,
+    "classes": [
+      "BaseSurrogateModel",
+      "AnalyticalSurrogate"
+    ],
+    "functions": [
+      "calculate_areal_sweep_efficiency",
+      "calculate_vertical_sweep_efficiency",
+      "calculate_trapping_efficiency",
+      "calculate_co2_stored_breakthrough_aware",
+      "calculate_storage_efficiency",
+      "create_surrogate_model",
+      "get_available_surrogate_models",
+      "__init__",
+      "predict",
+      "train",
+      "validate_inputs",
+      "get_model_info",
+      "__init__",
+      "predict",
+      "train",
+      "_calculate_confidence"
+    ]
+  },
+  {
+    "module": "core/engine_surrogate/well_mechanics.py",
+    "lines": 467,
+    "classes_count": 0,
+    "functions_count": 6,
+    "classes": [],
+    "functions": [
+      "calculate_peaceman_index_horizontal",
+      "calculate_peaceman_index_vertical",
+      "calculate_vertical_perforation_overlap",
+      "calculate_interwell_transmissibility",
+      "generate_synthetic_well_trajectory",
+      "validate_well_network"
+    ]
+  },
+  {
+    "module": "core/geology/__init__.py",
+    "lines": 10,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "core/geology/geostatistical_modeling.py",
+    "lines": 683,
+    "classes_count": 0,
+    "functions_count": 13,
+    "classes": [],
+    "functions": [
+      "calculate_realistic_range",
+      "create_geostatistical_grid",
+      "create_facies_based_grid",
+      "_apply_trend",
+      "_apply_facies_characteristics",
+      "_combine_facies_grids",
+      "_create_transition_mask",
+      "_blend_facies",
+      "_normalize_field",
+      "create_facies_map",
+      "create_facies_based_grid_with_map",
+      "calculate_variogram",
+      "theoretical_variogram"
+    ]
+  },
+  {
+    "module": "core/geology/petrophysical_distribution.py",
+    "lines": 525,
+    "classes_count": 1,
+    "functions_count": 3,
+    "classes": [
+      "PetrophysicalCube"
+    ],
+    "functions": [
+      "generate_petrophysical_cube",
+      "__post_init__",
+      "get_summary_stats"
+    ]
+  },
+  {
+    "module": "core/objectives/__init__.py",
+    "lines": 16,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "core/objectives/economic.py",
+    "lines": 202,
+    "classes_count": 0,
+    "functions_count": 3,
+    "classes": [],
+    "functions": [
+      "calculate_npv",
+      "calculate_cashflow",
+      "npv_func"
+    ]
+  },
+  {
+    "module": "core/objectives/storage.py",
+    "lines": 111,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "calculate_co2_storage_efficiency",
+      "calculate_geomechanical_containment_score"
+    ]
+  },
+  {
+    "module": "core/objectives/wrapper.py",
+    "lines": 249,
+    "classes_count": 1,
+    "functions_count": 3,
+    "classes": [
+      "ObjectiveFunctions"
+    ],
+    "functions": [
+      "_get_param",
+      "__init__",
+      "_calculate_objective_functions"
+    ]
+  },
+  {
+    "module": "core/optimisation_engine.py",
+    "lines": 4326,
+    "classes_count": 6,
+    "functions_count": 78,
+    "classes": [
+      "OptimizationError",
+      "SimulationEngineError",
+      "PickleSafeOptimiser",
+      "OptimizationEngine",
+      "MockPreferences",
+      "Advanced"
+    ],
+    "functions": [
+      "__init__",
+      "__init__",
+      "_init_simulation_engine",
+      "reset_to_base_state",
+      "re_initialize_dependent_components",
+      "simulation_engine_type",
+      "_get_available_cores",
+      "_get_co2_fraction_from_eos",
+      "prepare_for_rerun_with_unlocked_params",
+      "get_configurable_parameters_for_uq",
+      "avg_porosity",
+      "mmp",
+      "results",
+      "results",
+      "calculate_mmp",
+      "evaluate_for_analysis",
+      "_detect_simulation_mode",
+      "_calculate_breakthrough_metrics",
+      "_calculate_breakthrough_economic_impact",
+      "_perform_decline_curve_analysis",
+      "_calculate_adaptive_penalty",
+      "_check_profile_constraints",
+      "_check_parameter_constraints",
+      "_objective_function_wrapper",
+      "_get_parameter_bounds",
+      "_sanitize_and_discretize_parameters",
+      "_get_objective_name_for_logging",
+      "_handle_target_miss_reporting",
+      "__getstate__",
+      "__setstate__",
+      "_map_scheme_index_to_name",
+      "_fitness_func_pygad",
+      "_on_generation_callback",
+      "_evaluate_solutions_parallel",
+      "_generate_well_schedule_from_params",
+      "_generate_injector_schedule",
+      "_generate_producer_schedule",
+      "_ops_continuous",
+      "_ops_wag",
+      "_ops_huff_n_puff",
+      "_ops_huff_n_puff_production",
+      "_ops_standard_production",
+      "_ops_tapered",
+      "_ops_swag",
+      "_ops_pulsed",
+      "_select_diverse_solutions",
+      "_handle_stale_restart",
+      "run_single_simulation",
+      "optimize_genetic_algorithm",
+      "hybrid_optimize",
+      "optimize_nsga_2",
+      "_extract_pareto_front",
+      "_dominates",
+      "hybrid_nsga2_bo",
+      "optimize_bayesian",
+      "export_to_cmg",
+      "generate_summary_report",
+      "validate_physical_constraints",
+      "_validate_co2_specific_constraints",
+      "_validate_co2_storage_capacity",
+      "get_validation_report",
+      "get_uncertain_parameters",
+      "optimize_per_well",
+      "plot_ga_coverage_distribution",
+      "plot_euclidean_distance_matrix",
+      "plot_ga_objective_distribution",
+      "plot_hybrid_model_analysis",
+      "plot_breakthrough_mechanism_analysis",
+      "get_preferences_manager",
+      "_format_param_value",
+      "_format_result_value",
+      "is_injector_well",
+      "fitness_func",
+      "bo_progress_callback",
+      "_build_acquisition_function",
+      "maximize_with_logging",
+      "update_tr_bounds",
+      "get_rate"
+    ]
+  },
+  {
+    "module": "core/plotting_manager.py",
+    "lines": 1748,
+    "classes_count": 1,
+    "functions_count": 19,
+    "classes": [
+      "PlottingManager"
+    ],
+    "functions": [
+      "__init__",
+      "plot_optimization_convergence",
+      "plot_parameter_sensitivity",
+      "plot_production_profiles",
+      "plot_objective_vs_parameter",
+      "plot_co2_performance_summary_table",
+      "plot_ga_objective_distribution",
+      "plot_co2_breakthrough",
+      "plot_fault_mechanics",
+      "plot_scenario_comparison",
+      "plot_fault_effect_analysis",
+      "plot_objective_space_scatter",
+      "plot_pareto_front",
+      "plot_well_schedule",
+      "plot_coverage",
+      "plot_euclidean_distance_matrix",
+      "plot_ga_objective_distribution",
+      "plot_hybrid_model_analysis",
+      "plot_breakthrough_mechanism_analysis"
+    ]
+  },
+  {
+    "module": "core/reservoir_state_manager.py",
+    "lines": 213,
+    "classes_count": 1,
+    "functions_count": 19,
+    "classes": [
+      "ReservoirStateManager"
+    ],
+    "functions": [
+      "__init__",
+      "reservoir_data",
+      "pvt_properties",
+      "eor_parameters",
+      "well_data_list",
+      "geomechanics_parameters",
+      "fitting_parameters",
+      "fault_properties",
+      "is_verified",
+      "is_verified",
+      "set_reservoir_data",
+      "set_pvt_properties",
+      "set_eor_parameters",
+      "set_well_data_list",
+      "set_geomechanics_parameters",
+      "set_fitting_parameters",
+      "_update_layer_heterogeneity",
+      "_check_simulation_readiness",
+      "get_full_project_snapshot"
+    ]
+  },
+  {
+    "module": "core/simulation/__init__.py",
+    "lines": 9,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "core/simulation/profile_generator.py",
+    "lines": 8,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "core/simulation/recovery_models.py",
+    "lines": 799,
+    "classes_count": 10,
+    "functions_count": 30,
+    "classes": [
+      "ToddLongstaffMixingModel",
+      "SigmoidTransition",
+      "TransitionEngine",
+      "RecoveryModel",
+      "MiscibleRecoveryModel",
+      "ImmiscibleRecoveryModel",
+      "BuckleyLeverettModel",
+      "DykstraParsonsModel",
+      "KovalRecoveryModel",
+      "HybridRecoveryModel"
+    ],
+    "functions": [
+      "interfacial_tension",
+      "capillary_number",
+      "residual_oil_saturation",
+      "get_model_instance",
+      "recovery_factor",
+      "__init__",
+      "mixture_viscosity",
+      "effective_oil_viscosity",
+      "effective_gas_viscosity",
+      "effective_mobility_ratio",
+      "__init__",
+      "evaluate",
+      "__init__",
+      "calculate_weight",
+      "__init__",
+      "calculate",
+      "_bounded_calculate",
+      "_validate_inputs",
+      "__init__",
+      "calculate",
+      "__init__",
+      "calculate",
+      "calculate",
+      "calculate",
+      "calculate",
+      "__init__",
+      "calculate",
+      "fractional_flow",
+      "_dp_solver",
+      "equation_to_solve"
+    ]
+  },
+  {
+    "module": "evaluation/mmp.py",
+    "lines": 481,
+    "classes_count": 1,
+    "functions_count": 8,
+    "classes": [
+      "MMPParameters"
+    ],
+    "functions": [
+      "_calculate_mmp_cronquist",
+      "_calculate_mmp_yellig_metcalfe",
+      "_calculate_mmp_hybrid_gh",
+      "_calculate_mmp_yuan",
+      "_calculate_mmp_alston",
+      "estimate_api_from_pvt",
+      "calculate_mmp",
+      "__post_init__"
+    ]
+  },
+  {
+    "module": "main.py",
+    "lines": 162,
+    "classes_count": 1,
+    "functions_count": 4,
+    "classes": [
+      "CO2EORApplication"
+    ],
+    "functions": [
+      "timed_import_main_window",
+      "_normalize_module_log_levels",
+      "main",
+      "__init__"
+    ]
+  },
+  {
+    "module": "scratch/capture_dm.py",
+    "lines": 43,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "module": "scratch/capture_qa_and_fault_caprock.py",
+    "lines": 145,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "module": "scratch/capture_subsurface_upgrades.py",
+    "lines": 92,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "module": "scratch/capture_workbench_verification.py",
+    "lines": 119,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "module": "scratch/debug_pvt_grid_geometry.py",
+    "lines": 33,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "scratch/test_blitting_cursor.py",
+    "lines": 234,
+    "classes_count": 0,
+    "functions_count": 3,
+    "classes": [],
+    "functions": [
+      "_setup_cursor_artists",
+      "_capture_backgrounds",
+      "_update_cursor_blitting"
+    ]
+  },
+  {
+    "module": "scratch/test_cam_fix.py",
+    "lines": 30,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "scratch/test_cursor_tooltip.py",
+    "lines": 73,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "scratch/test_empty_cam.py",
+    "lines": 4,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "scratch/test_fluids_pvt_workstation.py",
+    "lines": 108,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "run_capture"
+    ]
+  },
+  {
+    "module": "scratch/test_live_cursor_motion.py",
+    "lines": 77,
+    "classes_count": 1,
+    "functions_count": 1,
+    "classes": [
+      "FakeEvent"
+    ],
+    "functions": [
+      "__init__"
+    ]
+  },
+  {
+    "module": "scratch/test_plain_tooltip.py",
+    "lines": 37,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "scratch/test_progress_dialog_and_hover.py",
+    "lines": 90,
+    "classes_count": 1,
+    "functions_count": 2,
+    "classes": [
+      "MockEvent"
+    ],
+    "functions": [
+      "test_everything",
+      "__init__"
+    ]
+  },
+  {
+    "module": "scratch/test_pyvista_bounds.py",
+    "lines": 21,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "scratch/test_pyvista_scale.py",
+    "lines": 20,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "scratch/test_pyvista_well_network_studio.py",
+    "lines": 172,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "run_test"
+    ]
+  },
+  {
+    "module": "scratch/test_ray_plane.py",
+    "lines": 41,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "scratch/test_relperm_geostat_patterns.py",
+    "lines": 133,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "run_tests"
+    ]
+  },
+  {
+    "module": "scratch/test_relperm_geostat_workstation.py",
+    "lines": 59,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "run_capture"
+    ]
+  },
+  {
+    "module": "scratch/test_tooltip_options.py",
+    "lines": 58,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "scratch/test_verify_cursor_and_tooltip.py",
+    "lines": 78,
+    "classes_count": 1,
+    "functions_count": 1,
+    "classes": [
+      "FakeEvent"
+    ],
+    "functions": [
+      "__init__"
+    ]
+  },
+  {
+    "module": "scratch/test_verify_gray_lines_no_css_tooltip.py",
+    "lines": 83,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "module": "scratch/test_well_network_studio.py",
+    "lines": 191,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "run_test"
+    ]
+  },
+  {
+    "module": "scratch/test_workbench_visuals.py",
+    "lines": 122,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "module": "scratch/verify_fault_caprock_workbench.py",
+    "lines": 156,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "run_verification"
+    ]
+  },
+  {
+    "module": "scratch/verify_well_schedule_fault_caprock_storage.py",
+    "lines": 133,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "run_tests"
+    ]
+  },
+  {
+    "module": "scripts/archive_resolved_wiki_issues.py",
+    "lines": 271,
+    "classes_count": 0,
+    "functions_count": 9,
+    "classes": [],
+    "functions": [
+      "is_resolved_str",
+      "get_archived_issue_ids",
+      "clean_markdown_table_resolved_rows",
+      "clean_resolved_blockquotes",
+      "clean_resolved_sections",
+      "ensure_archive_notice",
+      "process_audit_document",
+      "main",
+      "repl"
+    ]
+  },
+  {
+    "module": "scripts/audit_generator.py",
+    "lines": 580,
+    "classes_count": 0,
+    "functions_count": 7,
+    "classes": [],
+    "functions": [
+      "get_all_py_files",
+      "audit_inventory",
+      "audit_fallbacks",
+      "audit_hardcoded_values",
+      "audit_empirical_parameters",
+      "audit_suspicious_calculations",
+      "audit_duplicates"
+    ]
+  },
+  {
+    "module": "scripts/classify_dead_code.py",
+    "lines": 70,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "scripts/generate_call_graph.py",
+    "lines": 106,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "module": "scripts/parse_coverage.py",
+    "lines": 45,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "module": "scripts/process_las_data.py",
+    "lines": 169,
+    "classes_count": 1,
+    "functions_count": 5,
+    "classes": [
+      "LASBatchProcessor"
+    ],
+    "functions": [
+      "main",
+      "__init__",
+      "_process_single_file",
+      "run",
+      "generate_report"
+    ]
+  },
+  {
+    "module": "scripts/sync_to_github_wiki.py",
+    "lines": 88,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "sync_wiki"
+    ]
+  },
+  {
+    "module": "scripts/validate_engine_physics.py",
+    "lines": 432,
+    "classes_count": 1,
+    "functions_count": 3,
+    "classes": [
+      "ArchetypeDefinition"
+    ],
+    "functions": [
+      "create_test_reservoir",
+      "evaluate_archetype_scenario",
+      "run_physics_qaqc_benchmark"
+    ]
+  },
+  {
+    "module": "setup.py",
+    "lines": 61,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_1.py",
+    "lines": 84,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_2.py",
+    "lines": 68,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_3.py",
+    "lines": 127,
+    "classes_count": 1,
+    "functions_count": 0,
+    "classes": [
+      "_Adv"
+    ],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/audit_verify_4.py",
+    "lines": 72,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "fg"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/count2.py",
+    "lines": 27,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_clip.py",
+    "lines": 37,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "spy"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_counts.py",
+    "lines": 27,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_counts2.py",
+    "lines": 65,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_engine.py",
+    "lines": 42,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_hcpvi.py",
+    "lines": 27,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_inert.py",
+    "lines": 28,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_misc.py",
+    "lines": 39,
+    "classes_count": 1,
+    "functions_count": 0,
+    "classes": [
+      "FakeAdv"
+    ],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_physics.py",
+    "lines": 42,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_pvt2.py",
+    "lines": 24,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_recount.py",
+    "lines": 73,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_rf.py",
+    "lines": 29,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests.py",
+    "lines": 18,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/04-10-2026_forensic_scientific_audit/evidence_scripts/v_tests2.py",
+    "lines": 70,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "prod_names",
+      "fn_local_names"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_5.py",
+    "lines": 295,
+    "classes_count": 0,
+    "functions_count": 3,
+    "classes": [],
+    "functions": [
+      "hdr",
+      "p",
+      "run"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_6.py",
+    "lines": 146,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "hdr",
+      "p"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_7.py",
+    "lines": 88,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "hdr",
+      "p"
+    ]
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_8.py",
+    "lines": 45,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "site/audit/simulation_run_audits/05-10-2026_remediation_verification_round2/evidence_scripts/audit_verify_9.py",
+    "lines": 44,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "tests/__init__.py",
+    "lines": 1,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "tests/conftest.py",
+    "lines": 527,
+    "classes_count": 0,
+    "functions_count": 31,
+    "classes": [],
+    "functions": [
+      "mock_eos_model",
+      "reservoir_data",
+      "pvt_data",
+      "eor_params",
+      "operational_params",
+      "economic_params",
+      "ga_params",
+      "ga_params_nsga2",
+      "bo_params",
+      "co2_storage_params",
+      "profile_params",
+      "mock_surrogate_engine",
+      "mock_objective_functions",
+      "cmg_parser",
+      "phd_hybrid_engine",
+      "analytical_engine",
+      "all_recovery_engines",
+      "standard_reservoir",
+      "standard_eor_params",
+      "standard_operational_params",
+      "standard_economic_params",
+      "gmflu001_1d_reservoir",
+      "gmflu001_reservoir",
+      "gmflu002_1d_reservoir",
+      "gmflu002_reservoir",
+      "gmflu003_1d_reservoir",
+      "gmflu003_reservoir",
+      "gmflu_eor_params",
+      "gmflu_operational_params",
+      "eos_model_params",
+      "empirical_fitting_params"
+    ]
+  },
+  {
+    "module": "tests/core/__init__.py",
+    "lines": 1,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "tests/core/test_fitness_function.py",
+    "lines": 790,
+    "classes_count": 5,
+    "functions_count": 23,
+    "classes": [
+      "MockConstraintEngine",
+      "TestFitnessFunctionPygadProperties",
+      "TestConstraintViolationPenalty",
+      "TestDiverseSolutionSelectionProperties",
+      "TestHybridOptimizeUsesDiverseSolutions"
+    ],
+    "functions": [
+      "create_test_engine",
+      "create_constraint_test_engine",
+      "create_mock_engine_for_diversity",
+      "__init__",
+      "_check_parameter_constraints",
+      "_create_ga_instance",
+      "_create_ga_params",
+      "test_fitness_no_nan_single_objective",
+      "test_fitness_no_inf_single_objective",
+      "test_fitness_bounded_single_objective",
+      "test_fitness_is_scalar_for_single_objective",
+      "test_multi_objective_returns_array_of_len_2",
+      "test_multi_objective_no_nan",
+      "test_multi_objective_no_inf",
+      "test_feasible_params_have_no_violations",
+      "test_rate_below_min_violation",
+      "test_rate_above_max_violation",
+      "test_pressure_exceeds_fracture_limit_violation",
+      "test_sor_out_of_bounds",
+      "test_identical_solutions_returns_at_most_requested",
+      "test_empty_population_returns_empty",
+      "test_requested_more_than_population_returns_all",
+      "test_select_diverse_solutions_is_called"
+    ]
+  },
+  {
+    "module": "tests/core/test_genetic_algorithm_params.py",
+    "lines": 203,
+    "classes_count": 4,
+    "functions_count": 15,
+    "classes": [
+      "TestGeneticAlgorithmParamsDefaults",
+      "TestGeneticAlgorithmParamsValidation",
+      "TestGeneticAlgorithmParamsFactory",
+      "TestGeneticAlgorithmParamsBoundaries"
+    ],
+    "functions": [
+      "test_default_values_are_correct",
+      "test_valid_num_objectives",
+      "test_invalid_num_objectives_raises",
+      "test_valid_secondary_objectives",
+      "test_invalid_secondary_objective_raises",
+      "test_from_config_dict_creates_valid_instance",
+      "test_from_config_dict_with_defaults",
+      "test_num_generations_at_lower_boundary",
+      "test_num_generations_at_upper_boundary",
+      "test_num_generations_below_lower_boundary",
+      "test_num_generations_above_upper_boundary",
+      "test_sol_per_pop_at_lower_boundary",
+      "test_sol_per_pop_below_lower_boundary",
+      "test_sol_per_pop_above_upper_boundary",
+      "test_num_parents_mating_valid_range"
+    ]
+  },
+  {
+    "module": "tests/core/test_nsga2_methods.py",
+    "lines": 312,
+    "classes_count": 4,
+    "functions_count": 19,
+    "classes": [
+      "TestDominates",
+      "TestExtractParetoFront",
+      "TestParetoFrontProperties",
+      "TestDominanceTransitivity"
+    ],
+    "functions": [
+      "engine",
+      "test_dominates_parametrized",
+      "test_dominates_numpy_arrays",
+      "test_dominates_zero_dimensional_array",
+      "engine",
+      "sample_bi_objective_solutions",
+      "test_empty_population_returns_empty_list",
+      "test_single_solution_returns_that_solution",
+      "test_non_dominated_solutions_extracted",
+      "test_returns_list_of_dicts_with_correct_keys",
+      "test_single_objective_best_solution_returned",
+      "engine",
+      "test_pareto_front_always_subset_of_population",
+      "test_pareto_front_contains_unique_solutions",
+      "test_no_solution_in_pareto_dominates_another",
+      "test_symmetry_of_dominance",
+      "engine",
+      "test_dominance_transitivity",
+      "test_self_dominance_is_false"
+    ]
+  },
+  {
+    "module": "tests/core/test_objective_functions.py",
+    "lines": 251,
+    "classes_count": 1,
+    "functions_count": 8,
+    "classes": [
+      "TestObjectiveFunctions"
+    ],
+    "functions": [
+      "mock_objective_functions",
+      "test_co2_utilization_calculation",
+      "test_co2_utilization_with_zero_oil",
+      "test_co2_utilization_fallback_with_missing_profiles",
+      "test_storage_efficiency_calculation",
+      "test_recovery_factor_passed_through",
+      "test_npv_calculated_from_profiles",
+      "test_zero_injection_extreme_lower_bound"
+    ]
+  },
+  {
+    "module": "tests/core/test_optimization_config.py",
+    "lines": 109,
+    "classes_count": 2,
+    "functions_count": 9,
+    "classes": [
+      "TestOptimizationConfig",
+      "TestOptimizationMethods"
+    ],
+    "functions": [
+      "config_data",
+      "optimization_config",
+      "test_optimization_methods_configured",
+      "test_no_psde_methods",
+      "test_objectives_configured",
+      "test_secondary_objectives_configured",
+      "test_nsga2_method_exists",
+      "test_hybrid_nsga2_bo_method_exists",
+      "test_select_diverse_solutions_method_exists"
+    ]
+  },
+  {
+    "module": "tests/core/test_physical_invariants.py",
+    "lines": 212,
+    "classes_count": 1,
+    "functions_count": 5,
+    "classes": [
+      "TestPhysicalInvariants"
+    ],
+    "functions": [
+      "standard_setup",
+      "test_geomechanical_safety_clamping",
+      "test_gross_co2_utilization_benchmark_bounds",
+      "test_closed_loop_co2_recycling_mass_balance",
+      "test_export_csv_cross_table_consistency"
+    ]
+  },
+  {
+    "module": "tests/core/test_relative_permeability.py",
+    "lines": 97,
+    "classes_count": 0,
+    "functions_count": 4,
+    "classes": [],
+    "functions": [
+      "test_saturation_normalization",
+      "test_corey_endpoints",
+      "test_stone_1_reduction",
+      "test_carlson_hysteresis"
+    ]
+  },
+  {
+    "module": "tests/core/test_select_diverse_solutions.py",
+    "lines": 224,
+    "classes_count": 1,
+    "functions_count": 8,
+    "classes": [
+      "TestSelectDiverseSolutions"
+    ],
+    "functions": [
+      "mock_engine",
+      "test_select_diverse_solutions_returns_all_when_population_small",
+      "test_select_diverse_solutions_selects_by_diversity",
+      "test_select_diverse_solutions_normalizes_parameters",
+      "test_select_diverse_solutions_handles_identical_solutions",
+      "test_select_diverse_solutions_empty_population",
+      "test_select_diverse_solutions_with_dict_and_tuple_bounds",
+      "test_select_diverse_solutions_with_real_engine_bounds"
+    ]
+  },
+  {
+    "module": "tests/core/test_single_simulation.py",
+    "lines": 135,
+    "classes_count": 2,
+    "functions_count": 6,
+    "classes": [
+      "TestSingleSimulation",
+      "TestOptimizationWidgetSimulationButton"
+    ],
+    "functions": [
+      "test_engine",
+      "test_run_single_simulation_returns_valid_results",
+      "test_run_single_simulation_with_custom_params",
+      "test_run_single_simulation_callback",
+      "test_simulation_button_initialization_and_toggle",
+      "callback"
+    ]
+  },
+  {
+    "module": "tests/core/test_surrogate_engine.py",
+    "lines": 934,
+    "classes_count": 13,
+    "functions_count": 46,
+    "classes": [
+      "TestEngineInitialization",
+      "TestRecoveryModelTypes",
+      "TestPressureProfile",
+      "TestNPVCalculation",
+      "TestCO2Storage",
+      "TestProfileGeneration",
+      "TestCumulativeValues",
+      "TestEdgeCases",
+      "TestErrorHandling",
+      "TestPerformance",
+      "TestSurrogateEngineWrapper",
+      "TestBreakthroughTime",
+      "TestMassConservation"
+    ],
+    "functions": [
+      "test_create_surrogate_engine_function",
+      "test_analytical_model_initialization",
+      "test_phd_hybrid_model_initialization",
+      "test_invalid_model_type_raises_error",
+      "test_invalid_recovery_model_type_raises_error",
+      "recovery_model_type",
+      "test_all_models_produce_valid_rf",
+      "test_rf_monotonic_with_injection_volume",
+      "test_pressure_shape_constraints",
+      "test_pressure_bounds",
+      "test_pressure_model_based_flag",
+      "test_npv_positive_with_revenue",
+      "test_npv_reflects_oil_price",
+      "test_npv_with_high_costs",
+      "test_storage_positive",
+      "test_storage_increases_with_injection",
+      "test_time_vector_length",
+      "test_production_rates_nonnegative",
+      "test_injection_profile_positive",
+      "test_cumulative_oil_from_rf",
+      "test_recovery_factor_profile_integrates_to_cumulative",
+      "test_zero_injection_rate",
+      "test_very_high_pressure",
+      "test_zero_ooip",
+      "test_extreme_heterogeneity",
+      "test_capillary_number_scaling_bounds_rf",
+      "test_invalid_reservoir_data_returns_error",
+      "test_missing_optional_parameters",
+      "test_evaluation_speed",
+      "test_batch_evaluation_speed",
+      "test_performance_stats_tracking",
+      "test_wrapper_has_expected_methods",
+      "test_wrapper_returns_same_keys",
+      "base_reservoir",
+      "base_eor",
+      "base_op",
+      "test_breakthrough_time_exists_in_result",
+      "test_default_parameters_bt_range",
+      "test_high_heterogeneity_earlier_bt",
+      "test_favorable_mobility_later_bt",
+      "test_lower_injection_rate_later_bt",
+      "test_larger_reservoir_later_bt",
+      "test_koval_formula_consistency",
+      "test_bt_scaling_with_params",
+      "test_engine_mass_conservation",
+      "batch_evaluate"
+    ]
+  },
+  {
+    "module": "tests/core/test_surrogate_engine_reference.py",
+    "lines": 765,
+    "classes_count": 4,
+    "functions_count": 21,
+    "classes": [
+      "TestCMGReferenceCases",
+      "TestInjectionSchemes",
+      "TestValidationMetrics",
+      "TestSurrogateVsCMGComparison"
+    ],
+    "functions": [
+      "parse_cmg_reference",
+      "run_surrogate_simulation",
+      "detect_timeseries_anomalies",
+      "case_id",
+      "case_config",
+      "sr3_path",
+      "cmg_data",
+      "engine_result",
+      "test_cmg_case_runs_successfully",
+      "test_recovery_factor_within_threshold",
+      "test_cumulative_oil_within_threshold",
+      "test_pressure_profile_shape",
+      "test_no_anomalies_in_recovery_profile",
+      "test_no_anomalies_in_pressure_profile",
+      "test_injection_profile_behavior",
+      "test_various_injection_schemes",
+      "test_oil_cumulative_error_calculation",
+      "test_pressure_rmse_calculation",
+      "test_correlation_coefficient",
+      "test_gmflu002_1d_recovery_factor",
+      "test_gmflu002_recovery_factor"
+    ]
+  },
+  {
+    "module": "tests/core/test_surrogate_engine_well_setup.py",
+    "lines": 499,
+    "classes_count": 3,
+    "functions_count": 18,
+    "classes": [
+      "TestWellSetupBehavior",
+      "TestCoupledOptimization",
+      "TestSurrogateEnginePerformance"
+    ],
+    "functions": [
+      "base_reservoir",
+      "base_eor",
+      "base_operational",
+      "test_two_well_standard_coupled",
+      "test_single_well_injection_only",
+      "test_pressure_buildup_injection_only",
+      "test_different_injection_rates_affect_pressure",
+      "optimization_reservoir",
+      "optimization_eor",
+      "optimization_operational",
+      "optimization_economic",
+      "test_optimization_engine_with_surrogate",
+      "test_genetic_algorithm_with_surrogate",
+      "test_bayesian_optimization_with_surrogate",
+      "test_surrogate_engine_evaluation_count",
+      "test_fitting_params_passed_to_optimization",
+      "test_single_evaluation_performance",
+      "test_multiple_evaluations_performance"
+    ]
+  },
+  {
+    "module": "tests/core/test_unphysical_chromosome_penalties.py",
+    "lines": 133,
+    "classes_count": 0,
+    "functions_count": 5,
+    "classes": [],
+    "functions": [
+      "test_no_class_e_storage_efficiency_fallback",
+      "test_no_magic_co2_utilization_fallback",
+      "test_ga_chromosome_nan_pruned_with_failure_penalty",
+      "test_ga_chromosome_breakthrough_violation_full_penalty",
+      "test_plotly_is_real_dependency"
+    ]
+  },
+  {
+    "module": "tests/core/test_well_mechanics.py",
+    "lines": 214,
+    "classes_count": 4,
+    "functions_count": 8,
+    "classes": [
+      "TestPeacemanWellIndices",
+      "TestPerforationOverlapAndTransmissibility",
+      "TestSyntheticTrajectoryAndWellData",
+      "TestWellNetworkValidationAndIPRClamping"
+    ],
+    "functions": [
+      "test_horizontal_peaceman_index_anisotropic",
+      "test_vertical_peaceman_index",
+      "test_perforation_overlap_scenarios",
+      "test_interwell_transmissibility",
+      "test_horizontal_trajectory_geometry",
+      "test_welldata_peaceman_routing",
+      "test_well_network_validation",
+      "test_composite_vogel_darcy_deliverability_clamping"
+    ]
+  },
+  {
+    "module": "tests/scientific/__init__.py",
+    "lines": 4,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "tests/scientific/boundary_conditions/test_geomechanical_ceiling.py",
+    "lines": 52,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_epa_class_vi_pressure_ceiling_enforcement"
+    ]
+  },
+  {
+    "module": "tests/scientific/boundary_conditions/test_wellbore_drawdown_limits.py",
+    "lines": 30,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_producer_rate_drawdown_limit"
+    ]
+  },
+  {
+    "module": "tests/scientific/co2/test_co2_breakthrough_physics.py",
+    "lines": 110,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "test_koval_fractional_flow_mobility_monotonicity",
+      "test_profile_generator_co2_breakthrough_gas_rate_increases_with_mobility"
+    ]
+  },
+  {
+    "module": "tests/scientific/co2/test_co2_trapping_mechanisms.py",
+    "lines": 34,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_inverted_critical_gas_trapping"
+    ]
+  },
+  {
+    "module": "tests/scientific/co2/test_mmp_correlations.py",
+    "lines": 85,
+    "classes_count": 0,
+    "functions_count": 3,
+    "classes": [],
+    "functions": [
+      "test_yuan_impurity_mmp_trend",
+      "test_alston_impurity_mmp_trend",
+      "test_standing_bo_as_api_estimator"
+    ]
+  },
+  {
+    "module": "tests/scientific/conftest.py",
+    "lines": 83,
+    "classes_count": 0,
+    "functions_count": 4,
+    "classes": [],
+    "functions": [
+      "make_reservoir_instance",
+      "standard_reservoir_data",
+      "light_oil_params",
+      "impure_co2_streams"
+    ]
+  },
+  {
+    "module": "tests/scientific/conservation/test_carbon_accounting.py",
+    "lines": 80,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "test_closed_loop_carbon_balance_invariant",
+      "test_material_balance_analyzer_closed_loop"
+    ]
+  },
+  {
+    "module": "tests/scientific/conservation/test_mass_conservation.py",
+    "lines": 51,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "test_cumulative_oil_recovery_mass_bound",
+      "test_pore_volume_vs_ooip_recovery_bound_discrepancy"
+    ]
+  },
+  {
+    "module": "tests/scientific/convergence/test_temporal_convergence.py",
+    "lines": 52,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_temporal_refinement_convergence"
+    ]
+  },
+  {
+    "module": "tests/scientific/dimensional/test_unit_consistency.py",
+    "lines": 77,
+    "classes_count": 0,
+    "functions_count": 3,
+    "classes": [],
+    "functions": [
+      "test_darcy_inflow_dimensions",
+      "test_tank_material_balance_pressure_increment_dimensions",
+      "test_co2_mass_conversion_factor"
+    ]
+  },
+  {
+    "module": "tests/scientific/initial_conditions/test_initial_state_preservation.py",
+    "lines": 45,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_initial_pressure_and_cumulative_at_time_zero"
+    ]
+  },
+  {
+    "module": "tests/scientific/limiting_cases/test_infinite_time_eur.py",
+    "lines": 31,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_asymptotic_recovery_limit"
+    ]
+  },
+  {
+    "module": "tests/scientific/limiting_cases/test_miscibility_limits.py",
+    "lines": 35,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_miscibility_weight_limiting_bounds"
+    ]
+  },
+  {
+    "module": "tests/scientific/limiting_cases/test_zero_injection.py",
+    "lines": 31,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_zero_injection_limits"
+    ]
+  },
+  {
+    "module": "tests/scientific/limiting_cases/test_zero_permeability.py",
+    "lines": 23,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_zero_permeability_limit"
+    ]
+  },
+  {
+    "module": "tests/scientific/manufactured_solutions/test_mms_pressure_diffusion.py",
+    "lines": 75,
+    "classes_count": 0,
+    "functions_count": 4,
+    "classes": [],
+    "functions": [
+      "test_mms_pressure_diffusion_convergence",
+      "p_exact",
+      "source_term",
+      "solve_1d_fd"
+    ]
+  },
+  {
+    "module": "tests/scientific/mathematical/test_analytical_identities.py",
+    "lines": 93,
+    "classes_count": 0,
+    "functions_count": 3,
+    "classes": [],
+    "functions": [
+      "test_koval_recovery_integral_identity",
+      "test_welge_tangent_identity",
+      "test_arps_rate_cumulative_derivative_identity"
+    ]
+  },
+  {
+    "module": "tests/scientific/mathematical/test_singularity_and_overflow.py",
+    "lines": 73,
+    "classes_count": 0,
+    "functions_count": 3,
+    "classes": [],
+    "functions": [
+      "test_v_dp_near_unity_singularity",
+      "test_cronquist_mmp_singularity_at_55_api",
+      "test_mobility_ratio_unit_limit_singularity"
+    ]
+  },
+  {
+    "module": "tests/scientific/numerical/test_timestep_stability.py",
+    "lines": 47,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_pressure_oscillation_under_dynamic_injection"
+    ]
+  },
+  {
+    "module": "tests/scientific/physics/test_thermodynamic_positivity.py",
+    "lines": 86,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "test_oil_compressibility_positivity",
+      "test_liquid_viscosity_pressure_derivative"
+    ]
+  },
+  {
+    "module": "tests/scientific/reference_solutions/test_arps_analytical_eur.py",
+    "lines": 36,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_analytical_vs_trapezoidal_arps_eur"
+    ]
+  },
+  {
+    "module": "tests/scientific/reference_solutions/test_buckley_leverett_analytical.py",
+    "lines": 71,
+    "classes_count": 0,
+    "functions_count": 5,
+    "classes": [],
+    "functions": [
+      "solve_independent_welge_breakthrough",
+      "test_independent_welge_reference_solution",
+      "fg",
+      "dfg",
+      "tangent_obj"
+    ]
+  },
+  {
+    "module": "tests/scientific/regression/test_scientific_invariants.py",
+    "lines": 42,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_hypothesis_recovery_factor_physical_invariants"
+    ]
+  },
+  {
+    "module": "tests/scientific/solver/test_solver_residuals.py",
+    "lines": 29,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_pressure_material_balance_discrete_residual"
+    ]
+  },
+  {
+    "module": "tests/scientific/symmetry/test_pattern_symmetry.py",
+    "lines": 23,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "test_pattern_symmetry_five_spot"
+    ]
+  },
+  {
+    "module": "tests/test_app_startup.py",
+    "lines": 35,
+    "classes_count": 0,
+    "functions_count": 4,
+    "classes": [],
+    "functions": [
+      "qapp",
+      "test_main_window_timed_import",
+      "test_sensitivity_analyzer_import",
+      "test_production_profiler_import"
+    ]
+  },
+  {
+    "module": "tests/test_closed_loop_and_well_roles.py",
+    "lines": 87,
+    "classes_count": 0,
+    "functions_count": 3,
+    "classes": [],
+    "functions": [
+      "test_dca_plateau_and_decline_onset",
+      "test_material_balance_geomechanical_gating_and_closure",
+      "test_well_data_injector_inference"
+    ]
+  },
+  {
+    "module": "tests/test_cmg_surrogate_validation.py",
+    "lines": 376,
+    "classes_count": 0,
+    "functions_count": 23,
+    "classes": [],
+    "functions": [
+      "make_spe5_reservoir",
+      "make_spe5_eor",
+      "make_spe5_op",
+      "spe5_result",
+      "test_speed_under_50ms",
+      "test_rf_positive_nonzero",
+      "test_rf_within_mobile_oil_saturation",
+      "test_rf_geologically_plausible_for_near_miscible_flood",
+      "test_mean_pressure_not_collapsed",
+      "test_max_pressure_within_geomechanical_ceiling",
+      "test_pressure_profile_is_dynamic_not_flat",
+      "test_cumulative_oil_not_exceeding_ooip",
+      "test_cumulative_injection_within_physical_bound",
+      "test_co2_stored_non_negative",
+      "test_carbon_balance_within_1_pct",
+      "test_gross_utilization_field_realistic",
+      "test_inverse_sigmoidal_omega_roundtrip",
+      "test_omega_monotone_increasing_with_pressure",
+      "test_omega_at_mmp_equals_half",
+      "test_omega_near_zero_far_below_mmp",
+      "test_omega_near_one_far_above_mmp",
+      "test_gravity_number_unit_conversion_is_sane",
+      "test_miscible_rf_exceeds_immiscible_rf"
+    ]
+  },
+  {
+    "module": "tests/test_geomechanics_fault_caprock.py",
+    "lines": 110,
+    "classes_count": 0,
+    "functions_count": 4,
+    "classes": [],
+    "functions": [
+      "test_stress_path_evolution",
+      "test_mohr_coulomb_fault_slip_tendency",
+      "test_caprock_integrity_and_tensile_failure",
+      "test_epa_class_vi_safe_ceiling"
+    ]
+  },
+  {
+    "module": "tests/test_las_parser.py",
+    "lines": 124,
+    "classes_count": 0,
+    "functions_count": 8,
+    "classes": [],
+    "functions": [
+      "sample_las_file",
+      "missing_well_name_las",
+      "test_parse_las_basic",
+      "test_parse_las_well_name_override",
+      "test_parse_las_missing_well_name",
+      "test_parse_las_missing_well_name_with_override",
+      "test_parse_las_unit_conversion",
+      "test_parse_las_file_not_found"
+    ]
+  },
+  {
+    "module": "tests/test_optimization_widget_export_parameters.py",
+    "lines": 274,
+    "classes_count": 0,
+    "functions_count": 5,
+    "classes": [],
+    "functions": [
+      "qapp",
+      "sample_engine",
+      "test_optimization_widget_get_current_input_parameters",
+      "test_run_exporter_with_enriched_parameters",
+      "test_optimization_widget_secondary_objective_and_resolutions"
+    ]
+  },
+  {
+    "module": "tests/test_physics_enhancements.py",
+    "lines": 231,
+    "classes_count": 4,
+    "functions_count": 8,
+    "classes": [
+      "TestGeomechanicsAndEcology",
+      "TestDeliverabilityAndMassConservation",
+      "TestThermodynamicDerating",
+      "TestAlgorithmDiscretizationAndGenePruning"
+    ],
+    "functions": [
+      "test_parameter_bounds_epa_class_vi_90_percent",
+      "test_objective_leakage_penalty_zero_tax",
+      "test_composite_ipr_deliverability_calculation",
+      "test_field_deliverability_cap_in_profile_generation",
+      "test_mass_conservation_profile_matches_ultimate_recovery",
+      "test_phd_hybrid_derating_below_mmp",
+      "test_gene_pruning_continuous_scheme",
+      "test_parameter_sanitization_discrete_integers"
+    ]
+  },
+  {
+    "module": "tests/test_physics_validation.py",
+    "lines": 517,
+    "classes_count": 7,
+    "functions_count": 33,
+    "classes": [
+      "TestStorageEfficiencySign",
+      "TestBreakthroughAwareMassBalance",
+      "TestSolutionGasCO2Sensitivity",
+      "TestOilRateValidation",
+      "TestEngineIntegrationStorageEfficiency",
+      "TestSanityCheckThreshold",
+      "TestCalculateCO2StorageEfficiencyFunction"
+    ],
+    "functions": [
+      "base_params",
+      "test_storage_efficiency_non_negative_default",
+      "test_storage_efficiency_non_negative_no_breakthrough",
+      "test_storage_efficiency_non_negative_instant_breakthrough",
+      "test_storage_efficiency_non_negative_low_trapping",
+      "test_storage_efficiency_non_negative_high_gor",
+      "test_storage_efficiency_non_negative_range",
+      "test_storage_efficiency_non_negative_injection_rates",
+      "base_params",
+      "test_no_breakthrough_no_recycle_loss",
+      "test_early_breakthrough_lower_efficiency",
+      "test_trapping_eff_dominates_storage",
+      "test_faster_recycle_lower_storage",
+      "base_params",
+      "test_solution_gas_co2_fraction_bounded",
+      "test_high_gor_increases_solution_gas_loss",
+      "validator",
+      "test_yearly_volume_converted_to_daily_rate",
+      "test_daily_rate_key_preferred",
+      "test_realistic_oil_rate_passes_validation",
+      "test_unrealistic_oil_rate_fails_validation",
+      "standard_reservoir",
+      "standard_eor",
+      "standard_op",
+      "test_engine_returns_storage_efficiency",
+      "test_engine_storage_efficiency_positive",
+      "test_engine_co2_stored_positive",
+      "test_storage_efficiency_scales_with_trapping",
+      "test_legitimate_zero_storage_fails_check",
+      "test_realistic_storage_passes_check",
+      "test_storage_efficiency_non_negative",
+      "test_storage_efficiency_clamped_to_one",
+      "test_co2_fraction_reduces_production_impact"
+    ]
+  },
+  {
+    "module": "tests/test_plotting_diagnostics.py",
+    "lines": 280,
+    "classes_count": 0,
+    "functions_count": 9,
+    "classes": [],
+    "functions": [
+      "mock_engine",
+      "test_plot_well_schedule_from_profiles",
+      "test_plot_well_schedule_fallback_generation",
+      "test_plot_objective_vs_parameter_filters_failure_penalty",
+      "test_plot_objective_space_scatter_hybrid_and_best_trajectory",
+      "test_plot_pareto_front_single_vs_multi_objective",
+      "test_plot_well_schedule_formatting_and_no_duplicate_legend",
+      "test_plot_coverage_trend_min_max",
+      "test_plot_euclidean_distance_matrix"
+    ]
+  },
+  {
+    "module": "tests/test_project_save_load.py",
+    "lines": 415,
+    "classes_count": 0,
+    "functions_count": 7,
+    "classes": [],
+    "functions": [
+      "qapp",
+      "create_sample_models",
+      "test_optimization_engine_results_setter_and_getter",
+      "test_project_file_handler_roundtrip_with_nested_dataclasses",
+      "test_load_existing_test_tphd_project",
+      "test_data_management_widget_save_and_load",
+      "test_optimization_widget_loads_results"
+    ]
+  },
+  {
+    "module": "tests/test_pvt_solvent_extended.py",
+    "lines": 211,
+    "classes_count": 0,
+    "functions_count": 7,
+    "classes": [],
+    "functions": [
+      "test_pure_co2_supercritical_density_pr_eos",
+      "test_pure_co2_fvf_in_rb_per_mscf",
+      "test_oil_swelling_and_viscosity_thinning",
+      "test_decoupling_transport_saturation_from_composition",
+      "test_surface_stage_separation",
+      "test_hydrocarbon_gas_fvf_and_z_factor_crit04_crit05",
+      "test_bubble_point_and_positive_compressibility_crit03"
+    ]
+  },
+  {
+    "module": "tests/test_reservoir_outputs_streams.py",
+    "lines": 170,
+    "classes_count": 0,
+    "functions_count": 4,
+    "classes": [],
+    "functions": [
+      "base_scenario",
+      "test_standardized_4_streams_in_surrogate_results",
+      "test_compressor_capacity_bottleneck",
+      "test_closed_loop_injection_balance"
+    ]
+  },
+  {
+    "module": "tests/test_run_exporter.py",
+    "lines": 295,
+    "classes_count": 2,
+    "functions_count": 9,
+    "classes": [
+      "BayesianOptimization",
+      "ArbitraryUnserializable"
+    ],
+    "functions": [
+      "mock_run_data",
+      "test_export_generates_all_core_files",
+      "test_run_manifest_content_and_schema",
+      "test_cash_flow_table_integrity",
+      "test_results_summary_has_no_numpy_array_dumps",
+      "test_readme_and_diagnostics_detection",
+      "test_export_against_real_session_archive",
+      "test_export_handles_bayesian_optimization_object",
+      "__init__"
+    ]
+  },
+  {
+    "module": "tests/ui/test_3d_well_interaction.py",
+    "lines": 135,
+    "classes_count": 0,
+    "functions_count": 7,
+    "classes": [],
+    "functions": [
+      "qapp",
+      "test_manual_well_dialog_initial_values",
+      "test_wells_tab_no_duplicate_3d_cube",
+      "test_3d_subsurface_property_volume_rendering",
+      "test_pyvista_surface_picking_and_well_placement",
+      "test_manual_well_dialog_data_creation",
+      "mock_exec"
+    ]
+  },
+  {
+    "module": "tests/validation/__init__.py",
+    "lines": 19,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "tests/validation/cmg_input_generator.py",
+    "lines": 306,
+    "classes_count": 1,
+    "functions_count": 12,
+    "classes": [
+      "CMGInputGenerator"
+    ],
+    "functions": [
+      "__init__",
+      "generate",
+      "_generate_header",
+      "_generate_grid",
+      "_generate_components",
+      "_generate_default_components",
+      "_generate_rock_properties",
+      "_generate_initial_conditions",
+      "_generate_equil_region",
+      "_generate_wells",
+      "_generate_schedule",
+      "_generate_output_control"
+    ]
+  },
+  {
+    "module": "tests/validation/cmg_output_parser.py",
+    "lines": 358,
+    "classes_count": 1,
+    "functions_count": 5,
+    "classes": [
+      "CMGOutputParser"
+    ],
+    "functions": [
+      "__init__",
+      "parse_directory",
+      "_parse_mrt_file",
+      "_parse_out_file",
+      "parse_summary_file"
+    ]
+  },
+  {
+    "module": "tests/validation/cmg_runner.py",
+    "lines": 195,
+    "classes_count": 1,
+    "functions_count": 4,
+    "classes": [
+      "CMGRunner"
+    ],
+    "functions": [
+      "__init__",
+      "run",
+      "check_license",
+      "get_version"
+    ]
+  },
+  {
+    "module": "tests/validation/combined_cmg_parser.py",
+    "lines": 174,
+    "classes_count": 1,
+    "functions_count": 3,
+    "classes": [
+      "CombinedCMGParser"
+    ],
+    "functions": [
+      "__init__",
+      "parse_directory",
+      "_find_output_file"
+    ]
+  },
+  {
+    "module": "tests/validation/comparison_metrics.py",
+    "lines": 279,
+    "classes_count": 1,
+    "functions_count": 12,
+    "classes": [
+      "ComparisonMetrics"
+    ],
+    "functions": [
+      "__init__",
+      "calculate_all",
+      "_oil_cumulative_error",
+      "_gas_cumulative_error",
+      "_water_cumulative_error",
+      "_pressure_rmse",
+      "_saturation_rmse",
+      "_component_recovery_error",
+      "_check_criteria",
+      "_generate_summary",
+      "calculate_correlation",
+      "calculate_r_squared"
+    ]
+  },
+  {
+    "module": "tests/validation/empirical_engine_validation.py",
+    "lines": 489,
+    "classes_count": 1,
+    "functions_count": 6,
+    "classes": [
+      "ValidationResult"
+    ],
+    "functions": [
+      "parse_cmg_reference",
+      "detect_timeseries_anomalies",
+      "run_surrogate_simulation",
+      "validate_single_case",
+      "generate_plots",
+      "main"
+    ]
+  },
+  {
+    "module": "tests/validation/extract_sr3_reference.py",
+    "lines": 148,
+    "classes_count": 0,
+    "functions_count": 2,
+    "classes": [],
+    "functions": [
+      "extract_sr3_values",
+      "print_summary_table"
+    ]
+  },
+  {
+    "module": "tests/validation/spe5_config.py",
+    "lines": 1041,
+    "classes_count": 0,
+    "functions_count": 19,
+    "classes": [],
+    "functions": [
+      "create_spe5_config",
+      "create_spe5_reservoir_data",
+      "create_spe5_eor_params",
+      "create_spe5_operational_params",
+      "create_spe5_1d_config",
+      "create_spe5_1d_reservoir_data",
+      "create_spe5_1d_eor_params",
+      "create_spe5_1d_operational_params",
+      "calculate_ooip_from_grid",
+      "calculate_productivity_index_darcy",
+      "calculate_peaceman_well_index",
+      "calculate_displacement_efficiency_fractional_flow",
+      "create_spe5_1d_cmg_exact_config",
+      "create_spe5_1d_cmg_exact_reservoir_data",
+      "create_spe5_1d_cmg_exact_eor_params",
+      "create_spe5_1d_cmg_exact_operational_params",
+      "create_spe5_1d_surrogate_reservoir_data",
+      "create_spe5_1d_surrogate_eor_params",
+      "create_spe5_1d_surrogate_operational_params"
+    ]
+  },
+  {
+    "module": "tests/validation/spe5_empirical_validation.py",
+    "lines": 449,
+    "classes_count": 1,
+    "functions_count": 8,
+    "classes": [
+      "SPE5_3D"
+    ],
+    "functions": [
+      "_corey_kr",
+      "run_empirical_3d_simulation",
+      "parse_sr3",
+      "plot_validation",
+      "main",
+      "custom_build",
+      "_unpack",
+      "annot"
+    ]
+  },
+  {
+    "module": "tests/validation/spe5_phd_surrogate_validation.py",
+    "lines": 502,
+    "classes_count": 2,
+    "functions_count": 8,
+    "classes": [
+      "SPE5Reference",
+      "SPE5Validation"
+    ],
+    "functions": [
+      "main",
+      "__init__",
+      "validate_miscibility_transition",
+      "validate_gradient_calculation",
+      "validate_mass_balance_constraint",
+      "compare_with_cmg",
+      "run_full_validation",
+      "plot_results"
+    ]
+  },
+  {
+    "module": "tests/validation/sr3_parser.py",
+    "lines": 258,
+    "classes_count": 1,
+    "functions_count": 4,
+    "classes": [
+      "SR3Parser"
+    ],
+    "functions": [
+      "__init__",
+      "parse_file",
+      "parse_directory",
+      "list_available_variables"
+    ]
+  },
+  {
+    "module": "tests/validation/sr3_reader.py",
+    "lines": 766,
+    "classes_count": 4,
+    "functions_count": 21,
+    "classes": [
+      "RawHDF",
+      "Completion",
+      "Grid",
+      "Cells"
+    ],
+    "functions": [
+      "read_SR3",
+      "search_acronym",
+      "get_sector_timeseries",
+      "get_wells_timeseries",
+      "get_layers_timeseries",
+      "get_completions_timeseries",
+      "get_wells_completions",
+      "list_spatial_properties",
+      "list_data_categories",
+      "list_wells_properties",
+      "list_timeseries_properties",
+      "get_spatial_properties",
+      "get_spatial_indexed",
+      "list_molalities_minerals",
+      "get_grid",
+      "get_units",
+      "__init__",
+      "__call__",
+      "__init__",
+      "__init__",
+      "__init__"
+    ]
+  },
+  {
+    "module": "ui/__init__.py",
+    "lines": 0,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "ui/ai_assistant_widget.py",
+    "lines": 382,
+    "classes_count": 1,
+    "functions_count": 27,
+    "classes": [
+      "AIAssistantWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_init_ui",
+      "_create_interaction_group",
+      "retranslateUi",
+      "eventFilter",
+      "changeEvent",
+      "_clear_chat",
+      "_filter_models",
+      "_load_models_for_active_service",
+      "_update_send_button_state",
+      "_fetch_models_from_provider",
+      "_on_models_ready",
+      "_on_model_fetch_error",
+      "_on_model_worker_finished",
+      "_open_task_editor",
+      "_load_tasks",
+      "_on_task_changed",
+      "show_parameter_selection",
+      "set_context_data",
+      "_send_query",
+      "_send_query_from_prompt",
+      "_handle_copy",
+      "_handle_edit",
+      "_handle_regenerate",
+      "_handle_partial_result",
+      "_handle_error",
+      "_on_worker_finished"
+    ]
+  },
+  {
+    "module": "ui/analysis_widget.py",
+    "lines": 628,
+    "classes_count": 1,
+    "functions_count": 25,
+    "classes": [
+      "AnalysisWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "changeEvent",
+      "retranslateUi",
+      "update_analyzer_and_engine",
+      "_dca_run_analysis",
+      "_dca_on_result",
+      "_dca_on_error",
+      "_dca_on_worker_finished",
+      "_uq_rebuild_engine",
+      "_uq_add_parameter",
+      "_uq_edit_parameter",
+      "_uq_remove_parameter",
+      "_uq_update_table_row",
+      "_uq_run_analysis",
+      "_uq_on_result",
+      "_uq_on_error",
+      "_uq_on_worker_finished",
+      "get_uq_parameters",
+      "set_uq_parameters",
+      "_create_uq_tab",
+      "_create_dca_tab",
+      "_on_dca_well_changed",
+      "_connect_signals",
+      "update_graphs"
+    ]
+  },
+  {
+    "module": "ui/config_widget.py",
+    "lines": 1313,
+    "classes_count": 1,
+    "functions_count": 35,
+    "classes": [
+      "ConfigWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_get_stylesheet",
+      "_setup_ui",
+      "_filter_categories",
+      "_on_category_selected",
+      "retranslateUi",
+      "changeEvent",
+      "get_current_config_data_instances",
+      "update_configs_from_project",
+      "_set_dirty",
+      "_mark_as_dirty",
+      "_discard_changes",
+      "_apply_changes",
+      "update_configurations",
+      "_populate_all_forms",
+      "_create_eor_parameters_page",
+      "_create_engine_constrains_page",
+      "_create_standard_page",
+      "_create_algorithm_groupbox",
+      "_create_operational_page",
+      "_update_recovery_model_widgets",
+      "_get_input_type_and_options",
+      "_create_input_group_for_field",
+      "_confirm_reset_all",
+      "_load_from_file",
+      "_save_to_file",
+      "_coerce_value",
+      "_update_current_scheme_display",
+      "_update_current_eor_scheme_display",
+      "_open_injection_scheme_dialog",
+      "_open_eor_injection_scheme_dialog",
+      "_on_scheme_updated",
+      "_on_eor_scheme_updated",
+      "_update_injection_parameter_widgets",
+      "_update_profile_param_visibility"
+    ]
+  },
+  {
+    "module": "ui/data_management_widget.py",
+    "lines": 3413,
+    "classes_count": 10,
+    "functions_count": 83,
+    "classes": [
+      "DataManagementWidget",
+      "ParameterInputGroup",
+      "PVTEditorDialog",
+      "WellViewerDialog",
+      "ManualWellDialog",
+      "GeostatisticsVisualizerWidget",
+      "GeologyCrossSectionWidget",
+      "FaultGeometryVisualizerWidget",
+      "WellTrajectoryRendererWidget",
+      "VisualAuditModal"
+    ],
+    "functions": [
+      "_create_default_co2_eor_properties",
+      "_create_default_co2_eor_binary_coeffs",
+      "__init__",
+      "set_engine_type",
+      "changeEvent",
+      "_connect_signals",
+      "_toggle_detailed_pvt_button",
+      "retranslateUi",
+      "_toggle_ooip_mode",
+      "_on_preferences_changed",
+      "_setup_ui",
+      "_switch_to_workbench_view",
+      "_switch_to_classic_view",
+      "_sync_classic_to_workbench",
+      "_sync_workbench_to_classic",
+      "_on_workbench_project_data_updated",
+      "_create_left_panel",
+      "_create_right_panel",
+      "_create_reservoir_tab",
+      "_create_pvt_tab",
+      "_create_wells_tab",
+      "_create_surrogate_tuning_tab",
+      "_calculate_tuning_parameters",
+      "_coerce_value",
+      "_on_parameter_changed",
+      "_create_reservoir_data_from_ui",
+      "_create_pvt_properties_from_ui",
+      "_process_manual_data",
+      "_get_item_well_name",
+      "_update_well_table_tooltips",
+      "_add_well_to_ui",
+      "_remove_selected_well",
+      "_get_reservoir_params_dict",
+      "_on_well_selected",
+      "_validate_and_update_interwell_table",
+      "_update_wells_tab_data",
+      "showEvent",
+      "_update_well_info_label",
+      "clear_all_project_data",
+      "_calculate_mobility_ratio",
+      "_calculate_v_dp_coefficient",
+      "_update_calculated_eor_params",
+      "_calculate_and_display_ooip",
+      "_add_layer_row",
+      "_toggle_layered_model",
+      "_toggle_geostatistical_model",
+      "_remove_selected_layer",
+      "_plot_rel_perm_curves",
+      "_calculate_and_display_mmp",
+      "_on_right_tab_changed",
+      "_on_main_tab_changed",
+      "_update_geology_cross_section_view",
+      "_update_geostat_view",
+      "_update_fault_view",
+      "_on_place_well_mode_toggled",
+      "_activate_3d_well_placement_mode",
+      "_focus_selected_well_in_3d",
+      "_get_reservoir_top_depth",
+      "_on_pyvista_well_picked",
+      "_show_3d_context_menu",
+      "_prompt_add_well_at_coords",
+      "_set_3d_camera_view",
+      "_launch_pre_flight_audit",
+      "_launch_visual_audit",
+      "_launch_model_workstation",
+      "_render_3d_subsurface_view",
+      "_plot_geostatistics_diagnostics",
+      "_open_pvt_editor",
+      "_add_well_manually",
+      "_import_las_file",
+      "_view_selected_well",
+      "_create_default_eos_properties",
+      "_calculate_reservoir_properties",
+      "_calculate_pvt_properties",
+      "get_current_project_data",
+      "load_project_data",
+      "populate_fields_from_demo",
+      "_set_manual_val",
+      "set_label_text",
+      "get_value",
+      "set_value",
+      "clear_error",
+      "show_error"
+    ]
+  },
+  {
+    "module": "ui/dialogs/ai_report_features_dialog.py",
+    "lines": 33,
+    "classes_count": 1,
+    "functions_count": 2,
+    "classes": [
+      "AIReportFeaturesDialog"
+    ],
+    "functions": [
+      "__init__",
+      "get_selected_features"
+    ]
+  },
+  {
+    "module": "ui/dialogs/injection_scheme_dialog.py",
+    "lines": 682,
+    "classes_count": 2,
+    "functions_count": 20,
+    "classes": [
+      "SchemePreviewWidget",
+      "InjectionSchemeDialog"
+    ],
+    "functions": [
+      "__init__",
+      "set_scheme_data",
+      "paintEvent",
+      "_draw_continuous_scheme",
+      "_draw_wag_scheme",
+      "_draw_huff_n_puff_scheme",
+      "_draw_swag_scheme",
+      "_draw_tapered_scheme",
+      "_draw_pulsed_scheme",
+      "__init__",
+      "_setup_ui",
+      "_create_scheme_parameter_widgets",
+      "_select_current_scheme",
+      "_on_scheme_selected",
+      "_on_swag_simultaneous_toggled",
+      "_update_preview",
+      "_get_current_parameters",
+      "_apply_scheme",
+      "_reset_to_defaults",
+      "validate_for_engine"
+    ]
+  },
+  {
+    "module": "ui/dialogs/pre_flight_audit_dialog.py",
+    "lines": 367,
+    "classes_count": 1,
+    "functions_count": 5,
+    "classes": [
+      "PreFlightAuditDialog"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "_add_check_result",
+      "_run_audit",
+      "_export_audit_manifest"
+    ]
+  },
+  {
+    "module": "ui/dialogs/preferences_dialog.py",
+    "lines": 772,
+    "classes_count": 7,
+    "functions_count": 52,
+    "classes": [
+      "PreferencesDialog",
+      "GeneralPreferencesTab",
+      "DisplayPreferencesTab",
+      "UnitsPreferencesTab",
+      "LanguagePreferencesTab",
+      "AIPreferencesTab",
+      "AdvancedPreferencesTab"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "_connect_dirty_signals",
+      "_set_dirty",
+      "retranslateUi",
+      "changeEvent",
+      "_capture_current_preferences",
+      "_load_current_preferences",
+      "_apply_preferences",
+      "_on_ok_clicked",
+      "_restore_defaults",
+      "reject",
+      "__init__",
+      "_setup_ui",
+      "retranslateUi",
+      "changeEvent",
+      "load_preferences",
+      "apply_preferences",
+      "__init__",
+      "_setup_ui",
+      "retranslateUi",
+      "changeEvent",
+      "load_preferences",
+      "apply_preferences",
+      "__init__",
+      "_setup_ui",
+      "retranslateUi",
+      "changeEvent",
+      "load_preferences",
+      "apply_preferences",
+      "__init__",
+      "_setup_ui",
+      "retranslateUi",
+      "changeEvent",
+      "load_preferences",
+      "apply_preferences",
+      "__init__",
+      "_setup_ui",
+      "retranslateUi",
+      "_load_services",
+      "_on_service_selected",
+      "_clear_editor",
+      "_add_service",
+      "_remove_service",
+      "load_preferences",
+      "apply_preferences",
+      "__init__",
+      "_setup_ui",
+      "retranslateUi",
+      "changeEvent",
+      "load_preferences",
+      "apply_preferences"
+    ]
+  },
+  {
+    "module": "ui/dialogs/report_config_dialog.py",
+    "lines": 323,
+    "classes_count": 1,
+    "functions_count": 10,
+    "classes": [
+      "ReportConfigDialog"
+    ],
+    "functions": [
+      "__init__",
+      "_open_ai_features_dialog",
+      "_load_formatting_config",
+      "retranslateUi",
+      "changeEvent",
+      "_set_all_checks",
+      "_browse_output_path",
+      "get_config",
+      "apply_and_accept",
+      "configure_report"
+    ]
+  },
+  {
+    "module": "ui/dialogs/task_editor_dialog.py",
+    "lines": 163,
+    "classes_count": 1,
+    "functions_count": 7,
+    "classes": [
+      "TaskEditorDialog"
+    ],
+    "functions": [
+      "__init__",
+      "_init_ui",
+      "_load_tasks",
+      "_on_task_selected",
+      "_new_task",
+      "_save_task",
+      "_delete_task"
+    ]
+  },
+  {
+    "module": "ui/dialogs/visual_audit_modal.py",
+    "lines": 154,
+    "classes_count": 1,
+    "functions_count": 4,
+    "classes": [
+      "VisualAuditModal"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "_load_project_data_into_visualizers",
+      "_on_approve_clicked"
+    ]
+  },
+  {
+    "module": "ui/main_window.py",
+    "lines": 2103,
+    "classes_count": 1,
+    "functions_count": 80,
+    "classes": [
+      "MainWindow"
+    ],
+    "functions": [
+      "__init__",
+      "_generate_ai_summaries",
+      "_initialize_project_data_and_configs",
+      "_ensure_dataclass_instance",
+      "_setup_ui_structure",
+      "_set_adaptive_minimum_size",
+      "_setup_initial_view",
+      "_setup_main_app_tabs_container",
+      "_transition_to_main_app_view",
+      "_create_actions",
+      "_create_menu_bar",
+      "_create_status_bar",
+      "_update_report_progress",
+      "_show_message_box",
+      "retranslateUi",
+      "changeEvent",
+      "resizeEvent",
+      "request_help",
+      "_update_resource_monitors",
+      "_create_tool_bar",
+      "_update_window_title",
+      "set_project_modified",
+      "show_status_message",
+      "_handle_start_new_project_action",
+      "_handle_load_project_action",
+      "_perform_project_load",
+      "_update_ui_after_project_load",
+      "_update_engines_and_tabs",
+      "_restore_ui_state",
+      "_update_recent_projects",
+      "_cleanup_loaded_data",
+      "_update_graphs_after_load",
+      "_confirm_unsaved_changes",
+      "_handle_save_project_action",
+      "_handle_save_project_as_action",
+      "_prepare_results_for_saving",
+      "_perform_project_save",
+      "_handle_close_project_action",
+      "_handle_quick_start_action",
+      "_load_demo_data",
+      "_handle_open_recent_project",
+      "_show_preferences_dialog",
+      "_on_preferences_applied",
+      "_on_general_preferences_changed",
+      "_on_display_preferences_changed",
+      "_apply_font_preference",
+      "_apply_graphing_preference",
+      "_apply_tooltip_preference",
+      "_apply_animation_preference",
+      "_on_units_preferences_changed",
+      "_on_language_preferences_changed",
+      "_on_advanced_preferences_changed",
+      "_on_preferences_reset",
+      "_update_display_units",
+      "_setup_auto_save_timer",
+      "_auto_save_project",
+      "_update_all_unit_displays",
+      "_show_report_config_dialog",
+      "_plotly_fig_to_base64",
+      "_prepare_report_data",
+      "_show_about_dialog",
+      "_on_project_data_model_updated",
+      "_on_app_configurations_updated",
+      "_on_representative_mmp_updated",
+      "_on_save_standalone_config_requested",
+      "_on_engine_type_change_requested",
+      "_on_config_engine_changed",
+      "_reinitialize_engines_and_analysis_tabs",
+      "_open_configuration_tab",
+      "_on_optimization_run_completed",
+      "_provide_context_to_ai_assistant",
+      "_provide_all_parameters_to_ai",
+      "save_window_settings",
+      "load_window_settings",
+      "closeEvent",
+      "run_sync_query",
+      "update_details",
+      "on_finished",
+      "on_error",
+      "generate_report_task"
+    ]
+  },
+  {
+    "module": "ui/optimization_widget.py",
+    "lines": 2363,
+    "classes_count": 5,
+    "functions_count": 62,
+    "classes": [
+      "UnlockParametersDialog",
+      "OptimizationWidget",
+      "WellData",
+      "PVTProperties",
+      "WellAnalysisWorker"
+    ],
+    "functions": [
+      "__init__",
+      "get_selected_parameters",
+      "__init__",
+      "changeEvent",
+      "retranslateUi",
+      "_setup_logging",
+      "_setup_ui",
+      "_create_config_panel",
+      "_create_mmp_panel",
+      "_create_hyperparameters_panel",
+      "_create_results_panel",
+      "_create_mmp_results_panel",
+      "_create_input_summary_panel",
+      "_create_summary_results_panel",
+      "_create_analysis_panel",
+      "_connect_signals",
+      "_append_log_message",
+      "set_engine",
+      "update_engine",
+      "update_project_data",
+      "on_configurations_updated",
+      "_on_method_changed",
+      "_on_resolution_changed",
+      "_clear_form",
+      "_populate_dataclass_form",
+      "_update_min_max_validator",
+      "_get_params_from_form",
+      "_get_current_input_parameters",
+      "_update_input_summary_tab",
+      "_run_optimization",
+      "_run_simulation",
+      "_clear_results",
+      "_on_progress_update",
+      "_on_result",
+      "_display_dynamic_table",
+      "_display_summary",
+      "_display_detailed_summary",
+      "_get_graphing_config",
+      "_update_convergence_live_plot",
+      "_setup_analysis_options",
+      "_on_analysis_plot_selected",
+      "_populate_bo_sensitivity_combo",
+      "_generate_selected_plot",
+      "_handle_target_unreachable",
+      "_rerun_optimization_with_unlocked_params",
+      "_on_error",
+      "_on_worker_finished",
+      "on_engine_type_changed",
+      "_export_run_data",
+      "_get_all_available_plots",
+      "_mmp_normalize_gas_composition",
+      "_mmp_update_method_specific_inputs_visibility",
+      "_mmp_update_method_availability",
+      "_mmp_update_button_state",
+      "_run_mmp_calculation",
+      "_on_mmp_result",
+      "_on_mmp_error",
+      "_on_mmp_worker_finished",
+      "_populate_mmp_results_table",
+      "_create_mmp_plot",
+      "update_graphs",
+      "get_params_from_ui"
+    ]
+  },
+  {
+    "module": "ui/overview_page.py",
+    "lines": 492,
+    "classes_count": 2,
+    "functions_count": 22,
+    "classes": [
+      "AnimatedButton",
+      "OverviewPageWidget"
+    ],
+    "functions": [
+      "create_icon_from_svg",
+      "__init__",
+      "enterEvent",
+      "leaveEvent",
+      "__init__",
+      "paintEvent",
+      "_setup_ui",
+      "_create_header_widget",
+      "_create_actions_section",
+      "_create_action_button",
+      "_create_recent_projects_section",
+      "_load_recent_projects",
+      "_add_recent_project_item",
+      "_handle_delete_recent_project",
+      "_connect_signals",
+      "_apply_styling",
+      "retranslateUi",
+      "get_recent_projects",
+      "set_recent_projects",
+      "changeEvent",
+      "add_recent_project",
+      "_clear_recent_projects_list"
+    ]
+  },
+  {
+    "module": "ui/qt_log_handler.py",
+    "lines": 53,
+    "classes_count": 3,
+    "functions_count": 5,
+    "classes": [
+      "QtLogHandler",
+      "LogFormatter",
+      "Emitter"
+    ],
+    "functions": [
+      "__init__",
+      "emit",
+      "__init__",
+      "format",
+      "escape_html"
+    ]
+  },
+  {
+    "module": "ui/sensitivity_widget.py",
+    "lines": 563,
+    "classes_count": 2,
+    "functions_count": 26,
+    "classes": [
+      "Card",
+      "RedesignedSensitivityWidget"
+    ],
+    "functions": [
+      "__init__",
+      "__init__",
+      "_setup_ui",
+      "_create_step1_type_selection",
+      "_create_analysis_type_card",
+      "_create_step2_param_config",
+      "_create_one_way_re_opt_config_ui",
+      "_create_two_way_config_ui",
+      "_create_step3_run",
+      "_create_results_panel",
+      "_connect_signals",
+      "_initialize_state",
+      "retranslateUi",
+      "_on_analysis_type_selected",
+      "_go_back",
+      "update_analyzer",
+      "_run_analysis",
+      "_prepare_run_args",
+      "_clear_results",
+      "_on_result",
+      "_populate_data_table",
+      "_generate_plots",
+      "_plot_reoptimization_chart",
+      "_on_error",
+      "_on_worker_finished",
+      "_add_to_report"
+    ]
+  },
+  {
+    "module": "ui/utils/scheme_utils.py",
+    "lines": 22,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "format_scheme_display_name"
+    ]
+  },
+  {
+    "module": "ui/widgets/chat_bubble.py",
+    "lines": 87,
+    "classes_count": 1,
+    "functions_count": 6,
+    "classes": [
+      "ChatBubble"
+    ],
+    "functions": [
+      "__init__",
+      "_on_contents_changed",
+      "get_text",
+      "set_text",
+      "append_text",
+      "_set_style"
+    ]
+  },
+  {
+    "module": "ui/widgets/context_bubble.py",
+    "lines": 40,
+    "classes_count": 1,
+    "functions_count": 2,
+    "classes": [
+      "ContextBubble"
+    ],
+    "functions": [
+      "__init__",
+      "_show_context"
+    ]
+  },
+  {
+    "module": "ui/widgets/corey_relperm_workstation_widget.py",
+    "lines": 578,
+    "classes_count": 1,
+    "functions_count": 9,
+    "classes": [
+      "CoreyRelPermWorkstationWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "_on_visc_changed",
+      "set_parameters",
+      "render_plots",
+      "_show_context_menu",
+      "_copy_plot_to_clipboard",
+      "_save_plot_image",
+      "_export_curves_csv"
+    ]
+  },
+  {
+    "module": "ui/widgets/depth_profile_dialog.py",
+    "lines": 50,
+    "classes_count": 1,
+    "functions_count": 4,
+    "classes": [
+      "DepthProfileDialog"
+    ],
+    "functions": [
+      "__init__",
+      "retranslateUi",
+      "changeEvent",
+      "get_path"
+    ]
+  },
+  {
+    "module": "ui/widgets/depth_profile_editor.py",
+    "lines": 235,
+    "classes_count": 1,
+    "functions_count": 17,
+    "classes": [
+      "DepthProfileEditor"
+    ],
+    "functions": [
+      "__init__",
+      "set_path",
+      "set_path_endpoints",
+      "get_path",
+      "_get_logical_bounds",
+      "_transform_to_widget",
+      "_transform_from_widget",
+      "paintEvent",
+      "_draw_axes",
+      "_draw_hover_tooltip",
+      "_get_point_at",
+      "_get_segment_at",
+      "mousePressEvent",
+      "mouseMoveEvent",
+      "mouseReleaseEvent",
+      "mouseDoubleClickEvent",
+      "changeEvent"
+    ]
+  },
+  {
+    "module": "ui/widgets/edit_uq_parameter_dialog.py",
+    "lines": 130,
+    "classes_count": 1,
+    "functions_count": 7,
+    "classes": [
+      "EditUQParameterDialog"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "_connect_signals",
+      "retranslateUi",
+      "changeEvent",
+      "_populate_dist_params",
+      "get_data"
+    ]
+  },
+  {
+    "module": "ui/widgets/fault_geometry_visualizer_widget.py",
+    "lines": 325,
+    "classes_count": 1,
+    "functions_count": 8,
+    "classes": [
+      "FaultGeometryVisualizerWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "set_reservoir_geometry",
+      "set_fault_parameters",
+      "get_fault_parameters",
+      "_calculate_sgr",
+      "_on_param_changed",
+      "render_fault_3d"
+    ]
+  },
+  {
+    "module": "ui/widgets/fluids_pvt_workstation_widget.py",
+    "lines": 1881,
+    "classes_count": 1,
+    "functions_count": 38,
+    "classes": [
+      "FluidsPVTWorkstationWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "set_display_mode",
+      "set_parameters",
+      "get_fluid_parameters",
+      "_recalculate_thermodynamics",
+      "_update_diagnostics_hud",
+      "_on_draw_event",
+      "_capture_backgrounds",
+      "_setup_cursor_artists",
+      "_update_cursor_blitting",
+      "_hide_cursor_lines",
+      "_update_cursor_tooltip",
+      "_on_canvas_motion",
+      "_on_canvas_leave",
+      "_on_toolbar_home",
+      "_on_toolbar_pan",
+      "_on_toolbar_zoom",
+      "_on_toolbar_autofit",
+      "_on_canvas_click",
+      "_on_canvas_scroll",
+      "_on_mode_changed",
+      "_on_quick_param_changed",
+      "_on_preset_selected",
+      "_populate_composition_table",
+      "_on_table_cell_edited",
+      "_normalize_composition",
+      "_emit_sync_to_3d",
+      "_render_active_mode",
+      "_render_black_oil_curves",
+      "_render_co2_swelling_viscosity",
+      "_render_mmp_barometer",
+      "_render_eos_phase_envelope",
+      "_render_reservoir_fluid_column",
+      "_show_context_menu",
+      "_copy_plot_to_clipboard",
+      "_save_plot_image",
+      "_export_pvt_csv"
+    ]
+  },
+  {
+    "module": "ui/widgets/geology_cross_section_widget.py",
+    "lines": 811,
+    "classes_count": 1,
+    "functions_count": 14,
+    "classes": [
+      "GeologyCrossSectionWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_init_synthetic_grid",
+      "_setup_ui",
+      "_step_prev_slice",
+      "_step_next_slice",
+      "_reset_slice_to_center",
+      "set_grid_data",
+      "_update_slider_range",
+      "_on_orientation_changed",
+      "_on_slider_changed",
+      "render_slice",
+      "_render_vpc",
+      "_show_context_menu",
+      "_export_figure"
+    ]
+  },
+  {
+    "module": "ui/widgets/geostatistics_visualizer_widget.py",
+    "lines": 676,
+    "classes_count": 1,
+    "functions_count": 11,
+    "classes": [
+      "GeostatisticsVisualizerWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "set_grid_dimensions",
+      "set_well_data",
+      "set_parameters",
+      "generate_realization",
+      "_render_plots",
+      "_show_context_menu",
+      "_copy_plot_to_clipboard",
+      "_save_plot_image",
+      "_export_grid_csv"
+    ]
+  },
+  {
+    "module": "ui/widgets/log_viewer_dialog.py",
+    "lines": 417,
+    "classes_count": 4,
+    "functions_count": 18,
+    "classes": [
+      "LogTrackWidget",
+      "WellViewerDialog",
+      "FigureCanvas",
+      "Figure"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "update_title",
+      "retranslateUi",
+      "changeEvent",
+      "__init__",
+      "_setup_ui",
+      "retranslateUi",
+      "changeEvent",
+      "_connect_signals",
+      "_populate_well_combobox",
+      "_on_well_changed",
+      "_populate_log_list",
+      "_update_tracks_display",
+      "_create_depth_track",
+      "_update_track_scale",
+      "_toggle_add_note_mode",
+      "_on_plot_click"
+    ]
+  },
+  {
+    "module": "ui/widgets/manual_well_dialog.py",
+    "lines": 1275,
+    "classes_count": 2,
+    "functions_count": 31,
+    "classes": [
+      "ComprehensiveWellEditorDialog",
+      "ProxyLabel"
+    ],
+    "functions": [
+      "__init__",
+      "well_name_edit",
+      "key_param_values",
+      "peaceman_wi_label",
+      "_setup_ui",
+      "_setup_tab_general",
+      "_setup_tab_trajectory",
+      "_setup_tab_perforations",
+      "_setup_tab_ipr",
+      "_setup_tab_operations",
+      "_populate_initial_values",
+      "_on_name_changed",
+      "_on_role_changed",
+      "_on_traj_type_changed",
+      "_snap_coordinates",
+      "_add_perforation_row",
+      "_insert_perforation_row",
+      "_remove_perforation_row",
+      "_preset_perf_all",
+      "_preset_perf_upper",
+      "_preset_perf_lower",
+      "_on_perf_table_changed",
+      "_update_perforation_summary",
+      "_update_all_calculations",
+      "_render_trajectory_preview",
+      "_render_ipr_preview",
+      "_on_save_clicked",
+      "get_well_data",
+      "_on_hole_preset",
+      "__init__",
+      "text"
+    ]
+  },
+  {
+    "module": "ui/widgets/model_evaluation_dashboard.py",
+    "lines": 662,
+    "classes_count": 1,
+    "functions_count": 15,
+    "classes": [
+      "ModelEvaluationDashboard"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "_create_static_qc_tab",
+      "_create_scal_pvt_tab",
+      "_create_dynamic_rta_tab",
+      "_create_geomechanics_tab",
+      "_create_streamlines_tab",
+      "update_data",
+      "_render_static_qc",
+      "_render_scal_pvt",
+      "_render_dynamic_rta",
+      "_render_geomechanics",
+      "_render_streamlines",
+      "_launch_audit_dialog",
+      "plot_mohr"
+    ]
+  },
+  {
+    "module": "ui/widgets/parameter_input_group.py",
+    "lines": 245,
+    "classes_count": 1,
+    "functions_count": 22,
+    "classes": [
+      "ParameterInputGroup"
+    ],
+    "functions": [
+      "__init__",
+      "retranslateUi",
+      "changeEvent",
+      "_create_input_widget",
+      "_start_debounce",
+      "_emit_debounced_value",
+      "_request_help",
+      "validate",
+      "_set_feedback",
+      "clear_error",
+      "show_error",
+      "show_warning",
+      "show_info",
+      "set_checkable",
+      "is_checkable",
+      "_on_checkbox_toggled",
+      "_update_input_enabled",
+      "is_checked",
+      "set_checked",
+      "get_value",
+      "set_label_text",
+      "set_value"
+    ]
+  },
+  {
+    "module": "ui/widgets/parameter_tree_view.py",
+    "lines": 75,
+    "classes_count": 1,
+    "functions_count": 5,
+    "classes": [
+      "ParameterSelectionTreeView"
+    ],
+    "functions": [
+      "__init__",
+      "populate",
+      "get_selected_paths",
+      "get_selected_items",
+      "clear_selection"
+    ]
+  },
+  {
+    "module": "ui/widgets/pvt_editor_dialog.py",
+    "lines": 980,
+    "classes_count": 4,
+    "functions_count": 27,
+    "classes": [
+      "ComponentDelegate",
+      "PVTEditorDialog",
+      "FigureCanvas",
+      "Figure"
+    ],
+    "functions": [
+      "__init__",
+      "createEditor",
+      "__init__",
+      "_setup_ui",
+      "_create_advanced_tab",
+      "retranslateUi",
+      "changeEvent",
+      "_connect_signals",
+      "update_plot",
+      "_run_and_plot_full_pvt_range",
+      "get_data",
+      "_set_bip_table_data",
+      "_add_blank_component_row",
+      "_add_eos_component",
+      "_remove_selected_eos_component",
+      "_on_component_data_changed",
+      "_on_bip_changed",
+      "_validate_and_populate_row",
+      "_clear_component_row",
+      "_populate_component_row",
+      "_update_bip_table",
+      "_normalize_mole_fractions",
+      "_get_eos_model_from_ui",
+      "update_validation_status",
+      "_get_table_data_as_numpy",
+      "_get_table_data_as_object",
+      "load_data"
+    ]
+  },
+  {
+    "module": "ui/widgets/pvt_table_editor.py",
+    "lines": 299,
+    "classes_count": 1,
+    "functions_count": 13,
+    "classes": [
+      "PVTTableEditorWidget"
+    ],
+    "functions": [
+      "__init__",
+      "retranslateUi",
+      "changeEvent",
+      "_revalidate_all_rows",
+      "_on_item_changed",
+      "_validate_row",
+      "add_row",
+      "remove_selected_rows",
+      "set_headers",
+      "set_full_data",
+      "get_data_as_numpy",
+      "import_from_csv",
+      "export_to_csv"
+    ]
+  },
+  {
+    "module": "ui/widgets/well_network_workstation_widget.py",
+    "lines": 1183,
+    "classes_count": 1,
+    "functions_count": 31,
+    "classes": [
+      "WellNetworkWorkstationWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "_create_toolbar",
+      "_create_hud_cards",
+      "_setup_tab_network_tables",
+      "_setup_tab_ipr",
+      "_setup_tab_profile",
+      "_setup_tab_sensitivity",
+      "_setup_tab_drawdown",
+      "set_parameters",
+      "set_wells",
+      "select_well",
+      "_on_workstation_mode_changed",
+      "_on_well_combo_changed",
+      "_on_table_well_double_clicked",
+      "_toggle_place_well_mode",
+      "_prompt_add_well",
+      "_prompt_add_well_at_coords",
+      "_prompt_edit_selected_well",
+      "_delete_selected_well",
+      "_generate_pattern",
+      "_sync_with_subsurface",
+      "_get_selected_well",
+      "_update_well_combobox",
+      "_refresh_all",
+      "_update_hud_and_tables",
+      "_render_diagnostic_plots",
+      "_on_ipr_motion",
+      "_on_profile_motion",
+      "_on_sens_motion",
+      "_on_dd_motion"
+    ]
+  },
+  {
+    "module": "ui/widgets/well_trajectory_renderer_widget.py",
+    "lines": 78,
+    "classes_count": 1,
+    "functions_count": 5,
+    "classes": [
+      "WellTrajectoryRendererWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "set_wells_data",
+      "highlight_well",
+      "render"
+    ]
+  },
+  {
+    "module": "ui/workbench/__init__.py",
+    "lines": 11,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "ui/workbench/components/calculation_progress_dialog.py",
+    "lines": 140,
+    "classes_count": 1,
+    "functions_count": 7,
+    "classes": [
+      "CalculationProgressDialog"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "_center_on_parent",
+      "set_step",
+      "finish",
+      "__enter__",
+      "__exit__"
+    ]
+  },
+  {
+    "module": "ui/workbench/components/contextual_property_grid.py",
+    "lines": 2684,
+    "classes_count": 1,
+    "functions_count": 30,
+    "classes": [
+      "ContextualPropertyGrid"
+    ],
+    "functions": [
+      "_clear_layout",
+      "__init__",
+      "has_editable_inputs",
+      "update_input_values",
+      "load_node",
+      "_build_wells_network_overview_form",
+      "_build_well_schedule_form",
+      "_build_reservoir_overview_form",
+      "_build_grid_form",
+      "_build_volumetrics_form",
+      "_build_studio_3d_form",
+      "_build_stratigraphy_form",
+      "_build_petrophysics_form",
+      "_build_relperm_form",
+      "_build_geostat_form",
+      "_build_pvt_form",
+      "_build_fault_form",
+      "_build_caprock_form",
+      "_build_stress_uic_form",
+      "_build_storage_geothermal_form",
+      "_build_well_inspector",
+      "_build_fault_item_inspector",
+      "_with_badge",
+      "_update_calcs",
+      "_refresh_pattern_controls",
+      "_update_diagnostics_badges",
+      "_on_preset_selected",
+      "_update_var_badges",
+      "_apply_preset_selected",
+      "_render_geom_fields"
+    ]
+  },
+  {
+    "module": "ui/workbench/components/fault_caprock_manager_dialog.py",
+    "lines": 1134,
+    "classes_count": 1,
+    "functions_count": 29,
+    "classes": [
+      "FaultAndCaprockDialog"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_style",
+      "_build_ui",
+      "_build_faults_tab",
+      "_build_inter_stress_tab",
+      "_build_caprock_tab",
+      "_populate_faults_table",
+      "_load_selected_fault_form",
+      "_on_fault_selection_changed",
+      "_on_fault_param_changed",
+      "_on_add_fault",
+      "_on_duplicate_fault",
+      "_on_delete_fault",
+      "_on_apply_fault_preset",
+      "_refresh_inter_stress_matrix",
+      "_render_cfs_plot",
+      "_populate_caprock_table",
+      "_load_selected_caprock_form",
+      "_on_caprock_selection_changed",
+      "_on_caprock_param_changed",
+      "_on_add_caprock",
+      "_on_delete_caprock",
+      "_on_move_up_caprock",
+      "_on_move_down_caprock",
+      "_refresh_caprock_summary",
+      "_on_apply_clicked",
+      "_on_ok_clicked",
+      "get_faults",
+      "get_caprock"
+    ]
+  },
+  {
+    "module": "ui/workbench/components/model_tree_widget.py",
+    "lines": 758,
+    "classes_count": 1,
+    "functions_count": 10,
+    "classes": [
+      "ModelTreeWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_build_initial_tree",
+      "update_wells_list",
+      "update_faults_list",
+      "select_well_node",
+      "select_domain_item",
+      "_on_item_clicked",
+      "_on_current_item_changed",
+      "_show_tree_context_menu",
+      "search_node"
+    ]
+  },
+  {
+    "module": "ui/workbench/components/pyvista_reservoir_canvas.py",
+    "lines": 1384,
+    "classes_count": 1,
+    "functions_count": 17,
+    "classes": [
+      "PyVistaReservoirCanvas"
+    ],
+    "functions": [
+      "__init__",
+      "set_isolated_well",
+      "set_fault_isolated_view",
+      "_setup_ui",
+      "_create_hud_toolbar",
+      "_on_cut_slider_changed",
+      "_on_opacity_slider_changed",
+      "_setup_pyvista_picking",
+      "_on_pyvista_point_picked",
+      "_on_view_changed",
+      "reset_camera",
+      "_toggle_place_well_mode",
+      "_on_property_changed",
+      "_re_render_last",
+      "update_scene",
+      "render_subsurface_model",
+      "_show_context_menu"
+    ]
+  },
+  {
+    "module": "ui/workbench/components/quick_preset_bar.py",
+    "lines": 103,
+    "classes_count": 1,
+    "functions_count": 1,
+    "classes": [
+      "QuickPresetBar"
+    ],
+    "functions": [
+      "__init__"
+    ]
+  },
+  {
+    "module": "ui/workbench/components/subsurface_data_viewer_widget.py",
+    "lines": 2028,
+    "classes_count": 1,
+    "functions_count": 65,
+    "classes": [
+      "SubsurfaceDataViewerWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "show_table",
+      "_apply_table_filter",
+      "_copy_table_to_clipboard",
+      "_export_table_to_csv",
+      "show_graph",
+      "_save_plot_png",
+      "render_grid_table",
+      "render_grid_graph",
+      "render_ooip_table",
+      "render_ooip_graph",
+      "render_stratigraphy_table",
+      "render_rock_table",
+      "render_rock_graph",
+      "render_relperm_table",
+      "render_geostat_table",
+      "render_black_oil_table",
+      "render_swelling_table",
+      "render_mmp_table",
+      "render_eos_table",
+      "render_contacts_table",
+      "render_well_inventory_table",
+      "render_well_trajectory_table",
+      "render_caprock_table",
+      "render_caprock_graph",
+      "render_fault_table",
+      "render_stress_table",
+      "render_stress_graph",
+      "render_well_schedule_table",
+      "render_well_lifecycle_gantt_graph",
+      "render_wag_schedule_graph",
+      "render_caprock_geology_table",
+      "render_caprock_sealing_graph",
+      "render_fault_table",
+      "render_fault_geometry_table",
+      "render_fault_slip_graph",
+      "render_fault_inter_stress_graph",
+      "render_fault_juxtaposition_graph",
+      "render_caprock_graph",
+      "render_caprock_layers_table",
+      "render_epa_uic_compliance_table",
+      "render_aor_plume_graph",
+      "render_stress_path_graph",
+      "render_storage_trapping_table",
+      "render_storage_trapping_graph",
+      "render_utilisation_economics_table",
+      "render_geothermal_cpg_table",
+      "render_geothermal_power_graph",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw",
+      "draw"
+    ]
+  },
+  {
+    "module": "ui/workbench/components/subsurface_icons.py",
+    "lines": 309,
+    "classes_count": 0,
+    "functions_count": 1,
+    "classes": [],
+    "functions": [
+      "create_subsurface_icon"
+    ]
+  },
+  {
+    "module": "ui/workbench/components/visual_audit_gate_widget.py",
+    "lines": 337,
+    "classes_count": 1,
+    "functions_count": 6,
+    "classes": [
+      "VisualAuditGateWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "_create_metric_card",
+      "update_project_data",
+      "execute_audit",
+      "_on_approve_clicked"
+    ]
+  },
+  {
+    "module": "ui/workbench/subsurface_workbench_widget.py",
+    "lines": 1708,
+    "classes_count": 1,
+    "functions_count": 43,
+    "classes": [
+      "SubsurfaceWorkbenchWidget"
+    ],
+    "functions": [
+      "__init__",
+      "_setup_ui",
+      "switch_to_view",
+      "_on_back_to_3d_clicked",
+      "_connect_signals",
+      "_on_tree_node_selected",
+      "_open_fault_caprock_manager_dialog",
+      "_on_faults_updated_from_dialog",
+      "_on_caprock_updated_from_dialog",
+      "_prompt_add_fault",
+      "_on_property_grid_delete_fault",
+      "_on_isolate_fault_requested",
+      "_on_3d_well_picked",
+      "_toggle_parameter_panel",
+      "_update_3d_canvas_quick",
+      "_on_apply_model_requested",
+      "_on_pvt_workstation_parameters_changed",
+      "_on_parameter_edited",
+      "_load_preset",
+      "_create_sample_5spot",
+      "_generate_pattern",
+      "_prompt_add_well",
+      "_prompt_add_well_at_coords",
+      "_refresh_all_views",
+      "_on_workstation_well_added",
+      "_on_workstation_well_updated",
+      "_on_workstation_well_deleted",
+      "_on_workstation_well_selected",
+      "_on_workstation_place_well_requested",
+      "_on_workstation_sync_requested",
+      "_on_workstation_status_message",
+      "_on_property_grid_edit_well",
+      "_on_property_grid_delete_well",
+      "_on_sync_button_clicked",
+      "_sync_and_generate_data",
+      "_run_pre_flight_audit",
+      "_on_audit_model_approved",
+      "_launch_pre_flight_audit",
+      "_launch_visual_audit",
+      "_launch_model_workstation",
+      "get_current_project_data",
+      "load_project_data",
+      "set_engine_type"
+    ]
+  },
+  {
+    "module": "ui/workers/ai_query_worker.py",
+    "lines": 170,
+    "classes_count": 1,
+    "functions_count": 5,
+    "classes": [
+      "AIQueryWorker"
+    ],
+    "functions": [
+      "__init__",
+      "stop",
+      "run",
+      "_run_gemini_query",
+      "_run_openai_compatible_query"
+    ]
+  },
+  {
+    "module": "ui/workers/base_worker.py",
+    "lines": 47,
+    "classes_count": 1,
+    "functions_count": 5,
+    "classes": [
+      "BaseWorker"
+    ],
+    "functions": [
+      "__init__",
+      "stop",
+      "was_stopped",
+      "_do_work",
+      "run"
+    ]
+  },
+  {
+    "module": "ui/workers/dca_worker.py",
+    "lines": 37,
+    "classes_count": 2,
+    "functions_count": 2,
+    "classes": [
+      "DCAWorker",
+      "WorkerSignals"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ]
+  },
+  {
+    "module": "ui/workers/model_list_worker.py",
+    "lines": 44,
+    "classes_count": 1,
+    "functions_count": 2,
+    "classes": [
+      "ModelListWorker"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ]
+  },
+  {
+    "module": "ui/workers/optimization_worker.py",
+    "lines": 81,
+    "classes_count": 1,
+    "functions_count": 4,
+    "classes": [
+      "OptimizationWorker"
+    ],
+    "functions": [
+      "__init__",
+      "was_successful",
+      "run",
+      "stop"
+    ]
+  },
+  {
+    "module": "ui/workers/sensitivity_analysis_worker.py",
+    "lines": 85,
+    "classes_count": 1,
+    "functions_count": 4,
+    "classes": [
+      "SensitivityAnalysisWorker"
+    ],
+    "functions": [
+      "__init__",
+      "_on_progress",
+      "run",
+      "stop"
+    ]
+  },
+  {
+    "module": "ui/workers/uq_worker.py",
+    "lines": 60,
+    "classes_count": 1,
+    "functions_count": 3,
+    "classes": [
+      "UQWorker"
+    ],
+    "functions": [
+      "__init__",
+      "run",
+      "stop"
+    ]
+  },
+  {
+    "module": "ui/workers/well_analysis_worker.py",
+    "lines": 98,
+    "classes_count": 1,
+    "functions_count": 5,
+    "classes": [
+      "WellAnalysisWorker"
+    ],
+    "functions": [
+      "__init__",
+      "run",
+      "stop",
+      "progress_handler",
+      "stop_handler"
+    ]
+  },
+  {
+    "module": "utils/__init__.py",
+    "lines": 38,
+    "classes_count": 0,
+    "functions_count": 0,
+    "classes": [],
+    "functions": []
+  },
+  {
+    "module": "utils/config_manager.py",
+    "lines": 169,
+    "classes_count": 2,
+    "functions_count": 10,
+    "classes": [
+      "ConfigNotLoadedError",
+      "ConfigManager"
+    ],
+    "functions": [
+      "__init__",
+      "load_configs_from_directory",
+      "_ensure_config_loaded",
+      "get",
+      "get_section",
+      "is_loaded",
+      "loaded_config_directory",
+      "loaded_files_in_order",
+      "raw_config",
+      "reload_configs"
+    ]
+  },
+  {
+    "module": "utils/i18n_manager.py",
+    "lines": 133,
+    "classes_count": 1,
+    "functions_count": 4,
+    "classes": [
+      "I18nManager"
+    ],
+    "functions": [
+      "__init__",
+      "set_application_instance",
+      "get_available_locales",
+      "load_and_install_translator"
+    ]
+  },
+  {
+    "module": "utils/las_parser.py",
+    "lines": 193,
+    "classes_count": 2,
+    "functions_count": 1,
+    "classes": [
+      "MissingWellNameError",
+      "LASHeaderError"
+    ],
+    "functions": [
+      "parse_las"
+    ]
+  },
+  {
+    "module": "utils/multiprocess_logging.py",
+    "lines": 341,
+    "classes_count": 2,
+    "functions_count": 12,
+    "classes": [
+      "SafeFileHandler",
+      "SafeQueueListener"
+    ],
+    "functions": [
+      "setup_queue_logging",
+      "_configure_root_logger",
+      "get_log_queue",
+      "is_logging_initialized",
+      "_reset_all_loggers",
+      "_worker_initializer",
+      "get_worker_initializer",
+      "configure_worker_logging",
+      "shutdown_queue_logging",
+      "init_application_logging",
+      "emit",
+      "dequeue"
+    ]
+  },
+  {
+    "module": "utils/path_utils.py",
+    "lines": 99,
+    "classes_count": 0,
+    "functions_count": 7,
+    "classes": [],
+    "functions": [
+      "get_app_root",
+      "get_resource_path",
+      "get_config_dir",
+      "get_help_dir",
+      "get_translations_dir",
+      "get_logs_dir",
+      "get_ui_assets_dir"
+    ]
+  },
+  {
+    "module": "utils/preferences_manager.py",
+    "lines": 494,
+    "classes_count": 8,
+    "functions_count": 24,
+    "classes": [
+      "UnitSystem",
+      "GeneralPreferences",
+      "DisplayPreferences",
+      "UnitsPreferences",
+      "LanguagePreferences",
+      "AdvancedPreferences",
+      "AIPreferences",
+      "PreferencesManager"
+    ],
+    "functions": [
+      "get_preferences_manager",
+      "initialize_preferences_manager",
+      "__init__",
+      "load_preferences",
+      "save_preferences",
+      "reset_to_defaults",
+      "apply_language_preferences",
+      "get_display_unit",
+      "get_available_units_for_category",
+      "get_all_unit_categories",
+      "general",
+      "general",
+      "display",
+      "display",
+      "units",
+      "units",
+      "language",
+      "language",
+      "advanced",
+      "advanced",
+      "ai",
+      "ai",
+      "_migrate_preferences",
+      "_validate_preferences"
+    ]
+  },
+  {
+    "module": "utils/project_file_handler.py",
+    "lines": 131,
+    "classes_count": 1,
+    "functions_count": 4,
+    "classes": [
+      "ProjectEncoder"
+    ],
+    "functions": [
+      "project_decoder",
+      "save_project_to_tphd",
+      "load_project_from_tphd",
+      "default"
+    ]
+  },
+  {
+    "module": "utils/report_generator.py",
+    "lines": 1002,
+    "classes_count": 1,
+    "functions_count": 22,
+    "classes": [
+      "ReportGenerator"
+    ],
+    "functions": [
+      "__init__",
+      "get_unit",
+      "find_wkhtmltopdf",
+      "_log_diagnostic_info",
+      "test_wkhtmltopdf_installation",
+      "generate_report",
+      "_generate_html_content",
+      "_generate_cover_page",
+      "_generate_table_of_contents",
+      "_generate_executive_summary",
+      "_generate_input_parameters",
+      "_generate_optimization_results",
+      "_generate_sensitivity_analysis",
+      "_generate_uncertainty_quantification",
+      "_generate_economic_analysis",
+      "_generate_decline_curve_analysis",
+      "_generate_decline_curve_analysis",
+      "_generate_validation_report",
+      "_generate_appendices",
+      "_get_css_styles",
+      "_plotly_fig_to_base64",
+      "_matplotlib_fig_to_base64"
+    ]
+  },
+  {
+    "module": "utils/run_exporter.py",
+    "lines": 1537,
+    "classes_count": 1,
+    "functions_count": 19,
+    "classes": [
+      "RunDataExporter"
+    ],
+    "functions": [
+      "__init__",
+      "export_run",
+      "export",
+      "_generate_all_artifacts",
+      "_build_run_manifest",
+      "_diagnose_warnings_and_errors",
+      "_extract_decision_variables",
+      "_build_readme_entrypoint",
+      "_build_evaluation_report_markdown",
+      "_build_cash_flow_table",
+      "_build_convergence_table",
+      "_build_profile_tables",
+      "_build_sanitized_text_summary",
+      "_save_plots",
+      "_extract_safe_dict",
+      "_sanitize_dict",
+      "_safe_sum",
+      "_write_file",
+      "_write_json"
+    ]
+  }
+]

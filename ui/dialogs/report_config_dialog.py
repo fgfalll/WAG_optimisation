@@ -125,7 +125,7 @@ class ReportConfigDialog(QDialog):
         sections_layout = QVBoxLayout(self.sections_group)
         
         self.sections_list = QListWidget()
-        for key, display_name in self.AVAILABLE_SECTIONS.items():
+        for key in self.AVAILABLE_SECTIONS:
             item = QListWidgetItem()
             item.setData(Qt.ItemDataRole.UserRole, key)
             
