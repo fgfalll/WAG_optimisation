@@ -7,7 +7,7 @@ same content, just in this file.
 **What belongs here:** fracture propagation scaling, the Drucker–Prager hardening law, the Lode-angle
 anchor, the convexity criterion, plastic dissipation, and the resulting gate architecture.
 
-**This is the M7b content.** All 34 rulings and `C-1…C-216` landed on the M7b constitutive model, which had
+**This is the M7b content.** All 36 rulings and `C-1…C-237` landed on the M7b constitutive model, which had
 no milestone body until 09-10-2026 — see [`build_plan.md`](build_plan.md) M7b.
 
 | Section | Subject |

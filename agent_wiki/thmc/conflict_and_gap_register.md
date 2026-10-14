@@ -17,6 +17,28 @@ contradict **each other**.
 🟠 **MATERIAL** — changes the numbers or the architecture materially ·
 🟡 **DOCUMENTARY** — must be corrected in the documents, does not change the model.
 
+> [!WARNING]
+> **How to count these — measured 14-10-2026, because the number was previously wrong.**
+>
+> 🔴 **The identifier space runs CONF-01…CONF-66. 51 ids carry a full body entry below.**
+> The index previously claimed **"68 conflicts"**; that was the highest *identifier*, not a count of
+> catalogued entries. 📌 **Verified by script**, accepting both zero-padded (`CONF-01`) and plain
+> (`CONF-7`) forms:
+>
+> | Measure | Value |
+> |---|---|
+> | Identifier space | **CONF-01 … CONF-66** |
+> | Body entries (`### CONF-nn`) | **51** |
+> | 🔴 **Ghost ids** — referenced but with no body entry | **6** — `CONF-34`, `CONF-38`, `CONF-56`, `CONF-63`, `CONF-65`, `CONF-67` |
+> | Absent entirely | none in 1…66 |
+>
+> 🔴 **`CONF-34` is the worst case:** it is cited as a live finding in
+> [`satellite_toolkit.md`](satellite_toolkit.md) §ensemble — *"**CONF-34.** No ensemble method is named in
+> D6"* — but it **has no entry in this register at all**. 📌 **A conflict cited as authoritative while
+> having no record here is not verifiable.** It is carried as a ghost until written up.
+>
+> ⚠️ **Do not quote a conflict count from memory or from an index.** Derive it, as above.
+
 > [!NOTE]
 > **Ruling history.** A reservoir engineer reviewed this register on **07-10-2026**. Two rulings
 > accepted, one accepted with corrections, one **rejected as itself in error** — which also revealed

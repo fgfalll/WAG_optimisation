@@ -71,9 +71,9 @@ eliminate modification risk.
 
 | Section | Purpose |
 |---|---|
-| [**Conflict & Gap Register**](thmc/conflict_and_gap_register.md) | **68 conflicts** across the 8 design docs — the authoritative status |
+| [**Conflict & Gap Register**](thmc/conflict_and_gap_register.md) | **CONF-01…CONF-66**, of which **51 carry a full body entry** — the authoritative status. ⚠️ ids 34, 38, 56, 63, 65, 67 are referenced without one |
 | [**Reservoir Engineer Ruling**](thmc/reservoir_engineer_ruling.md) | The 07-10-2026 adjudication, incl. the CONF-01 retraction |
-| [**Spec Corrections Log**](compositional/spec_corrections_log.md) | **C-1…C-237** across 38 rulings — every correction and retraction |
+| [**Spec Corrections Log**](compositional/spec_corrections_log.md) | **C-1…C-237** across 36 rulings — every correction and retraction |
 | [**Spec Defects**](compositional/spec_defects.md) | `CONF-*` items indexed by milestone |
 | [**📚 Literature TODO**](compositional/literature_todo.md) | **L-1…L-9** — outstanding research, with the acceptance standard. ✅ **L-1, L-7, L-8 closed** — ✅ the full Karakas & Tariq (1991) paper was obtained and **all five tables transcribed**, which closed **CONF-31's coefficient defect** and resolved the phasing dispute as **parameter-dependent** |
 | [**Python Attempt Post-mortem**](compositional/python_attempt_postmortem.md) | Why the first attempt failed — six language-independent causes |

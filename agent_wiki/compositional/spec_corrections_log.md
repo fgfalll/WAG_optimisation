@@ -16,6 +16,10 @@
 | Approved branches | Recorded here — a spec variant that was considered and rejected is as valuable as one that was adopted |
 | Provenance | Every correction cites the file and line it corrects |
 
+> [!NOTE]
+> **Ruling numbering starts at 3.** Headings run **3–38, i.e. 36 rulings**. Rulings 1 and 2 predate this
+> log and have no heading here. 📌 **An earlier self-description of this file as holding "38 rulings" was
+> wrong** — 38 is the highest *heading number*, not a count. Verified 14-10-2026.
 This file is the audit trail. It exists because a corrected spec without a correction history is
 indistinguishable from a spec that was never wrong — and because the 05-10-2026 audit showed what happens
 when documentation and code drift apart without a record.

@@ -466,7 +466,7 @@ MINC (D2 §4.1) · PGS and synthetic geology (D7) · GEP (D1 §11.2) · ES-MDA (
 ## M7b — THMC / geomechanics (fully coupled thermal + Biot FEM)
 
 **Written 09-10-2026.** 🔴 **This is the only M7 milestone with a body, and it was written last on purpose**
-— it is where all 34 rulings landed, so it needed the most adjudication to specify.
+— it is where all 36 rulings landed, so it needed the most adjudication to specify.
 
 ⚠️ **Read [`engine_constitutive.md`](engine_constitutive.md) in full before starting.** Sections
 `7x`–`7hh` are the constitutive rulings this milestone implements, and every one of them is a
@@ -598,7 +598,7 @@ Each needs the same three-step treatment:
 2. record the adjudication in [`spec_corrections_log.md`](spec_corrections_log.md)
 3. write the milestone body here — tasks, specification gaps, and a **measured** gate
 
-⚠️ **M7b was written first deliberately.** All 34 rulings and `C-1…C-216` landed on the M7b constitutive
+⚠️ **M7b was written first deliberately.** All 36 rulings and `C-1…C-237` landed on the M7b constitutive
 model, so it needed the most adjudication to specify — 📌 and two of its four blockers are still open, so a
 body written earlier would have had to invent answers.
 
