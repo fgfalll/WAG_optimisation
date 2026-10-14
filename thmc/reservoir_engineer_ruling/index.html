@@ -4968,7 +4968,7 @@ Specification</em>, approved 08-10-2026) and the <strong>master map</strong>. Fu
 </tbody>
 </table>
 <h3 id="61-conf-63-fix-correct-magnitude-overstated">6.1 CONF-63 — fix correct, magnitude overstated<a class="headerlink" href="#61-conf-63-fix-correct-magnitude-overstated" title="Permanent link">&para;</a></h3>
-<p>The ruling states the linear form <em>"over-predicts viscous fingering severity by </em><em>orders of magnitude</em><em> at
+<p>The ruling states the linear form <em>"over-predicts viscous fingering severity by <strong>orders of magnitude</strong> at
 high mobility ratios (<span class="arithmatex">\(M &gt; 10\)</span>)"</em>. <strong>Measured 08-10-2026:</strong></p>
 <table>
 <thead>
@@ -5315,7 +5315,7 @@ t/STB; benchmark <span class="arithmatex">\(5\)</span>–<span class="arithmatex
 <tr>
 <td><strong>C-35</strong> Well control modes in the global Jacobian</td>
 <td>M5</td>
-<td>⚠️ <em>"</em><em>The single most critical numerical fix.</em><em> Embedding well boundary conditions directly into the global Jacobian guarantees monotonic Newton convergence."</em> ✅</td>
+<td>⚠️ <em>"<strong>The single most critical numerical fix.</strong> Embedding well boundary conditions directly into the global Jacobian guarantees monotonic Newton convergence."</em> ✅</td>
 </tr>
 <tr>
 <td><strong>C-36</strong> Dual permeability-collapse rule</td>
@@ -5325,7 +5325,7 @@ t/STB; benchmark <span class="arithmatex">\(5\)</span>–<span class="arithmatex
 <tr>
 <td><strong>C-37</strong> Document the correct <span class="arithmatex">\(f_g\)</span> reason</td>
 <td>now</td>
-<td><em>"record that <span class="arithmatex">\(f_g\)</span> was purged due to </em><em>lack of relative mobility closure, not sign artifacts</em><em>"</em> ✅</td>
+<td><em>"record that <span class="arithmatex">\(f_g\)</span> was purged due to <strong>lack of relative mobility closure, not sign artifacts</strong>"</em> ✅</td>
 </tr>
 </tbody>
 </table>
@@ -5378,8 +5378,8 @@ t/STB; benchmark <span class="arithmatex">\(5\)</span>–<span class="arithmatex
 </table>
 <blockquote>
 <p>✅ <strong>Verified 08-10-2026 — the rationale is stronger than stated.</strong> <span class="arithmatex">\(S_o + S_w + S_g = 1.0\)</span> is an <strong>exact</strong>
-rank deficiency: three saturation fields span a two-dimensional subspace<strong>, so KL captures it in one mode
-with </strong>zero residual** — not an approximation. Further derived-not-stored quantities among the 116:
+rank deficiency: three saturation fields span a two-dimensional subspace**, so KL captures it in one mode
+with <strong>zero residual</strong> — not an approximation. Further derived-not-stored quantities among the 116:
 <span class="arithmatex">\(RF = E_vE_aE_m\)</span>; <span class="arithmatex">\(\bar{P}_{res,eff}\)</span>; <span class="arithmatex">\(K_i = y_i/x_i\)</span>; <span class="arithmatex">\(L/F = 1 - V/F\)</span>;
 <span class="arithmatex">\(\sigma'_{ij}=\sigma_{ij}-\alpha_BP\delta_{ij}\)</span>; <span class="arithmatex">\(\phi_{tot}=\phi_m+\phi_f\)</span>; <span class="arithmatex">\(K = H\cdot E_{eff}\)</span>.</p>
 <p><strong>The 116 are not 116 independent signals.</strong> Both the storage saving and the RL observation-space
@@ -5420,8 +5420,8 @@ cells; <strong>30 % active → 153.1 MB/step</strong>; <strong>5 % front-trackin
 <blockquote>
 <p><em>"If a simulation run fails halfway due to physical divergence, the run HDF5 is marked <code>FAILED</code>. If
 training vectors are embedded inside the run file, partial non-converged states risk polluting ML
-surrogate training sets. Decoupling training vectors into <code>pgvector</code> ensures that </em><em>only validated
-states from <code>IMPLEMENTED</code> or <code>DEGRADED</code> runs are committed</em><em>."</em></p>
+surrogate training sets. Decoupling training vectors into <code>pgvector</code> ensures that <strong>only validated
+states from <code>IMPLEMENTED</code> or <code>DEGRADED</code> runs are committed</strong>."</em></p>
 <p>🔴 <strong>This is the strongest of the four answers, because it closes a real hole between INV-1 and INV-4.</strong>
 If training data lived inside the run artifact, a run that failed <strong>mid-write</strong> could leave partial,
 non-converged states that a later harvesting step would treat as samples. Externalising the dataset

@@ -5504,7 +5504,7 @@ memory, and iteration count with a named preconditioner. Record in a run audit.<
 <p>🔴 <strong>The design set decides the constitutive model at M7b but the linear algebra at M0. Choosing the
 preconditioner first means choosing it under an assumption M7b can invalidate — and a symmetric
 preconditioner silently degrades an elastoplastic Newton solve from quadratic to linear convergence,
-which is exactly the </strong>C-35<strong> failure mode already logged from the Python attempt.</strong></p>
+which is exactly the <strong>C-35</strong> failure mode already logged from the Python attempt.</strong></p>
 <p><strong>Ruled:</strong> M0.1 must record the preconditioner decision as <strong>conditional on the constitutive model</strong>,
 and the benchmark must include at least one <strong>non-symmetric</strong> test matrix. <strong>CONF-14 stays open until
 M7b</strong>, and <code>build_plan.md</code> should not claim M3/M4 are unblocked by M0.1 alone.</p>
@@ -6418,7 +6418,7 @@ MINC (D2 §4.1) · PGS and synthetic geology (D7) · GEP (D1 §11.2) · ES-MDA (
 <hr />
 <h2 id="m7b-thmc-geomechanics-fully-coupled-thermal-biot-fem">M7b — THMC / geomechanics (fully coupled thermal + Biot FEM)<a class="headerlink" href="#m7b-thmc-geomechanics-fully-coupled-thermal-biot-fem" title="Permanent link">&para;</a></h2>
 <p><strong>Written 09-10-2026.</strong> 🔴 <strong>This is the only M7 milestone with a body, and it was written last on purpose</strong>
-— it is where all 34 rulings landed, so it needed the most adjudication to specify.</p>
+— it is where all 36 rulings landed, so it needed the most adjudication to specify.</p>
 <p>⚠️ <strong>Read <a href="../engine_constitutive/"><code>engine_constitutive.md</code></a> in full before starting.</strong> Sections
 <code>7x</code>–<code>7hh</code> are the constitutive rulings this milestone implements, and every one of them is a
 <strong>measured</strong> correction to a submitted form.</p>
@@ -6770,7 +6770,7 @@ criteria</strong>, exactly as M1–M6 did not before <a href="../spec_defects/">
 <li>record the adjudication in <a href="../spec_corrections_log/"><code>spec_corrections_log.md</code></a></li>
 <li>write the milestone body here — tasks, specification gaps, and a <strong>measured</strong> gate</li>
 </ol>
-<p>⚠️ <strong>M7b was written first deliberately.</strong> All 34 rulings and <code>C-1…C-216</code> landed on the M7b constitutive
+<p>⚠️ <strong>M7b was written first deliberately.</strong> All 36 rulings and <code>C-1…C-237</code> landed on the M7b constitutive
 model, so it needed the most adjudication to specify — 📌 and two of its four blockers are still open, so a
 body written earlier would have had to invent answers.</p>
 <p><strong>Not in scope, and the one remaining phase-gated item:</strong> FFI to Python (<strong>coupling</strong>) — see

@@ -4434,7 +4434,7 @@
 <hr />
 <h2 id="2-numerical-limitations">2. Numerical Limitations<a class="headerlink" href="#2-numerical-limitations" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Pressure Update — damped explicit material balance</strong> ⚠️ <em>(corrected 2026-10-04: <code>solve_ivp</code> and <code>_solve_pressure_ode_stiff</code> are </em><em>no longer in the codebase</em><em>; grep → 0 hits)</em>:</li>
+<li><strong>Pressure Update — damped explicit material balance</strong> ⚠️ <em>(corrected 2026-10-04: <code>solve_ivp</code> and <code>_solve_pressure_ode_stiff</code> are <strong>no longer in the codebase</strong>; grep → 0 hits)</em>:</li>
 <li>The pressure increment is now written inline in <code>SurrogateEngine.evaluate_scenario()</code> as
      <span class="arithmatex">\(dP = q\,\Delta t/(V_p c_t + J_{\text{eff}}\Delta t)\)</span>, with a per-step limiter of <span class="arithmatex">\(\pm450\text{ psi/step}\)</span> and an EPA Class VI ceiling <span class="arithmatex">\(P \le 0.90\,P_{\text{frac}}\)</span>.</li>
 <li>Because it is explicit, a step larger than <span class="arithmatex">\(\max(\Delta P_{\text{limiter}}, 450\text{ psi})\)</span> is silently truncated rather than rejected: the scheme has <strong>no error estimator</strong>, so stability is enforced by clipping, not by adaptivity (see <code>res_audit.md</code> §4.1 for the stabilization-vs-physics separation).</li>

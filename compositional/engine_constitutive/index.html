@@ -6146,7 +6146,7 @@ preserved exactly</strong> — every cross-reference in the wiki citing sections
 same content, just in this file.</p>
 <p><strong>What belongs here:</strong> fracture propagation scaling, the Drucker–Prager hardening law, the Lode-angle
 anchor, the convexity criterion, plastic dissipation, and the resulting gate architecture.</p>
-<p><strong>This is the M7b content.</strong> All 34 rulings and <code>C-1…C-216</code> landed on the M7b constitutive model, which had
+<p><strong>This is the M7b content.</strong> All 36 rulings and <code>C-1…C-237</code> landed on the M7b constitutive model, which had
 no milestone body until 09-10-2026 — see <a href="../build_plan/"><code>build_plan.md</code></a> M7b.</p>
 <table>
 <thead>
@@ -6279,7 +6279,7 @@ and <span class="arithmatex">\(\alpha\)</span> <strong>divided</strong> by <span
 <span class="arithmatex">\(k = \dfrac{6\sqrt3\,c\cos\phi}{3\mp\sin\phi}\)</span>, <span class="arithmatex">\(\alpha = \dfrac{2\sqrt3\,\sin\phi}{3\mp\sin\phi}\)</span>.</p>
 <p>⚠️ <strong>Recommend Formulation A</strong> — it is what the classic DP↔MC tangency derivation produces, and it
 removes the <span class="arithmatex">\(\sqrt3\)</span> from the denominators entirely.</p>
-<p>⚠️ <em>An MC-apex tangency cross-check was attempted and came out </em><em>inconclusive</em><em> — the <span class="arithmatex">\(I_1\)</span> sign
+<p>⚠️ <em>An MC-apex tangency cross-check was attempted and came out <strong>inconclusive</strong> — the <span class="arithmatex">\(I_1\)</span> sign
 convention under compression is not fixed in the spec. The algebra above is the reliable evidence.</em></p>
 </blockquote>
 <h3 id="7x4-c-162-hermite-regularisation-accepted-delta-undeclared">7x.4 ⚠️ C-162 — Hermite regularisation accepted; <span class="arithmatex">\(\delta\)</span> undeclared<a class="headerlink" href="#7x4-c-162-hermite-regularisation-accepted-delta-undeclared" title="Permanent link">&para;</a></h3>
@@ -7161,7 +7161,7 @@ are declared inputs</strong>, with the unmatched-meridian deviation measured and
 </tbody>
 </table>
 <p>🔴 <strong>Two of eight fields wrong, and the DOI does not resolve.</strong> ⚠️ <em>Six of eight were right — including the exact
-page range — so any completeness or plausibility review </em><em>passes it</em><em>.</em> This is <strong>L-2's failure mode repeating</strong>
+page range — so any completeness or plausibility review <strong>passes it</strong>.</em> This is <strong>L-2's failure mode repeating</strong>
 (<code>12242 → 12244</code>), now with a title corruption on top.</p>
 <p>✅ <strong>Ménétrey &amp; Willam 1995 VERIFIED</strong> — <code>10.14359/1132</code> <strong>resolves 200</strong>, <em>Triaxial Failure Criterion for Concrete
 and its Generalization</em>, <strong>ACI Structural Journal 92(3)</strong>, 1995 ✅. ⚠️ Page range 311–318 unconfirmed from
@@ -7275,7 +7275,7 @@ and overflow gives <span class="arithmatex">\(+\infty\)</span>. Measured: <stron
 f64-truncation mechanism as a risk</strong>, or the register grows a phantom entry (<strong>C-178</strong>'s lesson).</p>
 <h3 id="7ee2-c-201-the-leak-is-silent-nan-not-a-bounded-wrong-angle">7ee.2 🔴 C-201 — the leak is silent <strong>NaN</strong>, not a bounded wrong angle<a class="headerlink" href="#7ee2-c-201-the-leak-is-silent-nan-not-a-bounded-wrong-angle" title="Permanent link">&para;</a></h3>
 <p>Rust's <code>f64::clamp</code> is <code>if self&lt;min{min} else if self&gt;max{max} else{self}</code> — with <code>self=NaN$, **both
-comparisons are false** $\Rightarrow$ returns **</code>self`<strong> = </strong>NaN**.</p>
+comparisons are false** $\Rightarrow$ returns **</code>self`** = <strong>NaN</strong>.</p>
 <div class="arithmatex">\[0/0\Rightarrow\theta_L=\mathrm{NaN}\Rightarrow g=\mathrm{NaN}\Rightarrow f=\mathrm{NaN}\Rightarrow\mathbf{D}^{alg}=\mathrm{NaN}\Rightarrow R=\mathrm{NaN}\]</div>
 <p>🔴 <strong>And NaN compares <code>false</code> against <em>every</em> guard</strong>, so each downstream check <strong>silently passes</strong>.</p>
 <div class="arithmatex">\[\boxed{\text{The test must be a NaN-propagation assertion (}\texttt{is\_finite()}\text{ on }f\text{ and }\mathbf{D}^{alg}\text{), NOT a range check.}}\]</div>
@@ -7879,7 +7879,7 @@ expression.</strong> 📌 <em>That is why the factor 3 appeared, and it is a cle
 the apex is hydrostatic <strong>tension</strong> — so the expression is <span class="arithmatex">\(\boldsymbol\sigma=\mathbf{-}c\cot\phi\,\mathbf I\)</span>.
 Measured <span class="arithmatex">\(\boldsymbol\sigma:\dot{\boldsymbol\varepsilon}^p/\dot\gamma=3pa\)</span>: <span class="arithmatex">\(0\)</span>, <span class="arithmatex">\(-7.794229\times10^5\)</span>,
 <span class="arithmatex">\(-2.078461\times10^6\)</span> Pa at <span class="arithmatex">\(\alpha_\psi=0,\,0.15,\,0.40\)</span>.</p>
-<p>✅ <strong>But the final formula <span class="arithmatex">\(\dot D^p=\dot\gamma\left(3\alpha_\psi c\cot\phi-H\bar\varepsilon_p\right)\)</span> is CORRECT</strong> and matches my <strong>C-218</strong> exactly — ⚠️ <strong>the sign error cancels in the product, so the right answer survives a wrong intermediate.</strong> 📌 <em>This is the </em><em>tenth</em><em> compression/tension sign slip in this component.</em></p>
+<p>✅ <strong>But the final formula <span class="arithmatex">\(\dot D^p=\dot\gamma\left(3\alpha_\psi c\cot\phi-H\bar\varepsilon_p\right)\)</span> is CORRECT</strong> and matches my <strong>C-218</strong> exactly — ⚠️ <strong>the sign error cancels in the product, so the right answer survives a wrong intermediate.</strong> 📌 <em>This is the <strong>tenth</strong> compression/tension sign slip in this component.</em></p>
 <p>✅ <strong>Ruled: <span class="arithmatex">\(\boldsymbol\sigma_{\text{apex}}=\mathbf{-}c\cot\phi\,\mathbf I\)</span> under compression-positive.</strong>
 ⚠️ Note the resulting <span class="arithmatex">\(\boldsymbol\sigma:\dot{\boldsymbol\varepsilon}^p\)</span> is <strong>negative</strong> at the apex with
 dilatancy — ✅ <strong>which strengthens C-218</strong>: the dissipation there is a <em>three-way</em> competition between a
