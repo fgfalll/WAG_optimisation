@@ -8,7 +8,7 @@
 > **Read it in full. It is ~9 KB / 160 lines on purpose** — the documents it points at total **1,087 KB**
 > and cannot be re-read end-to-end after a rollover.
 
-**As of 10-10-2026 · commit `37a0ffb` (engine work uncommitted at time of writing)**
+**As of 15-10-2026 · Implementation Plan Approved with Forensic Engineering Corrections**
 
 ---
 
@@ -16,11 +16,12 @@
 
 | # | File | KB | Why |
 |---|---|---|---|
-| 1 | **this file** | 6 | survives rollover |
-| 2 | [`compositional/README.md`](README.md) | 22 | scope + status |
-| 3 | [`compositional/engine_invariants.md`](engine_invariants.md) **§0 only** | — | ⚠️ the file is split into 4; use its §0 index, never a linear read |
-| 4 | [`compositional/build_plan.md`](build_plan.md) | 42 | current milestone + gates |
-| 5 | [`compositional/spec_corrections_log.md`](spec_corrections_log.md) | **269** | ⚠️ **largest file in the repo.** Query it by `C-nnn`, never read it linearly |
+| 1 | **this file** | 8 | survives rollover |
+| 2 | [`compositional/build_plan.md`](build_plan.md) | 43 | 🔵 **APPROVED BUILD PLAN** — M0→M7 milestones, Flaws 1–5 resolved, Block-CPR, D:\RAG mappings |
+| 3 | [`compositional/README.md`](README.md) | 22 | scope + status |
+| 4 | [`compositional/engine_invariants.md`](engine_invariants.md) **§0 only** | — | ⚠️ the file is split into 4; use its §0 index, never a linear read |
+| 5 | [`../thmc/reservoir_engineer_ruling.md`](../thmc/reservoir_engineer_ruling.md) | 33 | 🔵 **ENGINEER RULINGS** — Adjudications 1–4, 17 locked numerical & physical closures |
+| 6 | [`compositional/spec_corrections_log.md`](spec_corrections_log.md) | **269** | ⚠️ **largest file in the repo.** Query it by `C-nnn`, never read it linearly |
 
 🔴 **Do not read #3 or #5 end to end.** `engine_invariants.md` carries a §0 index precisely
 because a linear read does not fit; `spec_corrections_log.md` at 269 KB will exhaust a context
@@ -33,11 +34,12 @@ window on its own.
 | Fact | Value | Verified by |
 |---|---|---|
 | Rust engine code | 🔴 **NONE EXISTS** | `Get-ChildItem -Recurse -Include *.rs, Cargo.toml` |
-| Rust toolchain | 🔴 **ABSENT** — `cargo`, `rustc`, `rustup` all `NOT FOUND` | re-checked 10-10-2026 |
-| Current milestone | **M0 not started** — nothing implemented | [`build_plan.md`](build_plan.md) |
+| Rust toolchain | 🔴 **ABSENT** — `cargo`, `rustc`, `rustup` all `NOT FOUND` | re-checked 15-10-2026 |
+| Current milestone | **M0 ready for kick-off** — build plan approved | [`build_plan.md`](build_plan.md) |
 | Blocker B-1 | no toolchain, **deferred by owner decision** | [`compositional/README.md`](README.md) §B |
 | Python engine | ✅ **shipped, untouched** | do not modify |
 | Rust toolchain install | **deferred by owner decision** — do not install unprompted | — |
+| Literature & Decks | ✅ **Available in `D:\RAG`** (129 files, incl. SPE 5 CMG GEM deck) | mapped in [`build_plan.md`](build_plan.md) §M4.5 & [`../thmc/vv_testing_framework.md`](../thmc/vv_testing_framework.md) |
 
 ⚠️ **Nothing in `compositional/` or `thmc/` is a report of running software.** Every tolerance,
 milestone and "verified" claim there describes **what the engine must do**.
@@ -81,6 +83,10 @@ Every known break of this class is logged: **C-93** (clamp), **C-97** (clamp pur
 | **C-211 / C-215** (μ) | Ruling 36 | 🔴 **Withdrawn before adoption** — $\mu$ had not been derived |
 | **C-227** — *my transcription: $\alpha_0(120°)=0.618$* | **source** | 🔴 **The source reads $0.648$.** Two rows were missing entirely |
 | **C-228** — *fitted coefficient $0.476$* | — | 🔴 **Does not survive a six-row refit** ($0.2843+0.4113\log_4N$, RMS 0.0298) |
+| **Black-Oil volumetric recovery integral** | **Component mass/molar integral** | 🔴 **Flaw 2:** Volumetric $\int \phi(S_o/B_o)d\Omega$ fails mass conservation during compositional swelling/stripping; superseded by $M_i(t) = \int \phi \sum S_\alpha \rho_\alpha x_{i,\alpha} d\Omega$ |
+| **Koval raw $S_g$ fractional flow** | **Normalized mobile $S_g^*$** | 🔴 **Flaw 1:** Raw $S_g$ causes non-zero gas flow $f_g > 0$ at $S_g = S_{gc}$; superseded by $S_g^* = (S_g-S_{gc})/(1-S_{wi}-S_{gc}-S_{org})$ with $f_g=0$ for $S_g < S_{gc}$ |
+| **$\theta_L = -\pi/6$ as Extension meridian** | **$\theta_L = -\pi/6$ is Compression** | 🔴 **Flaw 4:** Under compression-positive convention ($\sigma > 0$ in compression), triaxial compression yields $\det(\mathbf{s}) > 0 \Rightarrow \theta_L = -\pi/6$ (Compression meridian); $+\pi/6$ is Extension |
+| **Standard CPR for coupled THMC** | **Block-CPR / Schur Splitting** | 🔴 **Flaw 3:** Standard CPR degrades on vector elasticity $[u_x, u_y, u_z]$; superseded by Stage 1a (Unsymmetric AMG on $\mathbf{A}_{pp}$), Stage 1b (Vector AMG on $\mathbf{A}_{uu}$), Stage 2 (ILU(1) smoothing) |
 
 ### My recurring failure mode — the pattern behind all of them
 

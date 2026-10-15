@@ -922,3 +922,117 @@ made local too.
 
 ---
 
+## 7x. Governing Solver Stack & Primary Variable Formulation (15-10-2026 Audit Resolution)
+
+**Formally closes CONF-12, CONF-13, CONF-14, CONF-23, and CONF-24.**
+
+### 7x.1 Primary Variable Vector $\mathbf{X}$ (Coupled Multiphase THMC)
+
+In the fully coupled compositional THMC core, water is treated as an explicit conservation component, preventing water-phase flash degeneracy. The cell-primary variable vector $\mathbf{X}$ comprises:
+
+$$\mathbf{X} = \begin{bmatrix} P \\ z_1 \\ \vdots \\ z_{N_c-1} \\ z_w \\ T \\ u_x \\ u_y \\ u_z \end{bmatrix} \in \mathbb{R}^{(N_c + 5)}$$
+
+where:
+1. $P$: Cell pore pressure (psia or Pa).
+2. $z_1 \dots z_{N_c-1}$: Overall mole fractions for $N_c-1$ independent hydrocarbon components.
+3. $z_w$: Overall water mole fraction, satisfying the total mole closure $\sum_{i=1}^{N_c} z_i + z_w = 1.0$. Hydrocarbon flash is solved on the normalized hydrocarbon feed $z_i^{HC} = z_i / (1 - z_w)$.
+4. $T$: Reservoir temperature (K or °R).
+5. $u_x, u_y, u_z$: Solid displacement vector from Biot poroelasticity (ft or m).
+
+Phase saturations $S_\alpha$ and phase compositions $x_{i,\alpha}, y_{i,\alpha}$ are purely secondary diagnostic variables evaluated via flash, guaranteeing $C^1$ continuity across phase boundaries without variable-switching discontinuities.
+
+### 7x.2 Production Newton-Raphson Solver with Armijo Line Search
+
+To eliminate non-convergence, cyclic limit cycles, and unphysical state excursions, the Newton solver is governed by strict step control:
+
+1. **Armijo-Goldstein Backtracking Line Search:**
+   For trial step $\mathbf{x}^{(k+1)} = \mathbf{x}^{(k)} + \lambda \Delta \mathbf{x}$, the step length $\lambda \in [\lambda_{\min}, 1.0]$ must satisfy the sufficient decrease condition:
+   $$\|\mathbf{R}(\mathbf{x}^{(k)} + \lambda \Delta \mathbf{x})\|_2 \le (1 - c_1 \lambda) \|\mathbf{R}(\mathbf{x}^{(k)})\|_2, \quad c_1 = 10^{-4}$$
+   If the condition is violated, $\lambda$ is backtracked via quadratic safeguard interpolation:
+   $$\lambda_{new} = \max\left(\beta_{min} \lambda, \; \min\left(\beta_{max} \lambda, \; \frac{-\|\mathbf{R}^{(k)}\|_2^2 \lambda^2}{2 \left( \|\mathbf{R}(\lambda)\|_2^2 - \|\mathbf{R}^{(k)}\|_2^2 - \nabla \|\mathbf{R}^{(k)}\|_2^2 \lambda \right)} \right)\right)$$
+   with $\beta_{min} = 0.1$, $\beta_{max} = 0.5$. If $\lambda < \lambda_{min} = 10^{-3}$, the timestep is cut back by factor $0.5$ (INV-1).
+2. **Damping Soft-Start & State Safeguards:**
+   On timestep initiation, initial iterations are damped: $\lambda_0 = \min(1.0, 0.5 \cdot 2^{k})$. Pressure increments are bounded by $|\Delta P| \le \min(500 \text{ psi}, 0.20 P)$, and temperature increments by $|\Delta T| \le 10 \text{ K}$.
+3. **Saturation Positivity Preservation (CONF-24):**
+   Clamping saturations post-solve is strictly forbidden (INV-1). Physical bounds $z_i \in (0, 1)$ and $S_\alpha \in [0, 1]$ are preserved by step truncation during line search:
+   $$\lambda_{max,bounds} = \min_{i} \left( \frac{-z_i^{(k)}}{\Delta z_i} \text{ for } \Delta z_i < 0 \right)$$
+   ensuring the Newton iterate never leaves the physically admissible thermodynamic domain.
+
+### 7x.3 Block-CPR Preconditioned FGMRES Linear Solver Stack (CONF-14)
+
+Coupled THMC Jacobian $\mathbf{J} \Delta \mathbf{X} = -\mathbf{R}$ is partitioned into fluid transport, pressure, and geomechanical displacement blocks:
+
+$$\begin{bmatrix} 
+\mathbf{A}_{ss} & \mathbf{A}_{sp} & \mathbf{A}_{su} \\ 
+\mathbf{A}_{ps} & \mathbf{A}_{pp} & \mathbf{A}_{pu} \\ 
+\mathbf{A}_{us} & \mathbf{A}_{up} & \mathbf{A}_{uu} 
+\end{bmatrix} 
+\begin{bmatrix} \Delta \mathbf{S} \\ \Delta \mathbf{P} \\ \Delta \mathbf{u} \end{bmatrix} = 
+-\begin{bmatrix} \mathbf{R}_s \\ \mathbf{R}_p \\ \mathbf{R}_u \end{bmatrix}$$
+
+The linear solver operates as **Block-CPR Preconditioned FGMRES / BiCGStab**:
+- **Outer Krylov Driver:** Flexible GMRES (FGMRES) with restart 30, right-preconditioned. Tolerates iteration-dependent and state-dependent preconditioning changes without loss of orthogonality.
+- **Stage 1a (Pressure Subsystem):** True Unsymmetric AMG on the pressure Schur complement $\mathbf{A}_{pp}$. Uses classical Ruge-Stüben or smoothed aggregation with drop tolerance $10^{-3}$, aggressively eliminating long-range elliptic pressure errors.
+- **Stage 1b (Geomechanics Subsystem):** Vector AMG on displacement block $\mathbf{A}_{uu}$. The near-nullspace is seeded with 6 rigid body modes ($3$ translational, $3$ rotational). Operates on stabilized algorithmic elastoplastic tangent $\mathbf{D}^{alg}$.
+- **Stage 2 (Global Smoothing):** Global Block-ILU(1) smoothing with level-of-fill 1 applied across all coupled degrees of freedom, latched per timestep to preserve cache locality and SIMD throughput.
+
+### 7x.4 Reconciled Three-Tier Convergence Architecture (CONF-23)
+
+| Metric | Core Physical Standard (INV-1) | Surrogate Screening Standard |
+|---|---|---|
+| **Component Mass Balance** | Strict machine precision: $\|\sum M_i(t) - M_{initial} - \int q_{net}\|_2 / M_{initial} < 10^{-12}$ | Integral relative threshold: $\ge 99.9\%$ cumulative mass conservation |
+| **Linear Residual Reduction** | True relative residual: $\|\mathbf{r}_k\|_2 / \|\mathbf{r}_0\|_2 \le 10^{-6}$ | Moderate tolerance: $\le 10^{-4}$ |
+| **Nonlinear Newton Norm** | Normalized residual: $\|\mathbf{R}\|_\infty \le 10^{-5}$ and $\|\Delta \mathbf{X}\|_\infty \le 10^{-4}$ | Function tolerance: $\|\Delta P\| \le 1.0\text{ psi}, \|\Delta S\| \le 10^{-3}$ |
+
+### 7x.5 Pinch-Out Handling & NNC Generation Across Pinched Layers (CONF-05 — Ruled 15-10-2026)
+
+In Corner-Point geometries (`GRDECL` / `ZCORN`), layers frequently taper to zero thickness. Leaving pinch-out handling undecided creates artificial flow barriers (if deactivated) or truncated vertical flow (if collapsed without transmissibility).
+
+**Governing Specification:**
+1. **Pinch-Out Threshold:** Standardize strictly on minimum vertical thickness $\Delta z_{\text{pinch}} = 1.0\text{ mm}$ (0.00328 ft, equivalent to ECLIPSE `MINDZ` / `PINCH`).
+2. **Deactivation & NNC Generation:** When cell vertical thickness $\Delta z < \Delta z_{\text{pinch}}$, the cell is deactivated and collapsed geometrically. The engine automatically constructs an explicit **Non-Neighbor Connection (NNC)** between the bounding active blocks above and below:
+   $$T_{\text{NNC}} = \frac{A_{\text{overlap}}}{\dfrac{d_{\text{top}}}{k_{z,\text{top}}} + \sum_{p \in \text{pinched}} \dfrac{\Delta z_p}{k_{z,p}} + \dfrac{d_{\text{bot}}}{k_{z,\text{bot}}}} \approx \frac{A_{\text{overlap}}}{\dfrac{d_{\text{top}}}{k_{z,\text{top}}} + \dfrac{d_{\text{bot}}}{k_{z,\text{bot}}}}$$
+3. **Multi-Layer Pinches:** If multiple consecutive vertical layers pinch out, NNCs bridge the entire inactive interval to connect the nearest active blocks across the sequence.
+4. **Invariant Diagnostic (INV-1):** Deactivating pinched cells without generating NNCs is strictly prohibited. Every generated NNC is logged with its connected cell indices $(i, j, k_1) \leftrightarrow (i, j, k_2)$ and calculated transmissibility.
+
+### 7x.6 Spatial Grid Convergence Benchmark Suite (CONF-26 — Ruled 15-10-2026)
+
+Spatial convergence verification for 3D MPFA-O transport on non-orthogonal Corner-Point grids is a **mandatory gate requirement for Milestone M3**.
+
+**Governing Specification:**
+1. **Refinement Sequence:** Run 3D MPFA-O transport across a systematically refined grid sequence:
+   $$N_{\text{cells}} \in \{16^3, \; 32^3, \; 64^3, \; 128^3\}$$
+2. **Error Norms & Order of Accuracy:** Evaluate discrete $L_1$ and $L_2$ error norms against fine-grid reference solutions:
+   $$E_{L_2}(h) = \left( \frac{1}{|\Omega|} \sum_{c} |P_h(c) - P_{\text{fine}}(c)|^2 V_c \right)^{1/2}$$
+   $$p = \frac{\ln(E(h_1) / E(h_2))}{\ln(h_1 / h_2)} \ge 1.80 \quad \text{for smooth pressure fields}$$
+3. **Shock Front TVD Monotonicity:** Across Buckley-Leverett saturation fronts, the numerical scheme must guarantee **Total Variation Diminishing (TVD)** monotonicity:
+   $$TV(S^{n+1}) \le TV(S^n)$$
+   Spurious numerical oscillations, undershoots ($S_w < S_{wi}$), or overshoots ($S_w > 1 - S_{or}$) are fatal test violations (INV-1).
+
+### 7x.7 Adjoint-Compatible Penalty Function Split (CONF-60 — Ruled 15-10-2026)
+
+Discontinuous step penalties (e.g. $-10^{12}$) break gradient-based optimization and discrete adjoint sensitivities $\nabla_\mathbf{u} J$ by introducing infinite Dirac delta gradients $\delta(x - x_{\text{lim}})$.
+
+**Governing Specification:**
+1. **Hard Numerical & Solver Failures:** Retain catastrophic step penalty ($-10^{12}$), set run status to `FAILED`, and abort the evaluation (INV-1).
+2. **Physical & Operational Bounded Constraints** (maximum BHP, minimum bottomhole pressure, surface watercut limits, pipeline pressure bounds): Apply $C^2$-smooth quadratic exterior penalties to the objective function:
+   $$P_{\text{barrier}}(x) = \frac{1}{2} \mu_{\text{barrier}} \max\left(0, \; x - x_{\text{limit}}\right)^2$$
+   $$\frac{\partial P_{\text{barrier}}}{\partial x} = \mu_{\text{barrier}} \max\left(0, \; x - x_{\text{limit}}\right)$$
+   $$\frac{\partial^2 P_{\text{barrier}}}{\partial x^2} = \begin{cases} \mu_{\text{barrier}}, & x > x_{\text{limit}} \\ 0, & x \le x_{\text{limit}} \end{cases}$$
+   This guarantees $C^1$ continuity of the first objective gradient and $C^0$ continuity of the Hessian, providing smooth, well-conditioned discrete adjoint sensitivities $\frac{\partial q_i}{\partial \mathbf{u}}$ at Milestone M7f.
+
+### 7x.8 Time-Step Symbol Disambiguation & Coupling Tolerances (CONF-08 — Ruled 15-10-2026)
+
+To eliminate variable shadowing and race conditions in concurrent multi-threaded simulation loops, time-step variables are strictly disambiguated:
+
+| Symbol | Description | Governing Domain | Time Scale |
+|---|---|---|---|
+| $\Delta t_{\text{macro}}$ | Global 3D reservoir transport timestep | 3D Reservoir Grid (MPFA-O) | Days to Months |
+| $\delta t_{\text{zoom}}$ | Schwarz near-well sub-domain refinement micro-step | Local Grid Refinement (LGR) | Hours to Days |
+| $\delta t_{\text{well}}$ | Drift-Flux wellbore hydraulics micro-step | 1D Multi-Segment Wellbore | Seconds to Minutes |
+
+**Coupling Conservation Tolerance:**
+Two-way mass and energy conservation across well perforations between the 1D wellbore and 3D reservoir grid must satisfy:
+$$\frac{\left| Q_{\text{perf,well}}^{\text{cum}} - Q_{\text{perf,grid}}^{\text{cum}} \right|}{M_{\text{tot}}} < 10^{-12}$$
+Violations trigger sub-cycling cutbacks of $\delta t_{\text{zoom}}$ and $\delta t_{\text{well}}$.
+

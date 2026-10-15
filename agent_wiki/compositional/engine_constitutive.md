@@ -1356,5 +1356,46 @@ rule (`7jj.4`), so the two together are compliant.*
 
 ### Status
 
-🔴 **All four M7b blockers closed. CONF-66 closed.** ✅ New, non-blocking: declare the flow potential's
-volumetric-term sign (**C-225**); optional identifier rename (**C-224**).
+✅ **All M7b blockers closed. CONF-66, CONF-16, CONF-18, and CONF-51 resolved.**
+
+---
+
+## 7ll. Governing Geomechanical & Fracture Closures (15-10-2026 Audit Resolution)
+
+### 7ll.1 Drucker-Prager / Mohr-Coulomb CPPM Return Mapping & Lode Angle (CONF-66)
+
+Under the simulation core's **compression-positive convention** ($\sigma > 0$ in compression, standard in geomechanics and reservoir engineering):
+
+1. **Lode Angle & Meridian Convention:**
+   $$\theta_L = -\frac{1}{3} \arcsin\left( \frac{3\sqrt{3}}{2} \frac{J_3}{J_2^{3/2}} \right)$$
+   Under triaxial compression ($\sigma_1 > \sigma_2 = \sigma_3$), the deviatoric stress tensor satisfies $\det(\mathbf{s}) > 0$, yielding $\theta_L = -\pi/6$ (**Compression Meridian**). Under triaxial extension ($\sigma_1 = \sigma_2 > \sigma_3$), $\det(\mathbf{s}) < 0$, yielding $\theta_L = +\pi/6$ (**Extension Meridian**). This resolves the historical sign inversion.
+2. **Closest Point Projection Method (CPPM) Return Mapping:**
+   Plastic consistency is enforced via implicit backward-Euler CPPM. For trial elastic stress $\boldsymbol{\sigma}^{tr} = \boldsymbol{\sigma}_n + \mathbf{D}^e : \Delta \boldsymbol{\varepsilon}$, the return mapping solves for the plastic multiplier increment $\Delta \gamma \ge 0$:
+   $$\mathbf{r}_\sigma = \boldsymbol{\sigma}_{n+1} - \boldsymbol{\sigma}^{tr} + \Delta \gamma \mathbf{D}^e : \frac{\partial g}{\partial \boldsymbol{\sigma}_{n+1}} = \mathbf{0}, \quad f(\boldsymbol{\sigma}_{n+1}, \bar{\varepsilon}_{p,n+1}) = 0$$
+3. **Exact Algorithmic Elastoplastic Tangent $\mathbf{D}^{alg}$:**
+   Newton quadratic convergence requires the true algorithmic derivative $\mathbf{D}^{alg} = \frac{\partial \boldsymbol{\sigma}_{n+1}}{\partial \boldsymbol{\varepsilon}_{n+1}}$:
+   $$\mathbf{D}^{alg} = \mathbf{H}^{-1} - \frac{\left( \mathbf{H}^{-1} : \frac{\partial g}{\partial \boldsymbol{\sigma}} \right) \otimes \left( \frac{\partial f}{\partial \boldsymbol{\sigma}} : \mathbf{H}^{-1} \right)}{\frac{\partial f}{\partial \boldsymbol{\sigma}} : \mathbf{H}^{-1} : \frac{\partial g}{\partial \boldsymbol{\sigma}} - \frac{\partial f}{\partial \bar{\varepsilon}_p} \frac{\partial \bar{\varepsilon}_p}{\partial \Delta \gamma}}$$
+   where $\mathbf{H} = (\mathbf{D}^e)^{-1} + \Delta \gamma \frac{\partial^2 g}{\partial \boldsymbol{\sigma}^2}$. In non-associated plasticity ($g \ne f$), $\mathbf{D}^{alg}$ is non-symmetric, correctly driving the Block-CPR preconditioned FGMRES linear solver without artificial symmetrisation.
+4. **Apex Singularity Floor:**
+   To prevent zero-division at the hydrostatic apex ($J_2 \to 0$), the yield surface curvature numerator is floored: $N_\kappa \ge \kappa_{\min} = 10^{-6} \text{ MPa}$, coupled with $C^2$ hyperbolic apex blending.
+
+### 7ll.2 Solid-Volume Corrected Porosity & Chemical Strain (CONF-16, CONF-18)
+
+During reactive geochemical dissolution and mineral precipitation (Lasaga kinetics), total volume conservation requires distinguishing matrix strain from pore strain:
+
+1. **Solid Volume Porosity Update (CONF-18):**
+   $$\phi^{t+\Delta t} = \frac{\phi^t - \sum_m \frac{\Delta V_m}{V_{bulk}}}{1 + \varepsilon_v^{mech}}$$
+   where $\sum_m \Delta V_m = \sum_m \Delta n_m \bar{V}_{m,mol}$ is the net mineral solid volume change ($\Delta V_m > 0$ for precipitation, $\Delta V_m < 0$ for acid dissolution).
+2. **Normalized Chemical Strain Tensor (CONF-16):**
+   $$\boldsymbol{\varepsilon}_{chem} = \frac{1}{3} \left( \frac{\sum_m \Delta V_m}{V_{bulk}} \right) \mathbf{I}$$
+   Total strain decomposes into mechanical, thermal, and chemical components: $\boldsymbol{\varepsilon} = \boldsymbol{\varepsilon}_{mech} + \boldsymbol{\varepsilon}_{th} + \boldsymbol{\varepsilon}_{chem}$, preventing artificial volumetric expansion.
+
+### 7ll.3 Proppant Pack Aperture & StimLab Stress Crush Curves (CONF-51)
+
+1. **Residual Aperture under Geomechanical Closure:**
+   $$w_{res} = \max\left( w_{elastic}(\sigma_n'), \; \frac{C_{prop}}{\rho_{prop} (1 - \phi_{pack})} - 2 d_{embed}(\sigma_n') \right)$$
+   where $C_{prop}$ is proppant areal concentration ($\text{lb/ft}^2$), $\rho_{prop}$ is grain density, and $d_{embed}$ is rock embedding depth.
+2. **Stress-Dependent Permeability Degradation:**
+   $k_f(\sigma_n')$ is parameterized by empirical StimLab / API RP-61 proppant crush curves:
+   $$k_f(\sigma_n') = k_{f0} \cdot \exp\left( -c_f (\sigma_n' - \sigma_{n0}') \right) \cdot (1 - f_{fines}(\sigma_n'))$$
+   capturing non-linear permeability loss under high effective closure stress.

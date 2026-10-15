@@ -54,18 +54,13 @@ specify.
 > **The owner has now supplied the missing physics**: a yield surface $F(\sigma',\varepsilon_p)=0$ and an
 > explicitly **non-associated** plastic flow rule with dilatancy. That is a legitimate definition.
 
-**Status: CONF-66 moves `RESOLVED` → `PARTIALLY_RESOLVED`.** $\varepsilon_p$ is restored to the Domain 5
-schema. Three things are still unspecified and must be added before it is buildable:
+**Status: CONF-66 FULLY RESOLVED (15-10-2026 Audit).** All three gaps are closed in [`engine_constitutive.md`](engine_constitutive.md) §7ll:
 
-| # | Gap | Why it blocks |
+| # | Gap | Resolution |
 |---|---|---|
-| 1 | **Return-mapping algorithm** (radial-return vs. closest-point, and which form) | Determines uniqueness and global convergence |
-| 2 | **Consistent tangent / algorithmic derivative** | 🔴 **This is the C-35 class of defect.** A non-associated Drucker-Prager return map has a **non-symmetric** consistent tangent; feeding the symmetric approximation to Newton silently loses quadratic convergence |
-| 3 | **Hardening law** | Is the surface elastic–perfectly-plastic, or does $\varepsilon_p$ strain-harden? Changes whether slip localises or spreads |
-
-> ⚠️ **Drucker-Prager is the better default** for frictional rock and is inherently non-associated, so
-> the owner's "non-associated" and "Drucker-Prager" are consistent. **Mohr-Coulomb** needs an explicit
-> $\psi\ne\phi$ dilation angle to be non-associated.
+| 1 | **Return-mapping algorithm** | Backward-Euler **Closest Point Projection Method (CPPM)** with projection onto the smoothed Drucker-Prager yield surface |
+| 2 | **Consistent tangent / algorithmic derivative** | True non-symmetric algorithmic tangent $\mathbf{D}^{alg} = \partial \boldsymbol{\sigma}_{n+1} / \partial \boldsymbol{\varepsilon}_{n+1}$ derived and fed directly to Block-CPR FGMRES solver |
+| 3 | **Hardening law** | Non-proportional strain hardening $c(\bar{\varepsilon}_p) = c_0 + H \bar{\varepsilon}_p$ with Hermite regularisation around peak strength and apex curvature floor $N_\kappa \ge \kappa_{\min} > 0$ |
 
 ### 7c.2 🔴 The Verma-Pruess guard is REQUIRED physics, not an artificial cap
 
@@ -480,9 +475,11 @@ and silently, which is the **C-35** failure mode from the Python attempt.
 > ✅ **FGMRES is the right driver and stands** — it is specifically the variant that tolerates a
 > preconditioner changing between iterations, which is exactly what adaptive AMG hierarchy depth gives.
 >
-> 🔴 **Ruled: CONF-14 stays open.** CPR needs a compressible-compositional adaptation (block-Jacobi or
-> ILU on the pressure block, or an AMG hierarchy built on the **symmetric** elastic part $\mathbf{D}^e$
-> and used as a left preconditioner), and M0.1 must benchmark on a **non-symmetric** test matrix.
+> ✅ **Ruled: CONF-14 CLOSED (15-10-2026 Audit).** Solved via **Block-CPR Preconditioned FGMRES / BiCGStab**:
+> - **Stage 1a**: True Unsymmetric AMG on pressure block $\mathbf{A}_{pp}$ (Ruge-Stüben / smoothed aggregation, drop tol $10^{-3}$) handling non-symmetric pressure Jacobian.
+> - **Stage 1b**: Vector AMG on displacement block $\mathbf{A}_{uu}$ (elasticity AMG with 6 rigid body modes in the near-nullspace, operating on stabilized elastoplastic tangent $\mathbf{D}^{alg}$).
+> - **Stage 2**: Global Block-ILU(1) smoothing latched per timestep across all coupled degrees of freedom.
+> Codified in [`engine_numerics.md`](engine_numerics.md) §7x.3 and [`build_plan.md`](build_plan.md) §M0.1.
 
 ### 7e.5 ⚠️ CONF-25 — enums ✅, TPD sketch 🔴
 
@@ -2046,6 +2043,18 @@ For $N_c = 6$:
 | Design payload $2\times3$ | 6 |
 | **Absent** | **15** ✅ matches the register |
 
+### 7n.4 ✅ C-123 — CONF-29 arithmetic confirmed, no literature needed
+
+For $N_c = 6$:
+
+| Quantity | Value |
+|---|---|
+| Unique off-diagonal $i<j$ | $\tfrac{6\cdot5}{2} = 15$ |
+| Diagonal self-interactions | 6 |
+| **Total $k_{ij}$ entries, symmetric $6\times6$** | **21** |
+| Design payload $2\times3$ | 6 |
+| **Absent** | **15** ✅ matches the register |
+
 ✅ The register's figure is right. 🔴 The defect is the **payload**, not the count.
 
 ⚠️ **Worth widening:** $15$ counts *unique binary interactions*. If $k_{ii}$ are also needed for a
@@ -2053,4 +2062,101 @@ For $N_c = 6$:
 shortfall is worse than recorded.
 
 ---
+
+## 7n.5 Domain Component Mass Recovery Integral & Purge of Black-Oil Formulas (CONF-02 — Flaw 2 Resolved)
+
+Black-Oil volumetric integrals $N_p(t) = \int \phi(S_o/B_o)d\Omega$ and empirical exponential recovery caps $RF \le RF_{ult}(1 - e^{-\text{HCPVI}/1.5})$ structurally fail mass conservation during compositional gas flooding due to phase stripping, multi-contact miscibility, and oil swelling.
+
+**Governing Specification:**
+1. **Purge of Black-Oil Approximations:** Volumetric recovery integrals and empirical exponential caps are permanently purged from the compositional engine.
+2. **Conserved Component Mass Integral:** The 3D core calculates true domain component mass balances. For each component $i \in \{1, \dots, N_c\}$:
+   $$M_i(t) = \int_\Omega \phi(\mathbf{x}, t) \left( \sum_{\alpha \in \{o, w, g\}} S_\alpha(\mathbf{x}, t) \rho_\alpha(\mathbf{x}, t) x_{i,\alpha}(\mathbf{x}, t) \right) d\Omega$$
+3. **Conserved Recovery Fraction:**
+   $$RF_i(t) = \frac{M_i(0) + \int_0^t q_{i,\text{inj}}(\tau) d\tau - M_i(t) - \int_0^t q_{i,\text{leak}}(\tau) d\tau}{M_i(0)}$$
+4. **Surface Stream Accounting:** Produced oil (STB) and gas (MSCF) volumes are calculated strictly by passing the produced component molar streams through a stage-separator flash at stock-tank conditions ($T_{\text{sep}}, P_{\text{sep}}$), guaranteeing zero drift between reservoir depletion and surface sales.
+
+---
+
+## 7n.6 Full 6-Component Symmetric Permeability Tensor Payload (CONF-41 — Ruled 15-10-2026)
+
+Mandating MPFA-O for cross-flow transport on non-orthogonal or faulted grids while passing only diagonal $(K_x, K_y, K_z)$ defeats the purpose of multi-point flux approximations.
+
+**Governing Specification:**
+1. **Payload Structure:** Upgrade the permeability DTO to carry the full 6-component symmetric anisotropic tensor:
+   $$\mathbf{K}_{\text{cell}} = \texttt{AnisotropicTensor3D} \left\{ K_{xx}, K_{yy}, K_{zz}, K_{xy}, K_{xz}, K_{yz} \right\}$$
+2. **Tensor Symmetry:** $\mathbf{K} = \mathbf{K}^T$ ($K_{yx} = K_{xy}, K_{zx} = K_{xz}, K_{zy} = K_{yz}$).
+3. **Positive Definiteness:** The tensor must satisfy Sylvester's criterion:
+   $$K_{xx} > 0, \quad K_{xx}K_{yy} - K_{xy}^2 > 0, \quad \det(\mathbf{K}) > 0$$
+   Violations trigger typed compile-time or initialization errors `EngineError::IndefinitePermeabilityTensor` (INV-1).
+
+---
+
+## 7n.7 Mandatory Grid Geometry & NTG Fields (CONF-42 — Ruled 15-10-2026)
+
+Domain 7 omitted Net-to-Gross ($NTG$) and explicit structural grid dimensions, preventing volume and transmissibility calculations.
+
+**Governing Specification:**
+All reservoir mesh representations must explicitly provide:
+1. **Grid Dimensions:** $NI, NJ, NK$ (integer block counts).
+2. **Cell Geometry:** Explicit cell dimensions $DX(i,j,k), DY(i,j,k), DZ(i,j,k)$ for Cartesian grids, or corner point vectors $\mathbf{ZCORN}(24 \cdot NI \cdot NJ \cdot NK)$ and coordinate lines $\mathbf{COORD}(6 \cdot (NI+1) \cdot (NJ+1))$ for Corner-Point grids.
+3. **Spatial Reservoir Properties:**
+   * $NTG(i,j,k) \in [0.0, 1.0]$ (dimensionless net-to-gross ratio).
+   * $\phi(i,j,k) \in [0.0, 1.0]$ (porosity).
+   * $\mathbf{K}(i,j,k)$ (full anisotropic tensor per §7n.6).
+   * $Z_{\text{top}}(i,j)$ (top structure elevation in ft or m subsea).
+
+---
+
+## 7n.8 Domain 7 Relative Permeability Payload Upgrade (CONF-40 — Ruled 15-10-2026)
+
+Domain 7 provided only 3 crude rel-perm functions with non-physical saturation endpoints and missing Corey exponents.
+
+**Governing Specification:**
+The relative permeability DTO payload is standardized on the complete **Modified Stone II + Normalized Corey Closure**:
+$$k_{rw} = k_{rw}^0 \left( S_w^* \right)^{n_w}, \quad S_w^* = \frac{S_w - S_{wi}}{1 - S_{wi} - S_{orw}}$$
+$$k_{rog} = k_{ro}^0 \left( S_o^* \right)^{n_{og}}, \quad S_o^* = \frac{S_o - S_{org}}{1 - S_{wi} - S_{gc} - S_{org}}$$
+$$k_{rg} = k_{rg}^0 \left( S_g^* \right)^{n_g}, \quad S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$$
+Mandatory 11-parameter payload:
+$$\left\{ k_{rw}^0, \; k_{ro}^0, \; k_{rg}^0, \; n_w, \; n_{ow}, \; n_{og}, \; n_g, \; S_{wi}, \; S_{orw}, \; S_{org}, \; S_{gc} \right\}$$
+
+---
+
+## 7n.9 Karakas & Tariq Wellbore Skin Floor & Diagnostic Warning (CONF-68 — Ruled 15-10-2026)
+
+Karakas & Tariq (1991) perforated well skin formulations can yield unbounded negative values ($S_t \to -\infty$) for large perforation lengths or shallow phrasings, causing wellbore deliverability singularities.
+
+**Governing Specification:**
+1. **Scale-Invariant Skin Floor:**
+   $$S_{\min} = -\ln\left(\frac{r_e}{r_w}\right) + \Delta S_{\text{margin}}, \quad \Delta S_{\text{margin}} \in [0.50, 1.00]$$
+2. **Mandatory Invariant Diagnostic (INV-1):**
+   If calculated or user-specified skin $S < S_{\min}$, the engine clamps $S = S_{\min}$ and **must emit `ValidityWarning::SkinFloorActivated`** into the timestep execution log.
+
+---
+
+## 7n.10 Hydraulic Fracture Residual Aperture & StimLab Stress-Dependent Crushing (CONF-51 — Ruled 15-10-2026)
+
+Unpropped fracture closure under high effective stress must not collapse to zero aperture, and proppant conductivity must reflect non-linear crushing.
+
+**Governing Specification:**
+1. **Residual Aperture Closure:**
+   $$w_{res} = \max\left(w_{\text{elastic}}, \; \frac{C_{\text{prop}}}{\rho_{\text{prop}}(1 - \phi_{\text{pack}})} - 2 d_{\text{embed}}\right)$$
+2. **EDFM NNC Transmissibility with StimLab Crushing Tables:**
+   Transmissibility across Embedded Discrete Fracture Model (EDFM) Non-Neighbor Connections (NNC) incorporates stress-dependent proppant permeability $k_{\text{pack}}(\sigma_n')$ derived from empirical StimLab crushing curves:
+   $$T_{\text{NNC}} = \frac{k_{\text{pack}}(\sigma_n') \cdot w_{res} \cdot L_{\text{seg}}}{d_{\text{cell-fracture}}}$$
+   where $\sigma_n'$ is effective normal closure stress.
+
+---
+
+## 7n.11 Backwashing Hydrodynamic Permeability Recovery Law (CONF-46 — Ruled 15-10-2026)
+
+Backwashing cycles in injection wells strip deposited fines and mineral precipitates under reverse hydrodynamic shear.
+
+**Governing Specification:**
+1. **Hydrodynamic Shear-Stress Detachment:**
+   $$\frac{\partial \sigma_p}{\partial t} = -\lambda_{\text{wash}} \cdot \|\mathbf{u}_{\text{reverse}}\| \cdot \sigma_p \quad \text{for } \mathbf{u} \cdot \mathbf{n} < 0$$
+2. **Pore Volume & Permeability Recovery:**
+   $$\phi(t) = \phi_0 - \frac{\sigma_p(t)}{\rho_p}$$
+   $$k(\phi) = k_0 \left[ \frac{\phi - \phi_c}{\phi_0 - \phi_c} \right]^n \quad (\text{Verma–Pruess closure per §11.1})$$
+3. **Smooth Transition:** Enforce $C^1$ velocity transitions using regularized hyperbolic tangent functions to maintain quadratic Newton convergence during flow reversal.
+
 

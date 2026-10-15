@@ -300,7 +300,9 @@ $$q_{thermal} = \Delta H_{hy}\,\frac{dn_H}{dt}$$
 ### 8.6 Conformance control (§3.3)
 
 Crosslinked polymer gels and foams fill thief zones then polymerise, driving channel permeability to zero.
-RF ceiling and post-breakthrough $f_g(t)$ repeat D1/D6/D7 verbatim. → **CONF-01, CONF-02**.
+Under the approved plan, the legacy fractional flow and inert RF cap are superseded:
+- **Koval Fractional Flow** uses normalized mobile gas saturation $S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$ (Flaw 1 / CONF-63).
+- **Recovery Dynamics** are evaluated via exact component mass domain integration $M_i(t)$ (Flaw 2 / CONF-02).
 
 Reagent table:
 

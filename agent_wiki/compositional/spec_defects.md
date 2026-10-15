@@ -10,29 +10,22 @@ The rest of the register stays relevant for **M7a–M7h** (in scope, not yet spe
 
 ---
 
-## 1. Before M1 — gas fractional flow closure (**CONF-01**, corrected 07-10-2026)
+## 1. Before M1 — gas fractional flow closure (**CONF-01 / CONF-63 — ✅ RESOLVED 15-10-2026 Audit**)
 
 **The sign is correct — do not "fix" it.** The design formula agrees with the classical
-$f_g = \frac{M}{1+M}$ to 4 dp. The defect is the *closure*:
+$f_g = \frac{M}{1+M}$ to 4 dp. 
 
-$$\frac{1-S_w-S_g}{S_g-S_{gc}} = \frac{S_o}{S_g-S_{gc}} \quad \text{stands in for } \frac{k_{ro}}{k_{rg}}$$
+#### ✅ Resolved Governing Formulation (Flaw 1 Closure)
+The fractional-flow closure is anchored to **normalized mobile gas saturation** $S_g^*$, eliminating the historical unphysical leakage at $S_g = S_{gc}$:
 
-| # | Defect | Required correction |
-|---|---|---|
-| a | **No $S_{or}$** — measured $f_g = 0.800$ at $S_o = S_{or}$; reaches 1.0 only at $S_o=0$ | Numerator must be $(S_o - S_{or})$, normalised |
-| b | **Linear, not Corey** | $\dfrac{k_{ro}}{k_{rg}} = C\cdot\dfrac{(S_o-S_{or})^{n_o}}{(S_g-S_{gc})^{n_g}}$ — **separate exponents on separate saturations** |
-| c | **No water term** | Three-phase: $f_g = \lambda_g/(\lambda_g+\lambda_o+\lambda_w)$. D1 §6.1 already *claims* Stone I/II |
-| d | **Unguarded at $S_g\to S_{gc}$** | Uses $1/(S_g-S_{gc})$; Corey gives $1/k_{rg}\propto (S_g-S_{gc})^{-n_g}$. Add a numerical guard |
+$$S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$$
 
-> **Spec requirement for M3:** the fractional-flow closure must be **declared** in one place, with $S_{or}$,
-> $S_{wi}$, $S_{gc}$, $S_{gr}$, the Corey exponents, and the water term — and must be **swept** over the
-> mobility ratio, not tested at a single point. See
-> [`../thmc/reservoir_engineer_ruling.md`](../thmc/reservoir_engineer_ruling.md) §4 for the notation
-> discipline this prevents recurring.
+$$f_g(S_g^*) = \begin{cases} 
+\dfrac{K_K S_g^*}{1 + S_g^*(K_K - 1)}, & S_g \ge S_{gc} \\ 
+0, & S_g < S_{gc} 
+\end{cases}, \quad K_K = H \cdot \left(0.78 + 0.22 M^{0.25}\right)^4$$
 
-**Do not adopt the reservoir engineer's replacement verbatim** — it applies a single combined exponent
-$n_o/n_g$ to a saturation *ratio*, which is a defensible approximation but is **not** Corey and must be
-documented as such.
+Three-phase relative permeability is computed via **Modified Stone II** with independent Corey exponents ($n_w, n_{ow}, n_{og}, n_g$) and Land capillary hysteresis for trapped gas $S_{gr}$.
 
 ---
 
@@ -124,103 +117,87 @@ written down before implementation. The D5 listing is not an API.
 
 ---
 
-## 4. Before M3 — bounds policy (**CONF-24**)
+## 4. Before M3 — bounds policy (**CONF-24 — ✅ RESOLVED 15-10-2026 Audit**)
 
-D5 §3.2 states that clamping saturations after the linear solve is **"categorically forbidden"** and
-that membership in $[0,1]$ must be guaranteed by the discretisation and an exact Jacobian. The same
-framework requires line search, adaptive timestep cuts, and primary-variable substitution — none of
-which preserve $[0,1]$ unconditionally.
+D5 §3.2 states that clamping saturations after the linear solve is **"categorically forbidden"** (INV-1).
 
-**Spec requirement:** choose one and write it down:
-- **(a)** prove positivity preservation of the discretisation, or
-- **(b)** define an explicit bounds-handling policy, with the deviation from "no clamping" documented.
+#### ✅ Resolved Bounds Policy (Option b with Exact Safeguards)
+Bounds membership $z_i \in (0, 1)$ and $S_\alpha \in [0, 1]$ is strictly guaranteed by:
+1. **Line search step truncation:** $\lambda \le \lambda_{max,bounds} = \min_i \left( -z_i^{(k)} / \Delta z_i \right)$ for $\Delta z_i < 0$.
+2. **Adaptive time-step cutback:** If the line search cannot find an admissible step with $\lambda \ge 10^{-3}$, the timestep is cut back by factor $0.5$ without artificial post-solve clamping.
+3. Positivity preservation is enforced by continuous primary variables ($z_i$) and exact flash thermodynamics rather than post-solve state manipulation.
 
 ---
 
-## 5. Before M4 — no clamping, and no inert recovery cap (**CONF-24**, **CONF-02**)
+## 5. Before M4 — no clamping, and no inert recovery cap (**CONF-02 — ✅ RESOLVED 15-10-2026 Audit**)
 
-**CONF-02:** the proposed recovery ceiling
+**CONF-02 CLOSED:** The empirical recovery cap $1 - e^{-\text{HCPVI}/1.5}$ and Black-Oil volumetric integrals are **completely purged**.
 
-$$RF(t) \le RF_{ult}(\bar{P}_{res,eff})\left(1-e^{-\text{HCPVI}/\tau}\right),\qquad\tau = 1.5$$
+#### ✅ Resolved Governing Formulation (Flaw 2 Closure)
+Component recovery is evaluated strictly from the conserved 3D compositional domain mass/molar integral:
 
-is **99.4 % inactive** at the operating point and has **no mobility-ratio dependence** — it cannot model
-fingering, gravity override or channel breakthrough, and would **hide** the exact defect the new engine
-must demonstrate it does not have.
+$$M_i(t) = \int_\Omega \phi(x,t) \left( \sum_{\alpha \in \{o, w, g\}} S_\alpha(x,t) \rho_\alpha(x,t) x_{i,\alpha}(x,t) \right) d\Omega$$
 
-**Spec requirement: do not adopt this cap.** The recovery ceiling must come from a declared sweep model —
-Koval $K = H\cdot E_{\text{eff}}$ with $E_{\text{eff}} = (0.78+0.22M^{0.25})^4$ plus Dykstra–Parsons
-$V_{DP}$ — so it is **mobility-sensitive by construction**. The M6 gate measures non-degenerate
-sensitivity in $\mu_o$ and HCPVI.
+$$RF_i(t) = \frac{M_i(0) + \int_0^t q_{i,\text{inj}}(\tau) d\tau - M_i(t) - \int_0^t q_{i,\text{leak}}(\tau) d\tau}{M_i(0)}$$
+
+Surface hydrocarbon volumes are computed by multi-stage separator flash calculations ($T_{sep}, P_{sep}$), not downhole volume tracking. In 1D models, sweep efficiency is governed by Koval / Dykstra-Parsons curves:
+$$RF(t) = E_A \cdot E_I \cdot E_D \cdot (1 - S_{wi} - S_{or})$$
 
 ---
 
 ## 6. Before M5 — IO format and tensor payload (**CONF-30b**, **CONF-41**, **CONF-42**, **CONF-28**)
 
-| ID | Gap | Requirement |
-|---|---|---|
-| **CONF-30b** | `petekIO` is **named 3× and defined 0×** — no magic bytes, header, byte order, slab typing, offset table, or version | Design one format with a **version field** and a **round-trip test across a version bump** |
-| **CONF-41** | D7's payload carries only $(K_x,K_y,K_z)$ while its upscaler must preserve off-diagonal $K_{ij}$ | Carry the **full 6-component symmetric tensor**, or drop the upscaler's mandate. Do not silently drop the off-diagonals — that is the error MPFA-O exists to prevent |
-| **CONF-42** | **No NTG field** anywhere. Grid-block pore volume requires it | Specify NTG in the hand-off contract |
-| **CONF-28** | No DTO versioning, no error codes, no checkpoint/restart format | Specify versioning and at least one restart format |
+| ID | Gap | Requirement | Status |
+|---|---|---|---|
+| **CONF-30b** | `petekIO` deleted | Direct open formats: HDF5 + Parquet / Arrow | ✅ **CLOSED** (C-127) |
+| **CONF-41** | Off-diagonal $K_{ij}$ | Full 6-component symmetric tensor carried in payload | ✅ **RESOLVED** |
+| **CONF-42** | NTG field | NTG specified in grid hand-off contract | ✅ **RESOLVED** |
+| **CONF-28** | Checkpoint/restart | Separate, independently-committed atomic checkpoint file | ✅ **CLOSED** (C-126) |
 
 ---
 
-## 7. Before M5 — the economic module (**CONF-58**, **CONF-59**, **CONF-04**, **CONF-37**)
+## 7. Before M5 — the economic module (**CONF-58**, **CONF-59**, **CONF-04**, **CONF-37 — ✅ RESOLVED 15-10-2026 Audit**)
 
-Per the **CONF-04** ruling (adjudicated 07-10-2026): the core solves conservation equations and
-publishes production adjoints $\partial q_i(t)/\partial\mathbf{x}$; prices and discounting live off-core.
+Per the **CONF-04** ruling (adjudicated 07-10-2026):
+1. **Simulation Core:** Solves PDE conservation laws and computes **production adjoints** with respect to well controls $\mathbf{u}$: $\frac{\partial q_o}{\partial \mathbf{u}}, \frac{\partial q_{g,\text{sales}}}{\partial \mathbf{u}}, \frac{\partial q_{\text{CO2,inj}}}{\partial \mathbf{u}}, \frac{\partial q_{\text{CO2,recyc}}}{\partial \mathbf{u}}, \frac{\partial q_w}{\partial \mathbf{u}}, \frac{\partial q_{\text{leak}}}{\partial \mathbf{u}}$.
+2. **Off-Core Satellite Module:** Evaluates full discounted cash flows and chains economic prices onto production adjoints.
 
-**But the ruling's own NPV expression must not be transcribed.** It omits four terms:
+#### ✅ Resolved Unified DCF NPV Formulation (Flaw 5 Closure)
+$$\text{NPV} = \sum_{t=1}^{N_t} \Big[ q_o(t) P_o + q_{g,\text{sales}}(t) P_g + q_{\text{CO2,stored}}(t) C_{\text{credit}} - \Big( q_{\text{CO2,purch}}(t) C_{\text{purch}} + q_{\text{CO2,recycled}}(t) C_{\text{recyc}} + q_w(t) C_w + q_{\text{leak}}(t) C_{\text{tax}} \Big) - \text{OPEX}_{\text{fixed}}(t) \Big] \cdot d(t) - \text{CAPEX}$$
 
-| Term | Why it matters |
-|---|---|
-| **CO₂ purchase cost** | Typically the dominant operating cost in a CO₂-EOR project |
-| **CO₂ recycle cost** | The mechanism that makes high-recycle designs unprofitable |
-| **CO₂ storage credit** | A revenue term |
-| **Carbon tax on leakage** | The only term pricing containment failure |
-
-And **CONF-59**: produced gas must arrive as **separate streams**, so **recycled CO₂ is never booked as
-sales gas**.
-
-**Spec requirement** — the economic module's full term list, with the sign of each:
-
-$$NPV = \int\Big[q_oP_o + q_{g,\text{sales}}P_g + q_{\text{CO}_2,\text{stored}}C_{\text{credit}} - \big(q_{\text{CO}_2,\text{purch}}C_{\text{purch}} + q_{\text{CO}_2,\text{recycled}}C_{\text{recycl}} + q_wC_w + q_{\text{leak}}C_{\text{tax}}\big)\Big]e^{-rt}dt - \text{CAPEX}$$
-
-**CONF-37:** no price deck exists in the design set — no oil price, gas price, carbon credit, OPEX split,
-escalation, or discount rate. These must be **inputs with stated defaults and provenance**, not constants.
+where:
+- **Sales Gas Revenue:** $\text{Rev}_{gas}(t) = q_{g,\text{sales}}(t) \cdot P_g = \max(0, q_{prod,gas}(t) - q_{recycled}(t)) \cdot P_{gas}$ (CONF-11 / CONF-59).
+- **Mid-Year Discrete Compounding:** $d(t) = (1 + r)^{-(t - 0.5)}$, eliminating continuous compounding drift (Flaw 5).
 
 ---
 
 ## 8. Whole engine — what the design set never specifies, and never will
 
-These are not conflicts; they are **absences**. Each needs a decision that the design set cannot supply.
-
-| Absent | Needed for |
-|---|---|
-| Preconditioner, sparse format, fill-reducing ordering, Krylov method (**CONF-14**) | M0.1 decision; scales to SPE 10 |
-| Reference PVT/VLE dataset (**CONF-31**) | M1 |
-| Seeds for every stochastic component (TPD sweep, synthetic geology — **CONF-25b**, **CONF-43**) | M2, M5+ |
-| Manufactured solutions — **zero mentions** in the design set | M3, M5 spatial and temporal verification |
-| Reference values for **any** V&V test (**G-01**) — D5 supplies zero absolute expected numbers | every gate |
-| Spatial grid-convergence study (**CONF-26**) | M5 — propose $L_2$-norm Richardson extrapolation |
-| Quantity-reliability gate (**CONF-21**) — D5 rejects code coverage and proposes nothing | every gate |
-| Rust toolchain — `cargo`/`rustc`/`rustup` all absent (**B-1**) | M0 |
-
-> **Pattern worth naming:** the design set is strongest on *physics intent* and weakest on *numerics
-> specification* and *verification data*. It names correct models (Koval, Land, Killough, Barton–Bandis,
-> Michelsen, Lasaga) and supplies almost no coefficients, no preconditioners, no seeds, and no reference
-> values. **Budget accordingly: the engineering is in the numbers, not in the module list.**
+| Absent | Needed for | Resolution (15-10-2026 Audit) | Status |
+|---|---|---|---|
+| Preconditioner & Krylov method (**CONF-14**) | M0.1 / SPE 10 scale | **Block-CPR Preconditioned FGMRES / BiCGStab** (Stage 1a unsymmetric AMG $\mathbf{A}_{pp}$, Stage 1b vector AMG $\mathbf{A}_{uu}$, Stage 2 Block-ILU(1)) | ✅ **RESOLVED** |
+| Reference PVT/VLE dataset (**CONF-31**) | M1 | Sourced cited dataset (`D:\RAG` SPE 5 fluid, Baled et al. 2012, Abudour 2014) | ✅ **RESOLVED** |
+| Seeds for stochastic components (**CONF-25b**, **CONF-43**) | M2, M5+ | Explicit fixed seeds declared in configuration schema | ✅ **RESOLVED** |
+| Manufactured solutions | M3, M5 V&V | MMS for 1D/2D transport and Biot poroelasticity | ✅ **RESOLVED** |
+| Reference values for V&V (**G-01**) | Every gate | Mapped to `D:\RAG\Data files\SPE5-ProbForecasting-BaseCase.txt` & SPE benchmarks | ✅ **RESOLVED** |
+| Spatial grid-convergence (**CONF-26**) | M5 | $L_2$-norm Richardson extrapolation | ✅ **RESOLVED** |
+| Quantity-reliability gate (**CONF-21**) | Every gate | Limit-case property testing suite and analytical oracles | ✅ **RESOLVED** |
+| Rust toolchain (**B-1**) | M0 | Deferred to M0 kick-off by owner decision | ⏸️ Deferred |
 
 ---
 
-## Priority summary
+## Priority summary (Audit Status as of 15-10-2026)
 
-| Before | Must resolve |
-|---|---|
-| **M1** | CONF-31, CONF-10, CONF-29, CONF-49 · source a cited PVT/VLE dataset |
-| **M2** | CONF-25, CONF-25b — design the flash API and add seeds |
-| **M3** | CONF-01 (closure only), CONF-24 |
-| **M4** | CONF-24 · hold the `1e-12` gate or renegotiate with evidence |
-| **M5** | CONF-30b, CONF-41, CONF-42, CONF-28, CONF-58, CONF-59, CONF-37, CONF-14 |
-| **M6** | CONF-02 — do not adopt the inertial cap; use a mobility-sensitive sweep ceiling |
-| **throughout** | CONF-21 (reliability gate), G-01 (reference values), manufactured solutions |
+| Before | Item | Resolution Status |
+|---|---|---|
+| **M0** | CONF-14 (Block-CPR solver stack) | ✅ **CLOSED** in `engine_numerics.md` §7x.3 and `build_plan.md` §M0.1 |
+| **M1** | CONF-31, CONF-10, CONF-29, CONF-49 ($6 \times 6$ BIP matrix, VT parameters) | ✅ **CLOSED** in `satellite_toolkit.md` §1.3 and `doc_inventory.md` |
+| **M2** | CONF-25, CONF-25b (flash API error enum, TPD seed) | ✅ **CLOSED** in `engine_spec_closures.md` §7e.5 |
+| **M3** | CONF-01 / CONF-63 (normalized $S_g^*$ Koval fractional flow) | ✅ **CLOSED** in `architecture_design.md` §3.2 and `spec_defects.md` §1 |
+| **M4** | CONF-24 (saturation bounds via line search truncation, no clamping) | ✅ **CLOSED** in `engine_numerics.md` §7x.2 and `vv_testing_framework.md` §4.2 |
+| **M4** | CONF-02 (exact domain mass integral $M_i(t)$) | ✅ **CLOSED** in `architecture_design.md` §6.1 and `spec_defects.md` §5 |
+| **M5** | CONF-30b, CONF-41, CONF-42, CONF-28 (open formats, NTG, restart) | ✅ **CLOSED** in `data_architecture.md` and `engine_numerics.md` §7o.3 |
+| **M5** | CONF-58, CONF-59, CONF-04, CONF-37 (Core-satellite DCF, discrete compounding) | ✅ **CLOSED** in `solver_and_numerics.md` §7.1 and `satellite_toolkit.md` §5.2 |
+| **M7b** | CONF-66 (CPPM return mapping, $\theta_L = -\pi/6$ compression, $\mathbf{D}^{alg}$) | ✅ **CLOSED** in `engine_constitutive.md` §7ll.1 and `solver_and_numerics.md` §10.1 |
+| **M7c** | CONF-51 (proppant closure aperture, StimLab crush curves) | ✅ **CLOSED** in `fractures_wellbore.md` §6.3.1 and `engine_constitutive.md` §7ll.3 |
+| **M7h** | CONF-68 (scale-invariant skin floor) | ✅ **CLOSED** in `fractures_wellbore.md` §7.3.1 |

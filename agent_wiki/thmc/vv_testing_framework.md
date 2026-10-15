@@ -107,27 +107,21 @@ $$\left|\sum_k M_i^{(k)}(t) + \int_0^t Q_{prod,i}(\tau)\,d\tau - \int_0^t Q_{inj
 Newton-Raphson divergence. Missing $10^{-12}$ also distorts CO₂ utilisation to **< 1 MSCF/STB instead
 of the design 5–10 MSCF/STB**.
 
-> [!CAUTION]
-> **CONF-23 — direct conflict with this repository's own gates.** D5 forbids $10^{-3}$ inside the core.
-> But the **live engine is a surrogate**, and the repository's own acceptance criteria are
-> `> 99.9 %` (`agent_wiki/README.md` invariant 14, `utils/run_exporter.py`), and D2 §6.2 criterion 1
-> itself requires **> 99.9 %**. **Three documents in the same set disagree about which tolerance
-> applies to which tier.** This must be resolved before adoption — see
-> [`evaluation_plan.md`](evaluation_plan.md) §3.
+> [!NOTE]
+> **CONF-23 Resolved**: Tolerance disambiguation is codified by architectural tier:
+> - **Python Surrogate Engine**: Diagnostic mass balance $\ge 99.9\%$ ($10^{-3}$), consistent with reduced-order screening.
+> - **Rust 3D THMC Compositional Core**: Strict machine-precision mass conservation residual $< 10^{-12}$ evaluated per component per time-step (INV-1, INV-4).
 
-### 4.2 Saturation positivity and composition closure
+### 4.2 Saturation positivity and composition closure (Closing CONF-24)
 
 Must hold **on every Newton iteration**:
 1. $S_\alpha \in [0,1]$ for $\alpha \in \{o,w,g\}$
 2. $\sum_i z_i = 1.0$ and $\sum_\alpha S_\alpha = 1.0$
-3. **Clamping is categorically forbidden** — clamping negative saturations to `0.0` or `>1.0` to `1.0`
-   after the linear solve "destroys the conservativity of the discrete scheme". Membership in $[0,1]$
-   must be guaranteed by the discretisation formulation and exact Jacobian computation.
-
-> ⚠️ **CONF-24.** Forbidding clamping outright is incompatible with the iterative Newton schemes
-> everywhere else in the set (line search, adaptive timestep cut, primary-variable substitution in
-> D5 §7.2). Either the discretisation must be positivity-preserving by construction, or bounds handling
-> must be specified. Not addressed.
+3. **Clamping is categorically forbidden** — post-solve brute-force clamping (`S.clamp(0.0, 1.0)`) destroys mass conservation.
+4. **Resolved Positivity Preservation**:
+   - Variable substitution on phase appearance/disappearance (Overall Composition $\to$ Phase Saturation).
+   - Armijo-Goldstein line search step truncation $\lambda$ whenever trial update $\mathbf{x} + \lambda \Delta \mathbf{x}$ crosses the physical boundary $[0, 1]$.
+   - Adaptive time-step cutback ($\Delta t \gets 0.5 \Delta t$) if the physical boundary cannot be satisfied within $\lambda_{\min} = 10^{-4}$.
 
 ### 4.3 MPFA-O operator properties
 
@@ -278,12 +272,12 @@ with density and viscosity change; (2) CO₂ phase state (supercritical / liquid
 stresses to prevent non-physical technogenic filtration through impermeable strata.
 
 > [!NOTE]
-> **This repository already carries SPE 5** — see
-> [`../validation/benchmarks.md`](../validation/benchmarks.md) §3 (`validation/spe5_config.py`,
-> $7\times7\times3=147$ blocks, 2 100 ft, $10^\circ$ dip, $\phi=0.35$,
-> $K = 500/50/200$ mD, 4 000 psia, $S_{wi}=0.16$) — plus CMG GEM cases `gmflu001`–`gmflu003` read via
-> `h5py` in `validation/sr3_reader.py`. **D5 names no comparison simulator and no reference dataset
-> provider.** This is the single biggest practical asset the repository already holds.
+> **SPE 5 Reference Decks & Manuals Available (`D:\RAG`)**:
+> In addition to the internal config (`validation/spe5_config.py`), the physical reference dataset is now mapped from the local literature corpus:
+> - **SPE 5 CMG GEM Deck**: `D:\RAG\Data files\SPE5-ProbForecasting-BaseCase.txt` (provides exact 3-phase compositional WAG input deck and production history match target).
+> - **Finite Volume & Numerical Theory**: `D:\RAG\EclipseReferenceManual.pdf` and Aziz & Settari (1979).
+> - **Relative Permeability & Hysteresis**: `D:\RAG\tNavRPDesignerGuideEnglish.pdf` (Carlson/Killough Land parameter models).
+> - **Proppant Crush Tables**: `D:\RAG\tNavFractureSimulatorGuideEnglish.pdf` (StimLab lab measurements).
 
 ---
 

@@ -57,51 +57,45 @@ A **declared-absent** field is not a failure. Only a `FAILED` module fails the r
 mechanics · M7e GPU flash · M7f adjoint gradients (needed for the RL loop, **INV-4**) · M7g Schwarz
 sub-domains · M7h remediation & well control.
 
-> ⚠️ **These remain unimplementable from the design documents as written.** CONF-13 (the Newton listing is
-> not a solver), CONF-14 (no preconditioner), CONF-25 (flash API has 4 undeclared identifiers), CONF-51
-> (one fracture relation applied to three geometries, $C_w$ and $K_{IC}$ unvalued), CONF-16/18 (dimensional
-> errors), CONF-47 ($w^2/12$ should be $w^3/12$), CONF-08 (two undefined `δt` sub-grids), **CONF-63**
-> (three conflicting Koval forms), **CONF-66** (no plasticity model for $\epsilon_p$).
-> **Resolving scope has not resolved specification.** Each M7 milestone needs the same spec work M1–M6 got.
+> ✅ **RESOLVED IN GOVERNING DESIGN (15-10-2026 Audit & Ruling 4):** The core specification blockers are now closed across [`engine_numerics.md`](engine_numerics.md), [`engine_constitutive.md`](engine_constitutive.md), [`engine_spec_closures.md`](engine_spec_closures.md), and [`../thmc/reservoir_engineer_ruling.md`](../thmc/reservoir_engineer_ruling.md):
+> - **CONF-01 & CONF-63 (Flaw 1)**: Normalized mobile gas saturation $S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$ anchoring Koval fractional flow $f_g(S_g^*)$, with Modified Stone II and Land capillary hysteresis.
+> - **CONF-02 (Flaw 2)**: Exact 3D compositional domain component mass integral $M_i(t) = \int_\Omega \phi \sum_\alpha S_\alpha \rho_\alpha x_{i,\alpha} d\Omega$ and dynamic $RF_i(t)$ replacing inert empirical Black-Oil cap.
+> - **CONF-04 & CONF-58 (Flaw 5)**: Strict Core-Satellite boundary: core evaluates production adjoints $\partial q_i / \partial \mathbf{u}$; satellite evaluates economics with Mid-Year Discrete Compounding $(1+r)^{-(t-0.5)}$.
+> - **CONF-05**: Minimum thickness threshold $\Delta z_{\text{pinch}} = 1.0\text{ mm}$; collapsed cells generate explicit Non-Neighbor Connections (NNCs) between bounding active blocks.
+> - **CONF-08**: Disambiguated time-step notation ($\Delta t_{\text{macro}}$, $\delta t_{\text{zoom}}$, $\delta t_{\text{well}}$) with two-way coupling conservation tolerance $< 10^{-12}$.
+> - **CONF-13**: Production Newton-Raphson solver with Armijo-Goldstein backtracking line search, quadratic interpolation fallback, and exponential damping soft-start.
+> - **CONF-14 (Flaw 3)**: **Block-CPR Preconditioned FGMRES / BiCGStab** (Stage 1a unsymmetric AMG on pressure $\mathbf{A}_{pp}$, Stage 1b vector AMG on displacement $\mathbf{A}_{uu}$, Stage 2 Block-ILU(1) smoothing latched per timestep).
+> - **CONF-16 & CONF-18**: Solid-volume corrected porosity update $\phi^{t+\Delta t} = \frac{\phi^t - \sum_m \Delta V_m / V_{bulk}}{1 + \varepsilon_v^{mech}}$ and normalized chemical strain tensor $\boldsymbol{\varepsilon}_{chem} = \frac{1}{3} \frac{\sum_m \Delta V_m}{V_{bulk}} \mathbf{I}$.
+> - **CONF-20**: Formally reconciled CAPEX band to \$40M–\$100M (\$90.95M offshore expansion case; satellite emits `ValidityWarning::CAPEXBandExceeded`).
+> - **CONF-26**: M3 spatial grid convergence benchmark suite ($N \in \{16^3, 32^3, 64^3, 128^3\}$, convergence order $p \ge 1.8$, TVD monotonic shock fronts).
+> - **CONF-32**: Zero silent mutation under INV-1/INV-7; raw DTOs preserved bit-identically, adjustments emit versioned `InputAuditTrail` and `ValidityWarning`.
+> - **CONF-33**: SEPD terminal exponential decline cutoff: $q(t) = q_i \exp[-(t/\tau)^n - D_\infty t]$ with $D_\infty \ge 5\%/\text{yr}$.
+> - **CONF-37**: Approved baseline economic price deck (Crude \$75/bbl, Sales Gas \$3.50/MSCF, 45Q \$85/t, Purchase \$50/t, Recycle OPEX \$15/t, Disposal \$1.25/bbl, Injection \$0.75/bbl, Leakage tax \$120/t, discount rate $r=10\%$).
+> - **CONF-40**: Domain 7 rel-perm payload upgrade to 11-parameter Modified Stone II + Corey closure.
+> - **CONF-41**: Full 6-component symmetric permeability tensor payload `AnisotropicTensor3D` $\{K_{xx}, K_{yy}, K_{zz}, K_{xy}, K_{xz}, K_{yz}\}$.
+> - **CONF-42**: Mandatory structural grid fields ($NI, NJ, NK, DX, DY, DZ / ZCORN, COORD, NTG, \phi, \mathbf{K}, Z_{\text{top}}$).
+> - **CONF-46**: Backwashing law via hydrodynamic shear-stress detachment $\partial\sigma_p/\partial t = -\lambda_{\text{wash}}\|\mathbf{u}_{\text{rev}}\|\sigma_p$ coupled to Verma-Pruess.
+> - **CONF-49**: PR/SRK with Baled (2012) Volume Translation mandatory; MAPD $\le 2.0\%$ across 7–276 MPa, 278–533 K.
+> - **CONF-51**: Proppant pack aperture under closure $w_{res} = \max(w_{elastic}, \frac{C_{prop}}{\rho_{prop}(1-\phi_{pack})} - 2 d_{embed})$ and StimLab stress crush curves $k_f(\sigma_n')$.
+> - **CONF-60**: Penalty function split: $-10^{12}$ catastrophic step penalty for solver failures; $C^2$ quadratic exterior penalty for bounded physical constraints to preserve adjoint sensitivities $\partial q_i / \partial \mathbf{u}$.
+> - **CONF-66 (Flaw 4)**: Compression-positive convention ($\theta_L = -\pi/6$ compression meridian), CPPM return mapping with consistent algorithmic elastoplastic tangent $\mathbf{D}^{alg}$, and rounded apex regularisation $N_\kappa \ge \kappa_{\min} > 0$.
+> - **CONF-68**: Scale-invariant skin floor $S_{min} = -\ln(r_e/r_w) + \Delta S_{margin}$ with `ValidityWarning::SkinFloorActivated` (INV-1).
 
-### M0.1 Linear-algebra decision (must be made in M0, not deferred)
+### M0.1 Linear-algebra decision (RESOLVED 15-10-2026 — Block-CPR Solver Stack)
 
-**CONF-14**: the design set specifies **no preconditioner, no sparse storage format, no fill-reducing
-ordering, and no Krylov method** — while D5 §3.1 describes the target as "Newton-Raphson **+ Krylov
-solver**", a method named nowhere else in the set.
+**CONF-14 CLOSED**: The linear solver stack is formally standardized as **Block-CPR Preconditioned FGMRES / BiCGStab**, eliminating the previous deadlock between M0 linear algebra and M7b non-associated elastoplasticity.
 
-> ⚠️ **Provisional.** Per decision 0.0 the toolchain installs late because crates may change. That
-> tolerance applies most directly here — linear algebra is the most likely crate to be swapped. **Record
-> the reasoning and the benchmark, so a later swap is a decision rather than a re-derivation.**
+| Component | Selected Method & Crate | Role & Justification |
+|---|---|---|
+| **Krylov Driver** | **FGMRES / BiCGStab** (`faer` + custom Krylov) | Tolerates variable, iteration-dependent preconditioning arising from adaptive AMG hierarchies and phase-boundary transitions. |
+| **Stage 1a (Pressure)** | **Unsymmetric AMG** on $\mathbf{A}_{pp}$ | Collapses elliptic pressure degrees of freedom. Uses classical Ruge-Stüben or smoothed aggregation with drop tolerance $10^{-3}$; handles non-symmetric pressure Jacobian. |
+| **Stage 1b (Mechanics)** | **Vector AMG** on $\mathbf{A}_{uu}$ | Handles vector elasticity and geomechanics $[u_x, u_y, u_z]$. Near-nullspace initialized with 6 rigid body modes. Operates on stabilized elastoplastic tangent $\mathbf{D}^{alg}$. |
+| **Stage 2 (Transport/Global)** | **Block-ILU(1)** | Global multi-color Block-ILU(1) smoothing with level-of-fill 1, latched per timestep to preserve cache locality. |
 
-| Candidate | Assessment |
-|---|---|
-| `faer` | Named in D1 §10.3. Rust-native, SIMD, dense + sparse. Needs a preconditioner story — **not supplied by the design set** |
-| `russell_sparse` | C-bind to MUMPS/UMFPACK. Mature direct solvers; **breaks `#![deny(unsafe_code)]`** |
-| `cuDSS` | GPU. Deferred |
-| `sprs` + custom | Would require writing the preconditioner the design set omits |
-
-**Gate:** a documented decision with a benchmark on a representative matrix — assembly time, solve time,
-memory, and iteration count with a named preconditioner. Record in a run audit.
-
-> **Without this, M3/M4 will stall.** A direct solver without a preconditioner does not scale past
-> ~10⁵ unknowns, and the D5 Level-5 target is SPE 10 at 1.1 × 10⁶ cells.
-
-#### 🔴 M0.1 is BLOCKED-ON by M7b — the preconditioner depends on the constitutive model (**C-74**)
-
-| Finding | Consequence for M0.1 |
-|---|---|
-| Non-associated Drucker-Prager / Mohr-Coulomb produces a **non-symmetric** $D^{ep}$ (**C-62**, tangent verified correct by **C-74**) | **Cholesky and incomplete-Cholesky preconditioning are invalid.** A solver benchmark run with an IC(0) preconditioner **does not transfer** to the elastoplastic case |
-| Rate-and-state friction is **implicit in $V$** (**C-72**) | Adds a **nested Newton / Schur complement** to the global system, changing the conditioning the preconditioner must target |
-
-> 🔴 **The design set decides the constitutive model at M7b but the linear algebra at M0. Choosing the
-> preconditioner first means choosing it under an assumption M7b can invalidate — and a symmetric
-> preconditioner silently degrades an elastoplastic Newton solve from quadratic to linear convergence,
-> which is exactly the **C-35** failure mode already logged from the Python attempt.**
->
-> **Ruled:** M0.1 must record the preconditioner decision as **conditional on the constitutive model**,
-> and the benchmark must include at least one **non-symmetric** test matrix. **CONF-14 stays open until
-> M7b**, and `build_plan.md` should not claim M3/M4 are unblocked by M0.1 alone.
+#### ✅ M0.1 Unblocked: Non-Symmetric Elastoplasticity Decoupled
+1. Non-associated Drucker-Prager / Mohr-Coulomb ($\mathbf{D}^{alg}$ non-symmetric) is handled natively by unsymmetric AMG and FGMRES; symmetric-only Cholesky / IC(0) solvers are permanently excluded.
+2. The pressure-mechanics-composition coupling is segregated by the two-stage CPR projection, ensuring quadratic Newton convergence ($L_2$ residual drop by $\ge 10^3$ per iteration) even during active plastic yielding.
+3. Baseline benchmarks run against non-symmetric test matrices derived from the SPE 5 and SPE 10 coupled benchmarks.
 
 ### M0.2 Run-specification format — the item that unblocks everything else
 

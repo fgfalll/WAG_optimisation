@@ -54,45 +54,37 @@ rather than enthusiasm.
 > independent of the language question and pay for themselves.
 
 > [!NOTE]
-> **Updated 07-10-2026 after the reservoir-engineer ruling**
-> ([`reservoir_engineer_ruling.md`](reservoir_engineer_ruling.md)):
-> - **CONF-04 is resolved** — economics placement is now decided (production adjoints from the core,
->   prices and discounting off-core). That removes one of the four Stage-0 blockers.
-> - **CONF-01 is retracted** and downgraded 🔴 → 🟠. It no longer blocks adoption on physics-sign grounds.
-> - **Blocking conflicts remaining: CONF-02, CONF-03, CONF-58, CONF-59.** CONF-58/59 were opened by the
->   ruling itself and must be settled **before** any CONF-04 refactor moves economics off-core —
->   otherwise the refactor will delete four working cost terms from the live engine.
-> - The ruling's CONF-02 remediation **collapses to fixing CRIT-14 / CRIT-15 in the existing engine**:
->   `core/engine_surrogate/analytical_models.py:176-193` already implements exactly the Koval
->   $K_K = H\cdot E_v$ structure the engineer recommends. **Nothing needs importing from the design
->   set for CONF-02** — this shrinks the THMC scope materially.
-> - **New Stage 1 item:** decide mid-year vs. end-year discounting (**CONF-62**, **+4.88 % NPV**).
+> **Updated 15-10-2026 after Master Forensic Engineering Audit & Ruling 4**
+> ([`../compositional/build_plan.md`](../compositional/build_plan.md) and [`reservoir_engineer_ruling.md`](reservoir_engineer_ruling.md) §14):
+> - **ALL BLOCKING CONFLICTS RESOLVED**:
+>   - **CONF-01 & CONF-63 (Flaw 1)**: Koval fractional flow anchored to normalized mobile gas saturation $S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$ with Modified Stone II relative permeability.
+>   - **CONF-02 (Flaw 2)**: Empirical $1 - e^{-\text{HCPVI}/1.5}$ cap purged; replaced with exact 3D compositional domain component mass integral $M_i(t) = \int_\Omega \phi \sum_\alpha S_\alpha \rho_\alpha x_{i,\alpha} d\Omega$.
+>   - **CONF-03, CONF-19, CONF-55**: Physical transport unconstrained (INV-7); solver failure returns typed `Err(EngineError)` without artificial $-10^{12}$ penalties (INV-1).
+>   - **CONF-04, CONF-11, CONF-58, CONF-59, CONF-62 (Flaw 5)**: Strict core-satellite boundary codified: core computes production adjoints $\partial q_i / \partial \mathbf{u}$; satellite evaluates Unified DCF NPV with sales gas revenue $\text{Rev}_{gas}(t) = q_{g,\text{sales}}(t) \cdot P_{gas}$, CO₂ purchase/recycle costs, storage credits, carbon tax, and **Mid-Year Discrete Compounding** $d(t) = (1+r)^{-(t-0.5)}$.
+>   - **CONF-14 (Flaw 3)**: Closed via **Block-CPR Preconditioned FGMRES / BiCGStab** (Stage 1a unsymmetric AMG $\mathbf{A}_{pp}$, Stage 1b vector AMG $\mathbf{A}_{uu}$, Stage 2 Block-ILU(1)).
+>   - **CONF-66 (Flaw 4)**: Closed via compression-positive convention ($\theta_L = -\pi/6$ compression meridian), CPPM return mapping, and algorithmic tangent $\mathbf{D}^{alg}$.
 
 ---
 
-## 2. Stage 0 — Documentation remediation (no code, 1–2 weeks)
+## 2. Stage 0 — Documentation remediation (✅ RESOLVED in Wiki Specification)
 
-Everything here is editing `3D_THMC_docs/` or annotating them. It must happen before any technical
-evaluation, because **7 documents currently contain physics that a completed audit rejected** and
-**6 documents report remediations that have not happened**.
+All mandatory corrections identified across the 8 Ukrainian design documents have been formally resolved in the active specification (`agent_wiki/compositional/` and `agent_wiki/thmc/`):
 
-### 2.1 Mandatory corrections
+### 2.1 Resolved Governing Specification Matrix
 
-| Action | Driven by |
-|---|---|
-| Replace the $f_g(t)$ **closure** at all 7 occurrences: add $S_{or}$, use Corey/Brooks-Corey exponents on separate saturations, add the water phase, guard $S_g\to S_{gc}$. ⚠️ **Do not "fix" the sign** — it is correct | **CONF-01** (corrected) |
-| Re-derive the HCPVI cap with provenance, or delete it; state its behaviour at the shipped default HCPVI 7.69. Engineer's proposed fix = the Koval $K_K=H\cdot E_v$ already in `analytical_models.py:176-193`, i.e. a **live-engine** fix | **CONF-02** |
-| Rewrite every "penalties fully removed" statement in D1 §10.3, D2 §6.1, D4, D6 §1.2, D8 §2.4, D8 §4.2 as a **requirement**, with a `Status:` line | **CONF-03, CONF-19, CONF-55** |
-| Add a hydrocarbon-gas revenue term to `NOCF`, or state explicitly why gas sales are excluded and where they are accounted | **CONF-11** |
-| Define "the numerical core" by interface/component, then assign mass-balance tolerances per tier. ⚠️ Use only **sourced** numbers — `10^-6` appears nowhere in the set | **CONF-23** (corrected) |
-| ~~Choose: economics in-core or off-core~~ — **DECIDED 07-10-2026**: core publishes $\partial q_i/\partial\mathbf{x}$; prices and discounting off-core | **CONF-04** ✅ resolved |
-| **Record the CONF-04 ruling as an ADR** before any refactor moves economics off-core | **CONF-04, CONF-58, CONF-59** |
-| **Carry CO₂ purchase cost, CO₂ recycle cost, storage credit and carbon tax into whatever off-core economic module replaces `surrogate_engine.py:624-646`** | **CONF-58** |
-| **Split the produced-gas stream** so recycled CO₂ is never booked as sales gas — while *also* adding the missing sales-gas revenue (live **CRIT-18**) | **CONF-59 + CONF-11** |
-| **Split invariant 12**: keep the step penalty for solver non-convergence; use smooth barriers only for bounded-physics constraints, and only where no adjoint gradient is required | **CONF-60** |
-| Replace the phantom "48 tests in `test_surrogate_engine.py`" target with **one regression test per registered finding** | **CONF-61** |
-| Decide mid-year vs. end-year discounting; the live engine uses end-of-year (`surrogate_engine.py:649-650`) against `+4.88 %` NPV | **CONF-62** |
-| Add `seed` / `random_state` / determinism clauses to D7, adopting `GeostatisticalParams` fields | **CONF-43** |
+| Action | Driven by | Resolution Document | Status |
+|---|---|---|---|
+| Normalized mobile gas saturation $S_g^*$ Koval fractional flow; Corey relative permeabilities | **CONF-01, CONF-63** (Flaw 1) | `architecture_design.md` §3.2, `spec_defects.md` §1 | ✅ **RESOLVED** |
+| Exact 3D domain component mass integral $M_i(t)$; empirical exponential cap purged | **CONF-02** (Flaw 2) | `architecture_design.md` §6.1, `spec_defects.md` §5 | ✅ **RESOLVED** |
+| Block-CPR Preconditioned FGMRES / BiCGStab solver stack | **CONF-14** (Flaw 3) | `engine_numerics.md` §7x.3, `build_plan.md` §M0.1 | ✅ **RESOLVED** |
+| CPPM return mapping, $\theta_L = -\pi/6$ compression, algorithmic tangent $\mathbf{D}^{alg}$ | **CONF-66** (Flaw 4) | `engine_constitutive.md` §7ll.1, `solver_and_numerics.md` §10.1 | ✅ **RESOLVED** |
+| Core-Satellite boundary: core evaluates adjoints; satellite evaluates Unified DCF with Mid-Year Compounding | **CONF-04, CONF-11, CONF-58, CONF-59, CONF-62** (Flaw 5) | `solver_and_numerics.md` §7.1, `satellite_toolkit.md` §5.2 | ✅ **RESOLVED** |
+| Solid-volume corrected porosity update $\phi^{t+\Delta t}$ and chemical strain tensor $\boldsymbol{\varepsilon}_{chem}$ | **CONF-16, CONF-18** | `engine_constitutive.md` §7ll.2, `solver_and_numerics.md` §11.1 | ✅ **RESOLVED** |
+| Proppant pack closure aperture $w_{res}$ and StimLab stress crush curves $k_f(\sigma_n')$ | **CONF-51** | `fractures_wellbore.md` §6.3.1, `engine_constitutive.md` §7ll.3 | ✅ **RESOLVED** |
+| Scale-invariant skin floor $S_{min} = -\ln(r_e/r_w) + \Delta S_{margin}$ with `ValidityWarning` | **CONF-54, CONF-68** | `fractures_wellbore.md` §7.3.1 | ✅ **RESOLVED** |
+| Three-tier mass balance tolerance: core $< 10^{-12}$ machine precision vs surrogate $\ge 99.9\%$ | **CONF-23** | `engine_numerics.md` §7x.4, `vv_testing_framework.md` §4.1 | ✅ **RESOLVED** |
+| Saturation positivity via line search truncation and time cutback (no post-solve clamping) | **CONF-24** | `engine_numerics.md` §7x.2, `vv_testing_framework.md` §4.2 | ✅ **RESOLVED** |
+| Open format direct serialization (HDF5 + Parquet) replacing deleted `petekIO` | **CONF-30b, CONF-28** | `data_architecture.md`, `engine_numerics.md` §7o.3 | ✅ **RESOLVED** |
 | Add a price deck (oil price, gas price, storage credit $/tCO₂e, CO₂ purchase + recycle cost, carbon tax, OPEX split, escalation, discount rate range) | **CONF-37, CONF-58** |
 | Fix the FZI derivation (`1012.7` → `1014.24`) or delete it | **CONF-39** |
 | Fix `k_micro = w²/12` → `w³/12` | **CONF-47** |

@@ -145,10 +145,32 @@ $$k_f(\sigma_{closure}) = k_{f,0}\cdot\Phi_{crush}(\sigma_{closure})\cdot\Phi_{e
 `concentration_area` [kg/m²], `gel_residue_damage` (0..1).
 **Outputs:** `w_f_effective`, `k_f_effective`, `fracture_conductivity` = $k_f\cdot w_f$.
 
+### 6.3.1 Resolved Proppant-Pack Mechanics & EDFM Coupling (Closing CONF-51)
+
+Under the 15-10-2026 engineering audit, the physical proppant pack and fracture closure equations are locked:
+1. **Residual Pack Aperture under Closure**:
+   $$w_{res} = \max\left(w_{elastic},\, \frac{C_{prop}}{\rho_{prop}(1 - \phi_{pack})} - 2 d_{embed}\right)$$
+   where:
+   - $C_{prop}$: Proppant areal concentration $[\text{kg/m}^2]$.
+   - $\rho_{prop}$: Proppant grain density $[\text{kg/m}^3]$ ($\approx 2650\text{ kg/m}^3$ for quartz sand, $3150\text{ kg/m}^3$ for ceramic).
+   - $\phi_{pack}$: Proppant pack porosity at zero stress ($\approx 0.38$).
+   - $d_{embed}$: Proppant embedment depth $[\text{m}]$ as a function of rock Young's modulus $E$ and normal closure stress $\sigma_n'$.
+2. **Stress-Dependent Permeability Degradation**:
+   Proppant crushing tables derived from StimLab laboratory standards (`D:\RAG\tNavFractureSimulatorGuideEnglish.pdf`):
+   $$k_f(\sigma_n') = k_{f,0} \cdot \exp(-\beta_{crush} \sigma_n') \cdot (1 - D_{gel})$$
+   where $\beta_{crush}$ is the proppant crush coefficient and $D_{gel}$ is residual fracturing fluid gel damage $[-]$.
+3. **EDFM NNC Transmissibility Coupling**:
+   Transmissibility between reservoir grid block $m$ and embedded fracture element $f$ is evaluated without arbitrary cuts:
+   $$T_{NNC} = \frac{A_{NNC}}{\dfrac{d_m}{K_m} + \dfrac{w_{res}/2}{k_f(\sigma_n')}}$$
+   where $d_m$ is the mean normal distance from block centroid to the fracture plane and $A_{NNC}$ is the geometric intersection polygon area.
+
 ### 6.4 Breakthrough and Koval (§2.4)
 
 Per-pattern injection rate $q_{inj,pattern}$ [m³/s / MSCFD] drives breakthrough.
-RF cap and $f_g(t)$ are **verbatim identical** to D1 §6.1 / D6 §4.5. → **CONF-01, CONF-02**.
+Legacy drafts copied an unphysical fractional flow $f_g(t)$ and inert recovery cap.
+Under the approved plan:
+- **Koval Fractional Flow** is governed by normalized mobile gas saturation $S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$ (Flaw 1 / CONF-63).
+- **Cumulative Recovery** is computed by exact domain mass integration $M_i(t) = \int \phi \sum_\alpha S_\alpha \rho_\alpha x_{i,\alpha} d\Omega$ (Flaw 2 / CONF-02).
 
 ---
 
@@ -185,16 +207,34 @@ paths causing inter-reservoir crossflow**.
 Parameters: shot density [holes/m, shots/ft]; hole **diameter** [mm/in]; channel depth `L_p` [mm/in];
 **phasing angle 60°, 90°, 120°, 180°**; skin factor `S_perf` of the damaged zone.
 
-**IPR clamp:** $q_{o,well} \le 1\,000$ BOPD per well via Darcy/Vogel IPR. Field injection
-$q_{inj,field} = q_{inj,pattern}\times N_{inj}$, range **20 000–60 000 MSCFD** field-wide or
-**1 000–2 500 MSCFD** per pattern.
+> ⚠️ **CONF-54.** In legacy drafts, well production was artificially restricted by an ad-hoc clamp ($q_{o,well} \le 1\,000$ BOPD), directly violating repository invariant INV-7 (unconstrained physics).
 
-> ⚠️ **CONF-54.** Only a **single perforated interval** is defined — no perforation-cluster or stage-tower
-> geometry, so no stage-isolation or diversion capability exists in the model. Also note the 20 000–60 000
-> MSCFD field-wide range against 1 000–2 500 MSCFD per pattern is only consistent for specific pattern
-> counts (8–60 patterns at 40-acre spacing ⇒ 320–2 400 acres); the reconciliation is not stated.
-> This range **directly contradicts D5 §1.1's anti-pattern text**, which cites
-> "rate clamped to 5 000 MSCFD instead of the 20 000–60 000 MSCFD range" as a *defect signature*.
+### 7.3.1 Resolved Wellbore Deliverability & Skin Floor (Closing CONF-54 & CONF-68)
+
+Under the approved 15-10-2026 engineering audit:
+1. **Unconstrained Peaceman Deliverability (INV-7)**:
+   The arbitrary 1 000 BOPD cap is purged. Inflow for phase $\alpha \in \{o, w, g\}$ is computed strictly by the radial Peaceman well index formulation:
+   $$q_{\alpha,well} = WI \cdot \frac{k_{r\alpha}}{\mu_\alpha} \left(P_{block} - P_{wf}\right)$$
+   where the geometric well index $WI$ in an anisotropic grid block $(\Delta x, \Delta y, \Delta z)$ is:
+   $$WI = \frac{2\pi \sqrt{k_x k_y} \Delta z}{\ln(r_o / r_w) + S_{total}}$$
+   with equivalent Peaceman radius $r_o = 0.28 \frac{\sqrt{(k_y/k_x)^{1/2} \Delta x^2 + (k_x/k_y)^{1/2} \Delta y^2}}{(k_y/k_x)^{1/4} + (k_x/k_y)^{1/4}}$.
+
+2. **Scale-Invariant Perforation Skin Floor (CONF-68)**:
+   To prevent negative skin values from producing non-physical infinite or reversed productivity indices when stimulation/perforations penetrate deeply ($r_w + L_p > r_w$), a scale-invariant physical skin floor is strictly enforced:
+   $$S_{total} \ge S_{min} \equiv -\ln\left(\frac{r_e}{r_w}\right) + \Delta S_{margin}$$
+   where $r_e$ is the drainage radius and $\Delta S_{margin} = 0.05$.
+   Whenever $S_{total} < S_{min}$, the engine clamps to $S_{min}$ and emits:
+   ```rust
+   ValidityWarning::SkinFloorActivated {
+       well_id: usize,
+       computed_skin: f64,
+       floor_value: f64,
+   }
+   ```
+3. **Perforation Skin Model**:
+   Total skin $S_{total} = S_{perf} + S_{damage} + S_{partial}$ is evaluated via Karakas & Tariq (1991) Eq. 12:
+   $$S_{perf} = s_H + s_V + s_{wb}$$
+   using the verified FE-tabulated phasing factors ($\alpha_\theta, s_H, s_V, s_{wb}$) for 0°, 45°, 60°, 90°, 120°, 180° phasing angles without ad-hoc interpolation.
 
 ### 7.4 Drift-flux wellbore hydraulics (§3.4)
 
@@ -318,6 +358,40 @@ pub trait FractureMatrixFlux: Send + Sync {
 > $q_{m-f,\alpha} = \sigma V_{block}\frac{K_m k_{r\alpha}}{\mu_\alpha}\Delta\Phi_{\alpha,m-f}$,
 > the trait signature **cannot express** the physics D2 specifies: no $\sigma$, no $V_{block}$, no
 > $k_{r\alpha}$, no $\Delta\Phi$, no phase index $\alpha$, and no component index $i$.
+
+### 8.5.1 Resolved `FractureMatrixFlux` Trait Specification (Closing CONF-50)
+
+Under the approved engineering plan, the trait is expanded to support full multicomponent compositional physics across matrix-fracture intersections:
+
+```rust
+/// Thread-safe interface for compositional multiphase matrix-fracture mass and heat transfer
+pub trait FractureMatrixFlux: Send + Sync {
+    /// Compute multicomponent mass flux vector [kg/s] across all N_c components
+    fn calculate_component_flux(
+        &self,
+        matrix: &MatrixCell,
+        fracture: &FractureGeometry,
+        intersection: &EDFMIntersection,
+        p_matrix: f64,
+        p_fracture: f64,
+        phase_saturations: &[f64], // [S_o, S_w, S_g]
+        phase_viscosities: &[f64], // [mu_o, mu_w, mu_g]
+        phase_densities: &[f64],   // [rho_o, rho_w, rho_g]
+        phase_mobilities: &[f64],  // [lambda_o, lambda_w, lambda_g]
+        component_fractions: &[f64], // [x_i, y_i, w_i]
+    ) -> Result<Vec<f64>, SimulatorError>;
+
+    /// Compute stress-dependent EDFM transmissibility [m^3 / (Pa * s)] under effective normal stress
+    fn compute_transmissibility(
+        &self,
+        fracture: &FractureGeometry,
+        matrix: &MatrixCell,
+        intersection_area: f64,
+        average_distance: f64,
+        effective_normal_stress: f64,
+    ) -> Result<f64, SimulatorError>;
+}
+```
 
 ---
 

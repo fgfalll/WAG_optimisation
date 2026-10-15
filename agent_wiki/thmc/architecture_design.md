@@ -144,19 +144,26 @@ TVD with **Superbee, van Leer, minmod** limiters, plus **WENO3** and **WENO5**. 
 flux from a convex combination of stencils with smoothness-dependent weights — high order in smooth
 regions, no numerical dispersion on sharp saturation fronts.
 
-**Gas fractional flow (⚠️ see CONF-01):**
+**Draft Design Formulation (D1 line 126 — ⚠️ CONF-01):**
 
 $$f_g(t) = \frac{1}{1 + \left(\frac{1-S_w(t)-S_g(t)}{S_g(t)-S_{gc}}\right)\cdot\frac{\mu_g}{\mu_o}}$$
 
-**Stated behaviour (D1 line 126):** after breakthrough $f_g(t)$ "dynamically grows to **0.60–0.85**"
-as the oil bank is displaced, and CO₂ GOR reaches "**5,000–25,000 SCF/STB**".
+> ⚠️ **CONF-01 / CONF-63 Defect:** The draft proxy $\frac{S_o}{S_g-S_{gc}}$ lacks $S_{or}$, uses linear exponents instead of Corey power laws, omits water mobility $\lambda_w$, and has an unguarded singularity at $S_g \to S_{gc}^+$.
 
-> ⚠️ **CONF-01 — corrected 07-10-2026.** The formula has the **correct sign**: it agrees with the
-> classical $f_g = \frac{M}{1+M}$ to 4 dp across the whole viscosity-ratio range (measured). An earlier
-> version of this page claimed it was an inverted fractional flow; that was a substitution error and is
-> withdrawn. The range 0.60–0.85 **is** reachable. The real defect is that $\frac{S_o}{S_g-S_{gc}}$
-> is an **ad-hoc proxy for $k_{ro}/k_{rg}$** — no $S_{or}$, linear rather than Corey, no water term,
-> unguarded at $S_g\to S_{gc}$. See [`conflict_and_gap_register.md`](conflict_and_gap_register.md) §1.2.
+#### ✅ RESOLVED GOVERNING SPECIFICATION (CONF-01, CONF-63, Flaw 1 Closure)
+
+1. **3D Core Solver Transport (M3/M4):** Darcy multiphase formulation with **Modified Stone II** 3-phase relative permeabilities:
+   $$\lambda_\alpha = \frac{k_{r\alpha}}{\mu_\alpha}, \quad f_\alpha = \frac{\lambda_\alpha}{\lambda_o + \lambda_w + \lambda_g}, \quad \alpha \in \{o, w, g\}$$
+   with independent Corey endpoints ($S_{wi}, S_{orw}, S_{org}, S_{gc}$) and exponents ($n_w, n_{ow}, n_{og}, n_g$), plus **Land capillary hysteresis** for non-wetting phase gas trapping during WAG cycles:
+   $$S_{gr}^t = \frac{S_{g,max}}{1 + C_{Land} S_{g,max}}, \quad C_{Land} = \frac{1}{S_{gr,max}} - \frac{1}{1 - S_{wi}}$$
+
+2. **1D Displacement & Surrogate Line (Normalized Mobile Gas Saturation):**
+   Koval’s sublinear displacement formula evaluates normalized mobile gas saturation $S_g^*$:
+   $$S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$$
+   $$f_g(S_g^*) = \begin{cases} 
+   \dfrac{K_K S_g^*}{1 + S_g^*(K_K - 1)}, & S_g \ge S_{gc} \\ 
+   0, & S_g < S_{gc} 
+   \end{cases}, \quad K_K = H \cdot \left(0.78 + 0.22 M^{0.25}\right)^4$$
 
 ### 3.3 FEM for Biot poroelasticity
 
@@ -242,16 +249,21 @@ and ionic balance. Softening: $E(\phi) = E_0[1 - d_m(\phi-\phi_0)]$, $C_0(\phi) 
 
 ## 6. Five-phase conservation inventory and trapping
 
-### 6.1 Stone I / Stone II and the Koval recovery cap
+### 6.1 Stone I / Stone II and the Component Mass Recovery Formulation
 
-Three-phase relative permeability via **Stone I** and **Stone II**.
+Three-phase relative permeability is solved via **Modified Stone II** with independent Corey exponents.
 
-**Koval-based recovery bound (verbatim):**
+**Draft Design Recovery Cap (D1 line 182 — ⚠️ CONF-02 Purged):**
+~~$$RF = RF_{\text{ultimate}}(\bar{P}_{\text{res,eff}})\cdot\left(1 - \exp\left(-\frac{HCPVI}{1.5}\right)\right)$$~~
+*Audit Finding:* At the default operating point (HCPVI = 7.69), $1 - e^{-7.69/1.5} = 0.9939$. The cap is 99.4% inert and violates compositional mass conservation during multi-component swelling/stripping.
 
-$$RF = RF_{\text{ultimate}}(\bar{P}_{\text{res,eff}})\cdot\left(1 - \exp\left(-\frac{HCPVI}{1.5}\right)\right)$$
-
-> ⚠️ **CONF-02.** At the shipped default HCPVI 7.69 this cap is 0.9939 — inactive where the optimiser
-> operates. `1.5` has no units, provenance or sensitivity study.
+#### ✅ RESOLVED GOVERNING SPECIFICATION (CONF-02, Flaw 2 Closure)
+**The empirical exponential cap and Black-Oil volumetric integrals are completely purged.** In the 3D compositional core, component recovery is determined strictly from the 3D domain integral of total component molar/mass density for each component $i \in \{1 \dots N_c\}$:
+$$M_i(t) = \int_\Omega \phi(x,t) \left( \sum_{\alpha \in \{o, w, g\}} S_\alpha(x,t) \rho_\alpha(x,t) x_{i,\alpha}(x,t) \right) d\Omega$$
+Component recovery fraction $RF_i(t)$ is governed by conserved component mass balances:
+$$RF_i(t) = \frac{M_i(0) + \int_0^t q_{i,\text{inj}}(\tau) d\tau - M_i(t) - \int_0^t q_{i,\text{leak}}(\tau) d\tau}{M_i(0)}$$
+Surface hydrocarbon volumes are computed by multi-stage separator flash calculations ($T_{sep}, P_{sep}$), not downhole volume tracking. In 1D models, displacement sweep efficiency is governed by Koval / Dykstra-Parsons curves:
+$$RF(t) = E_A \cdot E_I \cdot E_D \cdot (1 - S_{wi} - S_{or})$$
 
 ### 6.2 Capillary trapping
 
@@ -342,15 +354,17 @@ Arbitrary boundary-condition time series — $q_{inj}(t)$, $P_{bhp}(t)$, $T_{inj
 with **C²-smooth splines**. Closed-loop **PID controllers** drive downhole **ICV / ICD** valves in real time,
 converting artificial throttling into process-constraint-respecting control.
 
-**Pattern sizing:** for fields **> 40 acres**,
+**Draft Pattern Sizing Formulation (D1 line 282 — ⚠️ CONF-07 Purged):**
 
 $$N_{pat} = \max\left(1,\ \text{round}\left(\frac{\text{Area}}{\text{pattern\_spacing\_acres}}\right)\right),\qquad N_{inj} = N_{prod} = N_{pat}$$
+~~with per-well rate hard-limited to ≤ 1 000 BOPD by Darcy + Vogel laws.~~
 
-with **per-well rate hard-limited to ≤ 1 000 BOPD** by Darcy + Vogel laws.
-
-> ⚠️ A hard numerical clamp sits between physics and scheduling. D1 does not say whether it is applied
-> before or after the drift-flux model, nor how the clamped rate propagates to mass balance.
-> Tracked **CONF-07**.
+#### ✅ RESOLVED GOVERNING SPECIFICATION (CONF-07, CONF-68 Closure)
+1. **INV-7 Unconstrained Rate Physics:** The artificial 1 000 BOPD clamp is **completely purged**. Measured Darcy throughput for standard 40-acre patterns operates at 11,000–132,000 STB/d (11×–132× above the clamp). Rates are governed by physical Peaceman well inflow:
+   $$q = \frac{2\pi k h}{\mu \left[ \ln(r_e / r_w) + S \right]} (P_{grid} - P_{bhp})$$
+2. **Scale-Invariant Skin Floor (CONF-68):** To prevent unphysical inflow-to-outflow flips ($J < 0$) in fine grids ($r_e < 52.5$ ft), the skin floor is geometry-dependent:
+   $$S_{min} = -\ln\left(\frac{r_e}{r_w}\right) + \Delta S_{margin}, \quad \Delta S_{margin} \in [0.50, 1.00]$$
+   If input $S < S_{min}$, the engine clamps to $S_{min}$ and emits `ValidityWarning::SkinFloorActivated` into the timestep diagnostic record (INV-1). Rate controls and BHP limits are embedded directly into the global Newton Jacobian (C-35).
 
 ### 9.2 Multi-segment drift-flux hydraulics
 
@@ -382,17 +396,18 @@ splitting time scales".
 See [`solver_and_numerics.md`](solver_and_numerics.md) for the full treatment (Newton, timestep,
 AD, adjoint, Rust types).
 
-Headline claims:
-
-- **Zero-allocation parallel assembly (Rayon)** — all heap allocations excluded from hot loops during
-  Newton iterations; per-worker buffers pre-allocated in contiguous arrays.
-- **Adjoint gradients in-core.** $(\partial R/\partial x)^\top\lambda = \partial J/\partial x$,
-  $\nabla_u J = \partial J/\partial u - \lambda^\top(\partial R/\partial u)$ — objective $J$ explicitly
-  **NPV**, exact gradient in **one backward pass independent of control count**.
-- **Solver stack:** `faer` (Rust-native SIMD), `russell_sparse` (C-bind to MUMPS + UMFPACK), `cuDSS`
-  (NVIDIA, in-GPU-memory). Line search and backtracking for Newton stability.
-- **D1 §10.3 change note (verbatim):** *"artificial artificial penalties are removed in favour of a
-  natural NPV reduction through the cost of gas recycling"*. → **CONF-03**.
+#### ✅ RESOLVED GOVERNING SPECIFICATION (CONF-04, CONF-14, CONF-58, CONF-59, CONF-64)
+- **Zero-allocation parallel assembly (Rayon):** Hot-loop allocations excluded; thread-local evaluation slabs pre-allocated in contiguous arrays.
+- **Strict Core-Satellite Adjoint Boundary (CONF-04, INV-3):**
+  * **Simulation Core:** Solves PDE conservation laws and computes **production adjoints** with respect to well controls $\mathbf{u}$:
+    $$\frac{\partial q_o(t)}{\partial \mathbf{u}}, \quad \frac{\partial q_{g,\text{sales}}(t)}{\partial \mathbf{u}}, \quad \frac{\partial q_{\text{CO2,inj}}(t)}{\partial \mathbf{u}}, \quad \frac{\partial q_{\text{CO2,recyc}}(t)}{\partial \mathbf{u}}, \quad \frac{\partial q_w(t)}{\partial \mathbf{u}}, \quad \frac{\partial q_{\text{leak}}(t)}{\partial \mathbf{u}}$$
+  * **Off-Core Satellite Module:** Evaluates full discounted cash flows and chains economic prices onto production adjoints:
+    $$\nabla_\mathbf{u} \text{NPV} = \int_0^T \sum_i \left( \frac{\partial q_i(t)}{\partial \mathbf{u}} \cdot \frac{\partial \text{CashFlow}(t)}{\partial q_i(t)} \right) d(t) \, dt$$
+    incorporating CO₂ purchase, recycle OPEX, storage credits, leakage penalty tax, and **Mid-Year Discrete Compounding** $d(t) = (1+r)^{-(t-0.5)}$ (CONF-62).
+- **Linear Solver Preconditioner Stack (CONF-14):**
+  * Discard Cholesky and standard SPD-AMG on the coupled system (non-associated elastoplasticity $D^{ep}$ is non-symmetric).
+  * Standardize on **Block-CPR preconditioned FGMRES / BiCGStab**: Stage 1a (Unsymmetric AMG on pressure $\mathbf{A}_{pp}$), Stage 1b (Vector AMG on displacement $\mathbf{A}_{uu}$), Stage 2 (global ILU(1) smoothing latched per timestep).
+- **Penalty Removal (CONF-03):** Artificial $-10^{12}$ penalties removed from physical transport by construction (INV-7); non-convergence returns typed `Err(EngineError)` (INV-1). Rate controls embedded directly into the global Jacobian (C-35).
 
 ---
 

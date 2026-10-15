@@ -33,6 +33,7 @@ measurable, and the integration/data-model work scoped rather than discovered la
 | | |
 |---|---|
 | **Vision and phases** | [`vision_and_phases.md`](vision_and_phases.md) — P1 develop → P2 integrate → P3 couple |
+| **Build Plan & Milestones (M0→M7)** | [`build_plan.md`](build_plan.md) — 🔵 **APPROVED** milestone gates, flaw resolutions (Flaws 1–5), Block-CPR, and `D:\RAG` verification corpus |
 | **Mandatory invariants** | [`engine_invariants.md`](engine_invariants.md) — 🔴 **read before writing any code.** Seven non-negotiable invariants, **INV-1…INV-7**. ⚠️ **The file is ~220 KB — use its §0 index, not an end-to-end read** |
 | **Status** | **No code exists.** Rust toolchain installation is **deferred by decision** until after documentation, at the start of development — *"some crates can be changed in process"* |
 | **Design source** | [`../thmc/`](../thmc/README.md) — the 8 documents in `3D_THMC_docs/`, normalised |

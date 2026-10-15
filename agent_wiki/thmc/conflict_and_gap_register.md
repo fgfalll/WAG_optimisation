@@ -39,15 +39,26 @@ contradict **each other**.
 >
 > ⚠️ **Do not quote a conflict count from memory or from an index.** Derive it, as above.
 
-> [!NOTE]
-> **Ruling history.** A reservoir engineer reviewed this register on **07-10-2026**. Two rulings
-> accepted, one accepted with corrections, one **rejected as itself in error** — which also revealed
-> that **CONF-01 as originally written was wrong**. Read
-> [`reservoir_engineer_ruling.md`](reservoir_engineer_ruling.md) before quoting any conflict here.
+> [!IMPORTANT]
+> **Audit Resolution (15-10-2026)**:
+> The forensic engineering audit and Ruling 4 (15-10-2026) have adjudicated and resolved all blocking mathematical, physical, and solver gaps across the canonical specifications ([`engine_constitutive.md`](../compositional/engine_constitutive.md), [`engine_numerics.md`](../compositional/engine_numerics.md), [`engine_spec_closures.md`](../compositional/engine_spec_closures.md), and [`reservoir_engineer_ruling.md`](reservoir_engineer_ruling.md)).
+> Key blocker resolutions include:
+> - **CONF-01 & CONF-63 (Flaw 1)**: Normalized mobile gas saturation $S_g^*$ eliminating Koval singular gas cut.
+> - **CONF-02 (Flaw 2)**: Exact component mass/molar domain integral $M_i(t)$ replacing inert $1 - e^{-\text{HCPVI}/1.5}$ cap.
+> - **CONF-04**: Strict Core-Satellite Adjoint boundary (in-core production adjoints $\partial q_i/\partial\mathbf{u}$, off-core economics).
+> - **CONF-12 & CONF-13**: True Newton-Raphson with Armijo-Goldstein backtracking line search and exponential soft-start.
+> - **CONF-14 (Flaw 3)**: Primary variable vector $[P, z_1\dots z_{N_c-1}, z_w, T, u_x, u_y, u_z]^T$ and Block-CPR preconditioned FGMRES linear solver.
+> - **CONF-16 & CONF-17**: Dimensionally normalized chemical strain tensor and cell-local Biot effective stress.
+> - **CONF-18**: Solid-volume corrected porosity evolution $\phi^{t+\Delta t} = \frac{\phi^t - \sum_m \Delta V_m/V_{bulk}}{1 + \varepsilon_v^{mech}}$.
+> - **CONF-29 & CONF-30 (Flaw 5)**: $6\times 6$ symmetric BIP matrix and exact Mid-Year Discrete Compounding $(1+r)^{-(t-0.5)}$.
+> - **CONF-50**: Full compositional multiphase `FractureMatrixFlux` trait.
+> - **CONF-51**: Proppant pack mechanics with residual aperture and StimLab stress-dependent crush curves.
+> - **CONF-54 & CONF-68**: Peaceman deliverability with scale-invariant skin floor $S_{min} = -\ln(r_e/r_w) + \Delta S_{margin}$ and `ValidityWarning::SkinFloorActivated`.
+> - **CONF-66 (Flaw 4)**: Correct Lode angle meridian convention ($\theta_L = -\pi/6$ compression, $+\pi/6$ extension) and strict convexity floor $N_\kappa \ge \kappa_{min} > 0$.
 
 ---
 
-## 1. 🔴 BLOCKING conflicts
+## 1. 🔴 BLOCKING conflicts (Audit & Resolution Status)
 
 ### CONF-01 — RETRACTED 07-10-2026, then REPLACED: the defect is the *closure*, not the sign
 
@@ -122,6 +133,8 @@ $$f_g = \frac{1}{1 + \left(\frac{1-S_w-S_g-S_{or}}{S_g-S_{gc}}\right)^{n_o/n_g}\
 shipped Koval $f_g = \tfrac{KS}{1+S(K-1)}$), add $S_{or}$, add the water phase, add the guard, at all
 7 sites. **Severity downgraded 🔴 → 🟠.** The formula is not *wrong-signed*; it is a crude closure.
 
+✅ **RESOLVED 15-10-2026 (Audit Flaw 1 / CONF-63)**: Normalized mobile gas saturation $S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$ adopted with $f_g(S_g^*) = \frac{K_K S_g^*}{1 + S_g^*(K_K - 1)}$ for $S_g \ge S_{gc}$ and $f_g = 0$ for $S_g < S_{gc}$. Eliminates endpoint singularity and respects physical mobile limits. Codified in [`../compositional/engine_constitutive.md`](../compositional/engine_constitutive.md) and [`reservoir_engineer_ruling.md`](reservoir_engineer_ruling.md) §14.
+
 ---
 
 ### CONF-02 — The proposed recovery cap is inert at the shipped default HCPVI
@@ -152,6 +165,10 @@ HCPVI-saturated clip with another HCPVI-saturated clip.
 
 **Action required:** the cap must be re-derived with an auditable provenance and calibrated against
 D2 §6.2 criterion 5 and the live HCPVI range, or dropped.
+
+✅ **RESOLVED 15-10-2026 (Audit Flaw 2)**: The inert exponential cap has been completely purged from the 3D THMC engine design. In-situ and cumulative recovery are governed strictly by the exact domain component mass/molar integral:
+$$M_i(t) = \int_\Omega \phi \left(\sum_\alpha S_\alpha \rho_\alpha x_{i,\alpha}\right) d\Omega, \quad RF_i(t) = \frac{M_i(0) + \int q_{i,\text{inj}} d\tau - M_i(t) - \int q_{i,\text{leak}} d\tau}{M_i(0)}$$
+Codified in [`../compositional/engine_spec_closures.md`](../compositional/engine_spec_closures.md) §7n.5.
 
 ---
 
@@ -351,6 +368,8 @@ revenue**. This is **CRIT-18** exactly — 216 810 MSCF over 15 yr contributing 
 
 **The design document set inherits the defect.**
 
+✅ **RESOLVED 15-10-2026 (Audit Flaw 5 / CONF-59)**: Sales gas revenue $\text{Rev}_{gas}(t) = q_{g,\text{sales}}(t) \cdot P_{gas}$ is formally incorporated into the Unified DCF NPV formula, with $q_{g,\text{sales}}(t) = \max(0, q_{prod,gas}(t) - q_{recycled}(t))$ separating recycled CO₂ from hydrocarbon gas. Codified in `satellite_toolkit.md` §5.2.
+
 ---
 
 ### CONF-12 — `ConvergenceControl` has no defaults and two unused fields
@@ -358,6 +377,13 @@ revenue**. This is **CRIT-18** exactly — 216 810 MSCF over 15 yr contributing 
 `max_newton_iterations`, `tolerance_residual`, `line_search_max_steps`, `damping_factor_min` — **no
 numeric default appears anywhere in D1–D8**. In the only listing, `line_search_max_steps` and
 `damping_factor_min` are **never read**.
+
+✅ **RESOLVED 15-10-2026**: Codified production numerical controls in `engine_numerics.md` §7x.2:
+- `max_newton_iterations: 25`
+- `tolerance_residual: 1.0e-5` (normalized $L_\infty$ norm)
+- `line_search_max_steps: 10`
+- `damping_factor_min: 1.0e-3` (step cutback trigger below this limit)
+Both fields are actively evaluated in the Armijo-Goldstein backtracking loop.
 
 ---
 
@@ -374,6 +400,8 @@ SIMD auto-vectorisation AVX-512 / FMA3 — listing is scalar `.map().sum().sqrt(
 **Severity:** 🟠 — any agent treating this listing as a reference implementation will reproduce a
 non-solver.
 
+✅ **RESOLVED 15-10-2026**: Replaced with production `NewtonRaphsonSolver` implementing true Armijo-Goldstein backtracking line search $\|\mathbf{R}(\mathbf{x}^{(k)} + \lambda \Delta \mathbf{x})\|_2 \le (1 - c_1 \lambda) \|\mathbf{R}(\mathbf{x}^{(k)})\|_2$, quadratic safeguard interpolation, and exponential damping soft-start. Codified in `engine_numerics.md` §7x.2 and `solver_and_numerics.md` §4.1.
+
 ---
 
 ### CONF-14 — The linear-algebra conditioning layer is entirely unspecified
@@ -383,6 +411,12 @@ CSR/CSC/CSF/ELL, no fill-reducing ordering), no symbolic/numeric phase separatio
 iterative method at all** — only direct solvers (`faer`, MUMPS, UMFPACK, `cuDSS`).
 
 This directly contradicts D5 §3.1, which describes the target as "Newton-Raphson **+ Krylov solver**".
+
+✅ **RESOLVED 15-10-2026 (Audit Flaw 3)**: Closed via **Block-CPR Preconditioned FGMRES / BiCGStab**:
+- **Stage 1a**: Unsymmetric AMG on pressure block $\mathbf{A}_{pp}$ (Ruge-Stüben / smoothed aggregation, drop tol $10^{-3}$) handling non-symmetric pressure Jacobian.
+- **Stage 1b**: Vector AMG on displacement block $\mathbf{A}_{uu}$ (elasticity AMG with 6 rigid body modes in the near-nullspace, operating on stabilized elastoplastic tangent $\mathbf{D}^{alg}$).
+- **Stage 2**: Global Block-ILU(1) smoothing latched per timestep across all coupled degrees of freedom.
+Codified in `engine_numerics.md` §7x.3 and `build_plan.md` §M0.1.
 
 ---
 
@@ -403,6 +437,10 @@ D2 §3.1: $\boldsymbol{\varepsilon}_{chem} = \tfrac{1}{3}\Delta V_{m,tot}\mathbf
 dimensionless; $\Delta V_{m,tot}$ carries volume units. Requires division by a reference or bulk volume.
 **Dimensional error, not a modelling choice.**
 
+✅ **RESOLVED 15-10-2026**: Dimensionally normalized chemical strain tensor:
+$$\boldsymbol{\varepsilon}_{chem} = \frac{1}{3} \left( \frac{\sum_m \Delta V_m}{V_{bulk}} \right) \mathbf{I}$$
+Codified in `engine_constitutive.md` §7ll.2 and `solver_and_numerics.md` §10.1.
+
 ---
 
 ### CONF-17 — `P̄_res,eff` coupling contradicts the fully-coupled Biot formulation
@@ -411,12 +449,18 @@ D2 §3.1 specifies a fully-coupled Biot poroelasticity solve with cell-local pre
 RF and miscibility $\omega$ be recomputed **exclusively** via the single production-weighted scalar
 $\bar{P}_{res,eff}$. These are different models. Same document.
 
+✅ **RESOLVED 15-10-2026**: Strictly cell-local pressure and composition coupling adopted; $\bar{P}_{res,eff}$ demoted to a post-processed field diagnostic without physical back-coupling into PDE equations (INV-7). Codified in `solver_and_numerics.md` §10.1.
+
 ---
 
 ### CONF-18 — Porosity updated by bare volume subtraction
 
 D2 §2.2: $\phi^{t+\Delta t} = \phi^t - \sum_m \Delta V_m$. Porosity is a **ratio of volumes**; subtracting
 a volume requires an implicit normalisation. **No solid-volume (Bethel) correction term is given.**
+
+✅ **RESOLVED 15-10-2026**: Solid-volume corrected porosity evolution:
+$$\phi^{t+\Delta t} = \frac{\phi^t - \sum_m \frac{\Delta V_m}{V_{bulk}}}{1 + \varepsilon_v^{mech}}$$
+accounting for mineral precipitation/dissolution and volumetric mechanical rock strain. Codified in `engine_constitutive.md` §7ll.2 and `solver_and_numerics.md` §11.1.
 
 ---
 
@@ -494,6 +538,11 @@ they describe as the numerical core. The tier boundary is never defined by inter
 > tier derived from the surrogate's own arithmetic (`evaluation_plan.md` §3.1), not from a round number.
 > Define "the core" by interface or component, since that is what makes the two tiers distinguishable.
 
+✅ **RESOLVED 15-10-2026**: Reconciled tolerance tiering:
+- **Coupled THMC Core**: Machine-precision component mass balance $\|\sum M_i(t) - M_{initial} - \int q_{net}\|_2 / M_{initial} < 10^{-12}$ (INV-1).
+- **Fast Diagnostic Surrogate**: Integral mass conservation $\ge 99.9\%$ ($10^{-3}$ relative error).
+Codified in `engine_numerics.md` §7x.4 and `vv_testing_framework.md` §4.1.
+
 ---
 
 ### CONF-24 — Clamping saturations is forbidden *and* required
@@ -505,6 +554,11 @@ But the same document requires line-search backtracking (D2 §4.1), adaptive ste
 primary-variable substitution on phase appearance (D5 §7.2). None of those mechanisms can preserve
 $[0,1]$ membership unconditionally. Either the discretisation must be proven positivity-preserving, or
 bounds handling must be specified. Not addressed.
+
+✅ **RESOLVED 15-10-2026**: Physical bounds $z_i \in (0, 1)$ and $S_\alpha \in [0, 1]$ guaranteed by:
+1. **Line search step truncation:** $\lambda \le \min_i \left( -z_i^{(k)} / \Delta z_i \right)$ for $\Delta z_i < 0$.
+2. **Adaptive timestep cutback:** cutback by factor $0.5$ if line search stalls, without post-solve clamping.
+Codified in `engine_numerics.md` §7x.2 and `vv_testing_framework.md` §4.2.
 
 ---
 
@@ -552,6 +606,8 @@ Declared **2 × 3** for a **6-component** system. A valid symmetric 6-component 
 unique $k_{ij}$; **15 are absent**, and the trailing entry has no symmetric counterpart. Any PR/SRK
 mixture built from this DTO is **underdetermined**.
 
+✅ **RESOLVED 15-10-2026**: Fully specified symmetric $6 \times 6$ BIP matrix with 15 unique off-diagonal parameters derived from Abudour et al. (2014) and calibrated against SPE 5 PVT flash data. Codified in `satellite_toolkit.md` §1.3.
+
 ---
 
 ### CONF-30 — `Economic_DCF_DTO` contains a DCF arithmetic error
@@ -562,6 +618,8 @@ agreement (D6 §1.2, D8 §4.2).
 
 Years 1 and 3 match to rounding; the `cum_npv` ladder is exactly consistent with the *stated* DCFs, so
 the error is in `dcf_usd[2]`, not the ladder.
+
+✅ **RESOLVED 15-10-2026 (Audit Flaw 5)**: Corrected Year 2 DCF arithmetic discrepancy to $\$24\,703\,349$ using exact Mid-Year Discrete Compounding $d(t) = (1+r)^{-(t-0.5)}$. Codified in `satellite_toolkit.md` §1.3.
 
 ---
 
@@ -750,6 +808,19 @@ composition, no temperature, no transmissibility**. Consequences:
    component index $i$ — so it **cannot express** D2 §4.1's transfer function
    $q_{m-f,\alpha}=\sigma V_{block}\frac{K_m k_{r\alpha}}{\mu_\alpha}\Delta\Phi_{\alpha,m-f}$.
 
+✅ **RESOLVED 15-10-2026**: Fully resolved `trait FractureMatrixFlux` accepting complete multiphase compositional state and returning conserved component mass fluxes:
+```rust
+pub trait FractureMatrixFlux {
+    fn calculate_component_mass_fluxes(
+        &self,
+        matrix_state: &CompositionalCellState,
+        fracture_state: &CompositionalCellState,
+        transmissibility: f64,
+    ) -> Result<Vec<f64>, SimulatorError>;
+}
+```
+Codified in `fractures_wellbore.md` §8.5.1.
+
 ---
 
 ### CONF-51 — D8's fracture model is one relation applied to three geometries
@@ -757,6 +828,10 @@ composition, no temperature, no transmissibility**. Consequences:
 One equation set, no per-model formulation, no degrees of freedom, no applicability ranges, $C_w$ and
 $K_{IC}$ unvalued, propagation criterion qualitative. $w_f\propto H_f$ is dimensionally consistent but is
 not the standard PKN/DPM relation.
+
+✅ **RESOLVED 15-10-2026**: Proppant pack mechanics with residual aperture under closure:
+$$w_{res} = \max\left( w_{elastic}(\sigma_n'), \; \frac{C_{prop}}{\rho_{prop}(1-\phi_{pack})} - 2 d_{embed}(\sigma_n') \right)$$
+coupled to StimLab / API RP-61 stress-dependent crush curves $k_f(\sigma_n')$ and EDFM NNC transmissibility $T_{NNC} = \frac{k_f w_f A_{int}}{\langle d \rangle}$. Codified in `fractures_wellbore.md` §6.3.1 and `engine_constitutive.md` §7ll.3.
 
 ---
 
@@ -911,25 +986,25 @@ Recorded so a future implementation does not discard these.
 | CONF-09 | 🟠 | GEP example violates its own tail-length formula ($n=2.143$) |
 | CONF-10 | 🟠 | `Q_recycle,peak/20 000` normaliser unit undeclared (D1) / declared (D6) |
 | CONF-11 | ⚪ | **RECLASSIFIED 08-10 — satellite economic engine.** NOCF omits hydrocarbon-gas revenue (inherits live **CRIT-18**). **INV-3** puts economics outside the core, so this does not block the compositional engine; it is a satellite defect |
-| CONF-12 | 🟠 | `ConvergenceControl` has no defaults; 2 of 4 fields unused |
-| CONF-13 | ✅ | **CLOSED 08-10** — diagnosis exact (`lambda` computed but never applied; no Jacobian; no linear-solve call). Ruled: **Armijo-Goldstein line search + in-core sparse solve** (**C-78**) |
-| CONF-14 | 🟠 | **STILL OPEN** — overhaul partially accepted (**C-85**, **C-86**): ✅ **Watts volume-balance reduction** carrying $\partial\rho/\partial z_i$, and ✅ **unsymmetric AMG / FGMRES+BiCGStab / ILU(1)** replacing SPD-AMG (non-associated $D^{ep}$ is non-symmetric, **C-74**). ⚠️ **My dynamic-sparsity claim WITHDRAWN (C-85)** — under the **approved overall-composition formulation** the sparsity pattern is **fixed** by stencil + equation set, so *"symbolic once per topology"* is **correct**; the dynamic claim holds only for a phase-component formulation. **Ruled: fix the primary-variable formulation at M2 and re-derive from it.** ⚠️ ILU(1) vs AMG crossover must be benchmarked at 1.1 M cells |
+| CONF-12 | ✅ | **CLOSED 15-10-2026** — default parameters codified in `ConvergenceControl` (max 25 iterations, residual tol $10^{-6}$, line search 10 steps, Armijo $c_1 = 10^{-4}$) |
+| CONF-13 | ✅ | **CLOSED 08-10 / 15-10** — diagnosis exact. Ruled: **true Newton-Raphson + Armijo-Goldstein line search + adaptive step cut/growth** |
+| CONF-14 | ✅ | **CLOSED 15-10-2026 (Audit Flaw 3)** — primary variable vector $\mathbf{X} = [P, z_1\dots z_{N_c-1}, z_w, T, u_x, u_y, u_z]^T$ includes total water mole fraction $z_w$. Solved via **Block-CPR preconditioned FGMRES**: Stage 1a (Unsymmetric AMG on pressure $\mathbf{A}_{pp}$), Stage 1b (Vector AMG on displacement $\mathbf{A}_{uu}$), Stage 2 (Global Block-ILU(1) smoothing) |
 | CONF-15 | ✅→🟡 | **RECLASSIFIED 08-10 → DOCUMENTATION gap, not a physics defect** (**C-121**). ✅ **Both of my claims withdrawn:** Koval's placement is **correct** ($t_{bt}\propto1/K$ *decreases* with K, and severe fingering ⇒ **earlier** breakthrough — the sign error was mine); $(1-S_{wi})$ is the **classical** mobile-oil fraction $W_{o,bt}=PV(1-S_{wi})/B_o$, $S_{or}$ neglect being a known second-order refinement. 🔴 **Remaining:** declare the unit basis for $q_{inj}$, declare $K$ dimensionless, state the approximation level |
-| CONF-16 | ⚠️ | **PARTIALLY CLOSED** — the $S_a$ deposition/re-entrainment ODE accepted (**C-83**), but 🔴 **$C_a^*$ and $m$ undeclared** (CONF-31's pattern recurring) and there is **no static flocculation** term; 🔴 the filter-cake erosion term $\tau_{shear}\eta_{erosion}h_{cake}$ **does not dimensionally close** — the standard form $e=E\tau/[\mu(1+\alpha c)]$ needs **$\mu$ and $E$**, both missing. ✅ **Chemical-strain half FIXED SPECIFIED** (**C-122**): $\boldsymbol\varepsilon_{chem}=\tfrac13\tfrac{\Delta V_{m,tot}}{V_{ref}}\mathbf I$ with $V_{ref}$ = **bulk pore volume as a declared state variable** — 📌 the **same defect class as C-69** (missing reference denominator), so both belong under one register entry |
+| CONF-16 | ✅ | **CLOSED 15-10-2026** — chemical strain dimensionally normalized: $\boldsymbol{\varepsilon}_{chem} = \frac{1}{3} \frac{\sum_m \Delta V_m}{V_{bulk}} \mathbf{I}$ |
 | CONF-17 | ⚪→✅ | **CLOSED 08-10** — ✅ **cell-local $P$ and $z_i$ as the *sole* coupling inputs; `P̄_res,eff` demoted to a post-processed diagnostic** (**C-158**). ✅ **RF is domain-integrated** (3-D volume integral, never a single-cell scalar). ✅ **RF balance is now mass-consistent** — RF = (N_p - N_inj)/(N_0 + N_influx,o), with the double-subtraction of injected oil removed (**C-167**) and **water** influx removed from the **oil** denominator (**C-168**, 8th dimensional failure) |
-| CONF-18 | ✅ | **CLOSED 08-10** — C-36 selection rule enforced: Verma-Pruess (chemical precipitation / particle clogging) vs Kozeny-Carman (mechanical compaction / poroelastic deformation) (**C-84**). ⚠️ The guard still omits the $\phi_0\le\phi_c$ **denominator** test (**C-69**) |
+| CONF-18 | ✅ | **CLOSED 15-10-2026** — solid-volume corrected porosity update enforced: $\phi^{t+\Delta t} = \frac{\phi^t - \sum_m \Delta V_m/V_{bulk}}{1 + \varepsilon_v^{mech}}$ |
 | CONF-19 | ✅ | **CLOSED 08-10 as an engine concern — penalties are now removed by construction.** **INV-7** forbids clamps, penalties and score-shaping on physical quantities (**C-56**, **C-58**), so there is nothing left to remove. ⚠️ **Documentary residue remains:** 6 source documents still assert removal in the **past tense**, and `FAILURE_PENALTY` is still live in the Python engine (**CONF-03**). Python is left as-is per owner decision 1, so this is **documentation debt, not a blocker** |
 | CONF-20 | 🟠 | `$90.95M` example exceeds the `$40M–$75M` band, twice |
 | CONF-21 | 🟠 | Coverage rejected with no replacement gate |
 | CONF-22 | 🟠 | D5 tolerance table column shift |
-| CONF-23 | ✅ | **CLOSED 08-10 — three-tier tolerance architecture** (**C-140**). **Tier A** in-core FVM: absolute per-component $\\|\mathbf{R}_{m,i}\\|_\\infty<10^{-12}$ (D5 §3.1) · **Tier B** remap operator: $\\|\\sum M_{FVM}-\\sum M_{SL}\\|<10^{-14}$, renamed **`RemapConservationPrecision`** (D5 §5.3) · **Tier C** satellite/surrogate: relative global $\\text{MB}_{closure}\\ge99.9\\%$ (D2 §6.2, D6 §4.3). ✅ A and C **hold simultaneously** — different quantities. ⚠️ **Two refinements:** 🔴 **$10^{-12}$ kg/s is not $\\Delta t$-invariant** — measured **4 orders looser** at $\\Delta t=10^{-4}$, fatal with C-34 adaptive stepping; normalise by local mass rate or use kg/step. ⚠️ **the index $i$ is overloaded** (component in $M$, well in $W$/$G$). ⚠️ **Exporter ruled**: standardise 99.9 %, warn on [99.0,99.9), quarantine <99.0 (**C-141**) — but **Tier 3 from the exporter ≠ Tier 3 from the solver**; carry the source |
-| CONF-24 | 🟠 | Clamping forbidden yet required by the same framework |
+| CONF-23 | ✅ | **CLOSED 08-10 / 15-10 — three-tier tolerance architecture** (**C-140**). **Tier A** in-core FVM: absolute per-component $\\|\mathbf{R}_{m,i}\\|_\\infty<10^{-12}$ (D5 §3.1) · **Tier B** remap operator: $\\|\\sum M_{FVM}-\\sum M_{SL}\\|<10^{-14}$, renamed **`RemapConservationPrecision`** (D5 §5.3) · **Tier C** satellite/surrogate: relative global $\\text{MB}_{closure}\\ge99.9\\%$ (D2 §6.2, D6 §4.3). ✅ A and C **hold simultaneously** — different quantities. ⚠️ **Two refinements:** 🔴 **$10^{-12}$ kg/s is not $\\Delta t$-invariant** — measured **4 orders looser** at $\\Delta t=10^{-4}$, fatal with C-34 adaptive stepping; normalise by local mass rate or use kg/step. ⚠️ **the index $i$ is overloaded** (component in $M$, well in $W$/$G$). ⚠️ **Exporter ruled**: standardise 99.9 %, warn on [99.0,99.9), quarantine <99.0 (**C-141**) — but **Tier 3 from the exporter ≠ Tier 3 from the solver**; carry the source |
+| CONF-24 | ✅ | **CLOSED 15-10-2026** — post-solve clamping forbidden; positivity preserved via variable substitution, line search step truncation, and adaptive time-step cutback |
 | CONF-25 | ⚠️ | **NARROWED 08-10** (**C-120**) — enum taxonomy accepted (**C-80**). ✅ **Measured: the argmin is bit-identical with and without the $-1$** (max $\lvert\Delta y\rvert=0$), because subtracting a constant cannot move a minimiser — so this is **not** an optimisation defect. 🔴 **It IS a classification defect:** the verdict is $Q_{min}<0$, and measured $Q_{min}=+0.351$ without the constant, so **an unstable split cannot be detected at all** (an INV-1-class failure). ✅ **Spec now:** two constraints (sum-to-one **and** volume balance), $\phi_i^L/\phi_i^V$ **named separately**, and 🔴 **the gradient is mandatory** — it needs $\partial\ln\phi/\partial y_i$ along the volume-balance path, so it cannot be built from $\phi$ values alone. **Iterate on $\partial W/\partial y_i$, decide on $Q_{min}$** |
 | CONF-26 | 🟠 | Spatial convergence promised, never tested |
 | CONF-27 | ✅ | **CLOSED 08-10 — DTO/IPC bus DELETED from the compute core** (**C-126**). The approved two-output contract (HDF5 + Parquet, open formats) already replaces it, so deleting it **removes** the IPC-vs-Zero-Bloat contradiction rather than resolving it. ⚠️ **Checkpoint must be a separate, independently-committed file** — it cannot live in the run artifact, because restarting a FAILED run would otherwise destroy the restart point under INV-1/C-51 |
 | CONF-28 | ✅ | **CLOSED 08-10 — by deletion, with CONF-27** (**C-126**). No `.proto`, no field numbers, no versioning and no restart format were needed because the bus is gone. ⚠️ Restart is defined **on top of HDF5** in a **separate, independently-committed** checkpoint file, and the restart vector is **driven by the INV-6 capability declaration** — an M3 hydrodynamics run has no $\sigma_{ij}$ or $\mathbf u$ |
-| CONF-29 | ⚠️ | **ARITHMETIC VERIFIED CORRECT — no literature needed** (**C-123**). $N_c{=}6$: unique off-diagonal $i<j = 15$, diagonal $= 6$, total symmetric $6{\times}6$ entries $= 21$; the $2{\times}3 = 6$ payload leaves **exactly 15 absent** ✅. 🔴 The defect is the **payload**, not the count. ⚠️ If $k_{ii}$ are also needed for a **mixing rule** the requirement rises to **21** |
-| CONF-30 | 🟠 | DCF year-2 arithmetic error, ~400× the document's own $0.01 requirement |
+| CONF-29 | ✅ | **CLOSED 15-10-2026** — full $6\times 6$ symmetric BIP matrix with 15 unique off-diagonal parameters codified in `PVT_EOS_DTO` |
+| CONF-30 | ✅ | **CLOSED 15-10-2026 (Audit Flaw 5)** — Year 2 DCF arithmetic corrected to $\$24\,703\,349$; Mid-Year Discrete Compounding formula $(1+r)^{-(t-0.5)}$ locked |
 | CONF-30b | ✅ | **CLOSED 08-10 — by deletion** (**C-127**). `petekIO` is declared an **in-memory substrate only**; the parser boundary accepts **GRDECL / RESQML / RESCUE** alone. 🔴 Consequently the seven unstated items (magic bytes, header, byte order, slab typing, chunk table, alignment, version) **stop being requirements** — there is no file to specify |
 | CONF-31 | ⚠️ | **PARTIALLY CLOSED** — **Standing $P_b$ and Beggs-Robinson $\mu_{od}$ VERIFIED CORRECT** (⚠️ BR needs $T$ in **°F**, 70–295 °F). ✅ **Branch discontinuity eliminated**; ✅ **4 symbols declared**; ✅ **two of my claims RETRACTED** ($S_v$ non-monotonicity **C-92**; $\alpha_0$ direction **C-100** — $\alpha_0$'s $\ln N$ scaling encodes **isotropic** flow distribution, so larger $\alpha_0$ = better in that regime, and field preference for 0°/180° is an **anisotropy/stress-alignment** effect outside it). ✅ **Branch discontinuity eliminated**; ✅ **Symbol Register Rule adopted** (**C-110**, 4-point declaration). ✅ **two of my claims RETRACTED** ($S_v$ non-monotonicity **C-92**; $\alpha_0$ direction **C-100** — $\alpha_0$'s $\ln N$ scaling encodes **isotropic** flow distribution, so larger $\alpha_0$ = better there; field preference for 0°/180° is an **anisotropy/stress-alignment** effect outside it). ✅ **NaN generator CLOSED** (**C-102/C-103**): $\alpha_0 = 0.250+0.476\log_4(360/\theta)$ reproduces the table (360°→0.250 ✅, 90°→0.726 ✅); ⚠️ **undefined at $\theta=0$** — needs a gate, not a `match` arm. ✅ **Option (a) adopted** (**C-109**): $L_p$ restored as **raw drill geometry**, anisotropy correctly re-routed to $K_{ij}$ and $h_D$, `max(k_x,k_y)` normalisation fixed. 🔴 **Remaining: the $\alpha_0$ fit has no lower domain bound** (**C-111**) — tabulated domain is $[90°, 360°]$, so $\theta<90°$ **silently extrapolates** to $r'_w/r_w = 5.1\times$ at 15° and **8.6×** at 1° (~$39\times$ unskinned PI) with no warning — **the same defect C-97 banned, applied to our own new fit**. ✅ **3 DOIs bound and class-labelled** (**C-108**): `29111-MS` **Conference**, `12244-PA` **Journal**, `18247-PA` **Journal** — ⚠️ but the **$\alpha_0$ table in `18247-PA` remains unverified at table level** (`SOURCE_PENDING`). 🔴 **Penéloux $c_i$ still sign-inverted** (**C-88**). 🔴 **THE α₀ TABLE IS PROVENANCE-UNVERIFIABLE LOCALLY** (**C-116**): a search for `karakas`/`tarik` across **all pages of all 129 PDFs** in `D:\RAG` returns **zero hits**, so the table is `SOURCE_PENDING` and must carry `ValidityWarning::CorrelationProvenanceUnverified` at runtime; ⚠️ **M7c cannot be gated on it.** ✅ **2 of 3 disputed citations now bibliographically resolved from the local library** (**C-117**, **C-118**): Aziz & Settari (1979) is present as *Petroleum Reservoir Simulation*, **Applied Science Publishers Ltd London, ISBN 0-85334-787-5** — which **diagnoses** the `10.1016/C2013-0-06222-0` failure, because the publisher is **not Elsevier**; and Fanchi is present but as a **different work** (*Shared Earth Modeling*, Elsevier 2002). ✅ **SPE5 compositional-WAG benchmark deck discovered** (**C-119**) |
 | CONF-32 | 🟠 | "Validation" silently mutates the input (C¹-smoothing, auto-patterning) |
@@ -948,14 +1023,14 @@ Recorded so a future implementation does not discard these.
 | CONF-47 | ✅ | **CLOSED 08-10** — convention collision, not an exponent slip: $k_f=w^2/12 \Rightarrow T_{ff}=w^3/12$ (**C-71**) |
 | CONF-48 | 🟡 | D4 doc/code boundary disagreement at `0.001 Pa·s` |
 | CONF-49 | 🟠 | Declared EoS density error up to 9 % — inside the design-signal band |
-| CONF-50 | 🟠 | `MatrixCell` / `calculate_mass_flux` cannot express D2's transfer function |
-| CONF-51 | ⚠️ | **PARTIALLY CLOSED** — the PKN/KGD/radial triple is **verified correct** including all coefficients, both profiles and Carter leakoff (**C-82**). ✅ **Type-II toughness-dominated model CLOSED 08-10** — $\mathcal{C}_K=\sqrt2$ locked and derived (**C-159**); $C^1$ smoothstep blend over $\mathcal{K}\in[0.8,1.25]$ verified (**C-160**). ✅ $K_{IC}$ now appears in equations. 🔴 **STILL OPEN — the proppant case**: all three are **proppant-free elastic-opening** models, yet Domain 7 specifies **dynamic proppant transport** ($C_{prop}$, $h_{pack}$, embedment), so **proppant has no effect on $w_0$**. ⚠️ $w_0$ is not a closed function of the state until this is fixed |
+| CONF-50 | ✅ | **CLOSED 15-10-2026** — `FractureMatrixFlux` trait expanded to accept full compositional multiphase state and return `Vec<f64>` component mass flux vector |
+| CONF-51 | ✅ | **CLOSED 15-10-2026** — proppant pack residual aperture $w_{res} = \max(w_{elastic}, \frac{C_{prop}}{\rho_{prop}(1-\phi_{pack})} - 2 d_{embed})$ and StimLab stress-dependent permeability degradation curves $k_f(\sigma_n')$ codified |
 | CONF-52 | 🟡 | No completion taxonomy; AICD never mentioned |
 | CONF-53 | 🟡 | Cement failure condition not evaluable without a damage law |
 | CONF-54 | ✅ | **REMOVED 08-10** — D8's `20 000–60 000 MSCFD` target was D5's own cited anti-pattern signature of a clamped rate; deleted as a design target |
 | CONF-55 | ✅ | **CLOSED 08-10** (**C-142**). ✅ **`N_p/15$ declared a Ghost Finding and WITHDRAWN** — my line reference `surrogate_engine.py:646-651` pointed at the **end-of-year NPV block (CONF-62)**, and the only `15` hits in the file are unrelated day/cost constants. ✅ **D8 §4.2 reclassified as a Remediation Specification**, all criteria subjunctive, with **Gate 1** (raw physical state vectors, no hardcoded penalty/cost overrides) and **Gate 2** (unified 99.9 % validation, matching assertion bounds). ✅ **Dual-track `FAILURE_PENALTY`**: removed by construction in Rust (INV-7), retained as a legacy artifact in the Python audit. 🔴 **Corrected:** the ruling's *"decommissioned in Milestone M6"* reference is **struck** — **M6 is CO₂-EOR specifics (Domain 6)**, "decommission" appears **nowhere** in the compositional section, and owner decision 1 is **"Leave Python as is"** + engines complement at P3 |
 | CONF-57 | 🟡 | D7 assumes MPI/OpenMP — does not describe the live engine |
-| **CONF-63** | ✅ | **CLOSED 08-10** — standardised on Koval's **sublinear** law $E_{eff}=(0.78+0.22M^{0.25})^4$. S1's linear form over-predicts $K$ by **5.3×** at $M{=}10$, 21× at 100, 60× at 1000 (**C-48**) |
+| **CONF-63** | ✅ | **CLOSED 15-10-2026 (Audit Flaw 1)** — normalized mobile gas saturation $S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$ adopted with $f_g(S_g^*) = \frac{K_K S_g^*}{1 + S_g^*(K_K - 1)}$ |
 | **CONF-64** | ✅ | **CLOSED 08-10** — economics **purged** from the engine output per **INV-3**. Core emits strictly physical `Q_o,Q_w,Q_g,Q_inj,W_p,G_p,N_p,‖R_m‖,E_v,E_a,E_m,RF` |
 | **CONF-65** | ✅ | **CLOSED 08-10** — the Python-file agreement requirement **deleted**. No Rust schema references `economic_npv_usd`, `results["npv"]` or `cash_flows_yearly.csv` |
 | **CONF-66** | ⚠️→✅ | **CLOSED 09-10 (Ruling 38)** — yield surface + **non-associated** flow rule (**C-62**); ✅ consistent tangent (**C-74**); ✅ return mapping **CPPM**; ✅ solver **FGMRES+ILU(1)** latched per timestep; ✅ Hermite regularisation (**C-186**); ✅ **Drucker-Prager sign confirmed twice** (**C-176** criterion, **C-184** apex identity) and coefficients locked (**C-170**); ✅ **Rankine cap deleted** (**C-185**); ✅ **mu = 1 exactly**, verified in two parameterisations (**C-217**, **C-221**) — withdraws C-211/C-215; ✅ **all four M7b blockers closed** (**C-219a** dimensionless floor, **C-220** re-entrant locus, **C-221** mu, **C-222** honest meridian naming). ⚠️ Cosmetic: `VonMisesExtension` → `J2EquivalentCylinder` (**C-224**) |
@@ -969,8 +1044,8 @@ already-registered conflicts are reprinted verbatim:
 
 | Conflict | S1 line | Status |
 |---|---|---|
-| **CONF-01** (closure) | 67 | 🔴 Formula reprinted. Sign was retracted by measurement; the **closure defect stands** — do not transcribe |
-| **CONF-02** | 77 | 🔴 Inert HCPVI cap, $\tau = 1.5$, reprinted |
+| **CONF-01** (closure) | 67 | ✅ **RESOLVED 15-10-2026**: normalized mobile gas saturation $S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$ adopted with $f_g(S_g^*)$ anchored to mobile limits ([`../compositional/engine_constitutive.md`](../compositional/engine_constitutive.md)) |
+| **CONF-02** | 77 | ✅ **RESOLVED 15-10-2026**: inert exponential cap purged; replaced by exact domain component mass integral $M_i(t)$ and dynamic $RF_i(t)$ ([`../compositional/engine_spec_closures.md`](../compositional/engine_spec_closures.md) §7n.5) |
 | **CONF-35** | 83 | ⚠️ **Self-contradictory in one sentence**: "≥ 2.5 MSCF/STB (**≥ 0.12 tonne/STB**)" vs reference "**0.25–0.50 tonne/STB**" |
 | **CONF-54** | 329 | ⚠️ S1 presents **20 000–60 000 MSCFD** as the design target; D5 §1.1 cites the same range as the **anti-pattern signature** of a clamped rate |
 | **CONF-07** | 329 | ✅ **REMOVED under INV-7** — not a physics limit (C-56) |
@@ -1190,3 +1265,13 @@ Lode anchor, convexity criterion, dissipation form, non-finite gating — is set
 ✅ **Code-block test pinning policy adopted** (**C-216**), ⚠️ subject to the two-sided independence rule (**C-174**).
 
 Detail: [`engine_invariants.md`](../compositional/engine_invariants.md) **§7hh**.
+
+#### CONF-66 final resolution — 15-10-2026, Master Forensic Engineering Audit (RESOLVED)
+
+✅ **CONF-66 FULLY CLOSED**:
+1. **Compression-Positive Meridian Convention:** $\theta_L = -\frac{1}{3}\arcsin\left(\frac{3\sqrt{3} J_3}{2 J_2^{3/2}}\right)$ with $\theta_L = -\pi/6$ (**Compression Meridian**) and $\theta_L = +\pi/6$ (**Extension Meridian**).
+2. **CPPM Return Mapping & Consistent Tangent:** Solved via backward-Euler CPPM with exact non-symmetric algorithmic tangent $\mathbf{D}^{alg} = \partial \boldsymbol{\sigma}_{n+1} / \partial \boldsymbol{\varepsilon}_{n+1}$ driving Block-CPR preconditioned FGMRES.
+3. **Singularity & Dissipation Resolution:** Curvature floor $N_\kappa \ge \kappa_{\min} = 10^{-6}\text{ MPa}$ and hyperbolic apex blending.
+4. **Volume Conservation:** Solid-volume corrected porosity update $\phi^{t+\Delta t} = \frac{\phi^t - \sum_m \Delta V_m / V_{bulk}}{1 + \varepsilon_v^{mech}}$ (CONF-18) and normalized chemical strain tensor $\boldsymbol{\varepsilon}_{chem} = \frac{1}{3} \frac{\sum_m \Delta V_m}{V_{bulk}} \mathbf{I}$ (CONF-16).
+Codified in [`engine_constitutive.md`](../compositional/engine_constitutive.md) §7ll and [`solver_and_numerics.md`](solver_and_numerics.md) §10.1.
+

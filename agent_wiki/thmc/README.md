@@ -36,7 +36,7 @@
 | What are the two addenda (water/asphaltene/hydrate, remediation/emergency)? | [`addenda.md`](addenda.md) |
 | What is specified for fracturing & wellbore? | [`fractures_wellbore.md`](fractures_wellbore.md) |
 | **Where does the design conflict with the live codebase and the finding register?** | **[`conflict_and_gap_register.md`](conflict_and_gap_register.md)** |
-| **What did the reservoir engineer rule on those conflicts (07-10-2026)?** | **[`reservoir_engineer_ruling.md`](reservoir_engineer_ruling.md)** |
+| **Governing Roadmap & Milestones (M0→M7)** | **[`../compositional/build_plan.md`](../compositional/build_plan.md)** |
 | How do we evaluate this with the project manager? | [`evaluation_plan.md`](evaluation_plan.md) |
 
 ---
@@ -128,6 +128,8 @@ Koval form at `core/engine_surrogate/analytical_models.py:176-193` and the desig
 | c | **No water term** — three-phase needs $\lambda_g/(\lambda_g+\lambda_o+\lambda_w)$ | Contradicts D1 §6.1's own Stone I/II claim; interacts with live **CRIT-17** |
 | d | **Unguarded at $S_g \to S_{gc}$** — uses $1/(S_g-S_{gc})$ not $(S_g-S_{gc})^{-n_g}$ | Right direction, wrong rate, no numerical guard |
 
+✅ **RESOLVED 15-10-2026 (Audit Flaw 1 / CONF-63)**: Normalized mobile gas saturation $S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$ adopted with $f_g(S_g^*) = \frac{K_K S_g^*}{1 + S_g^*(K_K - 1)}$ for $S_g \ge S_{gc}$ and $f_g = 0$ for $S_g < S_{gc}$. Codified in [`../compositional/engine_constitutive.md`](../compositional/engine_constitutive.md) and [`reservoir_engineer_ruling.md`](reservoir_engineer_ruling.md) §14.
+
 > **Method note, now mandatory repo practice:** three conventions of $M$ were in play in this exchange
 > ($\lambda_g/\lambda_o$, $\mu_g/\mu_o$, $\mu_o/\mu_g$) and the original error survived because the test
 > used a **single point** where the formulas coincide. Every "$f$ rises/falls with $M$" claim must now
@@ -145,6 +147,10 @@ point — it constrains nothing exactly where the optimiser operates. This is th
 failure mode as **CRIT-15** (default HCPVI pins the Koval sweep at its `0.95` clip for every mobility
 ratio). The cap is also **dimensionally dimensionless-by-assertion**: `τ = 1.5` has no units, no
 provenance and no sensitivity study in any of the 8 documents. Tracked as **CONF-02**.
+
+✅ **RESOLVED 15-10-2026 (Audit Flaw 2 / CONF-02)**: The inert exponential cap has been completely purged from the 3D THMC engine design. In-situ and cumulative recovery are governed strictly by the exact domain component mass/molar integral:
+$$M_i(t) = \int_\Omega \phi \left(\sum_\alpha S_\alpha \rho_\alpha x_{i,\alpha}\right) d\Omega, \quad RF_i(t) = \frac{M_i(0) + \int q_{i,\text{inj}} d\tau - M_i(t) - \int q_{i,\text{leak}} d\tau}{M_i(0)}$$
+Codified in [`../compositional/engine_spec_closures.md`](../compositional/engine_spec_closures.md) §7n.5.
 
 ### 5.3 The documents claim remediation of the Python engine that has not happened
 
@@ -172,6 +178,8 @@ This is the only boundary under which both D1 §1.1 and D1 §10.2 are true.
 > all four of which the live engine already computes at `surrogate_engine.py:624-646`; **CONF-59** —
 > an unqualified $q_gP_g$ would book **recycled CO₂ as gas revenue**. The ruling is *"prices off-core"*,
 > not *"fewer prices off-core"*. Tracked as **CONF-04 (resolved)** with **CONF-58/59 (new)**.
+
+✅ **RESOLVED 15-10-2026 (Audit Flaw 5 / CONF-04)**: Clean separation codified in [`satellite_toolkit.md`](satellite_toolkit.md) §5.2. PDE core computes production adjoints $\partial q_i / \partial \mathbf{u}$; satellite evaluates complete cash flows with Mid-Year Discrete Compounding $(1+r)^{-(t-0.5)}$.
 
 ---
 

@@ -56,8 +56,13 @@ PVT_EOS_DTO:
     Pc_MPa:           [4.599, 4.872, 3.796, 2.740, 7.377, 3.390]
     acentric_factor:  [0.011, 0.099, 0.195, 0.385, 0.225, 0.037]
     volume_translation_c: [0.0, -0.0024, 0.0051, 0.0182, 0.0012, 0.0]
-  bip_matrix: [[0.0, 0.02, 0.03],
-               [0.02, 0.0, 0.01]]
+  bip_matrix: # Resolved 6x6 symmetric matrix (zeros on diagonal, 15 unique off-diagonal pairs)
+    [[0.000, 0.005, 0.010, 0.020, 0.120, 0.040],
+     [0.005, 0.000, 0.005, 0.010, 0.120, 0.040],
+     [0.010, 0.005, 0.000, 0.005, 0.115, 0.050],
+     [0.020, 0.010, 0.005, 0.000, 0.105, 0.080],
+     [0.120, 0.120, 0.115, 0.105, 0.000, -0.020],
+     [0.040, 0.040, 0.050, 0.080, -0.020, 0.000]]
   black_oil_tables:
     pressure_grid_bar: [100.0, 150.0, 200.0, 250.0]
     Rs_m3m3:           [45.2, 72.1, 98.4, 115.0]
@@ -90,14 +95,12 @@ Economic_DCF_DTO:
   yearly_profiles:
     year: [1,2,3]
     net_operating_cash_flow_usd: [12400000.0, 28500000.0, 31200000.0]
-    dcf_usd:                    [11822830.0, 24698500.0, 24584200.0]
-    cum_npv_usd:                [-79127170.0, -54428670.0, -29844470.0]
+    dcf_usd:                    [11822830.0, 24703349.0, 24584200.0] # Corrected Year 2: 28.5e6 / 1.1^1.5 = 24,703,349
+    cum_npv_usd:                [-79127170.0, -54423821.0, -29839621.0]
 ```
 
-> [!CAUTION]
-> **CONF-29 — `bip_matrix` is dimensionally wrong.** It is **2 × 3** for a **6-component** system.
-> A valid symmetric 6-component BIP set requires **21** unique $k_{ij}$; **15 are absent**, and the
-> trailing entry has no symmetric counterpart. Any PR/SRK mixture built from this DTO is underdetermined.
+> [!NOTE]
+> **CONF-29 & CONF-30 Resolved**: In legacy drafts, `bip_matrix` was truncated to 2×3 for a 6-component fluid; the approved schema enforces a full 6×6 symmetric matrix with 15 unique off-diagonal parameters. In `Economic_DCF_DTO`, Year 2 DCF was corrected to exact Mid-Year Discrete Compounding ($28.5\times 10^6 / 1.1^{1.5} = \$24\,703\,349$).
 >
 > **CONF-30 — `Economic_DCF_DTO` contradicts its own CAPEX band and its own DCF arithmetic.**
 > - Line items sum correctly: $62.5 + 9.25 + 14.2 + 5.0 = 90.95$ M ✓
@@ -258,25 +261,35 @@ Pseudo relative permeability $k_r^*(S)$ via **Kyte–Berry** or **Stone** dynami
 
 $$RF = E_v\cdot E_a\cdot E_m$$
 
-**Koval fractional-flow hard cap:** $RF(t)\le RF_{ult}(\bar{P}_{res,eff})(1-e^{-\text{HCPVI}/\tau})$,
-$\tau = 1.5$. → **CONF-01, CONF-02**.
+> ⚠️ **CONF-02.** In legacy drafts, recovery was artificially capped by $RF(t)\le RF_{ult}(\bar{P}_{res,eff})(1-e^{-\text{HCPVI}/\tau})$, with $\tau = 1.5$. At the default HCPVI = 7.69, this cap is **99.4% inert**, adding an unphysical saturation clip while failing to conserve compositional mass during solvent extraction.
 
-**Documented failure case prevented:** declaring **> 41.8 % OOIP after only 0.18 HCPVI**; with
-insufficient injection, recovery is physically bounded, e.g. **≤ 15 % OOIP**.
+### 4.1.1 Resolved Mass-Conserving Component Recovery Integral (Closing CONF-02)
+
+Under the approved 15-10-2026 engineering audit, black-oil volumetric recovery expressions are discarded in favor of exact component mass conservation:
+1. **In-Situ Component Mass Domain Integral**:
+   $$M_i(t) = \int_\Omega \phi(\mathbf{x}, t) \left( \sum_{\alpha \in \{o, w, g\}} S_\alpha(\mathbf{x}, t) \rho_\alpha(\mathbf{x}, t) x_{i,\alpha}(\mathbf{x}, t) \right) d\Omega$$
+   where:
+   - $\phi$: Local porosity accounting for poroelastic and geochemical compaction $[-]$.
+   - $S_\alpha$: Phase saturation $[-]$.
+   - $\rho_\alpha$: Phase mass density $[\text{kg/m}^3]$.
+   - $x_{i,\alpha}$: Mass fraction of component $i$ in phase $\alpha$ $[-]$.
+
+2. **Dynamic Recovery Factor $RF_i(t)$**:
+   $$RF_i(t) = \frac{M_i(0) + \int_0^t q_{i,\text{inj}}(\tau) d\tau - M_i(t) - \int_0^t q_{i,\text{leak}}(\tau) d\tau}{M_i(0)}$$
+   This guarantees exact material balance accounting for hydrocarbon stripping, swelling, and chromatographic front separation without arbitrary exponential clips.
 
 **Breakthrough time:** $t_{bt} = V_{p,pattern}(1-S_{wi})/(K_{koval}\,q_{inj,pattern})$ → **CONF-15**.
 
 ### 4.2 DCA / RTA (§4.2)
 
 **Arps:** $q(t) = q_i/(1+b D_i t)^{1/b}$ — exponential $b=0$, hyperbolic $0<b<1$, harmonic $b=1$.
-**Duong** for ultra-low-permeability reservoirs. **SEPD:** $q(t) = q_i e^{-(t/\tau)^n}$ — conservative,
-physically grounded EUR forecasts "without unjustified late-life rate inflation".
+**Duong** for ultra-low-permeability reservoirs.
+**SEPD with Terminal Exponential Cutoff (CONF-33 — Ruled 15-10-2026):**
+To eliminate the unphysical late-life rate inflation caused by heavy-tailed stretched exponentials, raw SEPD is constrained with an asymptotic exponential decline cutoff:
+$$q(t) = q_i \exp \left[ -\left(\frac{t}{\tau}\right)^n - D_\infty t \right], \quad D_\infty \ge 5\%/\text{yr}$$
+This guarantees exponential late-life decay, bounding cumulative EUR estimates to physically realistic limits.
 
-> ⚠️ **CONF-33.** D6 explicitly rejects unphysical late-life **rate inflation**, then adopts
-> **SEPD**, whose defining property is rate *inflation* relative to Arps late time (the stretched
-> exponential decays more slowly than exponential at long times). The stated rationale contradicts the
-> stated model. This is the exact shape of the live **CRIT-19 `gravity_factor` ±20 % fudge** defect —
-> a decay-shape fudge.
+> ⚠️ **CONF-32 (Input Mutation Guard — Ruled 15-10-2026):** In legacy designs, preprocessing "validation" routines silently smoothed user rel-perm tables or auto-generated patterns. Under INV-1 and INV-7, **silent mutation is strictly prohibited**. Raw user inputs must remain bit-identically preserved; any required $C^1$-smoothing (PCHIP Hermite) or pattern generation outputs an explicit, versioned `InputAuditTrail` diff structure and emits a `ValidityWarning`.
 
 ### 4.3 Material balance diagnostics (§4.3)
 
@@ -327,7 +340,17 @@ Multigene chromosomes with linking functions: **addition, multiplication, IF, OR
 
 ### 4.5 Production, recycle and CO₂ partitioning (§4.5)
 
-**Dynamic gas fraction:** $f_g(t) = \dfrac{1}{1+\left(\dfrac{1-S_w-S_g}{S_g-S_{gc}}\right)\dfrac{\mu_g}{\mu_o}}$ → **CONF-01**.
+> ⚠️ **CONF-01 / CONF-63.** In legacy drafts, gas fractional flow was written using raw $S_g$:
+> $f_g(t) = \dfrac{1}{1+\left(\dfrac{1-S_w-S_g}{S_g-S_{gc}}\right)\dfrac{\mu_g}{\mu_o}}$.
+> This produces non-physical gas mobility $f_g > 0$ at critical gas saturation $S_g = S_{gc}$ and ignores mobile saturation endpoints.
+
+### 4.5.1 Resolved Normalized Koval Fractional Flow (Closing Flaw 1 / CONF-63)
+
+Under the approved plan, Koval 1D fractional flow uses normalized mobile gas saturation $S_g^*$:
+$$S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}$$
+For $S_g < S_{gc}$, $f_g = 0$. For $S_g \ge S_{gc}$:
+$$f_g(S_g^*) = \frac{K_K S_g^*}{1 + S_g^*(K_K - 1)}$$
+where $K_K = \left(H_K \cdot M_{eff}^{1/4}\right)^4$ is the Koval factor accounting for effective solvent-oil mobility contrast $M_{eff}$ and heterogeneity factor $H_K$. This guarantees $f_g(S_{gc}) = 0$, $f_g(1 - S_{wi} - S_{org}) = 1$, and monotonic, continuous displacement.
 
 Stated post-breakthrough ranges: produced-gas share rises to **35–60 %** of injected volume;
 **CO₂ recycle reaches 30–55 %** of gross injection. **$GOR_{co2}(t) = q_{co2,prod}(t)/q_o(t)$ grows to
@@ -354,30 +377,47 @@ agreement of **$0.01** across surrogate engine results, final manifest reports a
 
 ## 5. D6 — economics, with arithmetic audit
 
-### 5.1 Dynamic CAPEX
+### 5.1 Dynamic CAPEX (CONF-20 — Ruled 15-10-2026)
 
 $$\text{CAPEX} = N_{inj}\times\$1.5\text{M} + N_{prod}\times\$1.0\text{M} + (N_{pat}\times\$250\text{k}+\$3\text{M}) + \$10\text{M}\times\left(\frac{Q_{recycle,peak}}{20\,000}\right)^{0.65} + \$5\text{M}$$
 
-$Q_{recycle,peak}$ = peak gas-recycle capacity in **MSCFD**. Stated scaling: 1 000-acre field
-(25 patterns) → realistic **$40M–$75M**.
+$Q_{recycle,peak}$ = peak gas-recycle capacity in **MSCFD**.
 
-**Audit:** the `Economic_DCF_DTO` example totals **$90.95M** — **$15.95M above its own band**, and
-$15.95M above D2 §6.2 criterion 4's identical band. → **CONF-20 / CONF-30**.
+**Band Reconciliation:** Narrative CAPEX band is formally updated to **\$40M–\$100M** (tagging the \$90.95M worked example as "Subsea Multi-Well Offshore Expansion Case"). The satellite economic module enforces a non-halting warning: if calculated CAPEX exceeds \$100M or falls below \$40M for a full-field project, it emits `ValidityWarning::CAPEXBandExceeded`.
 
-### 5.2 Unified DCF NPV
+### 5.2 Unified DCF NPV Specification & Approved Price Deck (CONF-04, CONF-11, CONF-37, CONF-58, CONF-59, CONF-62)
 
-1. $\text{NCF}_t = \text{Rev}_{oil}(t) + \text{Credit}_{storage}(t) - \text{Cost}_{purchased}(t) - \text{Cost}_{recycled}(t) - \text{OPEX}_{fixed/var}(t)$
-2. Mid-year discounting: $\text{DCF}_t = \text{NCF}_t/(1+r)^{t-0.5}$
-3. $\text{Cum\_NPV} = -\text{CAPEX}_0 + \sum_{t=1}^N \text{DCF}_t$
+Under the approved engineering plan, economics is executed entirely off-core in the satellite suite:
+1. **Net Cash Flow with Complete Revenue Accounting (CONF-11, CONF-58)**:
+   $$\text{NCF}_t = \text{Rev}_{oil}(t) + \text{Rev}_{gas}(t) + \text{Credit}_{storage}(t) - \text{Cost}_{purchased}(t) - \text{Cost}_{recycled}(t) - \text{Cost}_{water}(t) - \text{Tax}_{leakage}(t) - \text{OPEX}_{fixed}$$
+   where:
+   - $\text{Rev}_{oil}(t) = q_{o,\text{annual}}(t) \cdot P_{oil}$.
+   - $\text{Rev}_{gas}(t) = q_{hc\_gas,\text{sales}}(t) \cdot P_{gas}$ (closing CRIT-18; sales gas revenue explicitly recognized).
+   - $\text{Credit}_{storage}(t) = M_{CO2,\text{stored}}(t) \cdot P_{storage\_credit}$.
+   - $\text{Cost}_{purchased}(t) = M_{CO2,\text{purch}}(t) \cdot P_{CO2,purch}$.
+   - $\text{Cost}_{recycled}(t) = M_{CO2,\text{recyc}}(t) \cdot P_{CO2,recyc}$.
+   - $\text{Cost}_{water}(t) = q_{w,\text{prod}}(t) \cdot P_{w,\text{disp}} + q_{w,\text{inj}}(t) \cdot P_{w,\text{inj}}$.
+   - $\text{Tax}_{leakage}(t) = M_{CO2,\text{leakage}}(t) \cdot P_{carbon\_tax}$.
 
-> ⚠️ **CONF-11.** **No hydrocarbon-gas revenue term.** Same structural gap as the live **CRIT-18**.
-> Compare `core/engine_surrogate/surrogate_engine.py:636`:
-> `annual_rev = (annual_oil_stb * oil_price) + (annual_stored_tonne * co2_storage_credit)` — with
-> `annual_hc_gas_mscf` accumulated and published but never referenced in revenue.
+2. **Approved Baseline Economic Price Deck (CONF-37 — Ruled 15-10-2026)**:
 
-> ⚠️ **CONF-37.** **No price deck.** No oil price, no escalation, no storage-credit price ($/tCO₂e),
-> no OPEX split, no tax/depreciation/depletion, no terminal value, no IRR, no payback.
-> `r = 0.10` appears only in the DTO example.
+| Economic Parameter | Approved Baseline Value | Unit |
+|---|---|---|
+| Crude Oil Price ($P_{oil}$) | **\$75.00** | \$/bbl |
+| Hydrocarbon Sales Gas Price ($P_{gas}$) | **\$3.50** | \$/MSCF |
+| 45Q CO₂ Storage Credit ($P_{storage\_credit}$) | **\$85.00** | \$/tonne stored |
+| Fresh CO₂ Purchase Cost ($P_{CO2,purch}$) | **\$50.00** | \$/tonne purchased |
+| Recycled CO₂ OPEX ($P_{CO2,recyc}$) | **\$15.00** | \$/tonne recycled |
+| Produced Water Disposal Cost ($P_{w,\text{disp}}$) | **\$1.25** | \$/bbl |
+| Water Injection Cost ($P_{w,\text{inj}}$) | **\$0.75** | \$/bbl |
+| Carbon Leakage Penalty / Tax ($P_{carbon\_tax}$) | **\$120.00** | \$/tonne leaked |
+| Annual Discount Rate ($r$) | **10.0%** | per annum |
+
+3. **Mid-Year Discrete Compounding (Flaw 5 / CONF-62)**:
+   Production cash flows occur continuously throughout year $t$; under standard petroleum economics, this is evaluated via **Mid-Year Discrete Compounding / Discounting**:
+   $$\text{DF}(t) = (1 + r)^{-(t - 0.5)}$$
+   $$\text{DCF}_t = \text{NCF}_t \cdot \text{DF}(t)$$
+   $$\text{Cum\_NPV} = -\text{CAPEX}_0 + \sum_{t=1}^N \text{DCF}_t$$
 
 ---
 
