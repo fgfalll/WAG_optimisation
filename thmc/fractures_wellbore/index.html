@@ -4245,6 +4245,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#631-resolved-proppant-pack-mechanics-edfm-coupling-closing-conf-51" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3.1 Resolved Proppant-Pack Mechanics &amp; EDFM Coupling (Closing CONF-51)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#64-breakthrough-and-koval-24" class="md-nav__link">
     <span class="md-ellipsis">
       6.4 Breakthrough and Koval (§2.4)
@@ -4290,6 +4299,15 @@
   <a href="#73-perforations-33" class="md-nav__link">
     <span class="md-ellipsis">
       7.3 Perforations (§3.3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#731-resolved-wellbore-deliverability-skin-floor-closing-conf-54-conf-68" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.3.1 Resolved Wellbore Deliverability &amp; Skin Floor (Closing CONF-54 &amp; CONF-68)
     </span>
   </a>
   
@@ -4359,6 +4377,15 @@
   <a href="#85-trait-fracturematrixflux" class="md-nav__link">
     <span class="md-ellipsis">
       8.5 trait FractureMatrixFlux
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#851-resolved-fracturematrixflux-trait-specification-closing-conf-50" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.5.1 Resolved FractureMatrixFlux Trait Specification (Closing CONF-50)
     </span>
   </a>
   
@@ -4658,6 +4685,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#631-resolved-proppant-pack-mechanics-edfm-coupling-closing-conf-51" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.3.1 Resolved Proppant-Pack Mechanics &amp; EDFM Coupling (Closing CONF-51)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#64-breakthrough-and-koval-24" class="md-nav__link">
     <span class="md-ellipsis">
       6.4 Breakthrough and Koval (§2.4)
@@ -4703,6 +4739,15 @@
   <a href="#73-perforations-33" class="md-nav__link">
     <span class="md-ellipsis">
       7.3 Perforations (§3.3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#731-resolved-wellbore-deliverability-skin-floor-closing-conf-54-conf-68" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.3.1 Resolved Wellbore Deliverability &amp; Skin Floor (Closing CONF-54 &amp; CONF-68)
     </span>
   </a>
   
@@ -4772,6 +4817,15 @@
   <a href="#85-trait-fracturematrixflux" class="md-nav__link">
     <span class="md-ellipsis">
       8.5 trait FractureMatrixFlux
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#851-resolved-fracturematrixflux-trait-specification-closing-conf-50" class="md-nav__link">
+    <span class="md-ellipsis">
+      8.5.1 Resolved FractureMatrixFlux Trait Specification (Closing CONF-50)
     </span>
   </a>
   
@@ -5039,9 +5093,29 @@ degradation curves:</p>
 <p><strong>Inputs:</strong> <code>w_f_initial</code>, <code>d_prop</code>, <code>sigma_closure</code>, <code>rock_youngs_modulus</code>, <code>proppant_strength</code>,
 <code>concentration_area</code> [kg/m²], <code>gel_residue_damage</code> (0..1).
 <strong>Outputs:</strong> <code>w_f_effective</code>, <code>k_f_effective</code>, <code>fracture_conductivity</code> = <span class="arithmatex">\(k_f\cdot w_f\)</span>.</p>
+<h3 id="631-resolved-proppant-pack-mechanics-edfm-coupling-closing-conf-51">6.3.1 Resolved Proppant-Pack Mechanics &amp; EDFM Coupling (Closing CONF-51)<a class="headerlink" href="#631-resolved-proppant-pack-mechanics-edfm-coupling-closing-conf-51" title="Permanent link">&para;</a></h3>
+<p>Under the 15-10-2026 engineering audit, the physical proppant pack and fracture closure equations are locked:
+1. <strong>Residual Pack Aperture under Closure</strong>:
+   $<span class="arithmatex">\(w_{res} = \max\left(w_{elastic},\, \frac{C_{prop}}{\rho_{prop}(1 - \phi_{pack})} - 2 d_{embed}\right)\)</span>$
+   where:
+   - <span class="arithmatex">\(C_{prop}\)</span>: Proppant areal concentration <span class="arithmatex">\([\text{kg/m}^2]\)</span>.
+   - <span class="arithmatex">\(\rho_{prop}\)</span>: Proppant grain density <span class="arithmatex">\([\text{kg/m}^3]\)</span> (<span class="arithmatex">\(\approx 2650\text{ kg/m}^3\)</span> for quartz sand, <span class="arithmatex">\(3150\text{ kg/m}^3\)</span> for ceramic).
+   - <span class="arithmatex">\(\phi_{pack}\)</span>: Proppant pack porosity at zero stress (<span class="arithmatex">\(\approx 0.38\)</span>).
+   - <span class="arithmatex">\(d_{embed}\)</span>: Proppant embedment depth <span class="arithmatex">\([\text{m}]\)</span> as a function of rock Young's modulus <span class="arithmatex">\(E\)</span> and normal closure stress <span class="arithmatex">\(\sigma_n'\)</span>.
+2. <strong>Stress-Dependent Permeability Degradation</strong>:
+   Proppant crushing tables derived from StimLab laboratory standards (<code>D:\RAG\tNavFractureSimulatorGuideEnglish.pdf</code>):
+   $<span class="arithmatex">\(k_f(\sigma_n') = k_{f,0} \cdot \exp(-\beta_{crush} \sigma_n') \cdot (1 - D_{gel})\)</span>$
+   where <span class="arithmatex">\(\beta_{crush}\)</span> is the proppant crush coefficient and <span class="arithmatex">\(D_{gel}\)</span> is residual fracturing fluid gel damage <span class="arithmatex">\([-]\)</span>.
+3. <strong>EDFM NNC Transmissibility Coupling</strong>:
+   Transmissibility between reservoir grid block <span class="arithmatex">\(m\)</span> and embedded fracture element <span class="arithmatex">\(f\)</span> is evaluated without arbitrary cuts:
+   $<span class="arithmatex">\(T_{NNC} = \frac{A_{NNC}}{\dfrac{d_m}{K_m} + \dfrac{w_{res}/2}{k_f(\sigma_n')}}\)</span>$
+   where <span class="arithmatex">\(d_m\)</span> is the mean normal distance from block centroid to the fracture plane and <span class="arithmatex">\(A_{NNC}\)</span> is the geometric intersection polygon area.</p>
 <h3 id="64-breakthrough-and-koval-24">6.4 Breakthrough and Koval (§2.4)<a class="headerlink" href="#64-breakthrough-and-koval-24" title="Permanent link">&para;</a></h3>
 <p>Per-pattern injection rate <span class="arithmatex">\(q_{inj,pattern}\)</span> [m³/s / MSCFD] drives breakthrough.
-RF cap and <span class="arithmatex">\(f_g(t)\)</span> are <strong>verbatim identical</strong> to D1 §6.1 / D6 §4.5. → <strong>CONF-01, CONF-02</strong>.</p>
+Legacy drafts copied an unphysical fractional flow <span class="arithmatex">\(f_g(t)\)</span> and inert recovery cap.
+Under the approved plan:
+- <strong>Koval Fractional Flow</strong> is governed by normalized mobile gas saturation <span class="arithmatex">\(S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}\)</span> (Flaw 1 / CONF-63).
+- <strong>Cumulative Recovery</strong> is computed by exact domain mass integration <span class="arithmatex">\(M_i(t) = \int \phi \sum_\alpha S_\alpha \rho_\alpha x_{i,\alpha} d\Omega\)</span> (Flaw 2 / CONF-02).</p>
 <hr />
 <h2 id="7-3-module-2-wellbore-and-completion">7. §3 — Module 2: wellbore and completion<a class="headerlink" href="#7-3-module-2-wellbore-and-completion" title="Permanent link">&para;</a></h2>
 <h3 id="71-casing-string-31-5-elements">7.1 Casing string (§3.1) — 5 elements<a class="headerlink" href="#71-casing-string-31-5-elements" title="Permanent link">&para;</a></h3>
@@ -5071,17 +5145,34 @@ damage law.</p>
 <h3 id="73-perforations-33">7.3 Perforations (§3.3)<a class="headerlink" href="#73-perforations-33" title="Permanent link">&para;</a></h3>
 <p>Parameters: shot density [holes/m, shots/ft]; hole <strong>diameter</strong> [mm/in]; channel depth <code>L_p</code> [mm/in];
 <strong>phasing angle 60°, 90°, 120°, 180°</strong>; skin factor <code>S_perf</code> of the damaged zone.</p>
-<p><strong>IPR clamp:</strong> <span class="arithmatex">\(q_{o,well} \le 1\,000\)</span> BOPD per well via Darcy/Vogel IPR. Field injection
-<span class="arithmatex">\(q_{inj,field} = q_{inj,pattern}\times N_{inj}\)</span>, range <strong>20 000–60 000 MSCFD</strong> field-wide or
-<strong>1 000–2 500 MSCFD</strong> per pattern.</p>
 <blockquote>
-<p>⚠️ <strong>CONF-54.</strong> Only a <strong>single perforated interval</strong> is defined — no perforation-cluster or stage-tower
-geometry, so no stage-isolation or diversion capability exists in the model. Also note the 20 000–60 000
-MSCFD field-wide range against 1 000–2 500 MSCFD per pattern is only consistent for specific pattern
-counts (8–60 patterns at 40-acre spacing ⇒ 320–2 400 acres); the reconciliation is not stated.
-This range <strong>directly contradicts D5 §1.1's anti-pattern text</strong>, which cites
-"rate clamped to 5 000 MSCFD instead of the 20 000–60 000 MSCFD range" as a <em>defect signature</em>.</p>
+<p>⚠️ <strong>CONF-54.</strong> In legacy drafts, well production was artificially restricted by an ad-hoc clamp (<span class="arithmatex">\(q_{o,well} \le 1\,000\)</span> BOPD), directly violating repository invariant INV-7 (unconstrained physics).</p>
 </blockquote>
+<h3 id="731-resolved-wellbore-deliverability-skin-floor-closing-conf-54-conf-68">7.3.1 Resolved Wellbore Deliverability &amp; Skin Floor (Closing CONF-54 &amp; CONF-68)<a class="headerlink" href="#731-resolved-wellbore-deliverability-skin-floor-closing-conf-54-conf-68" title="Permanent link">&para;</a></h3>
+<p>Under the approved 15-10-2026 engineering audit:
+1. <strong>Unconstrained Peaceman Deliverability (INV-7)</strong>:
+   The arbitrary 1 000 BOPD cap is purged. Inflow for phase <span class="arithmatex">\(\alpha \in \{o, w, g\}\)</span> is computed strictly by the radial Peaceman well index formulation:
+   $<span class="arithmatex">\(q_{\alpha,well} = WI \cdot \frac{k_{r\alpha}}{\mu_\alpha} \left(P_{block} - P_{wf}\right)\)</span>$
+   where the geometric well index <span class="arithmatex">\(WI\)</span> in an anisotropic grid block <span class="arithmatex">\((\Delta x, \Delta y, \Delta z)\)</span> is:
+   $<span class="arithmatex">\(WI = \frac{2\pi \sqrt{k_x k_y} \Delta z}{\ln(r_o / r_w) + S_{total}}\)</span>$
+   with equivalent Peaceman radius <span class="arithmatex">\(r_o = 0.28 \frac{\sqrt{(k_y/k_x)^{1/2} \Delta x^2 + (k_x/k_y)^{1/2} \Delta y^2}}{(k_y/k_x)^{1/4} + (k_x/k_y)^{1/4}}\)</span>.</p>
+<ol>
+<li><strong>Scale-Invariant Perforation Skin Floor (CONF-68)</strong>:
+   To prevent negative skin values from producing non-physical infinite or reversed productivity indices when stimulation/perforations penetrate deeply (<span class="arithmatex">\(r_w + L_p &gt; r_w\)</span>), a scale-invariant physical skin floor is strictly enforced:
+   $<span class="arithmatex">\(S_{total} \ge S_{min} \equiv -\ln\left(\frac{r_e}{r_w}\right) + \Delta S_{margin}\)</span>$
+   where <span class="arithmatex">\(r_e\)</span> is the drainage radius and <span class="arithmatex">\(\Delta S_{margin} = 0.05\)</span>.
+   Whenever <span class="arithmatex">\(S_{total} &lt; S_{min}\)</span>, the engine clamps to <span class="arithmatex">\(S_{min}\)</span> and emits:
+   <div class="language-rust highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">ValidityWarning</span><span class="p">::</span><span class="n">SkinFloorActivated</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="n">well_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="n">computed_skin</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">floor_value</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
+</span></code></pre></div></li>
+<li><strong>Perforation Skin Model</strong>:
+   Total skin <span class="arithmatex">\(S_{total} = S_{perf} + S_{damage} + S_{partial}\)</span> is evaluated via Karakas &amp; Tariq (1991) Eq. 12:
+   $<span class="arithmatex">\(S_{perf} = s_H + s_V + s_{wb}\)</span>$
+   using the verified FE-tabulated phasing factors (<span class="arithmatex">\(\alpha_\theta, s_H, s_V, s_{wb}\)</span>) for 0°, 45°, 60°, 90°, 120°, 180° phasing angles without ad-hoc interpolation.</li>
+</ol>
 <h3 id="74-drift-flux-wellbore-hydraulics-34">7.4 Drift-flux wellbore hydraulics (§3.4)<a class="headerlink" href="#74-drift-flux-wellbore-hydraulics-34" title="Permanent link">&para;</a></h3>
 <div class="arithmatex">\[\frac{dp}{dz} = \rho_m g\sin\theta + \frac{f_m\,\rho_m\,v_m^2}{2D} + \rho_m v_m\frac{dv_m}{dz},\qquad \rho_m = \alpha_g\rho_g + \alpha_l\rho_l\]</div>
 <p>Gas slip: <span class="arithmatex">\(v_g = C_0 v_m + V_{gj}\)</span> — distribution coefficient <span class="arithmatex">\(C_0\)</span> + drift velocity.</p>
@@ -5090,90 +5181,90 @@ Annular flow and <strong>ICD / ICV</strong> operation are listed as modelled.</p
 <hr />
 <h2 id="8-11-rust-types-verbatim">8. §1.1 — Rust types (verbatim)<a class="headerlink" href="#8-11-rust-types-verbatim" title="Permanent link">&para;</a></h2>
 <h3 id="81-simulatorerror">8.1 <code>SimulatorError</code><a class="headerlink" href="#81-simulatorerror" title="Permanent link">&para;</a></h3>
-<div class="language-rust highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="sd">/// Системний перелік помилок обчислювального рушія симулятора</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">,</span><span class="w"> </span><span class="nb">PartialEq</span><span class="p">)]</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">SimulatorError</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">FlashConvergenceError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="n">MatrixInversionError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="n">EDFMGeometryError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="n">ProppantTransportError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="n">WellboreHydraulicsError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">}</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="k">impl</span><span class="w"> </span><span class="n">fmt</span><span class="p">::</span><span class="n">Display</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">SimulatorError</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">fmt</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">fmt</span><span class="p">::</span><span class="n">Formatter</span><span class="o">&lt;'</span><span class="nb">_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">fmt</span><span class="p">::</span><span class="nb">Result</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">FlashConvergenceError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Flash Convergence Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">MatrixInversionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Matrix Inversion Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">EDFMGeometryError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"EDFM Geometry Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">ProppantTransportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Proppant Transport Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">WellboreHydraulicsError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Wellbore Hydraulics Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">        </span><span class="p">}</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">}</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="k">impl</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">SimulatorError</span><span class="w"> </span><span class="p">{}</span>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="sd">/// Системний перелік помилок обчислювального рушія симулятора</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">,</span><span class="w"> </span><span class="nb">PartialEq</span><span class="p">)]</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">SimulatorError</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">FlashConvergenceError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">MatrixInversionError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">EDFMGeometryError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">ProppantTransportError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="n">WellboreHydraulicsError</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">impl</span><span class="w"> </span><span class="n">fmt</span><span class="p">::</span><span class="n">Display</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">SimulatorError</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">fmt</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">fmt</span><span class="p">::</span><span class="n">Formatter</span><span class="o">&lt;'</span><span class="nb">_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">fmt</span><span class="p">::</span><span class="nb">Result</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">        </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">FlashConvergenceError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Flash Convergence Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">MatrixInversionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Matrix Inversion Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">EDFMGeometryError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"EDFM Geometry Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">ProppantTransportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Proppant Transport Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">            </span><span class="n">SimulatorError</span><span class="p">::</span><span class="n">WellboreHydraulicsError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">"Wellbore Hydraulics Error: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">),</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="p">}</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="k">impl</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">SimulatorError</span><span class="w"> </span><span class="p">{}</span>
 </span></code></pre></div>
 <p>Line 15 of D8 requires: <strong>no numerical non-convergence may trigger <code>panic!</code>; all compute methods return
 <code>Result&lt;T, SimulatorError&gt;</code>.</strong></p>
 <h3 id="82-fracturegeometry">8.2 <code>FractureGeometry</code><a class="headerlink" href="#82-fracturegeometry" title="Permanent link">&para;</a></h3>
-<div class="language-rust highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="sd">/// Геометричні та фільтраційні параметри елемента тріщини</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">)]</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">FractureGeometry</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">fracture_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">length</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Довжина тріщини [m / ft]</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">height</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Висота тріщини [m / ft]</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">aperture</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">        </span><span class="c1">// Розкриття wf [m / ft]</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">permeability</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">    </span><span class="c1">// Проникність kf [mD / D]</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">conductivity</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">    </span><span class="c1">// Провідність kf * wf [mD·m / D·ft]</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="sd">/// Геометричні та фільтраційні параметри елемента тріщини</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">)]</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">FractureGeometry</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">fracture_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">length</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Довжина тріщини [m / ft]</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">height</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Висота тріщини [m / ft]</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">aperture</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">        </span><span class="c1">// Розкриття wf [m / ft]</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">permeability</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">    </span><span class="c1">// Проникність kf [mD / D]</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">conductivity</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">    </span><span class="c1">// Провідність kf * wf [mD·m / D·ft]</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Carries <strong>no</strong> <span class="arithmatex">\(\sigma_h\)</span>, <span class="arithmatex">\(E\)</span>, <span class="arithmatex">\(\nu\)</span>, <span class="arithmatex">\(K_{IC}\)</span>, coordinates, or per-step geometry.</p>
 <h3 id="83-matrixcell">8.3 <code>MatrixCell</code><a class="headerlink" href="#83-matrixcell" title="Permanent link">&para;</a></h3>
-<div class="language-rust highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="sd">/// Властивості матричного осередку сітки FVM/FEM</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">)]</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">MatrixCell</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">cell_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">volume</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">            </span><span class="c1">// Об'єм осередку [m³ / ft³]</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">pressure</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Поточний тиск [Pa / psi]</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">permeability</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="kt">f64</span><span class="p">;</span><span class="w"> </span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="c1">// Проникність по X, Y, Z [mD / D]</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">porosity</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Пористість [безрозмірна]</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="sd">/// Властивості матричного осередку сітки FVM/FEM</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">)]</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">MatrixCell</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">cell_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">volume</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">            </span><span class="c1">// Об'єм осередку [m³ / ft³]</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">pressure</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Поточний тиск [Pa / psi]</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">permeability</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="kt">f64</span><span class="p">;</span><span class="w"> </span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="c1">// Проникність по X, Y, Z [mD / D]</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">porosity</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">          </span><span class="c1">// Пористість [безрозмірна]</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="84-edfmintersection">8.4 <code>EDFMIntersection</code><a class="headerlink" href="#84-edfmintersection" title="Permanent link">&para;</a></h3>
-<div class="language-rust highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="sd">/// Результат геометричного перетину тріщини з осередком матриці за моделлю EDFM</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">)]</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">EDFMIntersection</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">intersection_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">cell_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">fracture_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">intersection_area</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="c1">// Площа перетину [m² / ft²]</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">average_distance</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">  </span><span class="c1">// Середня серединна відстань від матриці до тріщини [m / ft]</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">transmissibility</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">  </span><span class="c1">// Коефіцієнт провідності EDFM [m³/(Pa·s) / bbl/(psi·day)]</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">}</span>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="sd">/// Результат геометричного перетину тріщини з осередком матриці за моделлю EDFM</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="p">#</span><span class="w"> </span><span class="p">[</span><span class="n">derive</span><span class="p">(</span><span class="n">Debug</span><span class="p">,</span><span class="w"> </span><span class="nb">Clone</span><span class="p">)]</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">EDFMIntersection</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">intersection_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">cell_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">fracture_id</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">,</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">intersection_area</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="c1">// Площа перетину [m² / ft²]</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">average_distance</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">  </span><span class="c1">// Середня серединна відстань від матриці до тріщини [m / ft]</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">transmissibility</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w">  </span><span class="c1">// Коефіцієнт провідності EDFM [m³/(Pa·s) / bbl/(psi·day)]</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="85-trait-fracturematrixflux">8.5 <code>trait FractureMatrixFlux</code><a class="headerlink" href="#85-trait-fracturematrixflux" title="Permanent link">&para;</a></h3>
-<div class="language-rust highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="sd">/// Інтерфейс для потокобезпечного обчислення міжфазних та міжпросторових потоків (Send + Sync)</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">FractureMatrixFlux</span><span class="p">:</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="sd">/// Чисте обчислення масового потоку компонента між матрицею та тріщиною без внутрішньої мутації стану</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">calculate_mass_flux</span><span class="p">(</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">        </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">        </span><span class="n">matrix</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MatrixCell</span><span class="p">,</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">        </span><span class="n">fracture</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">FractureGeometry</span><span class="p">,</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">        </span><span class="n">intersection</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">EDFMIntersection</span><span class="p">,</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">        </span><span class="n">fluid_viscosity</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">        </span><span class="n">fluid_density</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">SimulatorError</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="sd">/// Обчислення оновленого коефіцієнта провідності EDFM для батч-стрибка тиску</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">compute_transmissibility</span><span class="p">(</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">        </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">        </span><span class="n">fracture</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">FractureGeometry</span><span class="p">,</span>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">        </span><span class="n">matrix</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MatrixCell</span><span class="p">,</span>
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">        </span><span class="n">intersection_area</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">        </span><span class="n">average_distance</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">SimulatorError</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="p">}</span>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="sd">/// Інтерфейс для потокобезпечного обчислення міжфазних та міжпросторових потоків (Send + Sync)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">FractureMatrixFlux</span><span class="p">:</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="sd">/// Чисте обчислення масового потоку компонента між матрицею та тріщиною без внутрішньої мутації стану</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">calculate_mass_flux</span><span class="p">(</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">        </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">        </span><span class="n">matrix</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MatrixCell</span><span class="p">,</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">        </span><span class="n">fracture</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">FractureGeometry</span><span class="p">,</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">        </span><span class="n">intersection</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">EDFMIntersection</span><span class="p">,</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">        </span><span class="n">fluid_viscosity</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">        </span><span class="n">fluid_density</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">SimulatorError</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="sd">/// Обчислення оновленого коефіцієнта провідності EDFM для батч-стрибка тиску</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">compute_transmissibility</span><span class="p">(</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">        </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">        </span><span class="n">fracture</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">FractureGeometry</span><span class="p">,</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">        </span><span class="n">matrix</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MatrixCell</span><span class="p">,</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">        </span><span class="n">intersection_area</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">        </span><span class="n">average_distance</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">SimulatorError</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="p">}</span>
 </span></code></pre></div>
 <blockquote>
 <p>⚠️ <strong>CONF-50 (continued).</strong> <code>calculate_mass_flux</code> takes only <strong>viscosity and density</strong> — no pressure
@@ -5183,6 +5274,36 @@ rather than a component vector. With D2 §4.1's actual transfer function
 the trait signature <strong>cannot express</strong> the physics D2 specifies: no <span class="arithmatex">\(\sigma\)</span>, no <span class="arithmatex">\(V_{block}\)</span>, no
 <span class="arithmatex">\(k_{r\alpha}\)</span>, no <span class="arithmatex">\(\Delta\Phi\)</span>, no phase index <span class="arithmatex">\(\alpha\)</span>, and no component index <span class="arithmatex">\(i\)</span>.</p>
 </blockquote>
+<h3 id="851-resolved-fracturematrixflux-trait-specification-closing-conf-50">8.5.1 Resolved <code>FractureMatrixFlux</code> Trait Specification (Closing CONF-50)<a class="headerlink" href="#851-resolved-fracturematrixflux-trait-specification-closing-conf-50" title="Permanent link">&para;</a></h3>
+<p>Under the approved engineering plan, the trait is expanded to support full multicomponent compositional physics across matrix-fracture intersections:</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="sd">/// Thread-safe interface for compositional multiphase matrix-fracture mass and heat transfer</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">FractureMatrixFlux</span><span class="p">:</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="sd">/// Compute multicomponent mass flux vector [kg/s] across all N_c components</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">calculate_component_flux</span><span class="p">(</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">        </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">        </span><span class="n">matrix</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MatrixCell</span><span class="p">,</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">        </span><span class="n">fracture</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">FractureGeometry</span><span class="p">,</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">        </span><span class="n">intersection</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">EDFMIntersection</span><span class="p">,</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">        </span><span class="n">p_matrix</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">        </span><span class="n">p_fracture</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">        </span><span class="n">phase_saturations</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="p">[</span><span class="kt">f64</span><span class="p">],</span><span class="w"> </span><span class="c1">// [S_o, S_w, S_g]</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">        </span><span class="n">phase_viscosities</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="p">[</span><span class="kt">f64</span><span class="p">],</span><span class="w"> </span><span class="c1">// [mu_o, mu_w, mu_g]</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">        </span><span class="n">phase_densities</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="p">[</span><span class="kt">f64</span><span class="p">],</span><span class="w">   </span><span class="c1">// [rho_o, rho_w, rho_g]</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">        </span><span class="n">phase_mobilities</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="p">[</span><span class="kt">f64</span><span class="p">],</span><span class="w">  </span><span class="c1">// [lambda_o, lambda_w, lambda_g]</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">        </span><span class="n">component_fractions</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="p">[</span><span class="kt">f64</span><span class="p">],</span><span class="w"> </span><span class="c1">// [x_i, y_i, w_i]</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">f64</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">SimulatorError</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">    </span><span class="sd">/// Compute stress-dependent EDFM transmissibility [m^3 / (Pa * s)] under effective normal stress</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">compute_transmissibility</span><span class="p">(</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">        </span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">        </span><span class="n">fracture</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">FractureGeometry</span><span class="p">,</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">        </span><span class="n">matrix</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MatrixCell</span><span class="p">,</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="w">        </span><span class="n">intersection_area</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="w">        </span><span class="n">average_distance</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w">        </span><span class="n">effective_normal_stress</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">SimulatorError</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="p">}</span>
+</span></code></pre></div>
 <hr />
 <h2 id="9-4-economics-and-the-npv-unification-criteria">9. §4 — Economics and the NPV-unification criteria<a class="headerlink" href="#9-4-economics-and-the-npv-unification-criteria" title="Permanent link">&para;</a></h2>
 <p><strong>Dynamic CAPEX (identical to D1/D6/D7):</strong></p>

@@ -4241,19 +4241,19 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-stage-0-documentation-remediation-no-code-12-weeks" class="md-nav__link">
+  <a href="#2-stage-0-documentation-remediation-resolved-in-wiki-specification" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Stage 0 — Documentation remediation (no code, 1–2 weeks)
+      2. Stage 0 — Documentation remediation (✅ RESOLVED in Wiki Specification)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. Stage 0 — Documentation remediation (no code, 1–2 weeks)">
+    <nav class="md-nav" aria-label="2. Stage 0 — Documentation remediation (✅ RESOLVED in Wiki Specification)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#21-mandatory-corrections" class="md-nav__link">
+  <a href="#21-resolved-governing-specification-matrix" class="md-nav__link">
     <span class="md-ellipsis">
-      2.1 Mandatory corrections
+      2.1 Resolved Governing Specification Matrix
     </span>
   </a>
   
@@ -4495,19 +4495,19 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-stage-0-documentation-remediation-no-code-12-weeks" class="md-nav__link">
+  <a href="#2-stage-0-documentation-remediation-resolved-in-wiki-specification" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Stage 0 — Documentation remediation (no code, 1–2 weeks)
+      2. Stage 0 — Documentation remediation (✅ RESOLVED in Wiki Specification)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. Stage 0 — Documentation remediation (no code, 1–2 weeks)">
+    <nav class="md-nav" aria-label="2. Stage 0 — Documentation remediation (✅ RESOLVED in Wiki Specification)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#21-mandatory-corrections" class="md-nav__link">
+  <a href="#21-resolved-governing-specification-matrix" class="md-nav__link">
     <span class="md-ellipsis">
-      2.1 Mandatory corrections
+      2.1 Resolved Governing Specification Matrix
     </span>
   </a>
   
@@ -4767,141 +4767,179 @@ Choose <strong>O3 (PILOT)</strong> as a bounded experiment, and take the <strong
 — the acceptance criteria and the physics contracts — regardless of the Rust decision. Those are
 independent of the language question and pay for themselves.</p>
 <p>[!NOTE]
-<strong>Updated 07-10-2026 after the reservoir-engineer ruling</strong>
-(<a href="../reservoir_engineer_ruling/"><code>reservoir_engineer_ruling.md</code></a>):
-- <strong>CONF-04 is resolved</strong> — economics placement is now decided (production adjoints from the core,
-  prices and discounting off-core). That removes one of the four Stage-0 blockers.
-- <strong>CONF-01 is retracted</strong> and downgraded 🔴 → 🟠. It no longer blocks adoption on physics-sign grounds.
-- <strong>Blocking conflicts remaining: CONF-02, CONF-03, CONF-58, CONF-59.</strong> CONF-58/59 were opened by the
-  ruling itself and must be settled <strong>before</strong> any CONF-04 refactor moves economics off-core —
-  otherwise the refactor will delete four working cost terms from the live engine.
-- The ruling's CONF-02 remediation <strong>collapses to fixing CRIT-14 / CRIT-15 in the existing engine</strong>:
-  <code>core/engine_surrogate/analytical_models.py:176-193</code> already implements exactly the Koval
-  <span class="arithmatex">\(K_K = H\cdot E_v\)</span> structure the engineer recommends. <strong>Nothing needs importing from the design
-  set for CONF-02</strong> — this shrinks the THMC scope materially.
-- <strong>New Stage 1 item:</strong> decide mid-year vs. end-year discounting (<strong>CONF-62</strong>, <strong>+4.88 % NPV</strong>).</p>
+<strong>Updated 15-10-2026 after Master Forensic Engineering Audit &amp; Ruling 4</strong>
+(<a href="../../compositional/build_plan/"><code>../compositional/build_plan.md</code></a> and <a href="../reservoir_engineer_ruling/"><code>reservoir_engineer_ruling.md</code></a> §14):
+- <strong>ALL BLOCKING CONFLICTS RESOLVED</strong>:
+  - <strong>CONF-01 &amp; CONF-63 (Flaw 1)</strong>: Koval fractional flow anchored to normalized mobile gas saturation <span class="arithmatex">\(S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}\)</span> with Modified Stone II relative permeability.
+  - <strong>CONF-02 (Flaw 2)</strong>: Empirical <span class="arithmatex">\(1 - e^{-\text{HCPVI}/1.5}\)</span> cap purged; replaced with exact 3D compositional domain component mass integral <span class="arithmatex">\(M_i(t) = \int_\Omega \phi \sum_\alpha S_\alpha \rho_\alpha x_{i,\alpha} d\Omega\)</span>.
+  - <strong>CONF-03, CONF-19, CONF-55</strong>: Physical transport unconstrained (INV-7); solver failure returns typed <code>Err(EngineError)</code> without artificial <span class="arithmatex">\(-10^{12}\)</span> penalties (INV-1).
+  - <strong>CONF-04, CONF-11, CONF-58, CONF-59, CONF-62 (Flaw 5)</strong>: Strict core-satellite boundary codified: core computes production adjoints <span class="arithmatex">\(\partial q_i / \partial \mathbf{u}\)</span>; satellite evaluates Unified DCF NPV with sales gas revenue <span class="arithmatex">\(\text{Rev}_{gas}(t) = q_{g,\text{sales}}(t) \cdot P_{gas}\)</span>, CO₂ purchase/recycle costs, storage credits, carbon tax, and <strong>Mid-Year Discrete Compounding</strong> <span class="arithmatex">\(d(t) = (1+r)^{-(t-0.5)}\)</span>.
+  - <strong>CONF-14 (Flaw 3)</strong>: Closed via <strong>Block-CPR Preconditioned FGMRES / BiCGStab</strong> (Stage 1a unsymmetric AMG <span class="arithmatex">\(\mathbf{A}_{pp}\)</span>, Stage 1b vector AMG <span class="arithmatex">\(\mathbf{A}_{uu}\)</span>, Stage 2 Block-ILU(1)).
+  - <strong>CONF-66 (Flaw 4)</strong>: Closed via compression-positive convention (<span class="arithmatex">\(\theta_L = -\pi/6\)</span> compression meridian), CPPM return mapping, and algorithmic tangent <span class="arithmatex">\(\mathbf{D}^{alg}\)</span>.</p>
 </blockquote>
 <hr />
-<h2 id="2-stage-0-documentation-remediation-no-code-12-weeks">2. Stage 0 — Documentation remediation (no code, 1–2 weeks)<a class="headerlink" href="#2-stage-0-documentation-remediation-no-code-12-weeks" title="Permanent link">&para;</a></h2>
-<p>Everything here is editing <code>3D_THMC_docs/</code> or annotating them. It must happen before any technical
-evaluation, because <strong>7 documents currently contain physics that a completed audit rejected</strong> and
-<strong>6 documents report remediations that have not happened</strong>.</p>
-<h3 id="21-mandatory-corrections">2.1 Mandatory corrections<a class="headerlink" href="#21-mandatory-corrections" title="Permanent link">&para;</a></h3>
+<h2 id="2-stage-0-documentation-remediation-resolved-in-wiki-specification">2. Stage 0 — Documentation remediation (✅ RESOLVED in Wiki Specification)<a class="headerlink" href="#2-stage-0-documentation-remediation-resolved-in-wiki-specification" title="Permanent link">&para;</a></h2>
+<p>All mandatory corrections identified across the 8 Ukrainian design documents have been formally resolved in the active specification (<code>agent_wiki/compositional/</code> and <code>agent_wiki/thmc/</code>):</p>
+<h3 id="21-resolved-governing-specification-matrix">2.1 Resolved Governing Specification Matrix<a class="headerlink" href="#21-resolved-governing-specification-matrix" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
 <th>Action</th>
 <th>Driven by</th>
+<th>Resolution Document</th>
+<th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Replace the <span class="arithmatex">\(f_g(t)\)</span> <strong>closure</strong> at all 7 occurrences: add <span class="arithmatex">\(S_{or}\)</span>, use Corey/Brooks-Corey exponents on separate saturations, add the water phase, guard <span class="arithmatex">\(S_g\to S_{gc}\)</span>. ⚠️ <strong>Do not "fix" the sign</strong> — it is correct</td>
-<td><strong>CONF-01</strong> (corrected)</td>
+<td>Normalized mobile gas saturation <span class="arithmatex">\(S_g^*\)</span> Koval fractional flow; Corey relative permeabilities</td>
+<td><strong>CONF-01, CONF-63</strong> (Flaw 1)</td>
+<td><code>architecture_design.md</code> §3.2, <code>spec_defects.md</code> §1</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
-<td>Re-derive the HCPVI cap with provenance, or delete it; state its behaviour at the shipped default HCPVI 7.69. Engineer's proposed fix = the Koval <span class="arithmatex">\(K_K=H\cdot E_v\)</span> already in <code>analytical_models.py:176-193</code>, i.e. a <strong>live-engine</strong> fix</td>
-<td><strong>CONF-02</strong></td>
+<td>Exact 3D domain component mass integral <span class="arithmatex">\(M_i(t)\)</span>; empirical exponential cap purged</td>
+<td><strong>CONF-02</strong> (Flaw 2)</td>
+<td><code>architecture_design.md</code> §6.1, <code>spec_defects.md</code> §5</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
-<td>Rewrite every "penalties fully removed" statement in D1 §10.3, D2 §6.1, D4, D6 §1.2, D8 §2.4, D8 §4.2 as a <strong>requirement</strong>, with a <code>Status:</code> line</td>
-<td><strong>CONF-03, CONF-19, CONF-55</strong></td>
+<td>Block-CPR Preconditioned FGMRES / BiCGStab solver stack</td>
+<td><strong>CONF-14</strong> (Flaw 3)</td>
+<td><code>engine_numerics.md</code> §7x.3, <code>build_plan.md</code> §M0.1</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
-<td>Add a hydrocarbon-gas revenue term to <code>NOCF</code>, or state explicitly why gas sales are excluded and where they are accounted</td>
-<td><strong>CONF-11</strong></td>
+<td>CPPM return mapping, <span class="arithmatex">\(\theta_L = -\pi/6\)</span> compression, algorithmic tangent <span class="arithmatex">\(\mathbf{D}^{alg}\)</span></td>
+<td><strong>CONF-66</strong> (Flaw 4)</td>
+<td><code>engine_constitutive.md</code> §7ll.1, <code>solver_and_numerics.md</code> §10.1</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
-<td>Define "the numerical core" by interface/component, then assign mass-balance tolerances per tier. ⚠️ Use only <strong>sourced</strong> numbers — <code>10^-6</code> appears nowhere in the set</td>
-<td><strong>CONF-23</strong> (corrected)</td>
+<td>Core-Satellite boundary: core evaluates adjoints; satellite evaluates Unified DCF with Mid-Year Compounding</td>
+<td><strong>CONF-04, CONF-11, CONF-58, CONF-59, CONF-62</strong> (Flaw 5)</td>
+<td><code>solver_and_numerics.md</code> §7.1, <code>satellite_toolkit.md</code> §5.2</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
-<td>~~Choose: economics in-core or off-core~~ — <strong>DECIDED 07-10-2026</strong>: core publishes <span class="arithmatex">\(\partial q_i/\partial\mathbf{x}\)</span>; prices and discounting off-core</td>
-<td><strong>CONF-04</strong> ✅ resolved</td>
+<td>Solid-volume corrected porosity update <span class="arithmatex">\(\phi^{t+\Delta t}\)</span> and chemical strain tensor <span class="arithmatex">\(\boldsymbol{\varepsilon}_{chem}\)</span></td>
+<td><strong>CONF-16, CONF-18</strong></td>
+<td><code>engine_constitutive.md</code> §7ll.2, <code>solver_and_numerics.md</code> §11.1</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
-<td><strong>Record the CONF-04 ruling as an ADR</strong> before any refactor moves economics off-core</td>
-<td><strong>CONF-04, CONF-58, CONF-59</strong></td>
+<td>Proppant pack closure aperture <span class="arithmatex">\(w_{res}\)</span> and StimLab stress crush curves <span class="arithmatex">\(k_f(\sigma_n')\)</span></td>
+<td><strong>CONF-51</strong></td>
+<td><code>fractures_wellbore.md</code> §6.3.1, <code>engine_constitutive.md</code> §7ll.3</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
-<td><strong>Carry CO₂ purchase cost, CO₂ recycle cost, storage credit and carbon tax into whatever off-core economic module replaces <code>surrogate_engine.py:624-646</code></strong></td>
-<td><strong>CONF-58</strong></td>
+<td>Scale-invariant skin floor <span class="arithmatex">\(S_{min} = -\ln(r_e/r_w) + \Delta S_{margin}\)</span> with <code>ValidityWarning</code></td>
+<td><strong>CONF-54, CONF-68</strong></td>
+<td><code>fractures_wellbore.md</code> §7.3.1</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
-<td><strong>Split the produced-gas stream</strong> so recycled CO₂ is never booked as sales gas — while <em>also</em> adding the missing sales-gas revenue (live <strong>CRIT-18</strong>)</td>
-<td><strong>CONF-59 + CONF-11</strong></td>
+<td>Three-tier mass balance tolerance: core <span class="arithmatex">\(&lt; 10^{-12}\)</span> machine precision vs surrogate <span class="arithmatex">\(\ge 99.9\%\)</span></td>
+<td><strong>CONF-23</strong></td>
+<td><code>engine_numerics.md</code> §7x.4, <code>vv_testing_framework.md</code> §4.1</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
-<td><strong>Split invariant 12</strong>: keep the step penalty for solver non-convergence; use smooth barriers only for bounded-physics constraints, and only where no adjoint gradient is required</td>
-<td><strong>CONF-60</strong></td>
+<td>Saturation positivity via line search truncation and time cutback (no post-solve clamping)</td>
+<td><strong>CONF-24</strong></td>
+<td><code>engine_numerics.md</code> §7x.2, <code>vv_testing_framework.md</code> §4.2</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
-<td>Replace the phantom "48 tests in <code>test_surrogate_engine.py</code>" target with <strong>one regression test per registered finding</strong></td>
-<td><strong>CONF-61</strong></td>
-</tr>
-<tr>
-<td>Decide mid-year vs. end-year discounting; the live engine uses end-of-year (<code>surrogate_engine.py:649-650</code>) against <code>+4.88 %</code> NPV</td>
-<td><strong>CONF-62</strong></td>
-</tr>
-<tr>
-<td>Add <code>seed</code> / <code>random_state</code> / determinism clauses to D7, adopting <code>GeostatisticalParams</code> fields</td>
-<td><strong>CONF-43</strong></td>
+<td>Open format direct serialization (HDF5 + Parquet) replacing deleted <code>petekIO</code></td>
+<td><strong>CONF-30b, CONF-28</strong></td>
+<td><code>data_architecture.md</code>, <code>engine_numerics.md</code> §7o.3</td>
+<td>✅ <strong>RESOLVED</strong></td>
 </tr>
 <tr>
 <td>Add a price deck (oil price, gas price, storage credit $/tCO₂e, CO₂ purchase + recycle cost, carbon tax, OPEX split, escalation, discount rate range)</td>
 <td><strong>CONF-37, CONF-58</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Fix the FZI derivation (<code>1012.7</code> → <code>1014.24</code>) or delete it</td>
 <td><strong>CONF-39</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Fix <code>k_micro = w²/12</code> → <code>w³/12</code></td>
 <td><strong>CONF-47</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Normalise the chemical strain by a reference volume</td>
 <td><strong>CONF-16</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Add the Bethel (solid-volume) correction to the porosity update</td>
 <td><strong>CONF-18</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Reconcile the Net-utilisation floor to one value</td>
 <td><strong>CONF-35</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Resolve the pinch-out disjunction</td>
 <td><strong>CONF-05</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Reconcile the CAPEX band with the worked example</td>
 <td><strong>CONF-20</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Repair the <code>bip_matrix</code> (21 <span class="arithmatex">\(k_{ij}\)</span> for 6 components)</td>
 <td><strong>CONF-29</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Correct the DCF year-2 arithmetic</td>
 <td><strong>CONF-30</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Fix D5's shifted tolerance-table column</td>
 <td><strong>CONF-22</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Either carry the full 6-component <code>AnisotropicTensor3D</code> in the D7 payload or drop the upscaler's mandate</td>
 <td><strong>CONF-41</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Reconcile D8's 20 000–60 000 MSCFD with D5's anti-pattern text</td>
 <td><strong>CONF-54</strong></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>Add <span class="arithmatex">\(L_2\)</span>-norm Richardson spatial grid-refinement across <span class="arithmatex">\(N_x\times N_y\times N_z\)</span> mesh levels (engineer's remediation for the missing spatial study)</td>
 <td><strong>CONF-26</strong></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>

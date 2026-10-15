@@ -5468,9 +5468,122 @@ until the engine is verified.</p>
 <td>Remaining open</td>
 <td><strong>1</strong> — <code>duckdb</code> vs <code>libsql</code> in the browser (UI scope)</td>
 </tr>
+</tbody>
+</table>
+<hr />
+<h2 id="14-ruling-4-15-10-2026-final-adjudication-of-all-numerical-physical-blockers">14. Ruling 4 (15-10-2026) — Final Adjudication of All Numerical &amp; Physical Blockers<a class="headerlink" href="#14-ruling-4-15-10-2026-final-adjudication-of-all-numerical-physical-blockers" title="Permanent link">&para;</a></h2>
+<p>A comprehensive engineering audit adjudicated the remaining 17 open decisions, finalizing the mathematical formulations, physical limits, and numerical gates for the 3D THMC engine:</p>
+<table>
+<thead>
 <tr>
-<td>Outstanding on the register</td>
-<td>CONF-13, CONF-14, CONF-16, CONF-18, CONF-25, CONF-47, CONF-51, CONF-08, CONF-62</td>
+<th style="text-align: center;">#</th>
+<th style="text-align: left;">Conflict / Decision</th>
+<th style="text-align: left;">Engineering Adjudication &amp; Governing Specification</th>
+<th style="text-align: center;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>1</strong></td>
+<td style="text-align: left;"><strong>Pinch-Out Handling (CONF-05)</strong></td>
+<td style="text-align: left;"><strong>NNC Generation across Pinched Inactive Layers:</strong> Standardize strictly on minimum thickness threshold <span class="arithmatex">\(\Delta z_{\text{pinch}} = 1.0\text{ mm}\)</span> (ECLIPSE <code>MINDZ</code> standard). When a cell's thickness falls below <span class="arithmatex">\(\Delta z_{\text{pinch}}\)</span>, collapse/deactivate the cell and generate an explicit Non-Neighbor Connection (NNC) transmissibility between the bounding active blocks: <span class="arithmatex">\(T_{\text{NNC}} = A_{\text{overlap}} / (d_1/k_{z,1} + d_2/k_{z,2})\)</span>. Deactivating cells without NNCs is prohibited (INV-1).</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: left;"><strong>3-Phase Rel-Perm (CONF-40)</strong></td>
+<td style="text-align: left;"><strong>Modified Stone II with Land Hysteresis:</strong> Baker linear interpolation rejected. DTO payload carries 11 parameters: <span class="arithmatex">\(\{k_{rw}^0, k_{ro}^0, k_{rg}^0, n_w, n_{ow}, n_{og}, n_g, S_{wi}, S_{orw}, S_{org}, S_{gc}\}\)</span>. Mandate Land capillary hysteresis on non-wetting phase <span class="arithmatex">\(k_{rg}\)</span> and <span class="arithmatex">\(k_{ro}\)</span> during WAG cycling to model trapped gas saturation <span class="arithmatex">\(S_{gr}^t = S_{g,max} / (1 + C_{Land} S_{g,max})\)</span>.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>3</strong></td>
+<td style="text-align: left;"><strong>Proppant Pack &amp; Aperture (CONF-51)</strong></td>
+<td style="text-align: left;"><strong>StimLab Stress-Dependent Crushing:</strong> Residual aperture <span class="arithmatex">\(w_{res} = \max(w_{elastic}, \frac{C_{prop}}{\rho_{prop}(1-\phi_{pack})} - 2 d_{embed})\)</span> locked. EDFM fracture-matrix transmissibility <span class="arithmatex">\(T_{NNC}\)</span> incorporates stress-dependent permeability <span class="arithmatex">\(k_{pack}(\sigma_n')\)</span> from StimLab proppant crushing tables.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>4</strong></td>
+<td style="text-align: left;"><strong>Karakas &amp; Tariq Skin (CONF-68)</strong></td>
+<td style="text-align: left;"><strong>Asymptotic Skin Floor:</strong> Eq. 12 adopted with <span class="arithmatex">\(S_{min} = -\ln(r_e/r_w) + \Delta S_{margin}\)</span>. If input <span class="arithmatex">\(S &lt; S_{min}\)</span>, the engine clamps to <span class="arithmatex">\(S_{min}\)</span> and emits <code>ValidityWarning::SkinFloorActivated</code> (INV-1).</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>5</strong></td>
+<td style="text-align: left;"><strong>Baseline Price Deck (CONF-37)</strong></td>
+<td style="text-align: left;"><strong>Approved Economic Deck:</strong> Crude $75/bbl, Sales Gas $3.50/MSCF, 45Q Storage Credit $85/t, CO₂ Purchase $50/t, CO₂ Recycle OPEX $15/t, Produced Water Disposal $1.25/bbl, Water Injection $0.75/bbl, Carbon Leakage Tax $120/t. Discounting locked to <strong>Mid-Year Discrete Compounding</strong> <span class="arithmatex">\(d(t) = (1+r)^{-(t-0.5)}\)</span>, <span class="arithmatex">\(r = 10\%\)</span>.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>6</strong></td>
+<td style="text-align: left;"><strong>Spatial Convergence (CONF-26)</strong></td>
+<td style="text-align: left;"><strong>Mandatory M3 Gate:</strong> MPFA-O grid refinement sequence <span class="arithmatex">\(N \in \{16^3, 32^3, 64^3, 128^3\}\)</span>. Require spatial convergence order <span class="arithmatex">\(p \ge 1.8\)</span> on smooth pressure fields and TVD monotonic shock resolution (zero numerical oscillations) across Buckley-Leverett displacement fronts.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>7</strong></td>
+<td style="text-align: left;"><strong>Input Mutation Guard (CONF-32)</strong></td>
+<td style="text-align: left;"><strong>Zero Silent Mutation (INV-1, INV-7):</strong> Raw user input DTO must remain bit-identically preserved. Any required <span class="arithmatex">\(C^1\)</span>-smoothing (PCHIP Hermite) or pattern generation outputs an explicit, versioned <code>InputAuditTrail</code> diff structure and emits a <code>ValidityWarning</code>.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>8</strong></td>
+<td style="text-align: left;"><strong>SEPD Decline Model (CONF-33)</strong></td>
+<td style="text-align: left;"><strong>Terminal Exponential Cutoff:</strong> Prevent EUR inflation from heavy tails: <span class="arithmatex">\(q(t) = q_i \exp \left[ -(t/\tau)^n - D_\infty t \right]\)</span> with <span class="arithmatex">\(D_\infty \ge 5\%/\text{yr}\)</span>.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>9</strong></td>
+<td style="text-align: left;"><strong>Permeability Tensor (CONF-41)</strong></td>
+<td style="text-align: left;"><strong>Full 6-Component Symmetric Tensor:</strong> DTO payload carries <code>AnisotropicTensor3D</code> <span class="arithmatex">\(\{K_{xx}, K_{yy}, K_{zz}, K_{xy}, K_{xz}, K_{yz}\}\)</span>. MPFA-O directly consumes all 6 components during transmissibility assembly.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>10</strong></td>
+<td style="text-align: left;"><strong>Grid Geometry &amp; NTG (CONF-42)</strong></td>
+<td style="text-align: left;"><strong>Mandatory D7 Grid Fields:</strong> <span class="arithmatex">\(NI, NJ, NK\)</span>, cell geometry (<span class="arithmatex">\(DX, DY, DZ\)</span> or <span class="arithmatex">\(ZCORN, COORD\)</span>), <span class="arithmatex">\(NTG(x,y,z) \in [0.0, 1.0]\)</span>, <span class="arithmatex">\(\phi(x,y,z)\)</span>, <span class="arithmatex">\(\mathbf{K}(x,y,z)\)</span>, <span class="arithmatex">\(Z_{\text{top}}(x,y)\)</span>.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>11</strong></td>
+<td style="text-align: left;"><strong>Backwashing Law (CONF-46)</strong></td>
+<td style="text-align: left;"><strong>Hydrodynamic Shear-Stress Detachment:</strong> <span class="arithmatex">\(\frac{\partial \sigma_p}{\partial t} = -\lambda_{\text{wash}} \|\mathbf{u}_{\text{reverse}}\| \sigma_p\)</span> for <span class="arithmatex">\(\mathbf{u} \cdot \mathbf{n} &lt; 0\)</span>, coupled to Verma–Pruess permeability recovery. Regularized step functions enforce <span class="arithmatex">\(C^1\)</span> velocity transitions.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>12</strong></td>
+<td style="text-align: left;"><strong>Penalty Function Split (CONF-60)</strong></td>
+<td style="text-align: left;"><strong>Adjoint Gradient Compatibility:</strong> Solver failures use hard step penalties (<span class="arithmatex">\(-10^{12}\)</span>) and mark run as <code>FAILED</code>. Physical bounded constraints use <span class="arithmatex">\(C^2\)</span>-smooth quadratic exterior penalties <span class="arithmatex">\(P(x) = \frac{1}{2}\mu_{\text{barrier}}\max(0, x-x_{\text{lim}})^2\)</span> to guarantee well-conditioned adjoint sensitivities <span class="arithmatex">\(\partial q_i / \partial \mathbf{u}\)</span> at M7f.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>13</strong></td>
+<td style="text-align: left;"><strong>Time-Step Symbols (CONF-08)</strong></td>
+<td style="text-align: left;"><strong>Symbol Disambiguation:</strong> <span class="arithmatex">\(\Delta t_{\text{macro}}\)</span> (3D reservoir transport), <span class="arithmatex">\(\delta t_{\text{zoom}}\)</span> (Schwarz near-well sub-domain), <span class="arithmatex">\(\delta t_{\text{well}}\)</span> (1D Drift-Flux wellbore hydraulics). Coupling tolerance $</td>
+<td style="text-align: center;">Q_{\text{perf,well}}^{\text{cum}} - Q_{\text{perf,grid}}^{\text{cum}}</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>14</strong></td>
+<td style="text-align: left;"><strong>CAPEX Band (CONF-20)</strong></td>
+<td style="text-align: left;"><strong>Band Reconciliation:</strong> Narrative updated to $40M–$100M ($90.95M tagged as offshore expansion case). Satellite emits <code>ValidityWarning::CAPEXBandExceeded</code> when exceeded.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>15</strong></td>
+<td style="text-align: left;"><strong>GPU Flash Protocol (CONF-06)</strong></td>
+<td style="text-align: left;"><strong>Deferred to M7e:</strong> "1,371×" is an aspirational target. Benchmarks require hardware SKUs, batch sizes, and double-precision (<code>f64</code>) residual parity <span class="arithmatex">\(\|\mathbf{R}\|_\infty &lt; 10^{-10}\)</span> against CPU solvers.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>16</strong></td>
+<td style="text-align: left;"><strong>VT-EOS Density (CONF-49)</strong></td>
+<td style="text-align: left;"><strong>Closed by M1 Gate:</strong> Volume-translated PR/SRK (Baled et al., 2012) mandatory; MAPD <span class="arithmatex">\(\le 2.0\%\)</span> across 7–276 MPa, 278–533 K.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>17</strong></td>
+<td style="text-align: left;"><strong>Lode Meridian Convention (CONF-66)</strong></td>
+<td style="text-align: left;"><strong>Compression-Positive Corrected Anchors:</strong> Compression meridian is <span class="arithmatex">\(\theta_L = -\pi/6\)</span> (<span class="arithmatex">\(J_3 &gt; 0\)</span>); Extension meridian is <span class="arithmatex">\(\theta_L = +\pi/6\)</span> (<span class="arithmatex">\(J_3 &lt; 0\)</span>). CPPM return mapping with algorithmic elastoplastic tangent <span class="arithmatex">\(\mathbf{D}^{alg}\)</span>; convexity floor <span class="arithmatex">\(N_\kappa = g^2 + gg'' \ge \kappa_{\min} &gt; 0\)</span>.</td>
+<td style="text-align: center;"><strong>LOCKED</strong></td>
 </tr>
 </tbody>
 </table>

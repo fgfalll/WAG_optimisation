@@ -4517,7 +4517,7 @@ a pointer to its authority</strong> — never prose, never a summary of a summar
 <p><strong>Read it in full. It is ~9 KB / 160 lines on purpose</strong> — the documents it points at total <strong>1,087 KB</strong>
 and cannot be re-read end-to-end after a rollover.</p>
 </blockquote>
-<p><strong>As of 10-10-2026 · commit <code>37a0ffb</code> (engine work uncommitted at time of writing)</strong></p>
+<p><strong>As of 15-10-2026 · Implementation Plan Approved with Forensic Engineering Corrections</strong></p>
 <hr />
 <h2 id="0-read-in-this-order">0. Read in this order<a class="headerlink" href="#0-read-in-this-order" title="Permanent link">&para;</a></h2>
 <table>
@@ -4533,29 +4533,35 @@ and cannot be re-read end-to-end after a rollover.</p>
 <tr>
 <td>1</td>
 <td><strong>this file</strong></td>
-<td>6</td>
+<td>8</td>
 <td>survives rollover</td>
 </tr>
 <tr>
 <td>2</td>
+<td><a href="../build_plan/"><code>compositional/build_plan.md</code></a></td>
+<td>43</td>
+<td>🔵 <strong>APPROVED BUILD PLAN</strong> — M0→M7 milestones, Flaws 1–5 resolved, Block-CPR, D:\RAG mappings</td>
+</tr>
+<tr>
+<td>3</td>
 <td><a href="../"><code>compositional/README.md</code></a></td>
 <td>22</td>
 <td>scope + status</td>
 </tr>
 <tr>
-<td>3</td>
+<td>4</td>
 <td><a href="../engine_invariants/"><code>compositional/engine_invariants.md</code></a> <strong>§0 only</strong></td>
 <td>—</td>
 <td>⚠️ the file is split into 4; use its §0 index, never a linear read</td>
 </tr>
 <tr>
-<td>4</td>
-<td><a href="../build_plan/"><code>compositional/build_plan.md</code></a></td>
-<td>42</td>
-<td>current milestone + gates</td>
+<td>5</td>
+<td><a href="../../thmc/reservoir_engineer_ruling/"><code>../thmc/reservoir_engineer_ruling.md</code></a></td>
+<td>33</td>
+<td>🔵 <strong>ENGINEER RULINGS</strong> — Adjudications 1–4, 17 locked numerical &amp; physical closures</td>
 </tr>
 <tr>
-<td>5</td>
+<td>6</td>
 <td><a href="../spec_corrections_log/"><code>compositional/spec_corrections_log.md</code></a></td>
 <td><strong>269</strong></td>
 <td>⚠️ <strong>largest file in the repo.</strong> Query it by <code>C-nnn</code>, never read it linearly</td>
@@ -4584,11 +4590,11 @@ window on its own.</p>
 <tr>
 <td>Rust toolchain</td>
 <td>🔴 <strong>ABSENT</strong> — <code>cargo</code>, <code>rustc</code>, <code>rustup</code> all <code>NOT FOUND</code></td>
-<td>re-checked 10-10-2026</td>
+<td>re-checked 15-10-2026</td>
 </tr>
 <tr>
 <td>Current milestone</td>
-<td><strong>M0 not started</strong> — nothing implemented</td>
+<td><strong>M0 ready for kick-off</strong> — build plan approved</td>
 <td><a href="../build_plan/"><code>build_plan.md</code></a></td>
 </tr>
 <tr>
@@ -4605,6 +4611,11 @@ window on its own.</p>
 <td>Rust toolchain install</td>
 <td><strong>deferred by owner decision</strong> — do not install unprompted</td>
 <td>—</td>
+</tr>
+<tr>
+<td>Literature &amp; Decks</td>
+<td>✅ <strong>Available in <code>D:\RAG</code></strong> (129 files, incl. SPE 5 CMG GEM deck)</td>
+<td>mapped in <a href="../build_plan/"><code>build_plan.md</code></a> §M4.5 &amp; <a href="../../thmc/vv_testing_framework/"><code>../thmc/vv_testing_framework.md</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -4719,6 +4730,26 @@ confidently re-derive a wrong answer.</strong></p>
 <td><strong>C-228</strong> — <em>fitted coefficient <span class="arithmatex">\(0.476\)</span></em></td>
 <td>—</td>
 <td>🔴 <strong>Does not survive a six-row refit</strong> (<span class="arithmatex">\(0.2843+0.4113\log_4N\)</span>, RMS 0.0298)</td>
+</tr>
+<tr>
+<td><strong>Black-Oil volumetric recovery integral</strong></td>
+<td><strong>Component mass/molar integral</strong></td>
+<td>🔴 <strong>Flaw 2:</strong> Volumetric <span class="arithmatex">\(\int \phi(S_o/B_o)d\Omega\)</span> fails mass conservation during compositional swelling/stripping; superseded by <span class="arithmatex">\(M_i(t) = \int \phi \sum S_\alpha \rho_\alpha x_{i,\alpha} d\Omega\)</span></td>
+</tr>
+<tr>
+<td><strong>Koval raw <span class="arithmatex">\(S_g\)</span> fractional flow</strong></td>
+<td><strong>Normalized mobile <span class="arithmatex">\(S_g^*\)</span></strong></td>
+<td>🔴 <strong>Flaw 1:</strong> Raw <span class="arithmatex">\(S_g\)</span> causes non-zero gas flow <span class="arithmatex">\(f_g &gt; 0\)</span> at <span class="arithmatex">\(S_g = S_{gc}\)</span>; superseded by <span class="arithmatex">\(S_g^* = (S_g-S_{gc})/(1-S_{wi}-S_{gc}-S_{org})\)</span> with <span class="arithmatex">\(f_g=0\)</span> for <span class="arithmatex">\(S_g &lt; S_{gc}\)</span></td>
+</tr>
+<tr>
+<td><strong><span class="arithmatex">\(\theta_L = -\pi/6\)</span> as Extension meridian</strong></td>
+<td><strong><span class="arithmatex">\(\theta_L = -\pi/6\)</span> is Compression</strong></td>
+<td>🔴 <strong>Flaw 4:</strong> Under compression-positive convention (<span class="arithmatex">\(\sigma &gt; 0\)</span> in compression), triaxial compression yields <span class="arithmatex">\(\det(\mathbf{s}) &gt; 0 \Rightarrow \theta_L = -\pi/6\)</span> (Compression meridian); <span class="arithmatex">\(+\pi/6\)</span> is Extension</td>
+</tr>
+<tr>
+<td><strong>Standard CPR for coupled THMC</strong></td>
+<td><strong>Block-CPR / Schur Splitting</strong></td>
+<td>🔴 <strong>Flaw 3:</strong> Standard CPR degrades on vector elasticity <span class="arithmatex">\([u_x, u_y, u_z]\)</span>; superseded by Stage 1a (Unsymmetric AMG on <span class="arithmatex">\(\mathbf{A}_{pp}\)</span>), Stage 1b (Vector AMG on <span class="arithmatex">\(\mathbf{A}_{uu}\)</span>), Stage 2 (ILU(1) smoothing)</td>
 </tr>
 </tbody>
 </table>

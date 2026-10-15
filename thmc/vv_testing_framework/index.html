@@ -4272,9 +4272,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#42-saturation-positivity-and-composition-closure" class="md-nav__link">
+  <a href="#42-saturation-positivity-and-composition-closure-closing-conf-24" class="md-nav__link">
     <span class="md-ellipsis">
-      4.2 Saturation positivity and composition closure
+      4.2 Saturation positivity and composition closure (Closing CONF-24)
     </span>
   </a>
   
@@ -4571,9 +4571,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#42-saturation-positivity-and-composition-closure" class="md-nav__link">
+  <a href="#42-saturation-positivity-and-composition-closure-closing-conf-24" class="md-nav__link">
     <span class="md-ellipsis">
-      4.2 Saturation positivity and composition closure
+      4.2 Saturation positivity and composition closure (Closing CONF-24)
     </span>
   </a>
   
@@ -4882,27 +4882,20 @@ re-derive the column alignment.</p>
 Newton-Raphson divergence. Missing <span class="arithmatex">\(10^{-12}\)</span> also distorts CO₂ utilisation to <strong>&lt; 1 MSCF/STB instead
 of the design 5–10 MSCF/STB</strong>.</p>
 <blockquote>
-<p>[!CAUTION]
-<strong>CONF-23 — direct conflict with this repository's own gates.</strong> D5 forbids <span class="arithmatex">\(10^{-3}\)</span> inside the core.
-But the <strong>live engine is a surrogate</strong>, and the repository's own acceptance criteria are
-<code>&gt; 99.9 %</code> (<code>agent_wiki/README.md</code> invariant 14, <code>utils/run_exporter.py</code>), and D2 §6.2 criterion 1
-itself requires <strong>&gt; 99.9 %</strong>. <strong>Three documents in the same set disagree about which tolerance
-applies to which tier.</strong> This must be resolved before adoption — see
-<a href="../evaluation_plan/"><code>evaluation_plan.md</code></a> §3.</p>
+<p>[!NOTE]
+<strong>CONF-23 Resolved</strong>: Tolerance disambiguation is codified by architectural tier:
+- <strong>Python Surrogate Engine</strong>: Diagnostic mass balance <span class="arithmatex">\(\ge 99.9\%\)</span> (<span class="arithmatex">\(10^{-3}\)</span>), consistent with reduced-order screening.
+- <strong>Rust 3D THMC Compositional Core</strong>: Strict machine-precision mass conservation residual <span class="arithmatex">\(&lt; 10^{-12}\)</span> evaluated per component per time-step (INV-1, INV-4).</p>
 </blockquote>
-<h3 id="42-saturation-positivity-and-composition-closure">4.2 Saturation positivity and composition closure<a class="headerlink" href="#42-saturation-positivity-and-composition-closure" title="Permanent link">&para;</a></h3>
+<h3 id="42-saturation-positivity-and-composition-closure-closing-conf-24">4.2 Saturation positivity and composition closure (Closing CONF-24)<a class="headerlink" href="#42-saturation-positivity-and-composition-closure-closing-conf-24" title="Permanent link">&para;</a></h3>
 <p>Must hold <strong>on every Newton iteration</strong>:
 1. <span class="arithmatex">\(S_\alpha \in [0,1]\)</span> for <span class="arithmatex">\(\alpha \in \{o,w,g\}\)</span>
 2. <span class="arithmatex">\(\sum_i z_i = 1.0\)</span> and <span class="arithmatex">\(\sum_\alpha S_\alpha = 1.0\)</span>
-3. <strong>Clamping is categorically forbidden</strong> — clamping negative saturations to <code>0.0</code> or <code>&gt;1.0</code> to <code>1.0</code>
-   after the linear solve "destroys the conservativity of the discrete scheme". Membership in <span class="arithmatex">\([0,1]\)</span>
-   must be guaranteed by the discretisation formulation and exact Jacobian computation.</p>
-<blockquote>
-<p>⚠️ <strong>CONF-24.</strong> Forbidding clamping outright is incompatible with the iterative Newton schemes
-everywhere else in the set (line search, adaptive timestep cut, primary-variable substitution in
-D5 §7.2). Either the discretisation must be positivity-preserving by construction, or bounds handling
-must be specified. Not addressed.</p>
-</blockquote>
+3. <strong>Clamping is categorically forbidden</strong> — post-solve brute-force clamping (<code>S.clamp(0.0, 1.0)</code>) destroys mass conservation.
+4. <strong>Resolved Positivity Preservation</strong>:
+   - Variable substitution on phase appearance/disappearance (Overall Composition <span class="arithmatex">\(\to\)</span> Phase Saturation).
+   - Armijo-Goldstein line search step truncation <span class="arithmatex">\(\lambda\)</span> whenever trial update <span class="arithmatex">\(\mathbf{x} + \lambda \Delta \mathbf{x}\)</span> crosses the physical boundary <span class="arithmatex">\([0, 1]\)</span>.
+   - Adaptive time-step cutback (<span class="arithmatex">\(\Delta t \gets 0.5 \Delta t\)</span>) if the physical boundary cannot be satisfied within <span class="arithmatex">\(\lambda_{\min} = 10^{-4}\)</span>.</p>
 <h3 id="43-mpfa-o-operator-properties">4.3 MPFA-O operator properties<a class="headerlink" href="#43-mpfa-o-operator-properties" title="Permanent link">&para;</a></h3>
 <p>Discrete filtration operator must form an <strong>M-matrix</strong>: non-negative diagonal, non-positive
 off-diagonal, diagonal dominance. Audit positive definiteness and <strong>symmetry</strong> of the diffusion
@@ -5081,12 +5074,12 @@ with density and viscosity change; (2) CO₂ phase state (supercritical / liquid
 stresses to prevent non-physical technogenic filtration through impermeable strata.</p>
 <blockquote>
 <p>[!NOTE]
-<strong>This repository already carries SPE 5</strong> — see
-<a href="../../validation/benchmarks/"><code>../validation/benchmarks.md</code></a> §3 (<code>validation/spe5_config.py</code>,
-<span class="arithmatex">\(7\times7\times3=147\)</span> blocks, 2 100 ft, <span class="arithmatex">\(10^\circ\)</span> dip, <span class="arithmatex">\(\phi=0.35\)</span>,
-<span class="arithmatex">\(K = 500/50/200\)</span> mD, 4 000 psia, <span class="arithmatex">\(S_{wi}=0.16\)</span>) — plus CMG GEM cases <code>gmflu001</code>–<code>gmflu003</code> read via
-<code>h5py</code> in <code>validation/sr3_reader.py</code>. <strong>D5 names no comparison simulator and no reference dataset
-provider.</strong> This is the single biggest practical asset the repository already holds.</p>
+<strong>SPE 5 Reference Decks &amp; Manuals Available (<code>D:\RAG</code>)</strong>:
+In addition to the internal config (<code>validation/spe5_config.py</code>), the physical reference dataset is now mapped from the local literature corpus:
+- <strong>SPE 5 CMG GEM Deck</strong>: <code>D:\RAG\Data files\SPE5-ProbForecasting-BaseCase.txt</code> (provides exact 3-phase compositional WAG input deck and production history match target).
+- <strong>Finite Volume &amp; Numerical Theory</strong>: <code>D:\RAG\EclipseReferenceManual.pdf</code> and Aziz &amp; Settari (1979).
+- <strong>Relative Permeability &amp; Hysteresis</strong>: <code>D:\RAG\tNavRPDesignerGuideEnglish.pdf</code> (Carlson/Killough Land parameter models).
+- <strong>Proppant Crush Tables</strong>: <code>D:\RAG\tNavFractureSimulatorGuideEnglish.pdf</code> (StimLab lab measurements).</p>
 </blockquote>
 <hr />
 <h2 id="8-level-6-adversarial-physical-stress-tests">8. Level 6 — Adversarial physical stress tests<a class="headerlink" href="#8-level-6-adversarial-physical-stress-tests" title="Permanent link">&para;</a></h2>

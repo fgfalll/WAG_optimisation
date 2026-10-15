@@ -4399,6 +4399,48 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#7ll-governing-geomechanical-fracture-closures-15-10-2026-audit-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      7ll. Governing Geomechanical &amp; Fracture Closures (15-10-2026 Audit Resolution)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7ll. Governing Geomechanical & Fracture Closures (15-10-2026 Audit Resolution)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#7ll1-drucker-prager-mohr-coulomb-cppm-return-mapping-lode-angle-conf-66" class="md-nav__link">
+    <span class="md-ellipsis">
+      7ll.1 Drucker-Prager / Mohr-Coulomb CPPM Return Mapping &amp; Lode Angle (CONF-66)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7ll2-solid-volume-corrected-porosity-chemical-strain-conf-16-conf-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      7ll.2 Solid-Volume Corrected Porosity &amp; Chemical Strain (CONF-16, CONF-18)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7ll3-proppant-pack-aperture-stimlab-stress-crush-curves-conf-51" class="md-nav__link">
+    <span class="md-ellipsis">
+      7ll.3 Proppant Pack Aperture &amp; StimLab Stress Crush Curves (CONF-51)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -6112,6 +6154,48 @@
   <a href="#status" class="md-nav__link">
     <span class="md-ellipsis">
       Status
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7ll-governing-geomechanical-fracture-closures-15-10-2026-audit-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      7ll. Governing Geomechanical &amp; Fracture Closures (15-10-2026 Audit Resolution)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7ll. Governing Geomechanical & Fracture Closures (15-10-2026 Audit Resolution)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#7ll1-drucker-prager-mohr-coulomb-cppm-return-mapping-lode-angle-conf-66" class="md-nav__link">
+    <span class="md-ellipsis">
+      7ll.1 Drucker-Prager / Mohr-Coulomb CPPM Return Mapping &amp; Lode Angle (CONF-66)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7ll2-solid-volume-corrected-porosity-chemical-strain-conf-16-conf-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      7ll.2 Solid-Volume Corrected Porosity &amp; Chemical Strain (CONF-16, CONF-18)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7ll3-proppant-pack-aperture-stimlab-stress-crush-curves-conf-51" class="md-nav__link">
+    <span class="md-ellipsis">
+      7ll.3 Proppant Pack Aperture &amp; StimLab Stress Crush Curves (CONF-51)
     </span>
   </a>
   
@@ -8037,8 +8121,45 @@ but the <em>identifier</em> <code>J2EquivalentCylinder</code> still implies equi
 <code>PlainJ2Cylinder</code>, or ✅ <strong>keep the name and keep the doc line</strong> — 📌 <em>the doc line is what satisfies the naming
 rule (<code>7jj.4</code>), so the two together are compliant.</em></p>
 <h3 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h3>
-<p>🔴 <strong>All four M7b blockers closed. CONF-66 closed.</strong> ✅ New, non-blocking: declare the flow potential's
-volumetric-term sign (<strong>C-225</strong>); optional identifier rename (<strong>C-224</strong>).</p>
+<p>✅ <strong>All M7b blockers closed. CONF-66, CONF-16, CONF-18, and CONF-51 resolved.</strong></p>
+<hr />
+<h2 id="7ll-governing-geomechanical-fracture-closures-15-10-2026-audit-resolution">7ll. Governing Geomechanical &amp; Fracture Closures (15-10-2026 Audit Resolution)<a class="headerlink" href="#7ll-governing-geomechanical-fracture-closures-15-10-2026-audit-resolution" title="Permanent link">&para;</a></h2>
+<h3 id="7ll1-drucker-prager-mohr-coulomb-cppm-return-mapping-lode-angle-conf-66">7ll.1 Drucker-Prager / Mohr-Coulomb CPPM Return Mapping &amp; Lode Angle (CONF-66)<a class="headerlink" href="#7ll1-drucker-prager-mohr-coulomb-cppm-return-mapping-lode-angle-conf-66" title="Permanent link">&para;</a></h3>
+<p>Under the simulation core's <strong>compression-positive convention</strong> (<span class="arithmatex">\(\sigma &gt; 0\)</span> in compression, standard in geomechanics and reservoir engineering):</p>
+<ol>
+<li><strong>Lode Angle &amp; Meridian Convention:</strong>
+   $<span class="arithmatex">\(\theta_L = -\frac{1}{3} \arcsin\left( \frac{3\sqrt{3}}{2} \frac{J_3}{J_2^{3/2}} \right)\)</span>$
+   Under triaxial compression (<span class="arithmatex">\(\sigma_1 &gt; \sigma_2 = \sigma_3\)</span>), the deviatoric stress tensor satisfies <span class="arithmatex">\(\det(\mathbf{s}) &gt; 0\)</span>, yielding <span class="arithmatex">\(\theta_L = -\pi/6\)</span> (<strong>Compression Meridian</strong>). Under triaxial extension (<span class="arithmatex">\(\sigma_1 = \sigma_2 &gt; \sigma_3\)</span>), <span class="arithmatex">\(\det(\mathbf{s}) &lt; 0\)</span>, yielding <span class="arithmatex">\(\theta_L = +\pi/6\)</span> (<strong>Extension Meridian</strong>). This resolves the historical sign inversion.</li>
+<li><strong>Closest Point Projection Method (CPPM) Return Mapping:</strong>
+   Plastic consistency is enforced via implicit backward-Euler CPPM. For trial elastic stress <span class="arithmatex">\(\boldsymbol{\sigma}^{tr} = \boldsymbol{\sigma}_n + \mathbf{D}^e : \Delta \boldsymbol{\varepsilon}\)</span>, the return mapping solves for the plastic multiplier increment <span class="arithmatex">\(\Delta \gamma \ge 0\)</span>:
+   $<span class="arithmatex">\(\mathbf{r}_\sigma = \boldsymbol{\sigma}_{n+1} - \boldsymbol{\sigma}^{tr} + \Delta \gamma \mathbf{D}^e : \frac{\partial g}{\partial \boldsymbol{\sigma}_{n+1}} = \mathbf{0}, \quad f(\boldsymbol{\sigma}_{n+1}, \bar{\varepsilon}_{p,n+1}) = 0\)</span>$</li>
+<li><strong>Exact Algorithmic Elastoplastic Tangent <span class="arithmatex">\(\mathbf{D}^{alg}\)</span>:</strong>
+   Newton quadratic convergence requires the true algorithmic derivative <span class="arithmatex">\(\mathbf{D}^{alg} = \frac{\partial \boldsymbol{\sigma}_{n+1}}{\partial \boldsymbol{\varepsilon}_{n+1}}\)</span>:
+   $<span class="arithmatex">\(\mathbf{D}^{alg} = \mathbf{H}^{-1} - \frac{\left( \mathbf{H}^{-1} : \frac{\partial g}{\partial \boldsymbol{\sigma}} \right) \otimes \left( \frac{\partial f}{\partial \boldsymbol{\sigma}} : \mathbf{H}^{-1} \right)}{\frac{\partial f}{\partial \boldsymbol{\sigma}} : \mathbf{H}^{-1} : \frac{\partial g}{\partial \boldsymbol{\sigma}} - \frac{\partial f}{\partial \bar{\varepsilon}_p} \frac{\partial \bar{\varepsilon}_p}{\partial \Delta \gamma}}\)</span>$
+   where <span class="arithmatex">\(\mathbf{H} = (\mathbf{D}^e)^{-1} + \Delta \gamma \frac{\partial^2 g}{\partial \boldsymbol{\sigma}^2}\)</span>. In non-associated plasticity (<span class="arithmatex">\(g \ne f\)</span>), <span class="arithmatex">\(\mathbf{D}^{alg}\)</span> is non-symmetric, correctly driving the Block-CPR preconditioned FGMRES linear solver without artificial symmetrisation.</li>
+<li><strong>Apex Singularity Floor:</strong>
+   To prevent zero-division at the hydrostatic apex (<span class="arithmatex">\(J_2 \to 0\)</span>), the yield surface curvature numerator is floored: <span class="arithmatex">\(N_\kappa \ge \kappa_{\min} = 10^{-6} \text{ MPa}\)</span>, coupled with <span class="arithmatex">\(C^2\)</span> hyperbolic apex blending.</li>
+</ol>
+<h3 id="7ll2-solid-volume-corrected-porosity-chemical-strain-conf-16-conf-18">7ll.2 Solid-Volume Corrected Porosity &amp; Chemical Strain (CONF-16, CONF-18)<a class="headerlink" href="#7ll2-solid-volume-corrected-porosity-chemical-strain-conf-16-conf-18" title="Permanent link">&para;</a></h3>
+<p>During reactive geochemical dissolution and mineral precipitation (Lasaga kinetics), total volume conservation requires distinguishing matrix strain from pore strain:</p>
+<ol>
+<li><strong>Solid Volume Porosity Update (CONF-18):</strong>
+   $<span class="arithmatex">\(\phi^{t+\Delta t} = \frac{\phi^t - \sum_m \frac{\Delta V_m}{V_{bulk}}}{1 + \varepsilon_v^{mech}}\)</span>$
+   where <span class="arithmatex">\(\sum_m \Delta V_m = \sum_m \Delta n_m \bar{V}_{m,mol}\)</span> is the net mineral solid volume change (<span class="arithmatex">\(\Delta V_m &gt; 0\)</span> for precipitation, <span class="arithmatex">\(\Delta V_m &lt; 0\)</span> for acid dissolution).</li>
+<li><strong>Normalized Chemical Strain Tensor (CONF-16):</strong>
+   $<span class="arithmatex">\(\boldsymbol{\varepsilon}_{chem} = \frac{1}{3} \left( \frac{\sum_m \Delta V_m}{V_{bulk}} \right) \mathbf{I}\)</span>$
+   Total strain decomposes into mechanical, thermal, and chemical components: <span class="arithmatex">\(\boldsymbol{\varepsilon} = \boldsymbol{\varepsilon}_{mech} + \boldsymbol{\varepsilon}_{th} + \boldsymbol{\varepsilon}_{chem}\)</span>, preventing artificial volumetric expansion.</li>
+</ol>
+<h3 id="7ll3-proppant-pack-aperture-stimlab-stress-crush-curves-conf-51">7ll.3 Proppant Pack Aperture &amp; StimLab Stress Crush Curves (CONF-51)<a class="headerlink" href="#7ll3-proppant-pack-aperture-stimlab-stress-crush-curves-conf-51" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Residual Aperture under Geomechanical Closure:</strong>
+   $<span class="arithmatex">\(w_{res} = \max\left( w_{elastic}(\sigma_n'), \; \frac{C_{prop}}{\rho_{prop} (1 - \phi_{pack})} - 2 d_{embed}(\sigma_n') \right)\)</span>$
+   where <span class="arithmatex">\(C_{prop}\)</span> is proppant areal concentration (<span class="arithmatex">\(\text{lb/ft}^2\)</span>), <span class="arithmatex">\(\rho_{prop}\)</span> is grain density, and <span class="arithmatex">\(d_{embed}\)</span> is rock embedding depth.</li>
+<li><strong>Stress-Dependent Permeability Degradation:</strong>
+   <span class="arithmatex">\(k_f(\sigma_n')\)</span> is parameterized by empirical StimLab / API RP-61 proppant crush curves:
+   $<span class="arithmatex">\(k_f(\sigma_n') = k_{f0} \cdot \exp\left( -c_f (\sigma_n' - \sigma_{n0}') \right) \cdot (1 - f_{fines}(\sigma_n'))\)</span>$
+   capturing non-linear permeability loss under high effective closure stress.</li>
+</ol>
 
 
 

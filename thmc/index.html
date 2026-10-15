@@ -4433,8 +4433,8 @@ The source of truth for engine behaviour remains
 <td><strong><a href="conflict_and_gap_register/"><code>conflict_and_gap_register.md</code></a></strong></td>
 </tr>
 <tr>
-<td><strong>What did the reservoir engineer rule on those conflicts (07-10-2026)?</strong></td>
-<td><strong><a href="reservoir_engineer_ruling/"><code>reservoir_engineer_ruling.md</code></a></strong></td>
+<td><strong>Governing Roadmap &amp; Milestones (M0→M7)</strong></td>
+<td><strong><a href="../compositional/build_plan/"><code>../compositional/build_plan.md</code></a></strong></td>
 </tr>
 <tr>
 <td>How do we evaluate this with the project manager?</td>
@@ -4591,6 +4591,7 @@ Koval form at <code>core/engine_surrogate/analytical_models.py:176-193</code> an
 </tr>
 </tbody>
 </table>
+<p>✅ <strong>RESOLVED 15-10-2026 (Audit Flaw 1 / CONF-63)</strong>: Normalized mobile gas saturation <span class="arithmatex">\(S_g^* = \frac{S_g - S_{gc}}{1 - S_{wi} - S_{gc} - S_{org}}\)</span> adopted with <span class="arithmatex">\(f_g(S_g^*) = \frac{K_K S_g^*}{1 + S_g^*(K_K - 1)}\)</span> for <span class="arithmatex">\(S_g \ge S_{gc}\)</span> and <span class="arithmatex">\(f_g = 0\)</span> for <span class="arithmatex">\(S_g &lt; S_{gc}\)</span>. Codified in <a href="../compositional/engine_constitutive/"><code>../compositional/engine_constitutive.md</code></a> and <a href="reservoir_engineer_ruling/"><code>reservoir_engineer_ruling.md</code></a> §14.</p>
 <blockquote>
 <p><strong>Method note, now mandatory repo practice:</strong> three conventions of <span class="arithmatex">\(M\)</span> were in play in this exchange
 (<span class="arithmatex">\(\lambda_g/\lambda_o\)</span>, <span class="arithmatex">\(\mu_g/\mu_o\)</span>, <span class="arithmatex">\(\mu_o/\mu_g\)</span>) and the original error survived because the test
@@ -4606,6 +4607,9 @@ point — it constrains nothing exactly where the optimiser operates. This is th
 failure mode as <strong>CRIT-15</strong> (default HCPVI pins the Koval sweep at its <code>0.95</code> clip for every mobility
 ratio). The cap is also <strong>dimensionally dimensionless-by-assertion</strong>: <code>τ = 1.5</code> has no units, no
 provenance and no sensitivity study in any of the 8 documents. Tracked as <strong>CONF-02</strong>.</p>
+<p>✅ <strong>RESOLVED 15-10-2026 (Audit Flaw 2 / CONF-02)</strong>: The inert exponential cap has been completely purged from the 3D THMC engine design. In-situ and cumulative recovery are governed strictly by the exact domain component mass/molar integral:
+$<span class="arithmatex">\(M_i(t) = \int_\Omega \phi \left(\sum_\alpha S_\alpha \rho_\alpha x_{i,\alpha}\right) d\Omega, \quad RF_i(t) = \frac{M_i(0) + \int q_{i,\text{inj}} d\tau - M_i(t) - \int q_{i,\text{leak}} d\tau}{M_i(0)}\)</span>$
+Codified in <a href="../compositional/engine_spec_closures/"><code>../compositional/engine_spec_closures.md</code></a> §7n.5.</p>
 <h3 id="53-the-documents-claim-remediation-of-the-python-engine-that-has-not-happened">5.3 The documents claim remediation of the Python engine that has not happened<a class="headerlink" href="#53-the-documents-claim-remediation-of-the-python-engine-that-has-not-happened" title="Permanent link">&para;</a></h3>
 <p>D1 §10.3, D2 §6.1, D4, D6 §1.2, D8 §4.2 all state that artificial penalty barriers
 (<code>result *= breakthrough_impact</code>, <code>-1.0 × 10^{12}</code>) have been <strong>"fully removed"</strong> from the simulator
@@ -4629,6 +4633,7 @@ all four of which the live engine already computes at <code>surrogate_engine.py:
 an unqualified <span class="arithmatex">\(q_gP_g\)</span> would book <strong>recycled CO₂ as gas revenue</strong>. The ruling is <em>"prices off-core"</em>,
 not <em>"fewer prices off-core"</em>. Tracked as <strong>CONF-04 (resolved)</strong> with <strong>CONF-58/59 (new)</strong>.</p>
 </blockquote>
+<p>✅ <strong>RESOLVED 15-10-2026 (Audit Flaw 5 / CONF-04)</strong>: Clean separation codified in <a href="satellite_toolkit/"><code>satellite_toolkit.md</code></a> §5.2. PDE core computes production adjoints <span class="arithmatex">\(\partial q_i / \partial \mathbf{u}\)</span>; satellite evaluates complete cash flows with Mid-Year Discrete Compounding <span class="arithmatex">\((1+r)^{-(t-0.5)}\)</span>.</p>
 <hr />
 <h2 id="6-page-index">6. Page index<a class="headerlink" href="#6-page-index" title="Permanent link">&para;</a></h2>
 <table>
