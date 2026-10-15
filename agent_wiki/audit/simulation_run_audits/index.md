@@ -1,0 +1,100 @@
+# Simulation Run Audits & Historical Performance Registry
+
+This directory serves as the authoritative historical repository of all **reservoir simulation run audits, benchmark evaluations, campaign sweeps, and surrogate profile audits** in the CO₂ EOR Optimizer repository.
+
+Every simulation run audit is stored in its own dedicated, date-stamped subfolder containing an `audit.md` report alongside key diagnostic artifacts (plots, stream CSVs, execution manifests, and logs).
+
+---
+
+## 🛠️ Mandatory Agent Workflow for Simulation Run Audits
+
+Whenever an autonomous AI agent or developer conducts a simulation run, evaluates an optimization campaign, or benchmarks the reservoir engine, they **MUST** execute the following 5-step workflow:
+
+```
+[Simulation Run / Export] 
+          │
+          ▼
+1. Locate Run Directory (in logs/ or output/)
+          │
+          ▼
+2. Create Audit Subfolder: agent_wiki/audit/simulation_run_audits/DD-MM-YYYY_<run_name>/
+          │
+          ▼
+3. Copy Key Run Artifacts (*.png plots, summary_*.csv, run_manifest.json, *.txt)
+          │
+          ▼
+4. Author audit.md (Mandatory Schema: DD-MM-YYYY, Verdict, Proposal, Relevant Files)
+          │
+          ▼
+5. Register in Master Index (agent_wiki/audit/simulation_run_audits/index.md)
+```
+
+### Detailed Step-by-Step Instructions:
+
+1. **Step 1: Locate Run Artifacts**:
+   Identify the completed simulation output folder in `logs/` (e.g. `logs/Export-single-simulation-YYYYMMDD-HHMMSS/`) or `output/`, along with session log files.
+2. **Step 2: Create Date-Stamped Audit Subfolder**:
+   Create a new directory inside `agent_wiki/audit/simulation_run_audits/`:
+   ```bash
+   agent_wiki/audit/simulation_run_audits/DD-MM-YYYY_<descriptive_run_name>/
+   ```
+   *Requirement*: The folder name **MUST** start with the date in `DD-MM-YYYY` format (e.g. `24-09-2026_single_simulation_baseline`).
+3. **Step 3: Copy Diagnostic Artifacts**:
+   Copy all essential diagnostic files from the run into the new subfolder:
+   - Diagnostic plots: `production_profiles.png`, `material_balance.png`, `cumulative_co2_balance.png`, `storage_efficiency.png`
+   - Stream data: `summary_yearly.csv`, `summary_monthly.csv`, `cash_flows_yearly.csv`
+   - Metadata & configs: `run_manifest.json`, `run_evaluation_report.md`, `results_summary.txt`
+4. **Step 4: Author `audit.md`**:
+   Write a comprehensive `audit.md` inside the subfolder following the required schema:
+   - **Date**: Formatted strictly as `DD-MM-YYYY`.
+   - **Run ID**: Unique identifier (e.g. `SIM-AUDIT-24-09-2026-01`).
+   - **Verdict**: One of `PASSED`, `ACCEPTABLE WITH CONDITIONS`, `FLAGGED`, or `FAILED`.
+   - **Proposal**: Actionable recommendations (search bound adjustments, physics fixes, operational guidelines).
+   - **Relevant Files**: Markdown links to local subfolder artifacts and code sources.
+   - **Key Metrics Table**: OOIP, recovery factor (RF), net CO₂ stored, mass balance closure, peak sandface pressure, NPV.
+   - **Physical Sanity Checks**: IPR drawdown, viscous fingering, EPA Class VI UIC geomechanical limits.
+5. **Step 5: Register in Master Index**:
+   Add a new entry to the [Master Simulation Run Audits Index](#master-simulation-run-audits-index) below with a link to the subfolder's `audit.md`.
+
+---
+
+## 📋 Standard Audit Record Schema
+
+```markdown
+# Simulation Run Audit: [Run Title]
+
+- **Date**: `DD-MM-YYYY` (e.g. `24-09-2026`)
+- **Run ID**: `SIM-AUDIT-DD-MM-YYYY-XX`
+- **Engine**: `core/engine_surrogate` (`SurrogateEngineWrapper` + `FastProfileGenerator`)
+- **Injection Scheme**: `WAG` | `Continuous CO2` | `Waterflooding` | `Gas Cycling`
+- **Simulation Duration**: `X years` (Time step: `daily` / `monthly` / `annual`)
+- **Verdict**: `PASSED` | `ACCEPTABLE WITH CONDITIONS` | `FLAGGED` | `FAILED`
+
+## Executive Summary & Operational Proposal
+- **Verdict Rationale**: Bulleted explanation of why this verdict was assigned.
+- **Actionable Proposal**: Specific proposals for tuning bounds, physics adjustments, or operational limits.
+
+## Relevant Files & Run Artifacts
+- Links to local plots, CSV tables, manifest JSON, and source logs.
+
+## Key Metrics
+- Table of STOOIP, Recovery Factor, Cumulative Streams, Stored CO₂, Mass Balance Closure %, NPV.
+
+## Geomechanical & Containment Integrity
+- Sandface injection pressure vs EPA Class VI $0.90 \times P_{\text{frac}}$ ceiling.
+
+## Carbon Mass Balance Reconciliation
+- Table asserting Gross Injected = Purchased + Recycled = Net Stored + Leakage + Produced.
+```
+
+---
+
+## 📑 Master Simulation Run Audits Index
+
+| Run ID | Date (`DD-MM-YYYY`) | Scenario & Model | Verdict | Proposal Summary | Audit Report Link |
+|:---|:---|:---|:---|:---|:---|
+| **SIM-AUDIT-04-10-2026-01** | `04-10-2026` | **Forensic Scientific Audit of the Active `hybrid` Path** — 18 reproducible verification scripts + full toolchain (audit-only, no code changes). *Refreshed 04-10-2026: HIGH-10 resolved (suite `0 failed / 333 passed`), HIGH-19 added (2 undefined names in `ui/workbench/`), register 52 → **53** findings.* | **FLAGGED** | Sequence metric-provenance fixes (CRIT-01/02/12) **before** sweep-model fixes (CRIT-06/07); quarantine reported `recovery_factor`/`npv`; re-specify the 5 tautological + 3 defect-asserting scientific tests before touching physics; PVT campaign for CRIT-03/04/05; 48/91 constants need provenance. Predictive validity **NOT ESTABLISHED**. | [`04-10-2026_forensic_scientific_audit/audit.md`](04-10-2026_forensic_scientific_audit/audit.md) |
+| **SIM-AUDIT-05-10-2026-02** | `05-10-2026` | **Round-2 Adversarial Verification of the Uncommitted 05-10-2026 Remediation** — tested all 17 "RESOLVED" marks; 5 new evidence scripts. Result: **11 CONFIRMED · 4 PARTIALLY RESOLVED · 1 REGRESSED (CRIT-12) · 1 CONFIRMED-but-inert (CRIT-06)**; **11 new findings** (CRIT-14…21, HIGH-20/23/25/26, MED-17…22). Suite `0 failed / 335 passed` while all new defects are live. | **FLAGGED** | Remove the `mobility_ratio` override (CRIT-14) and re-derive HCPVI from the realised profile (CRIT-15); fix the pore-volume basis so `Σ S = 1` (CRIT-17); derive `c_g` from the Peng-Robinson EOS already in the class (CRIT-21); restore composition coupling in the miscibility sigmoid (CRIT-20) and give `gravity_factor` a definition or delete the gene (CRIT-19); make stored mass leakage-aware and gate the storage credit (HIGH-23); add gas revenue to the cash flow (CRIT-18). Predictive validity **NOT ESTABLISHED**. Issues [#7](https://github.com/fgfalll/WAG_optimisation/issues/7)–[#15](https://github.com/fgfalll/WAG_optimisation/issues/15). | [`05-10-2026_remediation_verification_round2/audit.md`](05-10-2026_remediation_verification_round2/audit.md) |
+| **SIM-AUDIT-24-09-2026-01** | `24-09-2026` | Single Simulation Baseline Evaluation (GA Parameter Profile Export) | **ACCEPTABLE WITH CONDITIONS** | Widen injection rate and well pressure bounds; define explicit well patterns. | [`24-09-2026_single_simulation_baseline/audit.md`](24-09-2026_single_simulation_baseline/audit.md) |
+| **SIM-AUDIT-23-09-2026-01** | `23-09-2026` | SPE 5 Benchmark Comparison (Quarter 5-Spot WAG) | **PASSED** | Standardize Todd-Longstaff mixing parameter $\omega = 0.67$. | [`tests/validation/spe5_benchmark_validation.py`](file:///d:/rep/4.6/co2eor_optimizer/tests/validation/spe5_benchmark_validation.py) |
+| **SIM-AUDIT-24-09-2026-02** | `24-09-2026` | End-to-End Saved Project Run Restoration (`test.tphd`) | **PASSED** | Require shallow dataclass serialization and array-agnostic `.flat[0]` grid indexing. | [`tests/test_project_save_load.py`](file:///d:/rep/4.6/co2eor_optimizer/tests/test_project_save_load.py) |

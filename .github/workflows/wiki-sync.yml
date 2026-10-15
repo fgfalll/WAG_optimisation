@@ -1,0 +1,81 @@
+name: Wiki Sync Gate
+
+# Enforces INV-1 on documentation: a commit that changes behaviour without
+# recording it in the wiki is a continuity defect, not a matter of taste.
+#
+# Why this exists: audit/continuity.py::check_wiki reads only three files
+# (audit/scientific_flaws.md, agent_wiki/README.md,
+# agent_wiki/development/common_pitfalls.md). It therefore never sees
+# agent_wiki/compositional/ or agent_wiki/thmc/ - currently 1,087 KB of
+# Rust-engine specification. Without this gate, an agent can change code and
+# leave every document stale, and the next agent works from a lie.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  wiki-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history: the gate diffs a base..head range, and the default
+          # shallow clone would leave the base ref unavailable.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Compare against the merge base on a PR, and against the previous push
+      # on a branch push. Both give the set of commits this change introduces.
+      - name: Determine range
+        id: range
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+            # A new branch's first push has an all-zero `before`.
+            if [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+              BASE=$(git rev-list --max-parents=0 HEAD)
+            fi
+          fi
+          HEAD_SHA="${{ github.sha }}"
+          if [ "$BASE" = "$HEAD_SHA" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "  base..head = $BASE..$HEAD_SHA"
+            echo "$BASE" > .base_ref
+          fi
+
+      - name: Wiki-sync gate
+        if: steps.range.outputs.changed == 'true'
+        run: |
+          python .github/scripts/check_wiki_sync.py \
+            --base "$(cat .base_ref)" --head "${{ github.sha }}"
+
+      # The handover record is what survives context compaction. If it was not
+      # touched on a commit that changes the Rust specification, say so -
+      # non-blocking, because not every doc change is a state change.
+      - name: Handover freshness (advisory)
+        if: steps.range.outputs.changed == 'true'
+        run: |
+          if git diff --name-only "$(cat .base_ref)".."${{ github.sha }}" \
+               | grep -qE '^agent_wiki/compositional/(engine_|build_plan|register_spec)'; then
+            if git diff --name-only "$(cat .base_ref)".."${{ github.sha }}" \
+                 | grep -q 'HANDOVER.md'; then
+              echo "HANDOVER.md updated alongside the specification."
+            else
+              echo "::warning title=Handover not updated::The Rust-engine specification changed but agent_wiki/compositional/HANDOVER.md did not. If the current state, the invariants, or the RETIRED list moved, update it - it is what survives context compaction."
+            fi
+          fi

@@ -1,0 +1,441 @@
+=== CO₂ EOR OPTIMIZATION RUN SUMMARY ===
+Generated: 2026-09-24 10:44:22
+Method: Genetic Algorithm (GA)
+Objective: Net Present Value (NPV)
+Evaluations: 0 | Duration: 0.00s
+
+=== RUN HEALTH & DIAGNOSTICS ===
+[WARNING] Optimization Bounds: Parameter 'rate' (5000.0) pinned to lower search bound (5000.0). Search space may be too restrictive.
+[WARNING] Optimization Bounds: Parameter 'wellbore_pressure' (1500.0) pinned to lower search bound (1500.0). Search space may be too restrictive.
+
+=== OPTIMIZATION RESULTS ===
+Final Economic NPV: $192,933,877.74
+Objective Fitness Score: 1.929339e+08
+Breakthrough Impact Penalty: 0.5102
+Ultimate Recovery Factor: 27.27%
+Cumulative Oil Production: 13,223,226 STB
+Cumulative Water Production: 442,087 STB
+Cumulative Total Gas: 8,321,154 MSCF
+Cumulative CO2 Produced: 5,272,511 MSCF
+Net CO2 Utilization: 0.0897 tonne/STB (1.70 MSCF/STB)
+Purchased Storage Efficiency: 98.62%
+Gross Storage Efficiency: 50.23%
+Breakthrough Timing: 2.45 years
+Ecology Compliant: YES
+
+=== OPTIMIZED DECISION VARIABLES ===
+max_production_rate_stbd: 10000.0 STB/day
+plateau_duration_fraction: 0.3 dimensionless (0-1)
+pressure: 3000.0 psia
+ramp_up_fraction: 0.1 dimensionless (0-1)
+rate: 5000.0 MSCF/day [PINNED AT LOWER BOUND]
+wellbore_pressure: 1500.0 psia [PINNED AT LOWER BOUND]
+
+=== GEOMECHANICAL SAFETY CHECK ===
+Optimized Reservoir Pressure: 3000.0 psi
+Safe Fracture Ceiling (90% Pfrac): 4950.0 psi
+Pressure Margin: 1950.0 psi
+Status: SAFE
+
+=== CARBON MASS BALANCE SUMMARY ===
+Gross CO2 Injected: 1,451,868.7 tonnes
+  - Purchased CO2: 1,186,397.8 tonnes
+  - Recycled CO2: 265,471.0 tonnes
+Total CO2 Produced: 279,443.1 tonnes
+  - Recycled Portion: 265,471.0 tonnes
+  - Uncaptured Surface Portion: 13,972.2 tonnes
+Total Net Stored: 1,171,533.4 tonnes
+Total Modeled Leakage: 892.2 tonnes
+Mass Balance Closure: 100.00%
+
+=== SIMULATION & OPTIMIZATION INPUT PARAMETERS ===
+--- Optimization & Engine Setup ---
+  method_key: optimize_genetic_algorithm
+  objective_key: npv
+  recovery_model: hybrid
+  selected_method: Genetic Algorithm (GA)
+  selected_objective: Net Present Value (NPV)
+  simulation_engine_type: surrogate
+  time_resolution: Yearly
+
+--- Parameter Search Space Bounds ---
+  allow_well_conversion: [0, 1]
+  max_production_rate_stbd: [1000, 1.5e+04]
+  plateau_duration_fraction: [0.1, 0.8]
+  pressure: [3243, 4450]
+  ramp_up_fraction: [0, 0.3]
+  rate: [5000, 1e+05]
+  shut_in_mode: [0, 2]
+  shut_in_ramp_days: [7, 90]
+  well_conversion_day: [90, 1825]
+  well_shut_in_threshold_bpd: [5, 30]
+  wellbore_pressure: [1500, 2000]
+
+--- Reservoir Characterization ---
+  area_acres: 1000.0
+  average_porosity: 0.2
+  initial_pressure_psi: 4000.0
+  injector_count: 0
+  miscibility_status: Miscible
+  mmp_psi: 2948.1579943380393
+  ooip_stb: 48487500.0
+  permeability_md: 100.0
+  producer_count: 1
+  rock_compressibility_psi: 3e-06
+  temperature_f: 212.0
+  thickness_ft: 50.0
+  total_wells: 1
+
+--- Fluid & PVT Properties ---
+  oil_viscosity_cp: 1.0
+  water_viscosity_cp: 0.5
+  gas_viscosity_cp: 0.02
+  api_gravity: 35.0
+  c7_plus_fraction: 0.35
+  co2_solubility_scm_per_bbl: 200.0
+  co2_viscosity_range: [0.01098, 0.02984] (N=50)
+  enforce_step_flash: False
+  gas_compressibility: 0.0003
+  gas_fvf_range: [0.00359, 0.02154] (N=50)
+  gas_fvf_rb_per_mscf: 5.0
+  gas_fvf_simple: 0.01
+  gas_specific_gravity: 0.7
+  oil_compressibility: 1e-05
+  oil_density_ppg: 7.0
+  oil_fvf_range: [1.17, 1.245] (N=50)
+  oil_fvf_simple: 1.2
+  oil_viscosity_range: [0.8607, 1.105] (N=50)
+  pressure_points_range: [1000, 6000] (N=50)
+  pvt_type: black_oil
+  rs_range: [50.25, 201] (N=50)
+  temperature: 212.0
+  water_compressibility: 3e-06
+  water_fvf: 1.0
+
+--- Operational Parameters ---
+  co2_breakthrough_year_fraction: 0.25
+  project_lifetime_years: 15
+  recovery_model_selection: hybrid
+  target_tolerance: 0.05
+  time_resolution: yearly
+
+--- EOR Parameters ---
+  allow_wag_post_shutin: True
+  allow_well_conversion: 0.0
+  baseline_pressure: 2000.0
+  bhp_utilization_threshold: 0.8
+  biot_coefficient: 0.8
+  caprock_cohesion_psi: 400.0
+  caprock_fracture_pressure_psi: 5500.0
+  caprock_friction_angle_deg: 30.0
+  caprock_safety_factor: 0.9
+  caprock_tensile_strength_psi: 200.0
+  cfl_safety_factor: 0.15
+  co2_density_tonne_per_mscf: 0.053
+  co2_oil_interfacial_tension: 30.0
+  co2_production_rate_constant: 0.2
+  co2_recycle_loss_fraction: 0.05
+  co2_recycling_fraction: 0.9
+  co2_taper_percentage: 0.1
+  connate_water_saturation: 0.2
+  containment_safety_margin_ft: 50.0
+  critical_gas_saturation: 0.05
+  critical_pressure_co2_pa: 7376000.0
+  critical_temperature_co2_k: 304.13
+  cycle_length_days: 90.0
+  days_per_year: 365.25
+  days_per_year_fault: 365.25
+  default_co2_injection_saturation: 0.8
+  default_co2_viscosity_cp: 0.08
+  default_fault_cohesion: 500.0
+  default_fault_dilation_angle: 5.0
+  default_fault_dip: 0.0
+  default_fault_friction_coefficient: 0.6
+  default_fault_healing_rate: 0.01
+  default_fault_initial_aperture: 0.1
+  default_fault_maximum_aperture: 10.0
+  default_fault_stiffness: 1000000.0
+  default_fault_strike: 90.0
+  default_fault_width: 100.0
+  default_formation_damage_factor: 0.8
+  default_gas_fvf: 0.005
+  default_leakage_depth: 5000.0
+  default_mmp_fallback: 2500.0
+  default_oil_viscosity_cp: 2.0
+  default_water_injection_saturation: 0.2
+  density_contrast: 0.3
+  diffusion_coefficient_co2_water: 1.9e-09
+  dip_angle: 0.0
+  disable_adaptive_timestepping: False
+  dissolution_time_constant: 0.05
+  dummy_fault_center_depth: 5000.0
+  dummy_fault_dip: 0.0
+  dummy_fault_length: 1000.0
+  dummy_fault_strike: 90.0
+  dummy_fault_width: 100.0
+  endpoint_gas_relative_permeability: 0.4
+  endpoint_oil_relative_permeability: 0.8
+  endpoint_water_relative_permeability: 0.3
+  enforce_step_flash: False
+  exponential_decay_factor: 3.0
+  facility_availability: 0.95
+  fahrenheit_to_kelvin_offset: 255.372
+  fahrenheit_to_kelvin_scale: 0.5555555555555556
+  flux_limiter_type: van_leer
+  gas_oil_ratio_at_breakthrough: 800.0
+  gravity_acceleration: 9.81
+  henry_constant_co2: 0.033
+  high_mobility_threshold: 2.0
+  high_risk_threshold: 0.6
+  horizontal_stress_ratio_k0: 0.75
+  huff_n_puff: None
+  huff_n_puff_cycle_length_days: 90.0
+  huff_n_puff_injection_period_days: 30.0
+  huff_n_puff_max_cycles: 10
+  huff_n_puff_production_period_days: 45.0
+  huff_n_puff_soaking_period_days: 15.0
+  initial_gor: 200.0
+  initial_wag_cycle_length: 45
+  initial_wag_cycles: 3
+  injection_gor: 10000.0
+  injection_rate: 5000.0
+  injection_safety_margin: 0.8
+  injection_scheme: continuous
+  injection_scheme_locked: True
+  injection_setpoint_factor: 0.85
+  injection_weights: [0.5, 0.3, 0.2]
+  injection_zone_cells: 3
+  injectivity_index: 25.0
+  injector_target_bhp_psi: 4000.0
+  inlet_transition_length: 3.0
+  interfacial_tension: 5.0
+  koval_factor_multiplier: 1.0
+  kv_kh_ratio: 0.1
+  leakage_failure_threshold: 0.6
+  leakage_pressure_factor_threshold: 1.2
+  leakage_transmissibility_threshold: 5.0
+  locked_gravity_factor: 1.0
+  locked_hyperbolic_b_factor: 0.5
+  locked_productivity_index: 5.0
+  locked_sor: 0.25
+  locked_transition_alpha: 1.0
+  locked_transition_beta: 5.0
+  log_progress_factor: 10.0
+  low_risk_threshold: 0.1
+  maintenance_health_threshold: 0.7
+  mass_balance_tolerance: 0.0001
+  max_cycle_length_days: 180.0
+  max_enhanced_wag_ratio: 2.0
+  max_gravity_factor: 1.5
+  max_huff_n_puff_injection_period_days: 90.0
+  max_huff_n_puff_max_cycles: 50
+  max_huff_n_puff_production_period_days: 120.0
+  max_huff_n_puff_soaking_period_days: 60.0
+  max_hyperbolic_b_factor: 1.0
+  max_injection_rate_mscfd: 100000.0
+  max_injector_bhp_psi: 8000.0
+  max_koval_factor: 10.0
+  max_max_production_rate: 15000.0
+  max_plateau_duration_fraction: 0.8
+  max_pressure_change_per_timestep: 50.0
+  max_pressure_iterations: 50
+  max_pressure_psi: 4950.0
+  max_producer_bhp_psi: 4000.0
+  max_production_rate_stbd: 10000.0
+  max_productivity_index: 20.0
+  max_ramp_up_fraction: 0.3
+  max_rate_change_fraction: 0.2
+  max_reduction_factor: 0.3
+  max_saturation_change_per_timestep: 0.02
+  max_sor: 0.4
+  max_tapered_duration_years: 15.0
+  max_tapered_final_rate_multiplier: 1.0
+  max_tapered_initial_rate_multiplier: 3.0
+  max_transition_alpha: 1.2
+  max_transition_beta: 10.0
+  max_wag_ratio: 3.0
+  max_water_fraction: 0.8
+  max_wellbore_pressure: 2000.0
+  maximum_relative_permeability_gas: 0.4
+  maximum_relative_permeability_oil: 0.8
+  maximum_relative_permeability_water: 0.3
+  min_allowable_pressure_fraction_of_initial: 0.35
+  min_allowable_pressure_psi: 1600.0
+  min_co2_taper_factor: 0.85
+  min_cycle_length_days: 30.0
+  min_gravity_factor: 0.5
+  min_huff_n_puff_injection_period_days: 7.0
+  min_huff_n_puff_max_cycles: 1
+  min_huff_n_puff_production_period_days: 14.0
+  min_huff_n_puff_soaking_period_days: 1.0
+  min_hyperbolic_b_factor: 0.0
+  min_injection_rate_mscfd: 5000.0
+  min_koval_factor: 0.5
+  min_max_production_rate: 1000.0
+  min_miscibility_degree: None
+  min_plateau_duration_fraction: 0.1
+  min_pressure_factor: 1.1
+  min_producer_bhp_psi: 1500.0
+  min_production_rate_stbd: 0.0
+  min_productivity_index: 1.0
+  min_ramp_up_fraction: 0.0
+  min_sor: 0.15
+  min_tapered_duration_years: 1.0
+  min_tapered_final_rate_multiplier: 0.05
+  min_tapered_initial_rate_multiplier: 1.0
+  min_transition_alpha: 0.8
+  min_transition_beta: 2.0
+  min_wag_cycle_length: 30
+  min_wag_ratio: 0.1
+  min_water_fraction: 0.2
+  min_wellbore_pressure: 100.0
+  minimum_relative_permeability: 0.01
+  miscibility_weight_penalty: 1000.0
+  mobility_ratio: 50.0
+  mobility_ratio_factor: 0.001
+  moderate_risk_threshold: 0.3
+  molecular_weight_co2_g_mol: 44.01
+  n_g: 2.0
+  n_o: 2.0
+  n_ow: 2.0
+  n_w: 2.0
+  normal_geometry_factor: 1.5
+  numerical_stability_factor: 0.5
+  oblique_geometry_factor: 1.8
+  overburden_gradient_psi_per_ft: 1.0
+  poissons_ratio: 0.25
+  pre_breakthrough_co2_fraction_in_solution_gas: 0.05
+  pressure_control_min_scaling_factor: 0.01
+  pressure_damping_factor: 0.9
+  pressure_tolerance: 1.0
+  producer_target_bhp_psi: 1500.0
+  production_drawdown_psi: 1000.0
+  production_index: 5.0
+  production_setpoint_factor: 1.15
+  productivity_index: 5.0
+  psi_to_pa_conversion: 6894.76
+  pulsed: None
+  pulsed_intensity_multiplier: 2.0
+  pulsed_pause_duration_days: 15.0
+  pulsed_pulse_duration_days: 15.0
+  rate_smoothing_factor: 0.3
+  recycle_compressor_capacity_mscfd: 50000.0
+  reservoir_depth_ft: 5000.0
+  residual_gas_saturation_trapping: 0.05
+  residual_gas_trapping_fraction: 0.2
+  residual_oil_saturation: 0.25
+  reverse_geometry_factor: 1.2
+  s_gc: 0.05
+  s_orw: 0.2
+  s_wc: 0.2
+  saturation_damping_factor: 0.8
+  shut_in_mode: 0
+  shut_in_ramp_days: 30
+  solubility_coefficient_co2: 0.03
+  solubility_trapping_fraction: 0.03
+  sor: 0.25
+  spatial_smoothing_iterations: 3
+  spatial_smoothing_weight: 0.25
+  standard_wag_cycle_length: 90
+  strike_slip_geometry_factor: 2.0
+  supercritical_co2_density_kg_m3: 750.0
+  swag: None
+  swag_cycle_length_days: 30
+  swag_mixing_efficiency: 1.0
+  swag_simultaneous_injection: True
+  swag_water_gas_ratio: 1.0
+  tapered: None
+  tapered_duration_years: 10.0
+  tapered_final_rate_multiplier: 0.1
+  tapered_function: linear
+  tapered_initial_rate_multiplier: 2.0
+  target_miscibility_degree: None
+  target_pressure_psi: 3000.0
+  temporal_saturation_damping: 0.7
+  timestep_days: 30.44
+  universal_gas_constant_j_mol_k: 8.314
+  use_bhp_control: True
+  wag_ratio: 1.0
+  wag_ratio_enhancement_factor: 1.5
+  water_cut_bwow: 0.98
+  water_fraction: 0.5
+  well_conversion_day: 365
+  well_shut_in_threshold_bpd: 10.0
+  wellbore_pressure: 500.0
+
+--- Economic Parameters ---
+  capex_usd: 5000000.0
+  carbon_tax_usd_per_tonne: 0.0
+  co2_purchase_cost_usd_per_tonne: 50.0
+  co2_recycle_cost_usd_per_tonne: 15.0
+  co2_storage_credit_usd_per_tonne: 25.0
+  discount_rate_fraction: 0.1
+  fixed_opex_usd_per_year: 200000.0
+  oil_price_usd_per_bbl: 70.0
+  variable_opex_usd_per_bbl: 5.0
+  water_disposal_cost_usd_per_bbl: 2.0
+  water_injection_cost_usd_per_bbl: 1.0
+
+--- CO2 Storage Parameters ---
+  leakage_rate_fraction: 0.01
+  max_injection_pressure_frac: 0.8
+  max_plume_migration_distance_ft: 3000.0
+  min_injection_pressure_psi: 1000.0
+  min_trapping_efficiency: 0.8
+  mineral_trapping_factor: 0.1
+  monitoring_cost_usd_per_tonne: 5.0
+  plume_containment_safety_factor: 1.0
+  pre_breakthrough_co2_fraction: 0.05
+  produced_co2_fraction: 0.5
+  reservoir_seal_integrity_factor: 0.9
+  residual_trapping_factor: 0.4
+  solubility_trapping_factor: 0.3
+  solution_gas_co2_fraction: 0.2
+  storage_efficiency_factor: 0.7
+  structural_trapping_factor: 0.2
+
+--- Well Configuration ---
+  injector_count: 0
+  producer_count: 1
+  total_wells: 1
+  wells: Well-Producer-1 (producer)
+
+--- MMP Analysis Settings ---
+  c7_plus_mw: 190.0
+  gas_composition: CO2=1.000, CH4=0.000, N2=0.000
+  mmp_method: Auto-Select
+
+--- GA Hyperparameters ---
+  adaptive_mutation_high: 0.1
+  adaptive_mutation_low: 0.4
+  constraint_handling_method: adaptive_penalty
+  crossover_probability: 0.8
+  crossover_type: single_point
+  diversity_threshold_for_bo: 0.2
+  keep_elitism: 2
+  mutation_probability: 0.15
+  mutation_type: random
+  num_diverse_solutions_for_bo: 10
+  num_generations: 10
+  num_objectives: 1
+  num_parents_mating: 10
+  parent_selection_type: sss
+  penalty_factor: 1000.0
+  restart_diversity_fraction: 0.3
+  restart_on_stale: False
+  sol_per_pop: 60
+  stale_generations: 10
+  use_adaptive_mutation: True
+
+--- BO Hyperparameters ---
+  acq_kappa: 5.0
+  acq_xi: 0.01
+  acquisition_function: ucb
+  n_initial_points: 10
+  n_iterations: 100
+  trust_region_decay: 0.5
+  trust_region_initial_size: 1.0
+  trust_region_min_size: 0.001
+  use_trust_region: True
+
+=== END OF SUMMARY ===

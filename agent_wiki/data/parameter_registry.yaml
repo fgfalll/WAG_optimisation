@@ -1,0 +1,125 @@
+# Machine-Readable Scientific Parameter Registry
+# CO2 EOR Optimizer - Core Simulation & Physical Model Parameters
+
+parameters:
+  - name: transverse_mixing_calibration
+    value: 0.80
+    unit: dimensionless
+    origin: calibration
+    empirical: true
+    calibrated: true
+    benchmark_specific: true
+    used_by:
+      - core/engine_surrogate/surrogate_engine.py
+      - core/data_models.py
+    affects:
+      - koval_heterogeneity_factor
+      - co2_breakthrough_time
+      - ultimate_recovery_factor
+
+  - name: rf_ceiling
+    value: 0.80
+    unit: fraction
+    origin: empirical_assumption
+    empirical: true
+    calibrated: false
+    benchmark_specific: false
+    used_by:
+      - core/engine_surrogate/analytical_models.py
+    affects:
+      - recovery_factor
+      - cumulative_oil_production
+
+  - name: api_gravity_subtrahend
+    value: 55.0
+    unit: deg_API
+    origin: unknown
+    empirical: true
+    calibrated: true
+    benchmark_specific: false
+    used_by:
+      - core/engine_surrogate/analytical_models.py
+      - evaluation/mmp.py
+    affects:
+      - minimum_miscibility_pressure
+      - miscibility_status
+
+  - name: wag_oil_gas_bonus
+    value: 1.08
+    unit: multiplier
+    origin: empirical_assumption
+    empirical: true
+    calibrated: false
+    benchmark_specific: false
+    used_by:
+      - core/engine_surrogate/profile_generator_fast.py
+    affects:
+      - daily_oil_rate_profile
+      - wag_production_curves
+
+  - name: wag_oil_water_penalty
+    value: 0.96
+    unit: multiplier
+    origin: empirical_assumption
+    empirical: true
+    calibrated: false
+    benchmark_specific: false
+    used_by:
+      - core/engine_surrogate/profile_generator_fast.py
+    affects:
+      - daily_oil_rate_profile
+
+  - name: zero_injection_storage_override
+    value: 0.30
+    unit: fraction
+    origin: calibration
+    empirical: false
+    calibrated: false
+    benchmark_specific: false
+    used_by:
+      - core/optimisation_engine.py
+    affects:
+      - storage_efficiency
+      - ga_objective_fitness
+
+  - name: co2_critical_pressure
+    value: 1071.0
+    unit: psi
+    origin: physical_law
+    empirical: false
+    calibrated: false
+    benchmark_specific: false
+    used_by:
+      - core/data_models.py
+      - core/unified_engine/physics/co2_properties.py
+    affects:
+      - reduced_pressure
+      - peng_robinson_eos
+
+  - name: co2_critical_temperature
+    value: 87.9
+    unit: deg_F
+    origin: physical_law
+    empirical: false
+    calibrated: false
+    benchmark_specific: false
+    used_by:
+      - core/data_models.py
+      - core/unified_engine/physics/co2_properties.py
+    affects:
+      - reduced_temperature
+      - peng_robinson_eos
+
+  - name: rock_compressibility
+    value: 4.0e-6
+    unit: 1/psi
+    origin: engineering_correlation
+    empirical: true
+    calibrated: false
+    benchmark_specific: false
+    used_by:
+      - core/data_models.py
+      - core/engine_surrogate/surrogate_engine.py
+    affects:
+      - pore_volume_expansion
+      - tank_ode_pressure_derivative

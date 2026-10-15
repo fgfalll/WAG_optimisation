@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "dimensional-analysis": {
+      "source": "trailofbits/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/dimensional-analysis/skills/dimensional-analysis/SKILL.md",
+      "computedHash": "b4a97bdbe723f6fa4ee95b79232be318cef2ea869fa19a156a8ce18c83d00dda"
+    },
+    "nist-refprop": {
+      "source": "soljourner/claude-engineering-skills",
+      "sourceType": "github",
+      "skillPath": "skills/databases/nist-refprop/SKILL.md",
+      "computedHash": "64c5554450524993a00f15339db46f2bd889612c6425e9866ed22fac4b5fff42"
+    },
+    "numerical-verification": {
+      "source": "e-eight/scicomp-skills",
+      "sourceType": "github",
+      "skillPath": "skills/numerical-verification/SKILL.md",
+      "computedHash": "048239b15ac56153834b063c2b8642d4fdbdf8204840ecb6d7f54a98d78425bb"
+    },
+    "partial-differential-equations": {
+      "source": "neuralblitz/mito",
+      "sourceType": "github",
+      "skillPath": ".opencode/skills/partial-differential-equations/SKILL.md",
+      "computedHash": "8c3e602e3f9926d4d97e86c90b27dfc428ad2a6207115fdc40b1b3b78a3497b6"
+    }
+  }
+}

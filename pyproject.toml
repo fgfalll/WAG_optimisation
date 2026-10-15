@@ -39,30 +39,38 @@ classifiers = [
 
 dependencies = [
     "PyQt6>=6.6",
+    "pyqt6-webengine>=6.6",
+    "qtawesome>=1.3",
     "numpy>=1.24",
     "pandas>=2.0",
     "scipy>=1.10",
     "matplotlib>=3.7",
     "plotly>=5.14",
-    "pyqt6-webengine>=6.6",
-    "pyyaml>=6.0",
-    "qtawesome>=1.3",
-    "markdown>=3.4",
-    "pint>=0.21",
+    "kaleido>=0.2",
     "numpy_financial>=1.0",
-    "SALib>=1.4",
-    "UQpy>=1.2",
+    "pint>=0.21",
+    "h5py>=3.8",
+    "scikit-learn>=1.2",
     "bayesian-optimization>=1.3",
     "pygad>=3.0",
     "pyswarms>=1.3",
+    "SALib>=1.4",
+    "UQpy>=1.2",
     "gstools>=1.4",
+    "thermo>=0.6",
+    "pyvista>=0.40",
+    "pyvistaqt>=0.11",
+    "python-ternary>=1.0.8",
     "lasio>=0.30",
-    "requests>=2.31",
-    "kaleido>=0.2",
-    "openai>=1.0",
-    "google-generativeai>=0.3",
+    "pyyaml>=6.0",
+    "markdown>=3.4",
+    "pdfkit>=1.0",
     "psutil>=5.9",
     "GPUtil>=1.4",
+    "requests>=2.31",
+    "openai>=1.0",
+    "google-generativeai>=0.3",
+    "setuptools<81",
 ]
 
 [project.optional-dependencies]
@@ -71,6 +79,8 @@ dev = [
     "pytest-cov>=4.1",
     "pytest-qt>=4.2",
     "pytest-xdist>=3.3",
+    "pytest-benchmark>=4.0",
+    "hypothesis>=6.80",
     "black>=23.0",
     "ruff>=0.1",
     "mypy>=1.5",
@@ -114,6 +124,8 @@ target-version = ["py310", "py311", "py312"]
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP"]
 ignore = ["E501", "N803", "N806"]
 
@@ -131,4 +143,3 @@ python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
-plugins = ["mypy_django_plugin.main"]

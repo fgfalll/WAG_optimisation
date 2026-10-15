@@ -413,6 +413,23 @@ class InjectionSchemeValidator:
             if co2_balance > 1.0:
                 errors.append(f"CO2 production {co2_balance:.1%} exceeds injection")
         
+        # Initial fluid validation (check cumulative oil production against initial oil in place)
+        if initial_fluids:
+            initial_oil = (
+                initial_fluids.get('ooip_stb')
+                or initial_fluids.get('oil_stb')
+                or initial_fluids.get('initial_oil_bbl')
+            )
+            if initial_oil is not None and initial_oil > 0:
+                total_oil_prod = float(np.sum(oil_prod))
+                recovery_frac = total_oil_prod / initial_oil
+                metrics['oil_recovery_fraction'] = recovery_frac
+                if recovery_frac > 1.0:
+                    errors.append(
+                        f"Cumulative oil production ({total_oil_prod:.1f} STB, {recovery_frac:.1%}) "
+                        f"exceeds initial oil in place ({initial_oil:.1f} STB)"
+                    )
+        
         is_valid = len(errors) == 0
         
         if is_valid:

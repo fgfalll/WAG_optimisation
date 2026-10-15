@@ -1,0 +1,12 @@
+name,value,unit,provenance,equation,module,status
+COREY_N_OIL,2.0,dimensionless,Literature (Corey 1954),kro = kro0 * (1 - Sw*)^n_o,core/engine_surrogate/surrogate_models.py:29,VERIFIED
+COREY_N_GAS,2.0,dimensionless,Literature (Corey 1954),krg = krg0 * Sg*^n_g,core/engine_surrogate/surrogate_models.py:30,VERIFIED
+S_GC_CRITICAL,0.05,fraction,Empirical Default,Critical gas saturation,core/engine_surrogate/surrogate_models.py:31,EMPIRICAL
+S_OR_BASE,0.25,fraction,Empirical Default,Residual oil saturation,core/engine_surrogate/surrogate_models.py:32,EMPIRICAL
+CO2_DENSITY_TONNE_PER_MSCF,0.053,tonne/MSCF,Fundamental Constant (MW=44.01),rho = MW / V_std,core/engine_surrogate/surrogate_models.py:26,VERIFIED
+TODD_LONGSTAFF_OMEGA,0.6,fraction,Literature (Todd & Longstaff 1972),mu_oe = mu_m^omega * mu_o^(1-omega),core/engine_surrogate/analytical_models.py:38,VERIFIED
+HETEROGENEITY_CALIBRATION_C_TRANS,0.8,dimensionless,Calibrated / Tuning,H = 1 / (1 - 0.80*V_DP)^2,core/engine_surrogate/surrogate_engine.py:195,CALIBRATED
+NOMINAL_DRAWDOWN,500.0,psi,Arbitrary Fallback,J = q / nominal_drawdown,core/engine_surrogate/surrogate_engine.py:348,ARBITRARY
+PRESSURE_INCREMENT_CLAMP,450.0,psi/step,Numerical Safeguard,"dp = clip(dp, -450, 450)",core/engine_surrogate/surrogate_engine.py:379,NUMERICAL_STABILIZER
+EPA_CLASS_VI_SAFETY_FACTOR,0.9,fraction,Regulatory Standard (EPA Class VI),P_safe = 0.90 * P_frac,core/engine_surrogate/surrogate_engine.py:343,REGULATORY_VERIFIED
+B_GAS_OPTIMISATION,5.0,RB/MSCF,Unknown / Erroneous,Gas conversion,core/optimisation_engine.py:98,CONTRADICTED_BY_TEST

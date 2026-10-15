@@ -1,0 +1,46 @@
+# CO₂-EOR Run Evaluation Dashboard
+**Run Method:** `Genetic Algorithm (GA)` | **Objective:** `Net Present Value (NPV)` | **Generated:** `2026-09-24T10:44:22`
+
+### Run Health Status: 🟡 **WARNINGS DETECTED** (Near Boundaries or Sub-Optimal Limits)
+
+---
+
+## 📁 Export Artifact Index & Navigation Map
+This folder contains a complete, standardized suite of evaluation artifacts designed for both human review and automated AI-agent ingestion:
+
+| Artifact | Format | Description | Target Consumer |
+| :--- | :---: | :--- | :--- |
+| [run_manifest.json](run_manifest.json) | JSON | Machine-readable manifest (< 30 KB) with complete KPIs, bounds, and context | **AI Agents / Automated Pipelines** |
+| [run_evaluation_report.md](run_evaluation_report.md) | Markdown | Full technical evaluation report with executive badges and physics checks | **Engineers & Reviewers** |
+| [cash_flows_yearly.csv](cash_flows_yearly.csv) | CSV | Year-by-year cashflow schedule (Revenue, OPEX, CAPEX, DCF) | **Financial / Commercial Analysis** |
+| [convergence_history.csv](convergence_history.csv) | CSV | Optimization convergence trajectory per evaluation/iteration | **Optimizer Tuning & Profiling** |
+| [summary_yearly.csv](summary_yearly.csv) | CSV | Standardized annual production, injection, and pressure profiles with units | **Reservoir Simulation Workflows** |
+| [summary_monthly.csv](summary_monthly.csv) | CSV | High-resolution monthly profiles (if generated) for breakthrough dynamics | **Detailed Reservoir Modeling** |
+| [results_summary.txt](results_summary.txt) | Text | Cleaned human-readable summary text without raw array dumps | **Quick Terminal / Text Viewing** |
+| [full_run_data.json](full_run_data.json) | JSON | Complete archive of inputs, intermediate evaluations, and raw results | **Deep Archival & Debugging** |
+
+---
+
+## ⚠️ Warnings & Errors Registry
+| Severity | Category | Diagnostic Code | Description |
+| :---: | :---: | :---: | :--- |
+| 🟡 WARNING | Optimization Bounds | `PARAM_LOWER_BOUND_PINNED` | Parameter 'rate' (5000.0) pinned to lower search bound (5000.0). Search space may be too restrictive. |
+| 🟡 WARNING | Optimization Bounds | `PARAM_LOWER_BOUND_PINNED` | Parameter 'wellbore_pressure' (1500.0) pinned to lower search bound (1500.0). Search space may be too restrictive. |
+
+---
+
+## 📊 Quick Executive Summary for AI Agents
+
+| Key Performance Indicator | Value | Explicit Unit | Physical Interpretation |
+| :--- | :---: | :---: | :--- |
+| **Project DCF NPV** | **$192,933,877.74** | USD | Net Present Value (10% discount rate) |
+| **Optimizer Fitness Score** | `1.9293e+08` | dimensionless | Internal objective score (unpenalized) |
+| **Ultimate Recovery Factor** | **27.27%** | % OOIP | Fraction of initial oil recovered |
+| **Cumulative Oil Production** | **13,223,226** | STB | Total field oil recovered |
+| **Net CO₂ Utilization** | **0.090** | tonne/STB | Purchased CO₂ required per barrel of oil (1.70 MSCF/bbl) |
+| **Purchased Storage Efficiency**| **98.6%** | % fresh CO₂ | Fraction of purchased CO₂ permanently stored |
+| **Total CO₂ Stored** | **1,171,533** | metric tonnes | Net permanent subsurface carbon storage |
+| **Breakthrough Timing** | **2.45** | years | Elapsed time until CO₂ reaches production wells |
+
+---
+*Generated automatically by CO₂-EOR Optimizer Run Data Export System.*

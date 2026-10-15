@@ -1,0 +1,113 @@
+
+==============================================================================
+G. HCPVI DOUBLE-COUNT: bo/b_co2 fallbacks NEVER fire (dead provenance guards)
+==============================================================================
+   hasattr(ReservoirData, 'bo_rb_per_stb') = False  -> getattr(...,None) ALWAYS returns None
+   hasattr(ReservoirData, 'bg_rb_per_mscf') = False  -> getattr(...,None) ALWAYS returns None
+   reservoir_data.oil_fvf = 1.2   <-- the field that actually exists
+   => 'getattr(reservoir_data,"bo_rb_per_stb",None) or <computed>' : LEFT operand is ALWAYS None,
+      so the user's own oil_fvf is NEVER consulted. Guard is inert (dead code), and any user-supplied
+      Bo/Bg stored under the real field name is silently ignored.
+
+
+==============================================================================
+H. HCPVI from _build_params_dict vs simulated HCPVI - are they consistent?
+==============================================================================
+   NOTE code uses bo=pvt_init.calculate_oil_fvf(init_p) (NOT rd.oil_fvf): bo=1.3053
+   injection_rate=5000.0 MSCFD  life=15 yr  B_co2(init)=0.4887 rb/MSCF
+   total_inj_rb = 13,388,318 rb ; pv_rb = 1,740,361 rb
+   HCPVI(_build_params_dict) = 7.6928
+
+   -- Now compare against the value CRIT-01 recomputation actually produces --
+   simulate a 181-step monthly profile at constant rate (engine default case):
+   cum_inj_mscf=27,393,750  B_co2(mean p)=0.4887  Bo(mean p)=1.3053
+   HCPVI(simulated) = 7.6928
+
+   -- Physical test: HCPVI is a THROUGHPUT/PV ratio. It must be dimensionless and
+      scale with injection rate & time. Check scaling --
+      rate x0.5  -> HCPVI(build)=  3.8464   HCPVI(sim)=  3.8464   ratio sim/build=1.0000
+      rate x1.0  -> HCPVI(build)=  7.6928   HCPVI(sim)=  7.6928   ratio sim/build=1.0000
+      rate x2.0  -> HCPVI(build)= 15.3857   HCPVI(sim)= 15.3857   ratio sim/build=1.0000
+      rate x4.0  -> HCPVI(build)= 30.7714   HCPVI(sim)= 30.7714   ratio sim/build=1.0000
+
+
+==============================================================================
+I. HCPVI MAGNITUDE PLAUSIBILITY (is it even physical?)
+==============================================================================
+   HCPVI = 7.693 for a default 15-yr, 20,000 MSCFD CO2 flood
+   HCPVI of 7.7 means 7.7 hydrocarbon pore volumes of CO2 injected.
+   Published CO2 EOR practice: HCPVI at miscibility/termination is ~0.5-3.0;
+   even aggressive West Texas CO2 floods rarely exceed ~5-10 HCPVI before termination.
+   => default HCPVI ~7.7 is at the extreme high end; Koval sweep is already
+      saturated (see D4: sweep hits the 0.95 clip by HCPVI ~ 5-6).
+
+   Koval sweep vs the ACTUAL engine HCPVI, over M range:
+      M=  1.0 -> sweep=0.950000
+      M=  2.0 -> sweep=0.950000
+      M=  5.0 -> sweep=0.950000
+      M= 10.0 -> sweep=0.950000
+   => In the DEFAULT configuration the Koval sweep is at/near its clip for ALL M.
+      Mobility ratio - and therefore viscosity contrast - no longer changes sweep.
+
+
+==============================================================================
+J. SATURATION CLOSURE BREAKDOWN (np.clip masking)
+==============================================================================
+   n=181  timesteps with So+Sw>1 : 49  (27.1%)
+   max(So+Sw) = 1.042829  -> Sg forced to 0 by np.clip
+   time vector: 181 steps; first/last So+Sw = 1.003850 / 0.785422
+
+   WHY: vp_dynamic uses pv_ref = OOIP*Bo_mean/(1-Swi) which is the HCPV (hydrocarbon PV),
+   while So is computed as remaining_oil*Bo / vp_dynamic. The water term uses
+   pore_volume_rb*Swi + water_inj - water_prod, divided by the SAME vp_dynamic.
+   But Swi was defined on the TOTAL pore volume, not the hydrocarbon pore volume:
+   total PV = PV/(1-Swi), so PV*Swi != PV_hcpv*Swi. The two saturation bases are
+   inconsistent by construction -> So+Sw>1 -> Sg silently zeroed.
+   numeric: PV_total=1,600,000 rb ; PV_hcpv=1,200,000 rb
+   So(0) expected = OOIP*Bo/PV_total = 0.7500  (code gives 0.7538)
+   Sw(0) expected = PV_total*Swi/PV_total = 0.25  (code gives 0.2500)
+   code recomputed Sw(0) = (PV_hcpv*Swi)/PV_hcpv = 0.25  -> both use PV_hcpv => sum = (1-0.25)*Bo/PV_hcpv
+   So(0)+Sw(0) = 1.003850
+
+
+==============================================================================
+K. VRR PROFILE: is the post-hoc recompute consistent with the in-loop VRR?
+==============================================================================
+   In-loop VRR (:417) uses bo_dynamic/bg_dynamic AT current_p with the PRE-rescale oil profile.
+   Post-hoc VRR (:547) uses bo_profile/bg_profile and the POST-rescale oil/water/gas streams.
+   Two different VRR definitions exist in the same returned object; the post-hoc one wins.
+
+
+==============================================================================
+L. annual_co2_prod_mscf: DOUBLE-COUNTING of CO2 vs HC gas
+==============================================================================
+   co2_prod_rate = profile_result.get('co2_gas_profile', profile_result['gas_profile'])
+   hc_gas_rate    = profile_result.get('solution_gas_profile', max(0, total_gas_rate-co2_prod_rate))
+   keys actually in returned profiles: ['co2_gas_profile', 'solution_gas_profile', 'gas_profile']
+   -> 'gas_profile' is BOTH the total-gas stream AND the fallback for co2_prod_rate.
+      If 'co2_gas_profile' is absent, ALL produced gas (incl. HC gas) is booked as CO2,
+      while total_gas_rate also includes it -> produced CO2 double-counted in the ledger.
+
+
+==============================================================================
+M. NPV REVENUE COMPLETENESS
+==============================================================================
+   annual_rev = annual_oil_stb*oil_price + annual_stored_tonne*co2_storage_credit
+   MISSING: hydrocarbon gas sales revenue (annual_hc_gas_mscf is COMPUTED at :588,:606
+            and then never used in the cash flow).
+   MISSING: produced-CO2 sale revenue (annual_co2_prod_mscf used only for storage credit base).
+   MISSING: no opex on gas handling/compression beyond the recycle cost.
+   -> NPV is systematically biased LOW vs any real CO2-EOR project economics, yet it is
+      the PRIMARY OPTIMIZATION OBJECTIVE. The optimizer is therefore selecting on a
+      truncated cash-flow model, not a complete one.
+   annual_hydrocarbon_gas_mscf computed: n=0 sum=0 MSCF  <-- DISCARDED
+   at $3/MSCF that is $0 of revenue omitted from NPV
+
+
+==============================================================================
+N. DISCOUNTING / CAPEX SANITY
+==============================================================================
+   capex present in params = 5000000.0
+   discount_rate = 0.10
+   => the static $5.0M CAPEX issue (pitfall #44) is STILL ACTIVE; the new NPV block
+      faithfully discounts it, but the CAPEX magnitude itself is unvalidated.

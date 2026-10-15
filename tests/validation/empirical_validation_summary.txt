@@ -1,0 +1,32 @@
+
+====================================================================================================
+EMPIRICAL ENGINE VALIDATION SUMMARY
+====================================================================================================
+
+Validation Date: 2026-03-16 12:58:44
+Total Cases Tested: 1
+
+----------------------------------------------------------------------------------------------------
+Case                        CMG Oil (STB)     Engine Oil (STB)      Error %     CMG RF %  Engine RF %     Final P CMG     Final P Eng     Status
+----------------------------------------------------------------------------------------------------
+gmflu002_1D                    20,327,827                    0         0.00         0.78         0.00          1504.1             0.0       FAIL
+----------------------------------------------------------------------------------------------------
+
+Legend:
+  CMG Oil (STB): Cumulative oil production from CMG GEM
+  Engine Oil (STB): Cumulative oil production from empirical engine
+  Error %: Absolute percentage error vs CMG
+  CMG RF %: Recovery factor from CMG
+  Engine RF %: Recovery factor from empirical engine
+  Final P CMG: Final pressure from CMG (psia)
+  Final P Eng: Final pressure from empirical engine (psia)
+  Status: PASS if all criteria met
+
+Validation Criteria:
+  - Oil Cumulative Error < 5.0%
+  - Pressure RMSE < 50.0 psi
+  - Recovery Factor Error < 10.0%
+
+Results Summary:
+  Cases Passed: 0/1
+  Cases Failed: 1/1

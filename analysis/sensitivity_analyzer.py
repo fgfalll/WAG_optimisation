@@ -7,7 +7,6 @@ from copy import deepcopy
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from pathlib import Path
-from functools import lru_cache
 from dataclasses import asdict, fields
 
 from core.optimisation_engine import OptimizationEngine
@@ -18,11 +17,15 @@ from core.data_models import (
     ProfileParameters,
     EOSModelParameters,
 )
-from core.simulation.recovery_models import recovery_factor
-from config_manager import ConfigManager
-from core.unified_engine.physics.eos import CubicEOS
+from utils.config_manager import ConfigManager
 
-EOS_MODELS_AVAILABLE = True
+try:
+    from co2eor_optimizer.core.eos_models import PengRobinsonEOS, SoaveRedlichKwongEOS
+    EOS_MODELS_AVAILABLE = True
+except ImportError:
+    EOS_MODELS_AVAILABLE = False
+    PengRobinsonEOS = None
+    SoaveRedlichKwongEOS = None
 
 # Optional import for Sobol analysis
 try:
@@ -117,7 +120,7 @@ class SensitivityAnalyzer:
             ("eor.rate", "Injection Rate (bpd)"),
         ]
         if self.engine._base_eor_params.injection_scheme == "wag":
-            optimized_params.append(("eor.WAG_ratio", "WAG Ratio"))
+            optimized_params.append(("eor.wag_ratio", "WAG Ratio"))
 
         input_params = {
             "Economic": [
@@ -172,7 +175,11 @@ class SensitivityAnalyzer:
             logger.info("SA: Deriving base EOR parameters from engine's default settings.")
             ga_bounds = self.engine._get_parameter_bounds()
             eor_dc = self.engine._base_eor_params
-            for param, (low, high) in ga_bounds.items():
+            for param, b_val in ga_bounds.items():
+                if isinstance(b_val, dict):
+                    low, high = b_val["low"], b_val["high"]
+                else:
+                    low, high = b_val[0], b_val[1]
                 if hasattr(eor_dc, param):
                     base_val = getattr(eor_dc, param)
                     base_eor_dict[param] = np.clip(base_val, low, high)
@@ -227,6 +234,10 @@ class SensitivityAnalyzer:
         cache_key = (self._get_eos_cache_key(eos_model), pressure, temperature)
         if cache_key not in self._eos_cache:
             try:
+                if not EOS_MODELS_AVAILABLE or PengRobinsonEOS is None:
+                    logger.warning("EOS models not available for sensitivity analysis.")
+                    self._eos_cache[cache_key] = {}
+                    return {}
                 eos_type = eos_model.eos_type.lower()
                 if eos_type == "peng-robinson":
                     concrete_eos_model = PengRobinsonEOS(eos_model)
@@ -308,9 +319,6 @@ class SensitivityAnalyzer:
         temp_model_param_overrides: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, float]:
         """Core evaluation function for a single sensitivity analysis point."""
-        if recovery_factor is None:
-            raise ImportError("The 'recovery_factor' function is not available.")
-
         eos_model_to_use = (
             temp_eos_params_override
             if temp_eos_params_override
@@ -362,7 +370,7 @@ class SensitivityAnalyzer:
             recovery_model_init_kwargs_override=temp_model_param_overrides,
             target_objectives=objectives_to_calc,
             eos_model_override=eos_model_to_use,
-            dimensional_tolerance=0.5, # Allow wider range for sensitivity analysis
+            dimensional_tolerance=0.5,  # Allow wider range for sensitivity analysis
         )
 
     def run_one_way_sensitivity(
@@ -547,14 +555,16 @@ class SensitivityAnalyzer:
         return final_analysis
 
     def run_reoptimization_sensitivity(
+        self,
         primary_param_to_vary: str,
         variation_values_str: str,
+        target_optimized_output_keys: List[str],
+        objectives_at_optimum: List[str],
         optimization_method_on_engine: str = "hybrid_optimize",
-        target_optimized_output_keys: Optional[List[str]] = None,
-        objectives_at_optimum: Optional[List[str]] = None,
     ) -> pd.DataFrame:
         """
         Runs sensitivity by re-running the full optimization for each parameter value.
+
         PERFORMANCE FIX: This method no longer re-instantiates the expensive OptimizationEngine
         in a loop. It creates it once and modifies its parameters for each run.
         """
@@ -567,13 +577,11 @@ class SensitivityAnalyzer:
             f"Starting Re-optimization Sensitivity for '{primary_param_to_vary}' using '{optimization_method_on_engine}'."
         )
         results_list = []
-        target_keys = target_optimized_output_keys or ["pressure", "rate"]
-        obj_keys = objectives_at_optimum or [
-            self.engine.chosen_objective,
-            "final_recovery_factor_reported",
-        ]
+        target_keys = target_optimized_output_keys
+        obj_keys = objectives_at_optimum
 
         # Instantiate the engine ONCE outside the loop for huge performance gain
+        # FIX: Include fitting_params_instance like main engine does
         temp_engine = OptimizationEngine(
             reservoir=deepcopy(self._base_reservoir_data_for_reopt),
             pvt=deepcopy(self._base_pvt_for_reopt),
@@ -582,6 +590,7 @@ class SensitivityAnalyzer:
             operational_params_instance=deepcopy(self._base_op_params_for_reopt),
             profile_params_instance=deepcopy(self._base_profile_params_for_reopt),
             advanced_engine_params_instance=deepcopy(self._base_advanced_engine_params_for_reopt),
+            fitting_params_instance=deepcopy(self.engine.fitting_params),
         )
 
         for i, p_value in enumerate(variation_values):
@@ -589,44 +598,57 @@ class SensitivityAnalyzer:
                 f"Re-optimizing (run {i + 1}/{len(variation_values)}) for {primary_param_to_vary} = {p_value}"
             )
 
-            # Reset engine state to pristine base state before applying the change
-            temp_engine.reservoir = deepcopy(self._base_reservoir_data_for_reopt)
-            temp_engine.economic_params = deepcopy(self._base_econ_params_for_reopt)
-            # Add any other stateful components that need resetting
+            # FIX: Use proper reset method instead of piecemeal reset
+            temp_engine.reset_to_base_state()
 
-            param_holders = {  # We don't use all of these, but it fits the helper's API
-                "econ": temp_engine.economic_params,
-                "pvt": temp_engine.pvt,
-                "co2_storage": temp_engine.co2_storage_params,
-                "res": {},  # Dictionary for reservoir parameter overrides
-                "fluid": {},  # Dictionary for fluid parameter overrides
-                "model": {},
-                "eos": temp_engine.reservoir.eos_model,
-                "eor": {},  # Not used in re-opt
-            }
+            # After reset, apply the parameter variations
+            # We need to modify the engine's internal state based on what was varied
+            param_category, param_name = self._parse_param_path(primary_param_to_vary)
 
-            # Apply the specific parameter change for this iteration using the centralized helper
-            if not self._apply_parameter_overrides(primary_param_to_vary, p_value, param_holders):
-                logger.error(
-                    f"Failed to apply override for {primary_param_to_vary}={p_value}. Skipping run."
-                )
-                results_list.append(
-                    {
-                        primary_param_to_vary: p_value,
-                        "error": "Parameter application failed",
-                    }
-                )
-                continue
+            # Build override dict for evaluate_for_analysis
+            overrides = {}
 
-            # Manually update engine attributes from the override dictionaries
-            if "avg_porosity" in param_holders["res"]:
-                temp_engine.avg_porosity_init_override = param_holders["res"]["avg_porosity"]
-            if "mmp_value" in param_holders["fluid"]:
-                temp_engine.mmp_init_override = param_holders["fluid"]["mmp_value"]
-            if param_holders["model"]:
-                temp_engine.recovery_model_init_kwargs_override = param_holders["model"]
+            if param_category == "eor":
+                # Direct attribute assignment for EOR params
+                if hasattr(temp_engine.eor_params, param_name):
+                    setattr(temp_engine.eor_params, param_name, p_value)
+                # Also add to overrides dict for evaluation
+                overrides[param_name] = p_value
+            elif param_category == "econ":
+                if hasattr(temp_engine.economic_params, param_name):
+                    setattr(temp_engine.economic_params, param_name, p_value)
+            elif param_category == "reservoir":
+                if hasattr(temp_engine.reservoir, param_name):
+                    setattr(temp_engine.reservoir, param_name, p_value)
+                elif param_name == "avg_porosity":
+                    temp_engine.reservoir.average_porosity = p_value
+                elif param_name == "ooip_stb":
+                    temp_engine.reservoir.ooip_stb = p_value
+            elif param_category == "fluid":
+                if param_name == "mmp_value":
+                    temp_engine._mmp_value_init_override = p_value
+            elif param_category == "model":
+                # Model params go to recovery_model_init_kwargs_override
+                pass  # handled below
 
-            temp_engine.re_initialize_dependent_components()  # Ensure engine internals are updated
+            # FIX: Apply model parameter overrides properly
+            if param_category == "model":
+                valid_model_keys = {
+                    "v_dp_coefficient",
+                    "mobility_ratio",
+                    "gravity_factor",
+                    "sor",
+                    "transition_alpha",
+                    "transition_beta",
+                    "kv_kh_ratio",
+                    "transverse_mixing_calibration",
+                    "trapping_efficiency",
+                }
+                if param_name in valid_model_keys:
+                    temp_engine.recovery_model_init_kwargs_override = {param_name: p_value}
+
+            # Re-initialize dependent components after applying changes
+            temp_engine.re_initialize_dependent_components()
 
             try:
                 opt_func: Callable = getattr(temp_engine, optimization_method_on_engine)
@@ -651,6 +673,7 @@ class SensitivityAnalyzer:
         return pd.DataFrame(results_list)
 
     def run_two_way_sensitivity(
+        self,
         param1_path: str,
         param1_values_str: str,
         param2_path: str,

@@ -1,0 +1,22 @@
+{
+  "validation_date": "2026-03-16T12:58:44.331168",
+  "total_cases": 1,
+  "cases_passed": 0,
+  "cases_failed": 1,
+  "results": [
+    {
+      "case_id": "gmflu002_1D",
+      "passed": false,
+      "oil_cumulative_error_pct": 0.0,
+      "pressure_rmse_psi": 0.0,
+      "recovery_error_pct": 0.0,
+      "oil_cumulative_engine": 0.0,
+      "oil_cumulative_cmg": 20327826.83073503,
+      "recovery_factor_engine": 0.0,
+      "recovery_factor_cmg": 0.7788366930113904,
+      "final_pressure_engine": 0.0,
+      "final_pressure_cmg": 1504.050050308592,
+      "execution_time_seconds": 0.0
+    }
+  ]
+}

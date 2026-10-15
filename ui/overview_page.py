@@ -8,8 +8,8 @@ from PyQt6.QtCore import (
     QPropertyAnimation, QEasingCurve, QPoint
 )
 from PyQt6.QtGui import (
-    QIcon, QFont, QPainter, QFontDatabase,
-    QPixmap, QPainterPath, QColor, QLinearGradient, QBrush
+    QIcon, QFont, QPainter,
+    QPixmap, QColor, QBrush
 )
 from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtWidgets import (

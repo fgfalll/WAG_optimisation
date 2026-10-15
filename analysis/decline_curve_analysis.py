@@ -5,9 +5,10 @@ Implements various decline curve models for production forecasting.
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 import logging
 from scipy.optimize import curve_fit
+from scipy.integrate import cumulative_trapezoid
 from dataclasses import dataclass
 import plotly.graph_objects as go
 
@@ -114,8 +115,13 @@ class DeclineCurveAnalyzer:
                 maxfev=10000
             )
             return tuple(params)
-        except Exception as e:
-            logger.warning(f"Hyperbolic fit failed: {e}. Falling back to exponential.")
+        except (RuntimeError, ValueError, TypeError) as e:
+            logger.warning(
+                "Hyperbolic curve_fit failed on %d data points (max rate=%.1f): %s. Falling back to exponential.",
+                len(rate),
+                float(np.max(rate)) if len(rate) > 0 else 0.0,
+                e,
+            )
             qi, di = self.fit_exponential(time, rate)
             return qi, di, 0.0  # b=0 for exponential
 
@@ -135,13 +141,20 @@ class DeclineCurveAnalyzer:
                 maxfev=10000
             )
             return params[0], params[1]
-        except Exception as e:
-            logger.warning(f"Hyperbolic fit with fixed b failed: {e}. Falling back to exponential for qi, di.")
+        except (RuntimeError, ValueError, TypeError) as e:
+            logger.warning(
+                "Hyperbolic curve_fit with fixed b=%.3f failed on %d data points: %s. Falling back to exponential.",
+                b,
+                len(rate),
+                e,
+            )
             return self.fit_exponential(time, rate)
     
     def calculate_cumulative(self, time: np.ndarray, rate: np.ndarray) -> np.ndarray:
         """Calculate cumulative production using trapezoidal integration."""
-        return np.cumsum(np.trapz(rate, time, axis=0))
+        if len(time) <= 1 or len(rate) <= 1:
+            return np.zeros_like(rate, dtype=float)
+        return cumulative_trapezoid(rate, time, initial=0.0)
     
     def calculate_r_squared(self, actual: np.ndarray, predicted: np.ndarray) -> float:
         """Calculate R-squared value for model fit."""
@@ -189,65 +202,95 @@ class DeclineCurveAnalyzer:
         if b_factor is not None:
             model_type = "hyperbolic"
         
+        # Identify plateau and decline onset
+        peak_idx = int(np.argmax(production_rate))
+        peak_rate = float(production_rate[peak_idx])
+
+        # Look for onset of sustained boundary-dominated decline after peak (rate drops below 95% peak)
+        decline_start_idx = peak_idx
+        for idx in range(peak_idx, len(production_rate)):
+            if production_rate[idx] < 0.95 * peak_rate:
+                decline_start_idx = idx
+                break
+
+        # Check if a distinct declining tail exists (at least 3 data points in decline)
+        has_decline_segment = (len(production_rate) - decline_start_idx) >= 3 and decline_start_idx > 0
+
+        if has_decline_segment:
+            t_onset = float(time_years[decline_start_idx])
+            fit_time = time_years[decline_start_idx:] - t_onset
+            fit_rate = production_rate[decline_start_idx:]
+        else:
+            t_onset = float(time_years[0])
+            fit_time = time_years - t_onset
+            fit_rate = production_rate
+
         # Determine best model if auto-selection
         if model_type == "auto":
-            model_type = self._select_best_model(time_years, production_rate)
-        
-        # Fit selected model
+            model_type = self._select_best_model(fit_time, fit_rate)
+
+        # Fit selected model on declining data
         if model_type == "exponential":
-            qi, di = self.fit_exponential(time_years, production_rate)
+            qi, di = self.fit_exponential(fit_time, fit_rate)
             b = 0.0
-            predicted_rate = self.exponential_decline(time_years, qi, di)
-        
+            decline_func = lambda t: self.exponential_decline(t, qi, di)
         elif model_type == "hyperbolic":
             if b_factor is not None:
                 b = b_factor
-                qi, di = self.fit_hyperbolic_qi_di(time_years, production_rate, b)
+                qi, di = self.fit_hyperbolic_qi_di(fit_time, fit_rate, b)
             else:
-                qi, di, b = self.fit_hyperbolic(time_years, production_rate)
-            predicted_rate = self.hyperbolic_decline(time_years, qi, di, b)
-        
+                qi, di, b = self.fit_hyperbolic(fit_time, fit_rate)
+            decline_func = lambda t: self.hyperbolic_decline(t, qi, di, b)
         elif model_type == "harmonic":
-            qi, di = self.fit_exponential(time_years, production_rate)  # Initial fit
+            qi, di = self.fit_exponential(fit_time, fit_rate)
             b = 1.0
-            predicted_rate = self.harmonic_decline(time_years, qi, di)
-        
+            decline_func = lambda t: self.harmonic_decline(t, qi, di)
         else:
             raise ValueError(f"Unknown model type: {model_type}")
-        
-        # Calculate R-squared
+
+        # Compute predicted rates over historical time
+        predicted_rate = np.zeros_like(production_rate)
+        for idx, t in enumerate(time_years):
+            if has_decline_segment and idx < decline_start_idx:
+                predicted_rate[idx] = production_rate[idx]
+            else:
+                predicted_rate[idx] = float(decline_func(np.array([max(0.0, t - t_onset)]))[0])
+
+        # Calculate R-squared over historical time
         r_squared = self.calculate_r_squared(production_rate, predicted_rate)
-        
+
         # Calculate cumulative production
         cumulative = self.calculate_cumulative(time_years, production_rate)
-        
-        # Generate forecast
-        forecast_time = np.linspace(0, forecast_years, 100)
-        if model_type == "exponential":
-            forecast_rate = self.exponential_decline(forecast_time, qi, di)
-        elif model_type == "hyperbolic":
-            forecast_rate = self.hyperbolic_decline(forecast_time, qi, di, b)
-        elif model_type == "harmonic":
-            forecast_rate = self.harmonic_decline(forecast_time, qi, di)
-        
+
+        # Generate forecast spanning the full life
+        t_max = max(float(forecast_years), float(time_years[-1]))
+        forecast_time = np.linspace(0.0, t_max, 100)
+        forecast_rate = np.zeros_like(forecast_time)
+
+        for idx, t in enumerate(forecast_time):
+            if has_decline_segment and t < t_onset:
+                forecast_rate[idx] = float(np.interp(t, time_years[:decline_start_idx+1], production_rate[:decline_start_idx+1]))
+            else:
+                forecast_rate[idx] = float(decline_func(np.array([max(0.0, t - t_onset)]))[0])
+
         forecast_cumulative = self.calculate_cumulative(forecast_time, forecast_rate)
-        
+
         # Calculate economic limit and life
         economic_limit = self.economic_limit_factor * np.max(production_rate)
         economic_life = self._calculate_economic_life(forecast_time, forecast_rate, economic_limit)
-        
+
         return DCAResult(
             time=time_years,
             production_rate=production_rate,
             cumulative_production=cumulative,
             model_type=model_type,
-            parameters={"qi": qi, "di": di, "b": b},
+            parameters={"qi": qi, "di": di, "b": b, "decline_onset_year": t_onset},
             r_squared=r_squared,
             forecast_time=forecast_time,
             forecast_rate=forecast_rate,
             forecast_cumulative=forecast_cumulative,
             economic_limit=economic_limit,
-            economic_life=economic_life
+            economic_life=economic_life,
         )
     
     def _select_best_model(self, time: np.ndarray, rate: np.ndarray) -> str:
@@ -269,8 +312,8 @@ class DeclineCurveAnalyzer:
             else:
                 return "exponential"
                 
-        except Exception as e:
-            logger.warning(f"Auto model selection failed: {e}. Using exponential.")
+        except (RuntimeError, ValueError, TypeError, FloatingPointError) as e:
+            logger.warning("Auto model selection failed: %s. Using exponential.", e)
             return "exponential"
     
     def _calculate_economic_life(self, time: np.ndarray, rate: np.ndarray, economic_limit: float) -> float:
@@ -300,27 +343,47 @@ class DeclineCurveAnalyzer:
             "ultimate_recovery": result.forecast_cumulative[-1] if len(result.forecast_cumulative) > 0 else 0
         }
 
-    def plot_decline_curve(self, result: DCAResult) -> go.Figure:
+    def plot_decline_curve(self, result: Union[DCAResult, Dict[str, Any]]) -> go.Figure:
         """
         Generate a plot of the decline curve analysis.
         
         Args:
-            result: DCAResult object
+            result: DCAResult object or dictionary of DCA results
             
         Returns:
             Plotly figure
         """
+        if result is None:
+            return go.Figure()
+
+        if isinstance(result, dict):
+            time_arr = result.get("time", np.array([]))
+            prod_rate = result.get("production_rate", np.array([]))
+            forecast_time = result.get("forecast_time", np.array([]))
+            forecast_rate = result.get("forecast_rate", np.array([]))
+            economic_limit = result.get("economic_limit", 0.0)
+            model_type = result.get("model_type", "DCA")
+        else:
+            time_arr = getattr(result, "time", np.array([]))
+            prod_rate = getattr(result, "production_rate", np.array([]))
+            forecast_time = getattr(result, "forecast_time", np.array([]))
+            forecast_rate = getattr(result, "forecast_rate", np.array([]))
+            economic_limit = getattr(result, "economic_limit", 0.0)
+            model_type = getattr(result, "model_type", "DCA")
+
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=result.time, y=result.production_rate, mode='markers', name='Actual Production'))
-        fig.add_trace(go.Scatter(x=result.forecast_time, y=result.forecast_rate, mode='lines', name='Forecasted Production'))
-        fig.add_shape(
-            type="line",
-            x0=0, y0=result.economic_limit, x1=result.forecast_time[-1], y1=result.economic_limit,
-            line=dict(color="Red", width=2, dash="dash"),
-            name="Economic Limit"
-        )
+        if len(time_arr) > 0 and len(prod_rate) > 0:
+            fig.add_trace(go.Scatter(x=time_arr, y=prod_rate, mode='markers', name='Actual Production'))
+        if len(forecast_time) > 0 and len(forecast_rate) > 0:
+            fig.add_trace(go.Scatter(x=forecast_time, y=forecast_rate, mode='lines', name='Forecasted Production'))
+            fig.add_shape(
+                type="line",
+                x0=0, y0=economic_limit, x1=forecast_time[-1], y1=economic_limit,
+                line=dict(color="Red", width=2, dash="dash"),
+                name="Economic Limit"
+            )
         fig.update_layout(
-            title_text=f"Decline Curve Analysis ({result.model_type.title()})",
+            title_text=f"Decline Curve Analysis ({str(model_type).title()})",
             xaxis_title="Time (Years)",
             yaxis_title="Production Rate (STB/year)",
             yaxis_type="log"
